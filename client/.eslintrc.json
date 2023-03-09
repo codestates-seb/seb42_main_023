@@ -1,0 +1,28 @@
+{
+  "parser": "@tpyescript-eslint/parser",
+  "plugins": ["@typescript-eslint", "react/eslint-plugin"],
+  "extends": [
+    "plugin:@react/recommended",
+    "plugin:@typescript-eslint/recommended",
+    "plugin:prettier/recommended"
+  ],
+  "parserOptions": {
+    "ecmaVersion": 6,
+    "sourceType": "module",
+    "ecmaFeatures": {
+      "jsx": true
+    }
+  },
+  "rules": {
+    "semi": 2,
+    "@typescript-eslint/explicit-function-return-type": [
+      "warn",
+      { "allowTypedFunctionExpressions": true }
+    ]
+  },
+  "settings": {
+    "react": {
+      "vlersion": "detect"
+    }
+  }
+}
