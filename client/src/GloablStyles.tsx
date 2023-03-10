@@ -9,8 +9,11 @@ const GlobalStyles = createGlobalStyle`
         font-weight: 400;
         font-size: 16px;
         font-family: -apple-system, "system-ui", "Segoe UI Adjusted", "Segoe UI", "Liberations Sans", sans-serif;
-    }
-    
+        -ms-overflow-style: none;
+        ::-webkit-scrollbar {
+          display: none;
+         }
+ }    
     ol, ul {
     list-style: none;
       }
@@ -39,6 +42,8 @@ const GlobalStyles = createGlobalStyle`
     border: 1px solid black;
     margin: auto;    
     }   
+
+    
 
 `;
 
