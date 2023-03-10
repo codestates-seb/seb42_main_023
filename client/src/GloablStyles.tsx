@@ -19,13 +19,27 @@ const GlobalStyles = createGlobalStyle`
     text-decoration: none;
     }
 
-    body {
-    width: 1100px;
-    height: 100vh;
-    border:  1px solid black;
-    margin: auto;
+    header {
+      width: 100vw;
+      height: 80px;
+      border: 1px solid black;
+      margin: auto; 
     }
     
+    main {
+    width: 1100px;
+    height: calc(100vh - 80px - 154px);
+    border: 1px solid black;
+    margin: auto;    
+    }   
+
+    footer {
+    width: 100vw;
+    height: 154px;
+    border: 1px solid black;
+    margin: auto;    
+    }   
+
 `;
 
 export default GlobalStyles;

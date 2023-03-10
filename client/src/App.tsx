@@ -7,11 +7,15 @@ function App() {
   return (
     <div className="App">
       <GlobalStyles />
-      <BrowserRouter>
-        <Routes>
-          <Route path="/" element={<Main />} />
-        </Routes>
-      </BrowserRouter>
+      <header className="header">Header</header>
+      <main>
+        <BrowserRouter>
+          <Routes>
+            <Route path="/" element={<Main />} />
+          </Routes>
+        </BrowserRouter>
+      </main>
+      <footer className="footer">Footer</footer>
     </div>
   );
 }
