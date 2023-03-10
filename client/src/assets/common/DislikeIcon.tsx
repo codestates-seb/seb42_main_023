@@ -1,11 +1,20 @@
 import React from 'react';
 import { FaRegThumbsDown, FaThumbsDown } from 'react-icons/fa';
+import { useState } from 'react';
 
-function DislikeIcon() {
+interface Props {
+  checked: boolean;
+}
+
+function DislikeIcon({ checked }: Props) {
+  const [check, setCheck] = useState(checked);
   return (
     <>
-      <FaRegThumbsDown size="12" color="#5C5C5C" />
-      <FaThumbsDown size="12" color="#5C5C5C" />
+      {check ? (
+        <FaThumbsDown size="12" color="#5C5C5C" />
+      ) : (
+        <FaRegThumbsDown size="12" color="#5C5C5C" />
+      )}
     </>
   );
 }
