@@ -28,8 +28,7 @@ const GlobalStyles = createGlobalStyle`
     
     main {
     width: 1100px;
-    min-height: calc(100vh - 80px - 154px);
-    max-height: max-content;
+    height: calc(100vh - 80px - 154px);
     border: 1px solid black;
     margin: auto;    
     }   
