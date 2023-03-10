@@ -7,10 +7,9 @@ interface Props {
 }
 
 function BookmarkIcon({ checked }: Props) {
-  const [check, setCheck] = useState(checked);
   return (
     <>
-      {check ? (
+      {checked ? (
         <FaBookmark size="12" color="#5C5C5C" />
       ) : (
         <FaRegBookmark size="12" color="#5C5C5C" />

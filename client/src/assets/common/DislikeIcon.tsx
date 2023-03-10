@@ -7,10 +7,9 @@ interface Props {
 }
 
 function DislikeIcon({ checked }: Props) {
-  const [check, setCheck] = useState(checked);
   return (
     <>
-      {check ? (
+      {checked ? (
         <FaThumbsDown size="12" color="#5C5C5C" />
       ) : (
         <FaRegThumbsDown size="12" color="#5C5C5C" />
