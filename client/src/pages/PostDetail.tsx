@@ -2,7 +2,6 @@ import React from 'react';
 import styled from 'styled-components';
 import CommentInput from '../components/postDetailP/CommentInput';
 import Comment from '../components/postDetailP/Comment';
-import ProfilePreview from '../components/postDetailP/ProfilePreview';
 import RecommendedPost from '../components/postDetailP/RecommendedPost';
 import BookmarkIcon from '../assets/common/BookmarkIcon';
 import { BsThreeDots } from 'react-icons/bs';
@@ -11,8 +10,37 @@ import ViewIcon from '../assets/common/ViewIcon';
 import CommentIcon from '../assets/common/CommentIcon';
 import DislikeIcon from '../assets/common/DislikeIcon';
 import LikeIcon from '../assets/common/LikeIcon';
+import { setBookmark, setDislike, setLike } from '../slices/postSlice';
+import { useAppDispatch, useAppSelector } from '../hooks';
+
+interface stateType {
+  postSlice: {
+    isLike: boolean;
+    isDislike: boolean;
+    isBookmark: boolean;
+  };
+}
 
 const PostDetail = () => {
+  const dispatch = useAppDispatch();
+  const state = useAppSelector((state: stateType): stateType => {
+    return state;
+  });
+
+  console.log('state : ', state);
+
+  // 좋아요 클릭 함수
+  const changeLiikeHandler = (): void => {
+    dispatch(setLike(state.postSlice.isLike));
+  };
+  // 싫어요 클릭 함수
+  const changeDislikeHandler = (): void => {
+    dispatch(setDislike(state.postSlice.isDislike));
+  };
+  // 북마크 클릭 함수
+  const changeBookmarkHandler = (): void => {
+    dispatch(setBookmark(state.postSlice.isBookmark));
+  };
   const img =
     'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQpWYbN0psesHG68-EUQ0ljjqAK806TEJBC5Q&usqp=CAU';
   return (
@@ -29,9 +57,11 @@ const PostDetail = () => {
             <li className="created-time">12시간 전</li>
             <ViewIcon />
             <li className="views">2,500</li>
-            <CommentIcon checked={false} />
+            <CommentIcon checked={true} />
             <li className="comments">100</li>
-            <BookmarkIcon checked={false} />
+            <button className="bookmark" onClick={changeBookmarkHandler}>
+              <BookmarkIcon checked={state.postSlice.isBookmark} />
+            </button>
             <BsThreeDots />
           </ul>
         </PostInfo>
@@ -57,11 +87,16 @@ const PostDetail = () => {
           </div>
 
           <ul className="post-info">
-            <LikeIcon checked={false} /> <li className="likes">30</li>
-            <DislikeIcon checked={false} /> <li className="dislikes">20</li>
+            <button onClick={changeLiikeHandler}>
+              <LikeIcon checked={state.postSlice.isLike} />
+            </button>
+            <li className="likes">30</li>
+            <button onClick={changeDislikeHandler}>
+              <DislikeIcon checked={state.postSlice.isDislike} />
+            </button>
+            <li className="dislikes">20</li>
           </ul>
           <CommentInput></CommentInput>
-          <Comment></Comment>
           <Comment></Comment>
         </PostContent>
       </PostContainer>
@@ -119,7 +154,10 @@ const PostContainer = styled.div`
     }
     .comments {
       font-size: 16px;
-      margin: 1px 230px 0 5px;
+      margin: 1px 300px 0 5px;
+    }
+    .bookmark {
+      margin: 1px 20px 0 5px;
     }
   }
   .image {

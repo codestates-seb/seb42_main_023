@@ -7,10 +7,9 @@ interface Props {
 }
 
 function LikeIcon({ checked }: Props) {
-  const [check, setCheck] = useState(checked);
   return (
     <>
-      {check ? (
+      {checked ? (
         <FaThumbsUp size="12" color="#5C5C5C" />
       ) : (
         <FaRegThumbsUp size="12" color="#5C5C5C" />

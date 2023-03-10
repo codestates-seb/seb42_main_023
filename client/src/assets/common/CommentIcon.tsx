@@ -7,10 +7,9 @@ interface Props {
 }
 
 function CommentIcon({ checked }: Props) {
-  const [check, setCheck] = useState(checked);
   return (
     <>
-      {check ? (
+      {checked ? (
         <FaCommentDots size="12" color="#5C5C5C" />
       ) : (
         <FaRegCommentDots size="12" color="#5C5C5C" />

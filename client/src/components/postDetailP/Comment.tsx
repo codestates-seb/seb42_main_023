@@ -5,8 +5,33 @@ import ReplyInput from './ReplyInput';
 import DislikeIcon from '../../assets/common/DislikeIcon';
 import LikeIcon from '../../assets/common/LikeIcon';
 import TimeIcon from '../../assets/common/TimeIcon';
+import { setCommentDislike, setCommentLike } from '../../slices/postSlice';
+import { useAppDispatch, useAppSelector } from '../../hooks';
 
+interface stateType {
+  postSlice: {
+    isLike: boolean;
+    isDislike: boolean;
+    isBookmark: boolean;
+    isCommentLike: boolean;
+    isCommentDislike: boolean;
+    isReplyLike: boolean;
+    isReplyDislike: boolean;
+  };
+}
 const Comment = () => {
+  const dispatch = useAppDispatch();
+  const state = useAppSelector((state: stateType): stateType => {
+    return state;
+  });
+  // 댓글 좋아요 클릭 함수
+  const CommentLiikeHandler = (): void => {
+    dispatch(setCommentLike(state.postSlice.isCommentLike));
+  };
+  // 댓글 싫어요 클릭 함수
+  const CommentDislikeHandler = (): void => {
+    dispatch(setCommentDislike(state.postSlice.isCommentDislike));
+  };
   const img =
     'https://img.khan.co.kr/news/2020/10/16/2020101601001687000138341.jpg';
   return (
@@ -21,9 +46,13 @@ const Comment = () => {
           <li className="created-time">12시간 전</li>
           <li className="comment-update">수정</li>
           <li className="comment-delete">삭제</li>
-          <LikeIcon checked={false} />
+          <button onClick={CommentLiikeHandler}>
+            <LikeIcon checked={state.postSlice.isCommentLike} />
+          </button>
           <li className="comment-likes">30</li>
-          <DislikeIcon checked={false} />
+          <button onClick={CommentDislikeHandler}>
+            <DislikeIcon checked={state.postSlice.isCommentDislike} />
+          </button>
           <li className="comment-dislikes">20</li>
         </ul>
       </CommentInfo>
