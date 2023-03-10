@@ -1,7 +1,24 @@
 import React from 'react';
 import styled from 'styled-components';
+import Report from '../components/adminReport/Report';
+import { useState } from 'react';
 
 const AdminReport: React.FC = () => {
+  // 신고 대상 서치
+  // const [selectedOption, setSelectedOption] = useState('all');
+  // const changeSelectHandler = (event: React.ChangeEvent<HTMLSelectElement>) => {
+  //   setSelectedOption(event.target.value);
+  // };
+
+  // 신고 내역 모달창
+  const [showReportForm, setShowReportForm] = useState(false);
+  const [selectedReport, setSelectedReport] = useState<number | null>(null);
+
+  const clickReportHandler = (reportId: number): void => {
+    setShowReportForm(!showReportForm);
+    setSelectedReport(reportId);
+  };
+
   return (
     <AdminReportMain>
       <SearchReport>
@@ -9,8 +26,12 @@ const AdminReport: React.FC = () => {
         <div>
           <SearchSelect>
             <label htmlFor="report-target">신고대상</label>
-            <select name="report-target">
-              <option selected>전체</option>
+            <select
+              name="report-target"
+              // defaultValue={selectedOption}
+              // onChange={changeSelectHandler}
+            >
+              <option value="all">전체</option>
               <option value="post">게시글</option>
               <option value="comment">댓글</option>
               <option value="reply">답글</option>
@@ -44,6 +65,7 @@ const AdminReport: React.FC = () => {
               <TableRow
                 key={item.reportId}
                 className={idx % 2 === 0 ? 'row-even' : 'row-odd'}
+                onClick={() => clickReportHandler(item.reportId)}
               >
                 <td>{idx + 1}</td>
                 <td>{item.reportedAT.replace('T', ' ').slice(0, -4)}</td>
@@ -60,6 +82,7 @@ const AdminReport: React.FC = () => {
           })}
         </tbody>
       </table>
+      {showReportForm ? <Report selectedReport={selectedReport} /> : null}
     </AdminReportMain>
   );
 };
