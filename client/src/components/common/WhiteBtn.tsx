@@ -1,11 +1,11 @@
-import React, { FC } from 'react';
+import React from 'react';
 import styled from 'styled-components';
 
 const Btn = styled.button<Button>`
   width: ${({ width }): string => width};
   height: ${({ height }): string | undefined => height};
-  background-color: #0069ca;
-  color: #fff;
+  background-color: #fff;
+  border: 1px solid #d4d4d4;
   box-sizing: border-box;
 `;
 
@@ -21,7 +21,7 @@ interface Button {
   height?: string;
 }
 
-const BlueBtn: React.FC<Props> = ({
+const WhiteBtn: React.FC<Props> = ({
   content,
   width,
   height,
@@ -36,4 +36,4 @@ const BlueBtn: React.FC<Props> = ({
   );
 };
 
-export default BlueBtn;
+export default WhiteBtn;

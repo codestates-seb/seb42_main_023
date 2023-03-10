@@ -1,12 +1,13 @@
 import React from 'react';
 import styled from 'styled-components';
 import LikeIcon from '../../assets/common/LikeIcon';
-import LoginBtn from '../../assets/common/LoginBtn';
-import PostBtn from '../../assets/common/PostBtn';
+import LoginBtn from '../common/LoginBtn';
+import PostBtn from '../common/PostBtn';
 import TimeIcon from '../../assets/common/TimeIcon';
 import ViewIcon from '../../assets/common/ViewIcon';
-import WhiteBtn from '../../assets/common/WhiteBtn';
-import BlueBtn from '../../assets/common/BlueBtn';
+import WhiteBtn from '../common/WhiteBtn';
+import BlueBtn from '../common/BlueBtn';
+import Tag from '../common/Tag';
 
 const Item = styled.div`
   height: 100px;
@@ -27,10 +28,12 @@ const Itemside = styled.div`
     display: flex;
     align-items: center;
   }
+`;
+const Taglist = styled.div``;
+const Info = styled.div`
   span {
     font-size: 12px;
-    color: #5c5c5c;
-    margin-right: 20px;
+    margin-left: 20px;
     flex-direction: row;
     display: flex;
     align-items: center;
@@ -40,7 +43,7 @@ const Itemside = styled.div`
 const Post: React.FC = () => {
   return (
     <Item>
-      <PostBtn />
+      {/* <PostBtn />
       <LoginBtn />
       <BlueBtn
         content={'정의'}
@@ -48,13 +51,20 @@ const Post: React.FC = () => {
         height={'100px'}
         onClick={(): void => console.log('확인')}
       />
-      <WhiteBtn />
-      {/* <h1>제목</h1>
+      <WhiteBtn
+        content={'정의'}
+        width={'300px'}
+        height={'100px'}
+        onClick={(): void => console.log('확인')}
+      /> */}
+      <h1>제목</h1>
       <Itemside>
-        <div>
-          <span>광고</span>
-        </div>
-        <div>
+        <Taglist>
+          <Tag content={'안녕'} />
+          <Tag content={'안녕하세요'} />
+          <Tag content={'안녕갑세요'} />
+        </Taglist>
+        <Info>
           <span>bunny</span>
           <span>
             <TimeIcon />
@@ -68,8 +78,8 @@ const Post: React.FC = () => {
             <LikeIcon checked={false} />
             10
           </span>
-        </div>
-      </Itemside> */}
+        </Info>
+      </Itemside>
     </Item>
   );
 };
