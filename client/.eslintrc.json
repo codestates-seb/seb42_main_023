@@ -1,8 +1,8 @@
 {
-  "parser": "@tpyescript-eslint/parser",
-  "plugins": ["@typescript-eslint", "react/eslint-plugin"],
+  "parser": "@typescript-eslint/parser",
+  "plugins": ["@typescript-eslint", "react"],
   "extends": [
-    "plugin:@react/recommended",
+    "plugin:react/recommended",
     "plugin:@typescript-eslint/recommended",
     "plugin:prettier/recommended"
   ],
