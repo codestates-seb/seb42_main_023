@@ -1,23 +1,27 @@
-import GlobalStyles from './GloablStyles';
 import React from 'react';
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
+
+import GlobalStyles from './GloablStyles';
+import { BrowserRouter, Route, Routes } from 'react-router-dom';
+import PostDetail from './pages/PostDetail';
+
 import Main from './pages/Main';
 
-function App() {
+const App = () => {
   return (
     <div className="App">
       <GlobalStyles />
-      <header className="header">Header</header>
-      <main>
-        <BrowserRouter>
+      <BrowserRouter>
+        <header className="header">Header</header>
+        <main>
           <Routes>
             <Route path="/" element={<Main />} />
+            <Route path="/post/:postId/" element={<PostDetail />} />
           </Routes>
-        </BrowserRouter>
-      </main>
-      <footer className="footer">Footer</footer>
+        </main>
+        <footer className="footer">Footer</footer>
+      </BrowserRouter>
     </div>
   );
-}
+};
 
 export default App;
