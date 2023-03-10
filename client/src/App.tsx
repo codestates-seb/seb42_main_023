@@ -1,6 +1,8 @@
 import GlobalStyles from './GloablStyles';
 import React from 'react';
-import Login from './pages/Login';
+// import Login from './pages/Login';
+// import SetNickname from './pages/SetNickname';
+import AdminReport from './pages/AdminReport';
 
 function App() {
   return (
@@ -8,7 +10,9 @@ function App() {
       <GlobalStyles />
       <header className="header">Header</header>
       <main>
-        <Login />
+        {/* <Login /> */}
+        {/* <SetNickname /> */}
+        <AdminReport />
       </main>
       <footer className="footer">Footer</footer>
     </div>
