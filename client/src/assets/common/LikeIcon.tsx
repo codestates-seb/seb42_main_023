@@ -1,11 +1,20 @@
 import React from 'react';
 import { FaRegThumbsUp, FaThumbsUp } from 'react-icons/fa';
+import { useState } from 'react';
 
-function LikeIcon() {
+interface Props {
+  checked: boolean;
+}
+
+function LikeIcon({ checked }: Props) {
+  const [check, setCheck] = useState(checked);
   return (
     <>
-      <FaRegThumbsUp size="12" color="#5C5C5C" />
-      <FaThumbsUp size="12" color="#5C5C5C" />
+      {check ? (
+        <FaThumbsUp size="12" color="#5C5C5C" />
+      ) : (
+        <FaRegThumbsUp size="12" color="#5C5C5C" />
+      )}
     </>
   );
 }
