@@ -1,32 +1,32 @@
 import React from 'react';
 import styled from 'styled-components';
 import LikeIcon from '../../assets/common/LikeIcon';
-import LoginBtn from '../common/LoginBtn';
-import PostBtn from '../common/PostBtn';
 import TimeIcon from '../../assets/common/TimeIcon';
 import ViewIcon from '../../assets/common/ViewIcon';
-import WhiteBtn from '../common/WhiteBtn';
-import BlueBtn from '../common/BlueBtn';
 import Tag from '../common/Tag';
+import Thumnail from './Thumnail';
 
 const Item = styled.div`
   height: 100px;
-  border: 1px solid #000;
+  border-bottom: 1px solid #d9d9d9;
   box-sizing: border-box;
   display: flex;
-  flex-direction: column;
+  justify-content: center;
+  align-items: center;
   h1 {
     font-size: 20px;
+    margin-bottom: 4px;
   }
-  > div {
-    display: flex;
-    justify-content: space-between;
+  > div:nth-child(2) {
+    flex-grow: 1;
   }
 `;
 const Itemside = styled.div`
-  div {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  > div {
     display: flex;
-    align-items: center;
   }
 `;
 const Taglist = styled.div``;
@@ -43,43 +43,34 @@ const Info = styled.div`
 const Post: React.FC = () => {
   return (
     <Item>
-      {/* <PostBtn />
-      <LoginBtn />
-      <BlueBtn
-        content={'정의'}
-        width={'300px'}
-        height={'100px'}
-        onClick={(): void => console.log('확인')}
-      />
-      <WhiteBtn
-        content={'정의'}
-        width={'300px'}
-        height={'100px'}
-        onClick={(): void => console.log('확인')}
-      /> */}
-      <h1>제목</h1>
-      <Itemside>
-        <Taglist>
-          <Tag content={'안녕'} />
-          <Tag content={'안녕하세요'} />
-          <Tag content={'안녕갑세요'} />
-        </Taglist>
-        <Info>
-          <span>bunny</span>
-          <span>
-            <TimeIcon />
-            12시간전
-          </span>
-          <span>
-            <ViewIcon />
-            200
-          </span>
-          <span>
-            <LikeIcon checked={false} />
-            10
-          </span>
-        </Info>
-      </Itemside>
+      <div>
+        <Thumnail content="https://demo.ycart.kr/shopboth_farm_max5_001/data/editor/1612/cd2f39a0598c81712450b871c218164f_1482469221_493.jpg" />
+      </div>
+      <div>
+        <h1>제목</h1>
+        <Itemside>
+          <Taglist>
+            <Tag content={'안녕'} />
+            <Tag content={'안녕하세요'} />
+            <Tag content={'안녕갑세요'} />
+          </Taglist>
+          <Info>
+            <span>bunny</span>
+            <span>
+              <TimeIcon />
+              12시간전
+            </span>
+            <span>
+              <ViewIcon />
+              200
+            </span>
+            <span>
+              <LikeIcon checked={false} />
+              10
+            </span>
+          </Info>
+        </Itemside>
+      </div>
     </Item>
   );
 };
