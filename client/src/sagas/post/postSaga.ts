@@ -5,7 +5,7 @@ import { postSagaActions } from './postSagaActions';
 console.log(postSagaActions);
 
 function* handleToggle(action: any) {
-  console.log('action : ', action);
+  // 미들웨어 동작 로직
 }
 
 function* postSaga() {
