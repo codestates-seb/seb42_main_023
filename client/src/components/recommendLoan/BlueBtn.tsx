@@ -1,3 +1,4 @@
+import React from 'react';
 // 공통 컴포넌트
 
 function BlueBtn() {
