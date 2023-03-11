@@ -2,7 +2,11 @@ import React from 'react';
 import Post from './Post';
 
 function PostList() {
-  return <Post />;
+  return (
+    <>
+      <Post />
+    </>
+  );
 }
 
 export default PostList;

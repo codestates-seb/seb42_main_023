@@ -6,6 +6,63 @@ import ViewIcon from '../../assets/common/ViewIcon';
 import Tag from '../common/Tag';
 import Thumnail from './Thumnail';
 
+interface Props {
+  img: string;
+  title: string;
+  tag: string[];
+  writer_id: string;
+  createdAt: string;
+  modified_at: string;
+  view_count: number;
+}
+
+const Post: React.FC = (
+  {
+    // img,
+    // title,
+    // tag,
+    // writer_id,
+    // createdAt,
+    // modified_at,
+    // view_count,
+  },
+) => {
+  return (
+    <Item>
+      {/* <div>
+        <Thumnail content={img} />
+      </div>
+      <div>
+        <h1>{title}</h1>
+        <Itemside>
+          <Taglist>
+            {tag.map((el) => (
+              <Tag content={el} />
+            ))}
+          </Taglist>
+          <Info>
+            <span>{writer_id}</span>
+            <span>
+              <TimeIcon />
+              {createdAt}
+            </span>
+            <span>
+              <ViewIcon />
+              {view_count}
+            </span>
+            <span>
+              <LikeIcon checked={false} />
+              10
+            </span>
+          </Info>
+        </Itemside>
+      </div> */}
+    </Item>
+  );
+};
+
+export default Post;
+
 const Item = styled.div`
   height: 100px;
   border-bottom: 1px solid #d9d9d9;
@@ -39,40 +96,3 @@ const Info = styled.div`
     align-items: center;
   }
 `;
-
-const Post: React.FC = () => {
-  return (
-    <Item>
-      <div>
-        <Thumnail content="https://demo.ycart.kr/shopboth_farm_max5_001/data/editor/1612/cd2f39a0598c81712450b871c218164f_1482469221_493.jpg" />
-      </div>
-      <div>
-        <h1>제목</h1>
-        <Itemside>
-          <Taglist>
-            <Tag content={'안녕'} />
-            <Tag content={'안녕하세요'} />
-            <Tag content={'안녕갑세요'} />
-          </Taglist>
-          <Info>
-            <span>bunny</span>
-            <span>
-              <TimeIcon />
-              12시간전
-            </span>
-            <span>
-              <ViewIcon />
-              200
-            </span>
-            <span>
-              <LikeIcon checked={false} />
-              10
-            </span>
-          </Info>
-        </Itemside>
-      </div>
-    </Item>
-  );
-};
-
-export default Post;
