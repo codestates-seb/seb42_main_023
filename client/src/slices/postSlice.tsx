@@ -1,5 +1,4 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { access } from 'fs';
 
 const postSlice = createSlice({
   name: 'post',
