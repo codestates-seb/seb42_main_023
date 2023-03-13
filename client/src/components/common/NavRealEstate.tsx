@@ -61,7 +61,7 @@ export default NavRealEstate;
 
 // nav 컨테이너
 const NavContainer = styled.nav`
-  width: 140px;
+  width: 160px;
   height: 400px;
   border: 2px solid #d4d4d4;
   > ul {
