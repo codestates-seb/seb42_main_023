@@ -15,7 +15,7 @@ function PostList() {
     thumbup: number;
   }
 
-  const [data, setData] = useState([{}]:Post[]);
+  const [data, setData] = useState([{}]);
 
   useEffect(() => {
     //post list 불러오기
@@ -33,10 +33,10 @@ function PostList() {
   }, []);
   return (
     <ul>
-      {data &&
+      {/* {data &&
         data.map((post) => {
           <Post post={post} />;
-        })}
+        })} */}
     </ul>
   );
 }

@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import LikeIcon from '../../assets/common/LikeIcon';
 import TimeIcon from '../../assets/common/TimeIcon';
 import ViewIcon from '../../assets/common/ViewIcon';
-import Tag from '../common/Tag';
+import Tag from '../common/Tag.js';
 import Thumnail from './Thumnail';
 
 interface Props {

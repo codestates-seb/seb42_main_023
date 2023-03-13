@@ -31,9 +31,13 @@ const postInputSlice = createSlice({
     setTag: (state, action: Tag): void => {
       (state.tag as Array<string>).push(action.payload);
     },
+    // 태그 삭제
+    deleteTag: (state, action: Tag): void => {
+      (state.tag as Array<string>).filter((tag) => tag !== action.payload);
+    },
   },
 });
 
 export default postInputSlice;
-export const { setTitle, setBody, setTagContent, setTag } =
+export const { setTitle, setBody, setTagContent, setTag, deleteTag } =
   postInputSlice.actions;
