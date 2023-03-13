@@ -1,11 +1,11 @@
 import React from 'react';
-import { Provider } from 'react-redux';
+
 import GlobalStyles from './GloablStyles';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
+import { Provider } from 'react-redux';
 import PostDetail from './pages/PostDetail';
-
-import Main from './pages/Main';
 import store from './store/store';
+import Main from './pages/Main';
 
 const App = () => {
   return (
