@@ -5,6 +5,13 @@ import { SiNaver } from 'react-icons/si';
 import { RiKakaoTalkFill } from 'react-icons/ri';
 
 const Login: React.FC = () => {
+  const CLIENT_ID = process.env.REACT_APP_CLIENT_ID;
+  const requestGoogleLoginHandler = (): void => {
+    console.log(CLIENT_ID);
+    return window.location.assign(
+      `https://accounts.google.com/o/oauth2/v2/auth?scope=profile&response_type=code&client_id=${CLIENT_ID}&redirect_uri=http://localhost:8080/login/oauth2/code/google`,
+    );
+  };
   return (
     <>
       <LoginMain>
@@ -12,7 +19,7 @@ const Login: React.FC = () => {
           <div>Logo</div>
           <p>회원가입 없이 간편하게 로그인하세요</p>
           <LoginBtnContainer>
-            <button className="btn google">
+            <button className="btn google" onClick={requestGoogleLoginHandler}>
               <FcGoogle size="24" style={{ margin: '10px' }} />
               Google로 로그인하기
             </button>
