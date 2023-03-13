@@ -120,6 +120,7 @@ const Itemside = styled.div`
 const Taglist = styled.div``;
 const Info = styled.div`
   span {
+    color: #94969b;
     font-size: 12px;
     margin-left: 20px;
     flex-direction: row;

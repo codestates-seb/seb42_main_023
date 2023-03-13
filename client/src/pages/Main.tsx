@@ -9,8 +9,8 @@ function Main() {
     <>
       {console.log('render')}
       <PostList />
-      <NextPageIcon />
       <PrevPageIcon />
+      <NextPageIcon />
     </>
   );
 }

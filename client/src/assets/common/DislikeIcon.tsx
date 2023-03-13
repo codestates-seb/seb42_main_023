@@ -10,9 +10,9 @@ function DislikeIcon({ checked }: Props) {
   return (
     <>
       {checked ? (
-        <FaThumbsDown size="12" color="#5C5C5C" />
+        <FaThumbsDown size="12" color="#94969b" />
       ) : (
-        <FaRegThumbsDown size="12" color="#5C5C5C" />
+        <FaRegThumbsDown size="12" color="#94969b" />
       )}
     </>
   );

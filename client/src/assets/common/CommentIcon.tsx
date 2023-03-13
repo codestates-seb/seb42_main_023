@@ -10,9 +10,9 @@ function CommentIcon({ checked }: Props) {
   return (
     <>
       {checked ? (
-        <FaCommentDots size="12" color="#5C5C5C" />
+        <FaCommentDots size="12" color="#94969b" />
       ) : (
-        <FaRegCommentDots size="12" color="#5C5C5C" />
+        <FaRegCommentDots size="12" color="#94969b" />
       )}
     </>
   );

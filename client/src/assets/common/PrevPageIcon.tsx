@@ -1,10 +1,10 @@
 import React from 'react';
-import { GrPrevious } from 'react-icons/gr';
+import { IoIosArrowBack } from 'react-icons/io';
 
 function PrevPageIcon() {
   return (
     <>
-      <GrPrevious color="#5C5C5C" />
+      <IoIosArrowBack color="#94969b" />
     </>
   );
 }

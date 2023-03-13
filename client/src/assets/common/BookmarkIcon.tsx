@@ -10,9 +10,9 @@ function BookmarkIcon({ checked }: Props) {
   return (
     <>
       {checked ? (
-        <FaBookmark size="12" color="#5C5C5C" />
+        <FaBookmark size="12" color="#94969b" />
       ) : (
-        <FaRegBookmark size="12" color="#5C5C5C" />
+        <FaRegBookmark size="12" color="#94969b" />
       )}
     </>
   );
