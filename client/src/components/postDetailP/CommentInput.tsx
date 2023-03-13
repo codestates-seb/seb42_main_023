@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 
-const CommentInput = () => {
+const CommentInput: React.FC = () => {
   return (
     <CommentInputContainer>
       <h1>댓글 54</h1>

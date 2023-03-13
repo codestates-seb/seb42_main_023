@@ -22,7 +22,7 @@ const TagInput: React.FC = () => {
   const enterHandler = (event: KeyboardEvent<HTMLInputElement>): void => {
     const tag = state.postInput.tag;
     const tagContent = state.postInput.tagContent;
-    if (event.key === 'Enter') {
+    if (event.key === 'Enter' && event.nativeEvent.isComposing === false) {
       // 공백 방지
       if (tagContent === '') {
         return;
@@ -36,9 +36,10 @@ const TagInput: React.FC = () => {
       if (tag.length >= 5) {
         alert('태그는 5개까지만 입력 가능합니다.');
         return;
+      } else {
+        dispatch(setTagContent(''));
+        dispatch(setTag(tagContent));
       }
-      dispatch(setTag(state.postInput.tagContent));
-      dispatch(setTagContent(''));
     }
   };
   return (

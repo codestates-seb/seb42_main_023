@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 
-const ReplyInput = () => {
+const ReplyInput: React.FC = () => {
   return (
     <ReplyInputContainer>
       <Input type="text" placeholder="댓글을 남겨 주세요"></Input>
