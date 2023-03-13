@@ -1,14 +1,11 @@
 package com.teamdragon.dragonmoney.app.domain.member.dto;
 
 import lombok.*;
-import org.hibernate.validator.constraints.Length;
-import org.springframework.context.annotation.Primary;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
-
 
 public class MemberDto {
 
@@ -76,6 +73,7 @@ public class MemberDto {
     }
 
     //작성자 응답 데이터
+    @Setter
     public static class WriterResponse {
         private Long memberId;
         private String memberName;

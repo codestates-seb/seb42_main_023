@@ -3,6 +3,7 @@ package com.teamdragon.dragonmoney.app.domain.member.service;
 import com.teamdragon.dragonmoney.app.domain.member.entity.Member;
 import com.teamdragon.dragonmoney.app.domain.member.repository.MemberRepository;
 import com.teamdragon.dragonmoney.app.global.auth.dto.PrincipalDto;
+import com.teamdragon.dragonmoney.app.global.entity.DeleteResult;
 import com.teamdragon.dragonmoney.app.global.exception.AuthExceptionCode;
 import com.teamdragon.dragonmoney.app.global.exception.AuthLogicException;
 import com.teamdragon.dragonmoney.app.global.exception.BusinessExceptionCode;
@@ -11,54 +12,68 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.Optional;
 
 @Service
+@Transactional
 @RequiredArgsConstructor
 public class MemberService {
     private final MemberRepository memberRepository;
 
     //테스트를 위한 임시 메서드
-    public Member createMember(Member member) {
+    public Member createMemberTemp(Member member) {
         Optional<Member> optionalMember = memberRepository.findByName(member.getName());
 
         if (optionalMember.isPresent())
             throw new BusinessLogicException(BusinessExceptionCode.USER_EXISTS);
 
-        Member.MemberBuilder createdmember = Member.builder();
-        createdmember.name(member.getName())
+        Member createdmember = Member.builder()
+                .name(member.getName())
                 .email(member.getEmail())
                 .profileImage(member.getProfileImage())
-                .createdAt(LocalDateTime.now())
-                .intro("안녕하세요.")
-                .modifiedAt(LocalDateTime.now())
-                .state(Member.MemberState.ACTIVE);
+                .state(Member.MemberState.ACTIVE)
+                .build();
 
-        return memberRepository.save(createdmember.build());
+        return memberRepository.save(createdmember);
     }
 
-    //oauth2 로그인 할 때 사용자 정보 저장
-    public Member saveMember(Member member) {
-        Optional<Member> optionalMember = memberRepository.findByEmail(member.getEmail());
+    //oauth2 로그인 할 때 존재하는 회원인지 판별
+    public Boolean checkOAuthMemberName(String oauthKind, String email) {
+        //사용자 닉네임 설정 여부, 이메일, oauthkind를 같이 조회
+        Optional<Member> optionalNameDuplicateCheck = memberRepository.findByNameDuplicateCheckAndEmailAndOauthkind(false, email, oauthKind);
 
-        if (optionalMember.isPresent())
-            return optionalMember.get();
+        //회원이 있을 때
+        if (optionalNameDuplicateCheck.isPresent())
+            return true;
 
+        return false;
+    }
+
+    //OAuth2 신규 회원 정보 저장
+    public Member saveMember(String oauthKind, String picture, String name, String email) {
+        Member member = Member.builder()
+                .oauthkind(oauthKind)
+                .nameDuplicateCheck(false)
+                .email(email)
+                .name(name)
+                .profileImage(picture)
+                .build();
         return memberRepository.save(member);
     }
 
-    //닉네임 중복 확인
-    public Boolean duplicatedName(Member member) {
-        Optional<Member> memberOptional = memberRepository.findByName(member.getName());
-        Boolean checkResult = memberOptional.isEmpty();
+    //닉네임 중복 확인하는 페이지에서 중복 확인
+    public Boolean duplicatedName(String name) {
+        Optional<Member> memberOptional = memberRepository.findByName(name);
 
-        return checkResult;
+        return memberOptional.isEmpty();
     }
 
-    //회원 닉네임 저장
+    //닉네임 중복 확인하는 페이지에서 중복된 닉네임이 없을 때 회원 닉네임 저장
     public Member savedMember(Member member) {
+        member.setNameDuplicateCheck(true);
         return memberRepository.save(member);
     }
 
@@ -66,8 +81,7 @@ public class MemberService {
     public Member updateMember(String name, Member member) {
         Member updatedMember = findVerifiedMemberName(name);
 
-        Optional.ofNullable(member.getIntro())
-                .ifPresent(updatedMember::setIntro);
+        updatedMember.setIntro(member.getIntro());
 
         return memberRepository.save(updatedMember);
     }
@@ -113,11 +127,18 @@ public class MemberService {
 
         deletedMember.setState(Member.MemberState.DELETED);
 
+        DeleteResult deleteResult = DeleteResult.builder()
+                .deletedAt(LocalDateTime.now())
+                .deleteReason("작성자에 의한 삭제 조치")
+                .build();
+
+        deletedMember.setDeleteResult(deleteResult);
+
         return memberRepository.save(deletedMember);
     }
 
-    //회원 이름을 통해 유무 확인
-    public Member findVerifiedMemberName(String name) {
+    //회원 이름을 통해 회원 존재의 유무 확인
+    private Member findVerifiedMemberName(String name) {
         Optional<Member> optionalAnswer = memberRepository.findByName(name);
 
         return optionalAnswer

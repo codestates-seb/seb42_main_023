@@ -24,10 +24,10 @@ public class MemberController {
     private final MemberService memberService;
     private final MemberMapper memberMapper;
 
-    //회원가입
+    //회원가입 (포스트맨 테스트를 위한 임시 메서드)
     @PostMapping
     public ResponseEntity postMemberTemp(@Valid @RequestBody MemberDto.PostTemp post) {
-        memberService.createMember(memberMapper.postDtoToMemberTemp(post));
+        memberService.createMemberTemp(memberMapper.postDtoToMemberTemp(post));
 
         URI location = createURI("/members", 1L);
 
@@ -41,15 +41,15 @@ public class MemberController {
                 .toUri();
     }
 
-    //회원가입(닉네임 중복 확인)
+    //닉네임 중복 확인
     @PostMapping("/duplicated-name")
     public ResponseEntity postMember(@Valid @RequestBody MemberDto.Post post) {
 
         Map<String,Boolean> response = new HashMap<>();
 
-        if (!memberService.duplicatedName(memberMapper.postDtoToMember(post))) {         //같은 닉네임이 있을 때
+        if (!memberService.duplicatedName(post.getName())) {         //같은 닉네임이 있을 때
             response.put("useable", false);
-        } else {                                                                        //같은 닉네임이 없을 때
+        } else {                                                     //같은 닉네임이 없을 때
             memberService.savedMember(memberMapper.postDtoToMember(post));
             response.put("useable", true);
         }
