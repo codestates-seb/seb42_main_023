@@ -27,8 +27,6 @@ const PostDetail = () => {
     return state;
   });
 
-  console.log('state : ', state);
-
   // 좋아요 클릭 함수
   const changeLiikeHandler = (): void => {
     dispatch(setLike(state.postSlice.isLike));
