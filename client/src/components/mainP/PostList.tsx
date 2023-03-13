@@ -25,6 +25,7 @@ function PostList() {
     <ul>
       {data &&
         data.map((post) => {
+          console.log(new Date(post.createdAt));
           return <Post key={post.writer_id} post={post} />;
         })}
     </ul>
