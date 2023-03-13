@@ -2,20 +2,10 @@ import React from 'react';
 import Post from './Post';
 import axios from 'axios';
 import { useEffect, useState } from 'react';
+import type { PostItem, Tags } from './Post';
 
 function PostList() {
-  interface Post {
-    img: string;
-    title: string;
-    tag: string[];
-    writer_id: string;
-    createdAt: string;
-    modified_at: string;
-    view_count: number;
-    thumbup: number;
-  }
-
-  const [data, setData] = useState([{}]);
+  const [data, setData] = useState<PostItem[]>([]);
 
   useEffect(() => {
     //post list 불러오기
@@ -33,10 +23,10 @@ function PostList() {
   }, []);
   return (
     <ul>
-      {/* {data &&
+      {data &&
         data.map((post) => {
-          <Post post={post} />;
-        })} */}
+          return <Post key={post.writer_id} post={post} />;
+        })}
     </ul>
   );
 }

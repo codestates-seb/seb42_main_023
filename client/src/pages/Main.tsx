@@ -9,8 +9,6 @@ function Main() {
     <>
       {console.log('render')}
       <PostList />
-      <Tag content="content" />
-      <Tag content="content2" />
       <NextPageIcon />
       <PrevPageIcon />
     </>

@@ -3,52 +3,50 @@ import styled from 'styled-components';
 import LikeIcon from '../../assets/common/LikeIcon';
 import TimeIcon from '../../assets/common/TimeIcon';
 import ViewIcon from '../../assets/common/ViewIcon';
-import Tag from '../common/Tag.js';
+import Tag from '../common/Tag';
 import Thumnail from './Thumnail';
 
-interface Props {
+export interface Tags {
+  id: number;
+  tag: string;
+}
+export interface PostItem {
   img: string;
   title: string;
-  tag: string[];
+  tag: Tags[];
   writer_id: string;
   createdAt: string;
   modified_at: string;
   view_count: number;
+  thumbup: number;
 }
+type Props = {
+  post: PostItem;
+};
 
-const Post: React.FC = (
-  {
-    // img,
-    // title,
-    // tag,
-    // writer_id,
-    // createdAt,
-    // modified_at,
-    // view_count,
-  },
-) => {
+const Post = ({ post }: Props) => {
   return (
     <Item>
-      {/* <div>
-        <Thumnail content={img} />
+      <div>
+        <Thumnail content={post.img} />
       </div>
       <div>
-        <h1>{title}</h1>
+        <h1>{post.title}</h1>
         <Itemside>
           <Taglist>
-            {tag.map((el) => (
-              <Tag content={el} />
+            {post.tag.map((tag) => (
+              <Tag key={tag.id} content={tag.tag} button={'no'} />
             ))}
           </Taglist>
           <Info>
-            <span>{writer_id}</span>
+            <span>{post.writer_id}</span>
             <span>
               <TimeIcon />
-              {createdAt}
+              {post.createdAt}
             </span>
             <span>
               <ViewIcon />
-              {view_count}
+              {post.view_count}
             </span>
             <span>
               <LikeIcon checked={false} />
@@ -56,7 +54,7 @@ const Post: React.FC = (
             </span>
           </Info>
         </Itemside>
-      </div> */}
+      </div>
     </Item>
   );
 };

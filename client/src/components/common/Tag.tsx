@@ -29,9 +29,10 @@ const Item = styled.button`
 
 interface Props {
   content: string;
+  button?: string;
 }
 
-const Tag = ({ content }: Props) => {
+const Tag = ({ content, button }: Props) => {
   const dispatch = useAppDispatch();
 
   const deleteTagHandler = () => {
@@ -41,10 +42,12 @@ const Tag = ({ content }: Props) => {
   return (
     <>
       <Item>
-        <span>{content}</span>
-        <button onClick={deleteTagHandler}>
-          <MdCancel size="13" />
-        </button>
+        <span>{'안녕' + content}</span>
+        {!button && (
+          <button onClick={deleteTagHandler}>
+            <MdCancel size="13" />
+          </button>
+        )}
       </Item>
     </>
   );
