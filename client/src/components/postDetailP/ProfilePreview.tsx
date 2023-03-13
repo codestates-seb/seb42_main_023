@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 
-const ProfilePreview = () => {
+const ProfilePreview: React.FC = () => {
   return (
     <ProfilePreviewContainer>
       <ConfirmUserInfoBtn>더 보기</ConfirmUserInfoBtn>
