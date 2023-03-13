@@ -33,7 +33,9 @@ const postInputSlice = createSlice({
     },
     // 태그 삭제
     deleteTag: (state, action: Tag): void => {
-      (state.tag as Array<string>).filter((tag) => tag !== action.payload);
+      (state.tag as Array<string>) = (state.tag as Array<string>).filter(
+        (tag) => tag !== action.payload,
+      );
     },
   },
 });
