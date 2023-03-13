@@ -5,16 +5,43 @@ import axios from 'axios';
 import styled from 'styled-components';
 import { useAppDispatch, useAppSelector } from '../../hooks';
 import { setBody } from '../../slices/postInputSlice';
+import { setBodyErr } from '../../slices/validationSlice';
 
 const BodyInput: React.FC = () => {
+  const dispatch = useAppDispatch();
   const quillRef = useRef<ReactQuill>();
   const state = useAppSelector((state) => state);
-  const dispatch = useAppDispatch();
 
+  //  문자열을 HTML 요소로 변환
+  const stringToHTML = function (str: string): HTMLElement {
+    const dom = document.createElement('div');
+    dom.innerHTML = str;
+    return dom;
+  };
+
+  // 본문 value 확인
   function valueCheck(content: string): void {
     dispatch(setBody(content));
+    validationTest();
   }
 
+  // 유효성 검사
+  const validationTest = (): void => {
+    const bodyValue = state.postInput.body;
+    const html = stringToHTML(bodyValue);
+    const realValue = html.textContent;
+    console.log(realValue?.length);
+    if (realValue) {
+      if (realValue?.length < 9) {
+        dispatch(setBodyErr('본문은 10자 이상 작성해주세요.'));
+      }
+      if (realValue?.length >= 9) {
+        dispatch(setBodyErr(''));
+      }
+    }
+  };
+
+  // 에디터 이미지 핸들러
   const imageHandler = (): void => {
     // 이미지를 저장할  DOM 생성
     const input = document.createElement('input');
@@ -94,31 +121,70 @@ const BodyInput: React.FC = () => {
   ];
 
   return (
-    <Editor className="editor">
-      <ReactQuill
-        className="quill-edit"
-        ref={(element): void => {
-          if (element !== null) {
-            quillRef.current = element;
-          }
-        }}
-        theme="snow"
-        placeholder="게시글 내용을 입력하세요."
-        value={state.postInput.body}
-        onChange={valueCheck}
-        modules={modules}
-        formats={formats}
-      />
-    </Editor>
+    <>
+      {state.validation.bodyErr === '' ? (
+        <EditorContainer>
+          <Editor className="editor">
+            <ReactQuill
+              className="quill-edit"
+              ref={(element): void => {
+                if (element !== null) {
+                  quillRef.current = element;
+                }
+              }}
+              theme="snow"
+              placeholder="게시글 내용을 입력하세요."
+              value={state.postInput.body}
+              onChange={valueCheck}
+              modules={modules}
+              formats={formats}
+            />
+          </Editor>
+        </EditorContainer>
+      ) : (
+        <EditorContainer>
+          <Editor className="editor">
+            <ReactQuill
+              className="quill-edit"
+              ref={(element): void => {
+                if (element !== null) {
+                  quillRef.current = element;
+                }
+              }}
+              theme="snow"
+              placeholder="게시글 내용을 입력하세요."
+              value={state.postInput.body}
+              onChange={valueCheck}
+              modules={modules}
+              formats={formats}
+            />
+          </Editor>
+          <Error>{state.validation.bodyErr}</Error>
+        </EditorContainer>
+      )}
+    </>
   );
 };
 
 export default BodyInput;
+const EditorContainer = styled.div`
+  width: 100%;
+  height: 100%;
+`;
 
 const Editor = styled.div`
   width: 100%;
   height: 40vh;
+  margin-bottom: 60px;
   .quill-edit {
     height: 100%;
   }
+`;
+
+const Error = styled.div`
+  width: 100%;
+  height: 25px;
+  color: red;
+  padding: 0 10px 0 10px;
+  margin-bottom: 5px;
 `;

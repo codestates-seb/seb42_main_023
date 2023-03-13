@@ -5,45 +5,40 @@ import BodyInput from '../components/createPostP/BodyInput';
 import TagInput from '../components/createPostP/TagInput';
 import BlueBtn from '../components/common/BlueBtn';
 import WhiteBtn from '../components/common/WhiteBtn';
-import { useAppDispatch, useAppSelector } from '../hooks';
-import Tag from '../components/common/Tag';
+import { useNavigate } from 'react-router-dom';
+import { useAppSelector } from '../hooks';
 
 const CreatePost: React.FC = () => {
-  const dispatch = useAppDispatch();
+  const navigate = useNavigate();
   const state = useAppSelector((state) => state);
   const addPostHandler = (): void => {
-    console.log('addPost');
+    if (
+      state.postInput.title !== '' &&
+      state.postInput.body !== '' &&
+      state.postInput.tag.length !== 0 &&
+      state.validation.titleErr === '' &&
+      state.validation.bodyErr === '' &&
+      state.validation.tagErr === ''
+    ) {
+      alert('게시글이 생성되었습니다.');
+      // navigate('새로운 게시글 페이지 경로');
+    } else {
+      if (state.validation.titleErr !== '' || state.postInput.title === '') {
+        alert('제목을 다시 확인해 주세요.');
+        return;
+      }
+      if (state.validation.bodyErr !== '' || state.postInput.body === '') {
+        alert('본문을 다시 확인해 주세요.');
+        return;
+      }
+      if (state.validation.tagErr !== '' || state.postInput.tag.length === 0) {
+        alert('태그를 다시 확인해 주세요.');
+        return;
+      }
+    }
   };
   const cancelAddHandler = (): void => {
-    console.log('cancel');
-  };
-
-  // validation
-  const validationTest = () => {
-    // id를 입력하지 않은 경우
-    // if (!state.login.id) {
-    //   id.current.classList.add('active');
-    //   dispatch(setErrorMsg3('Email cannot be empty.'));
-    // }
-    // id를 입력한 경우
-    // if (state.login.id) {
-    // 이메일 형식 검증
-    //   if (emailRegex.test(state.login.id)) {
-    //     id.current.classList.remove('active');
-    //     dispatch(setErrorMsg3(0));
-    //   } else {
-    //     id.current.classList.add('active');
-    //     dispatch(setErrorMsg3(`The email is not a valid email address.`));
-    //   }
-    // }
-    // password를 입력하지 않은 경우
-    // if (!state.login.password) {
-    //   password.current.classList.add('active');
-    //   dispatch(setErrorMsg4('Password cannot be empty.'));
-    // } else {
-    //   password.current.classList.remove('active');
-    //   dispatch(setErrorMsg4(0));
-    // }
+    navigate('/');
   };
 
   return (
@@ -51,11 +46,7 @@ const CreatePost: React.FC = () => {
       <TitleInput></TitleInput>
       <BodyInput></BodyInput>
       <TagInput></TagInput>
-      <TagConatiner>
-        {state.postInput.tag.map((tag, idx) => {
-          return <Tag key={idx} content={tag}></Tag>;
-        })}
-      </TagConatiner>
+
       <BtnContainer>
         <WhiteBtn
           content="취소"
@@ -92,12 +83,6 @@ const BtnContainer = styled.div`
   gap: 15px;
   width: 1000px;
   height: 40px;
-  margin-top: 40px;
-`;
-
-const TagConatiner = styled.div`
-  display: flex;
-  width: 1000px;
-  justify-content: start;
-  margin-top: 30px;
+  margin-top: 70px;
+  margin-bottom: 30px;
 `;
