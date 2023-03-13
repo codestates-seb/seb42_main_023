@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import { BsDot } from 'react-icons/bs';
-const RecommendedPost = () => {
+const RecommendedPost: React.FC = () => {
   return (
     <RecommendedPostContainer>
       <ul>

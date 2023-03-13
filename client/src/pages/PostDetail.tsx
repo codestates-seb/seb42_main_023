@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import styled from 'styled-components';
 import CommentInput from '../components/postDetailP/CommentInput';
 import Comment from '../components/postDetailP/Comment';
@@ -10,7 +10,12 @@ import ViewIcon from '../assets/common/ViewIcon';
 import CommentIcon from '../assets/common/CommentIcon';
 import DislikeIcon from '../assets/common/DislikeIcon';
 import LikeIcon from '../assets/common/LikeIcon';
-import { setBookmark, setDislike, setLike } from '../slices/postSlice';
+import {
+  getPopularPost,
+  setBookmark,
+  setDislike,
+  setLike,
+} from '../slices/postSlice';
 import { useAppDispatch, useAppSelector } from '../hooks';
 
 interface stateType {
@@ -21,12 +26,16 @@ interface stateType {
   };
 }
 
-const PostDetail = () => {
+const PostDetail: React.FC = () => {
   const dispatch = useAppDispatch();
   const state = useAppSelector((state: stateType): stateType => {
     return state;
   });
 
+  useEffect(() => {
+    dispatch(getPopularPost([]));
+  }, []);
+  console.log('Post', state.postSlice);
   // 좋아요 클릭 함수
   const changeLiikeHandler = (): void => {
     dispatch(setLike(state.postSlice.isLike));
