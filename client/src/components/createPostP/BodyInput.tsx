@@ -55,14 +55,9 @@ const BodyInput: React.FC = () => {
     return {
       toolbar: {
         container: [
-          [{ header: [1, 2, 3, 4, 5, false] }],
-          ['italic', 'underline', 'strike', 'blockquote'],
-          [
-            { align: '' },
-            { align: 'center' },
-            { align: 'right' },
-            { align: 'justify' },
-          ],
+          [{ header: '1' }, { header: '2' }, { font: [] }],
+          [{ size: [] }],
+          ['bold', 'italic', 'underline', 'strike', 'blockquote'],
           [
             { list: 'ordered' },
             { list: 'bullet' },
@@ -70,9 +65,11 @@ const BodyInput: React.FC = () => {
             { indent: '+1' },
           ],
           ['link', 'image'],
-          [{ color: [] }, { background: [] }],
           ['clean'],
         ],
+        clipboard: {
+          matchVisual: false,
+        },
         handlers: {
           image: imageHandler,
         },
@@ -84,6 +81,7 @@ const BodyInput: React.FC = () => {
     'header',
     'font',
     'size',
+    'bold',
     'italic',
     'underline',
     'strike',
@@ -93,7 +91,6 @@ const BodyInput: React.FC = () => {
     'indent',
     'link',
     'image',
-    'video',
   ];
 
   return (
