@@ -63,7 +63,7 @@ const Post: React.FC = (
 
 export default Post;
 
-const Item = styled.div`
+const Item = styled.li`
   height: 100px;
   border-bottom: 1px solid #d9d9d9;
   box-sizing: border-box;
