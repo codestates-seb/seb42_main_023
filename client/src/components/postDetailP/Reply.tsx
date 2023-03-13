@@ -17,7 +17,7 @@ interface stateType {
   };
 }
 
-const Reply = () => {
+const Reply: React.FC = () => {
   const dispatch = useAppDispatch();
   const state = useAppSelector((state: stateType): stateType => {
     return state;

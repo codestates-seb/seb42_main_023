@@ -19,7 +19,7 @@ interface stateType {
     isReplyDislike: boolean;
   };
 }
-const Comment = () => {
+const Comment: React.FC = () => {
   const dispatch = useAppDispatch();
   const state = useAppSelector((state: stateType): stateType => {
     return state;
