@@ -7,6 +7,7 @@ const Btn = styled.button<Button>`
   background-color: #0069ca;
   color: #fff;
   box-sizing: border-box;
+  cursor: pointer;
 `;
 
 interface Props {

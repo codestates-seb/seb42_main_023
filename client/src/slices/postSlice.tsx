@@ -10,6 +10,7 @@ const postSlice = createSlice({
     isCommentDislike: false,
     isReplyLike: false,
     isReplyDislike: false,
+    PopularPostData: undefined,
   },
   reducers: {
     // 게시물 좋아요
@@ -47,6 +48,12 @@ const postSlice = createSlice({
       console.log(action.payload);
       state.isReplyDislike = !state.isReplyDislike;
     },
+    getPopularPost: (state, action: PayloadAction<object>): void => {
+      console.log('getPopularPost');
+    },
+    setPopularPostData: (state, action: PayloadAction<object>): void => {
+      (state.PopularPostData as unknown) = action.payload;
+    },
   },
 });
 
@@ -59,4 +66,6 @@ export const {
   setCommentDislike,
   setReplyLike,
   setReplyDislike,
+  getPopularPost,
+  setPopularPostData,
 } = postSlice.actions;
