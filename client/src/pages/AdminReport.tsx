@@ -1,5 +1,4 @@
 import React from 'react';
-<<<<<<< HEAD
 import styled from 'styled-components';
 import Report from '../components/adminReport/Report';
 import { useState, ChangeEvent } from 'react';
@@ -87,12 +86,6 @@ const AdminReport: React.FC = () => {
     </AdminReportMain>
   );
 };
-=======
-
-function AdminReport() {
-  return <div></div>;
-}
->>>>>>> 2557d3f4112925b41fa0812a201d1f43289c88aa
 
 export default AdminReport;
 
