@@ -1,14 +1,14 @@
 import React from 'react';
 import styled from 'styled-components';
 import Report from '../components/adminReport/Report';
-import { useState } from 'react';
+import { useState, ChangeEvent } from 'react';
 
 const AdminReport: React.FC = () => {
   // 신고 대상 서치
-  // const [selectedOption, setSelectedOption] = useState('all');
-  // const changeSelectHandler = (event: React.ChangeEvent<HTMLSelectElement>) => {
-  //   setSelectedOption(event.target.value);
-  // };
+  const [selectedOption, setSelectedOption] = useState('all');
+  const changeSelectHandler = (event: ChangeEvent<HTMLSelectElement>): void => {
+    setSelectedOption(event.target.value);
+  };
 
   // 신고 내역 모달창
   const [showReportForm, setShowReportForm] = useState(false);
@@ -27,9 +27,9 @@ const AdminReport: React.FC = () => {
           <SearchSelect>
             <label htmlFor="report-target">신고대상</label>
             <select
-              name="report-target"
-              // defaultValue={selectedOption}
-              // onChange={changeSelectHandler}
+              id="report-target"
+              defaultValue={selectedOption}
+              onChange={changeSelectHandler}
             >
               <option value="all">전체</option>
               <option value="post">게시글</option>
@@ -39,7 +39,7 @@ const AdminReport: React.FC = () => {
           </SearchSelect>
           <SearchSelect>
             <label htmlFor="report-status">처리상태</label>
-            <select name="report-status">
+            <select id="report-status">
               <option selected>전체</option>
               <option value="done">처리</option>
               <option value="todo">미처리</option>
@@ -65,7 +65,7 @@ const AdminReport: React.FC = () => {
               <TableRow
                 key={item.reportId}
                 className={idx % 2 === 0 ? 'row-even' : 'row-odd'}
-                onClick={() => clickReportHandler(item.reportId)}
+                onClick={(): void => clickReportHandler(item.reportId)}
               >
                 <td>{idx + 1}</td>
                 <td>{item.reportedAT.replace('T', ' ').slice(0, -4)}</td>
