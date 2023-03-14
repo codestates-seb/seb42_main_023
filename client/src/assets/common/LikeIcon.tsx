@@ -6,13 +6,21 @@ interface Props {
   checked: boolean;
 }
 
+interface Style {
+  style: object;
+}
+
 function LikeIcon({ checked }: Props) {
   return (
     <>
       {checked ? (
-        <FaThumbsUp size="12" color="#94969b" />
+        <FaThumbsUp style={{ cursor: 'pointer' }} size="12" color="#94969b" />
       ) : (
-        <FaRegThumbsUp size="12" color="#94969b" />
+        <FaRegThumbsUp
+          style={{ cursor: 'pointer' }}
+          size="12"
+          color="#94969b"
+        />
       )}
     </>
   );
