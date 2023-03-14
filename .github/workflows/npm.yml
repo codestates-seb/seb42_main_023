@@ -1,17 +1,12 @@
-name: React CI with Yarn
+name: React CI with npm
 
 on:
   push:
-    branches: [ "fe-dev" ]
+    branches: ["fe-dev"]
   pull_request:
-    branches: [ "fe-dev" ]
+    branches: ["fe-dev"]
 
-# 환경변수 정의
 # 리전, 버킷 이름
-env:
-  AWS_REGION: ap-northeast-2
-  S3_BUCKET_NAME: hp5234-dragonmoney-front
-
 permissions:
   contents: read
 
@@ -28,11 +23,13 @@ jobs:
 
       # 의존 파일 설치
       - name: Install Dependencies
-        run: cd client && npm install
+        run: npm install
+        working-directory: ./client
 
       # React Build
       - name: Build
-        run: cd client && npm run build
+        run: npm run build
+        working-directory: ./client
         env:
           CI: ""
 
@@ -42,13 +39,13 @@ jobs:
         with:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY }} # 등록한 Github Secret이 자동으로 불려옵니다.
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }} # 등록한 Github Secret이 자동으로 불려옵니다.
-          aws-region: ${{ env.AWS_REGION }}
+          aws-region: ${{ secrets.AWS_REGION }}
 
-      # 빌드 결과물을 S3 버킷에 업로드
-      - name: Upload to AWS S3
+      # 빌드 결과물을 S3 버킷에 업로드(동기화)#
+      - name: Sync Bucket
+        env:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
         run: |
-          aws s3 cp \
-            --debug
-            --recursive \
-            --region ${{ env.AWS_REGION }}
-            /client/build s3://${{ env.S3_BUCKET_NAME }}/
+          aws s3 sync build s3://${{ secrets.S3_BUCKET_NAME_FRONT }} --delete
+        working-directory: ./client/
