@@ -54,22 +54,18 @@ public class OAuth2MemberHandler extends SimpleUrlAuthenticationSuccessHandler {
     }
 
     //로그인 성공 시 클라이언트에 보낼 response 데이터
-    private HttpServletResponse loginResponse(HttpServletResponse response, String name, List<String> authorities, Boolean checkName) throws IOException {
+    private void loginResponse(HttpServletResponse response, String name, List<String> authorities, Boolean checkName) throws IOException {
         String accessToken = delegateAccessToken(name, authorities);
         String refreshToken = delegateRefreshToken(name);
         response.setHeader("Access Token", accessToken);
         response.setHeader("Refresh Token", refreshToken);
         response.setHeader("nameDuplicateCheck", String.valueOf(checkName));
-
-        return response;
     }
 
     //신규 회원 가입 시 클라이언트에 보낼 response 데이터
-    private HttpServletResponse loginFailResponse(HttpServletResponse response, String uuid, Boolean checkName) throws IOException {
+    private void loginFailResponse(HttpServletResponse response, String uuid, Boolean checkName) throws IOException {
         response.setHeader("uuid", uuid);
         response.setHeader("nameDuplicateCheck", String.valueOf(checkName));
-
-        return response;
     }
 
     private String delegateAccessToken(String name, List<String> authorities) {
