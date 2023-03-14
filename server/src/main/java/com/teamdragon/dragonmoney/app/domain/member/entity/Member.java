@@ -22,12 +22,15 @@ public class Member extends Auditable {
     @Setter
     private Boolean nameDuplicateCheck;
 
-    @Column(name = "PROFILE_IMAGE", nullable = false)
+    @Column(name = "PROFILE_IMAGE", nullable = false, length = 300)
     private String profileImage;
 
-    @Column(length = 500)
+    @Column(length = 1700)
     @Setter
     private String intro;
+
+    @Column
+    private String tempName;
 
     @Email
     @Column(length = 100, nullable = false)

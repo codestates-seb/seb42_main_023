@@ -37,7 +37,7 @@ public class MemberService {
     //oauth2 로그인 할 때 존재하는 회원인지 판별
     public Boolean checkOAuthMemberName(String oauthKind, String email) {
         //사용자 닉네임 설정 여부, 이메일, oauthkind를 같이 조회
-        Optional<Member> optionalNameDuplicateCheck = memberRepository.findByNameDuplicateCheckAndEmailAndOauthkind(false, email, oauthKind);
+        Optional<Member> optionalNameDuplicateCheck = memberRepository.findByNameDuplicateCheckAndEmailAndOauthkind(true, email, oauthKind);
 
         //회원이 있을 때
         if (optionalNameDuplicateCheck.isPresent())
@@ -46,13 +46,21 @@ public class MemberService {
         return false;
     }
 
+    //조회한 이메일을 통해 이름 가져오기
+    public String getNameBySearchEmail(String email) {
+        Optional<Member> getMember = memberRepository.findByEmailAndOauthkind(email, "google");
+        String name = getMember.get().getName();
+
+        return name;
+    }
+
     //OAuth2 신규 회원 정보 저장
-    public Member saveMember(String oauthKind, String picture, String name, String email) {
+    public Member saveMember(String oauthKind, String picture, String tempName, String email) {
         Member member = Member.builder()
                 .oauthkind(oauthKind)
                 .nameDuplicateCheck(false)
+                .tempName(tempName)
                 .email(email)
-                .name(name)
                 .profileImage(picture)
                 .build();
         return memberRepository.save(member);
@@ -65,14 +73,18 @@ public class MemberService {
         return memberOptional.isEmpty();
     }
 
-    //닉네임 중복 확인하는 페이지에서 중복된 닉네임이 없을 때 회원 닉네임 저장
-    public Member savedMember(Member member) {
-        member.setNameDuplicateCheck(true);
-        return memberRepository.save(member);
+    //uuid를 통해 회원 조회 및 이름 수정
+    public Member updateMemberName(String tempName, String name) {
+        Member memberOptional = memberRepository.findByTempName(tempName);
+
+        memberOptional.setName(name);
+        memberOptional.setNameDuplicateCheck(true);
+
+        return memberRepository.save(memberOptional);
     }
 
-    //회원 정보 수정(자기소개 수정)
-    public Member updateMember(String name, Member member) {
+    //마이 페이지 자기소개 수정
+    public Member updateMemberIntro(String name, Member member) {
         Member updatedMember = findVerifiedMemberName(name);
 
         updatedMember.setIntro(member.getIntro());
