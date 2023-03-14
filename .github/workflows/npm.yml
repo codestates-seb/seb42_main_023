@@ -26,6 +26,15 @@ jobs:
         run: npm install
         working-directory: ./client
 
+        # .env 파일 생성
+      - name: Create .env
+        run: |
+          touch .env
+          echo "REACT_APP_GOOGLE_CLIENT_ID=${{ secrets.REACT_APP_GOOGLE_CLIENT_ID }}" >> .env
+          cat .env
+
+        working-directory: ./client
+
       # React Build
       - name: Build
         run: npm run build
