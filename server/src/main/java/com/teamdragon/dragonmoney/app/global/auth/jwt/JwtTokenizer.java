@@ -19,15 +19,15 @@ import java.util.Map;
 @Component
 public class JwtTokenizer {
     @Getter
-    @Value("${jwt.key}")
+    @Value("s654ga9ef86ber48h9a6ef5n8h49aerfvb54hft89eacfh6b54e89eadfvb46f8tj9degvn465")
     private String secretKey;
 
     @Getter
-    @Value("${jwt.access-token-expiration-minutes}")
+    @Value("10")
     private int accessTokenExpirationMinutes;
 
     @Getter
-    @Value("${jwt.refresh-token-expiration-minutes}")
+    @Value("100")
     private int refreshTokenExpirationMinutes;
 
     //Plain Text 형태인 Secret Key의 byte[]를 Base64 형식의 문자열로 인코딩해준다.
