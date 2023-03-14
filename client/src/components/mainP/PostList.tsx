@@ -2,7 +2,7 @@ import React from 'react';
 import Post from './Post';
 import axios from 'axios';
 import { useEffect, useState } from 'react';
-import type { PostItem, Tags } from './Post';
+import type { PostItem } from './Post';
 
 function PostList() {
   const [data, setData] = useState<PostItem[]>([]);
