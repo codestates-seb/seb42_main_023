@@ -26,6 +26,50 @@ interface stateType {
   };
 }
 
+interface PostType {
+  postId: number;
+  memberName: string;
+  memberImage: string;
+  createdAt: string;
+  modifiedAt: string;
+  isModified: boolean;
+  viewCount: number;
+  thumbupCount: number;
+  thumbDownCount: number;
+  title: string;
+  content: string;
+  isBokkmarked: boolean;
+  isThumbup: boolean;
+  isThumbDown: boolean;
+}
+
+interface CommentType {
+  commentId: number;
+  memberName: string;
+  memberImage: string;
+  createdAt: string;
+  modifiedAt: string;
+  isModified: boolean;
+  replyCount: number;
+  thumbupCount: number;
+  thumbDownCount: number;
+  isThumbup: boolean;
+  isThumbDown: boolean;
+}
+
+interface ReplyType {
+  commentId: number;
+  memberName: string;
+  memberImage: string;
+  createdAt: string;
+  modifiedAt: string;
+  isModified: boolean;
+  thumbupCount: number;
+  thumbDownCount: number;
+  isThumbup: boolean;
+  isThumbDown: boolean;
+}
+
 const PostDetail: React.FC = () => {
   const dispatch = useAppDispatch();
   const state = useAppSelector((state: stateType): stateType => {
