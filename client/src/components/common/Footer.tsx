@@ -4,33 +4,6 @@ import { useNavigate } from 'react-router-dom';
 import { AiFillGithub, AiFillYoutube } from 'react-icons/ai';
 import { RxNotionLogo } from 'react-icons/rx';
 
-const Foot = styled.footer`
-  background-color: #1f1f1f;
-  color: #fff;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  flex-direction: column;
-  margin-top: 100px;
-  div {
-    :nth-child(1) {
-      a {
-        margin-right: 26px;
-        color: inherit;
-        :hover {
-          color: #c8c8c8;
-          transition: 0.3s;
-        }
-      }
-    }
-    :nth-child(2) {
-      font-size: 12px;
-      margin-top: 12px;
-      font-weight: 200;
-    }
-  }
-`;
-
 function Footer() {
   return (
     <Foot>
@@ -59,3 +32,29 @@ function Footer() {
 }
 
 export default Footer;
+const Foot = styled.footer`
+  background-color: #1f1f1f;
+  color: #fff;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  margin-top: 100px;
+  div {
+    :nth-child(1) {
+      a {
+        margin-right: 26px;
+        color: inherit;
+        :hover {
+          color: #c8c8c8;
+          transition: 0.3s;
+        }
+      }
+    }
+    :nth-child(2) {
+      font-size: 12px;
+      margin-top: 12px;
+      font-weight: 200;
+    }
+  }
+`;
