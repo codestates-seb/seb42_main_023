@@ -1,5 +1,4 @@
 import React from 'react';
-
 import GlobalStyles from './GloablStyles';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import { Provider } from 'react-redux';
@@ -9,7 +8,6 @@ import SetNickname from './pages/SetNickname';
 import RecommendLoan from './pages/RecommendLoan';
 import HappyHouse from './pages/HappyHouse';
 import AdminReport from './pages/AdminReport';
-
 import CreatePost from './pages/CreatePost';
 import UpdatePost from './pages/UpdatePost';
 import Main from './pages/Main';
@@ -25,14 +23,14 @@ const App: React.FC = () => {
           <main>
             <Routes>
               <Route path="/" element={<Main />} />
-              <Route path="/post/:postId/" element={<PostDetail />} />
+              <Route path="/posts/:postId/" element={<PostDetail />} />
               <Route path="/login" element={<Login />} />
               <Route path="/setnickname" element={<SetNickname />} />
               <Route path="/adminreport" element={<AdminReport />} />
               <Route path="/recommendedloan" element={<RecommendLoan />} />
               <Route path="/happyhouse" element={<HappyHouse />} />
-              <Route path="/post/" element={<CreatePost />} />
-              <Route path="/post/update" element={<UpdatePost />} />
+              <Route path="/posts/create" element={<CreatePost />} />
+              <Route path="/posts/update" element={<UpdatePost />} />
             </Routes>
           </main>
           <footer className="footer">Footer</footer>
