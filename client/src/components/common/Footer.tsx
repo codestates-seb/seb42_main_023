@@ -19,6 +19,7 @@ const Foot = styled.footer`
         color: inherit;
         :hover {
           color: #c8c8c8;
+          transition: 0.3s;
         }
       }
     }

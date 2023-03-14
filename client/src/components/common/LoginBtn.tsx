@@ -7,13 +7,25 @@ const Btn = styled.button`
   width: 100px;
   background-color: #fff;
   box-sizing: border-box;
-  border: 1px solid #d4d4d4;
+  border: 1px solid #d9d9d9;
+  :hover {
+    background-color: #f9f6f6;
+    transition: 0.3s;
+    color: #5c5c5c;
+  }
 `;
 
 function LoginBtn() {
+  const navigate = useNavigate();
   return (
     <>
-      <Btn>로그인</Btn>
+      <Btn
+        onClick={() => {
+          navigate('/login');
+        }}
+      >
+        로그인
+      </Btn>
     </>
   );
 }

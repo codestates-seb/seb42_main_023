@@ -23,24 +23,24 @@ const GlobalStyles = createGlobalStyle`
     }
 
     header {
+      position: fixed;
       width: 100vw;
       height: 80px;
-      border: 1px solid black;
       margin: auto; 
     }
     
     main {
-    width: 1100px;
+    max-width: 1100px;
     min-height: calc(100vh - 80px - 154px);
     height: 100%;
     border: 1px solid black;
-    margin: auto;    
+    margin:0 auto;  
+    padding-top: 180px;
     }   
 
     footer {
     width: 100vw;
     height: 154px;
-    border: 1px solid black;
     margin: auto;    
     }   
 
