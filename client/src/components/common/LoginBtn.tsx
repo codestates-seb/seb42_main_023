@@ -3,8 +3,7 @@ import styled from 'styled-components';
 import { useNavigate } from 'react-router-dom';
 
 const Btn = styled.button`
-  height: 40px;
-  width: 100px;
+  padding: 6px 20px;
   background-color: #fff;
   box-sizing: border-box;
   border: 1px solid #d9d9d9;
