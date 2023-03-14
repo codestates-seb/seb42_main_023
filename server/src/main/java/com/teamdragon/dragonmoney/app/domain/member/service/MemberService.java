@@ -2,19 +2,13 @@ package com.teamdragon.dragonmoney.app.domain.member.service;
 
 import com.teamdragon.dragonmoney.app.domain.member.entity.Member;
 import com.teamdragon.dragonmoney.app.domain.member.repository.MemberRepository;
-import com.teamdragon.dragonmoney.app.global.auth.dto.PrincipalDto;
 import com.teamdragon.dragonmoney.app.global.entity.DeleteResult;
-import com.teamdragon.dragonmoney.app.global.exception.AuthExceptionCode;
-import com.teamdragon.dragonmoney.app.global.exception.AuthLogicException;
 import com.teamdragon.dragonmoney.app.global.exception.BusinessExceptionCode;
 import com.teamdragon.dragonmoney.app.global.exception.BusinessLogicException;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDateTime;
 import java.util.Optional;
 
 @Service
@@ -128,7 +122,6 @@ public class MemberService {
         deletedMember.setState(Member.MemberState.DELETED);
 
         DeleteResult deleteResult = DeleteResult.builder()
-                .deletedAt(LocalDateTime.now())
                 .deleteReason("작성자에 의한 삭제 조치")
                 .build();
 
@@ -145,19 +138,19 @@ public class MemberService {
                 .orElseThrow( () -> new BusinessLogicException(BusinessExceptionCode.USER_NOT_FOUND));
     }
 
-    //로그인한 이름과 비교(권한 관련. 추후 수정 예정)
-    private void compareNameAndLoginName(String name) {
-        if (!name.equals(getLoginUserName()))
-            throw new AuthLogicException(AuthExceptionCode.USER_UNAUTHORIZED);
-    }
-    private String getLoginUserName() {
-        String  name = null;
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        if (authentication != null && authentication.getPrincipal() instanceof PrincipalDto) {
-            PrincipalDto principal = (PrincipalDto) authentication.getPrincipal();
-            name = principal.getName();
-        }
-
-        return name;
-    }
+//    //로그인한 이름과 비교(권한 관련. 추후 수정 예정)
+//    private void compareNameAndLoginName(String name) {
+//        if (!name.equals(getLoginUserName()))
+//            throw new AuthLogicException(AuthExceptionCode.USER_UNAUTHORIZED);
+//    }
+//    private String getLoginUserName() {
+//        String  name = null;
+//        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+//        if (authentication != null && authentication.getPrincipal() instanceof PrincipalDto) {
+//            PrincipalDto principal = (PrincipalDto) authentication.getPrincipal();
+//            name = principal.getName();
+//        }
+//
+//        return name;
+//    }
 }
