@@ -1,15 +1,25 @@
 import React from 'react';
 import styled from 'styled-components';
 import NavRealEstate from '../components/common/NavRealEstate';
-import Intro from '../components/recommendLoan/Intro';
+// import { quesetionData, resultData } from '../../dummy/surveyData';
+// import Intro from '../components/recommendLoan/Intro';
+import Question from '../components/recommendLoan/Question';
+import { useState } from 'react';
 
 const RecommendLoan: React.FC = () => {
+  // const [currentQuestion, setCurrentQuestion] = useState(null);
+  // const nextQuestionHandler = (next: any) => {
+  //   setCurrentQuestion(next);
+  // };
+
   return (
     <MainContainer>
       <NavRealEstate />
-      <div>
+      <div className="content-container">
         <SurveyBox>
-          <Intro />
+          {/* <Intro setCurrentQuestion={setCurrentQuestion} /> */}
+          <Question />
+          {/* <Result /> */}
         </SurveyBox>
       </div>
     </MainContainer>
@@ -19,16 +29,14 @@ const RecommendLoan: React.FC = () => {
 export default RecommendLoan;
 
 const MainContainer = styled.div`
-  width: 100%;
-  height: 100%;
   display: flex;
-  > div {
-    width: 850px;
-    height: 80%;
-    min-height: 500px;
-    margin-left: 40px;
-    background-color: #f8f8f8;
+  > .content-container {
     border: 1px solid #d4d4d4;
+    background-color: #f8f8f8;
+    margin-left: 20px;
+    width: calc(100% - 160px);
+    height: 600px;
+    padding: 20px;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -37,12 +45,10 @@ const MainContainer = styled.div`
 
 const SurveyBox = styled.div`
   width: 80%;
-  height: 90%;
+  height: 95%;
   background-color: #fff;
   box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px;
   border-radius: 20px;
   display: flex;
-  flex-direction: column;
   justify-content: center;
-  align-items: center;
 `;
