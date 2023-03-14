@@ -1,7 +1,8 @@
 import React from 'react';
-import { Provider } from 'react-redux';
+
 import GlobalStyles from './GloablStyles';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
+import { Provider } from 'react-redux';
 import PostDetail from './pages/PostDetail';
 import Login from './pages/Login';
 import SetNickname from './pages/SetNickname';
@@ -16,7 +17,7 @@ import store from './store/store';
 import Footer from './components/common/Footer';
 import HeaderDefault from './components/common/HeaderDefault';
 
-const App = () => {
+const App: React.FC = () => {
   return (
     <Provider store={store}>
       <div className="App">
@@ -34,6 +35,8 @@ const App = () => {
               <Route path="/adminreport" element={<AdminReport />} />
               <Route path="/recommendedloan" element={<RecommendLoan />} />
               <Route path="/happyhouse" element={<HappyHouse />} />
+              <Route path="/post/" element={<CreatePost />} />
+              <Route path="/post/update" element={<UpdatePost />} />
             </Routes>
           </main>
           <Footer />
