@@ -54,17 +54,17 @@ public class Post extends Auditable {
     @JoinColumn(name = "DELETE_RESULT_ID")
     private DeleteResult deleteResult;
 
-    @OneToMany(mappedBy = "post")
-    private List<Comment> comments = new ArrayList<>();
-
-    @OneToMany(mappedBy = "post")
-    private List<Thumbup> thumbups = new ArrayList<>();
-
-    @OneToMany(mappedBy = "post")
-    private List<Thumbdown> thumbdowns = new ArrayList<>();
-
-    @OneToMany(mappedBy = "post")
-    private List<PostTag> tags = new ArrayList<>();
+//    @OneToMany(mappedBy = "post")
+//    private List<Comment> comments = new ArrayList<>();
+//
+//    @OneToMany(mappedBy = "post")
+//    private List<Thumbup> thumbups = new ArrayList<>();
+//
+//    @OneToMany(mappedBy = "post")
+//    private List<Thumbdown> thumbdowns = new ArrayList<>();
+//
+//    @OneToMany(mappedBy = "post")
+//    private List<PostTag> tags = new ArrayList<>();
 
     @Builder
     public Post(Member writer, Category category, Long viewCount, String title, String content, State state, DeleteResult deleteResult) {
