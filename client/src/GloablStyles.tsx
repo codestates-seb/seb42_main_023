@@ -31,7 +31,8 @@ const GlobalStyles = createGlobalStyle`
     
     main {
     width: 1100px;
-    height: calc(100vh - 80px - 154px);
+    min-height: calc(100vh - 80px - 154px);
+    height: 100%;
     border: 1px solid black;
     margin: auto;    
     }   

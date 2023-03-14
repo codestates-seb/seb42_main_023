@@ -10,9 +10,9 @@ function LikeIcon({ checked }: Props) {
   return (
     <>
       {checked ? (
-        <FaThumbsUp size="12" color="#5C5C5C" />
+        <FaThumbsUp size="12" color="#94969b" />
       ) : (
-        <FaRegThumbsUp size="12" color="#5C5C5C" />
+        <FaRegThumbsUp size="12" color="#94969b" />
       )}
     </>
   );

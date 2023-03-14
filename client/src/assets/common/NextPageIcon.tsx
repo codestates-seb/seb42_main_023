@@ -1,10 +1,10 @@
 import React from 'react';
-import { GrNext } from 'react-icons/gr';
+import { IoIosArrowForward } from 'react-icons/io';
 
 function NextPageIcon() {
   return (
     <>
-      <GrNext color="#5C5C5C" />
+      <IoIosArrowForward color="#94969b" />
     </>
   );
 }
