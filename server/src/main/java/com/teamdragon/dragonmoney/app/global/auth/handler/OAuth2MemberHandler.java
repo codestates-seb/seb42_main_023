@@ -3,9 +3,11 @@ package com.teamdragon.dragonmoney.app.global.auth.handler;
 import com.teamdragon.dragonmoney.app.domain.member.service.MemberService;
 import com.teamdragon.dragonmoney.app.global.auth.jwt.JwtTokenizer;
 import com.teamdragon.dragonmoney.app.global.auth.utils.CustomAuthorityUtils;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler;
+import org.springframework.stereotype.Component;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -14,6 +16,8 @@ import java.io.IOException;
 
 import java.util.*;
 
+@Component
+@Slf4j
 //OAuth 2 인증 후, Frontend 쪽으로 JWT 를 전송
 public class OAuth2MemberHandler extends SimpleUrlAuthenticationSuccessHandler {
     private final JwtTokenizer jwtTokenizer;
