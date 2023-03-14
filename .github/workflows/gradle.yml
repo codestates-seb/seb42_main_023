@@ -55,10 +55,17 @@ jobs:
           cd ./server/src/main/resources 
           
           # application-dev.properties 파일 생성
+          touch ./application.yml 
+          
+          # GitHub-Actions 에서 설정한 값으로 값 지정
+          echo "${{ secrets.APPLICATION_BASIC }}" > ./application.yml
+          
+          # application-dev.properties 파일 생성
           touch ./application-local.yml 
           
           # GitHub-Actions 에서 설정한 값으로 값 지정
           echo "${{ secrets.APPLICATION_LOCAL }}" > ./application-local.yml
+          
         shell: bash
 
       # 서버 빌드 수행
