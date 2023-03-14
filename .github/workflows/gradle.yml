@@ -39,14 +39,6 @@ jobs:
           java-version: '11'
           distribution: 'temurin'
 
-      ## remove client
-      - name: remove client
-        if: contains(github.ref, 'be-dev') # branch 가 be-dev 인 경우
-        run: |
-          # 클라이언트 디렉토리 삭제
-          rm -rf client
-        shell: bash
-
       ## create properties file
       - name: make application-local.yml
         if: contains(github.ref, 'be-dev') # branch 가 be-dev 인 경우
@@ -69,7 +61,7 @@ jobs:
         shell: bash
       
       ## create properties file for Test 
-      - name: make application-local.yml
+      - name: make application-local.yml to test
         if: contains(github.ref, 'be-dev') # branch 가 be-dev 인 경우
         run: |
           # spring의 resources 경로로 이동
@@ -92,6 +84,14 @@ jobs:
       # 서버 빌드 수행
       - name: Build with Gradle
         run: cd server && ./gradlew build
+      
+      ## remove client
+      - name: remove client
+        if: contains(github.ref, 'be-dev') # branch 가 be-dev 인 경우
+        run: |
+          # 클라이언트 디렉토리 삭제
+          rm -rf client
+        shell: bash
 
       # build 한 후 프로젝트를 압축
       - name: Make zip file
