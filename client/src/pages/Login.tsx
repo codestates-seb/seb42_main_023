@@ -5,7 +5,7 @@ import { SiNaver } from 'react-icons/si';
 import { RiKakaoTalkFill } from 'react-icons/ri';
 
 const Login: React.FC = () => {
-  const CLIENT_ID = process.env.REACT_APP_CLIENT_ID;
+  const CLIENT_ID = process.env.REACT_APP_GOOGLE_CLIENT_ID;
   const requestGoogleLoginHandler = (): void => {
     console.log(CLIENT_ID);
     return window.location.assign(
