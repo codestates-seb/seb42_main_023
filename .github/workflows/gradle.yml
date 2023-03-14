@@ -54,13 +54,35 @@ jobs:
           # spring의 resources 경로로 이동
           cd ./server/src/main/resources 
           
-          # application-dev.properties 파일 생성
+          # application.yml 파일 생성
           touch ./application.yml 
           
           # GitHub-Actions 에서 설정한 값으로 값 지정
           echo "${{ secrets.APPLICATION_BASIC }}" > ./application.yml
           
-          # application-dev.properties 파일 생성
+          # application-local.yml 파일 생성
+          touch ./application-local.yml 
+          
+          # GitHub-Actions 에서 설정한 값으로 값 지정
+          echo "${{ secrets.APPLICATION_LOCAL }}" > ./application-local.yml
+          
+        shell: bash
+      
+      ## create properties file for Test 
+      - name: make application-local.yml
+        if: contains(github.ref, 'be-dev') # branch 가 be-dev 인 경우
+        run: |
+          # spring의 resources 경로로 이동
+          mkdir /server/src/test/resources
+          cd ./server/src/test/resources 
+          
+          # application.yml 파일 생성
+          touch ./application.yml 
+          
+          # GitHub-Actions 에서 설정한 값으로 값 지정
+          echo "${{ secrets.APPLICATION_BASIC }}" > ./application.yml
+          
+          # application-local.yml 파일 생성
           touch ./application-local.yml 
           
           # GitHub-Actions 에서 설정한 값으로 값 지정
