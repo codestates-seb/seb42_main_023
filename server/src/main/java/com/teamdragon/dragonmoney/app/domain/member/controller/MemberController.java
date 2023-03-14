@@ -50,7 +50,7 @@ public class MemberController {
         if (!memberService.duplicatedName(post.getName())) {         //같은 닉네임이 있을 때
             response.put("useable", false);
         } else {                                                     //같은 닉네임이 없을 때
-            memberService.savedMember(memberMapper.postDtoToMember(post));
+            memberService.updateMemberName(post.getTempName(), post.getName());
             response.put("useable", true);
         }
 
@@ -63,7 +63,7 @@ public class MemberController {
                                       @Valid @RequestBody MemberDto.Patch patch) {
 
         Member member = memberMapper.pathDtoToMember(patch);
-        Member updatedMember = memberService.updateMember(name, member);
+        Member updatedMember = memberService.updateMemberIntro(name, member);
         MemberDto.IntroResponse response = memberMapper.introResponseDtoToMember(updatedMember);
 
         return ResponseEntity.status(HttpStatus.OK).body(response);
@@ -78,7 +78,7 @@ public class MemberController {
         return ResponseEntity.status(HttpStatus.OK).body(myPageResponse);
     }
 
-//    //특정 회원의 글 개수
+    //    //특정 회원의 글 개수
 //    @GetMapping("/{member-name}/count")
 //    public ResponseEntity getCount(@PathVariable("member-name") @Positive Long id) {
 //
