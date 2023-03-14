@@ -14,7 +14,7 @@ import java.io.IOException;
 
 import java.util.*;
 
-//OAuth 2 인증 후, Frontend 쪽으로 JWT 를 전송
+//OAuth 2 인증 후, Frontend 쪽으로 JWT 를 전송!
 public class OAuth2MemberHandler extends SimpleUrlAuthenticationSuccessHandler {
     private final JwtTokenizer jwtTokenizer;
     private final CustomAuthorityUtils authorityUtils;
