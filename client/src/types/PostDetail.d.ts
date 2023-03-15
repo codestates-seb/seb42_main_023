@@ -11,6 +11,8 @@ export interface StateType {
     postDetail: unknown;
     comments: unknown;
     replies: unknown;
+    isOpend: unknown;
+    totalReplies: Array;
   };
 }
 
@@ -60,4 +62,8 @@ export interface ReplyType {
   isThumbup: boolean;
   isThumbDown: boolean;
   content: string;
+}
+
+interface Props {
+  replyInfo: ReplyType;
 }
