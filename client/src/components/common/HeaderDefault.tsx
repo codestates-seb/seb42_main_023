@@ -15,7 +15,6 @@ function HeaderDefault() {
   const state = useAppSelector((state) => state);
 
   const { pathname } = useLocation();
-  useEffect(() => console.log(state.header.search), []);
   return state.header.search ? (
     <SearchHead>
       <SearchBar />

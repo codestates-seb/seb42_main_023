@@ -1,27 +1,33 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import styled from 'styled-components';
 import { MdCancel } from 'react-icons/md';
 import { useAppDispatch } from '../../hooks';
 import { deleteTag } from '../../slices/postInputSlice';
+import { deleteSarchTag } from '../../slices/headerSlice';
 
 interface Props {
   content: string;
   button?: string;
+  search?: boolean;
 }
+//content props = 태그의 문자열
+//button props = 태그의 삭제 버튼 출력 여부
+//search props = 태그 삭제시 저장 state 분기
 
-const Tag = ({ content, button }: Props) => {
+const Tag = ({ content, button, search }: Props) => {
   const dispatch = useAppDispatch();
-
   const deleteTagHandler = () => {
-    console.log(content);
     dispatch(deleteTag(content));
+  };
+  const deleteSearchTagHandler = () => {
+    dispatch(deleteSarchTag(content));
   };
   return (
     <>
       <Item>
         <span>{content}</span>
         {!button && (
-          <button onClick={deleteTagHandler}>
+          <button onClick={search ? deleteSearchTagHandler : deleteTagHandler}>
             <MdCancel size="13" />
           </button>
         )}

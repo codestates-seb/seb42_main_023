@@ -1,7 +1,7 @@
 import React, { KeyboardEvent } from 'react';
 import styled from 'styled-components';
 import { useAppDispatch, useAppSelector } from '../../hooks';
-import { setTagContent, setTag } from '../../slices/postInputSlice';
+import { setInput, setSearchTag } from '../../slices/headerSlice';
 import { setTagErr } from '../../slices/validationSlice';
 import { AiOutlineSearch } from 'react-icons/ai';
 import Tag from '../common/Tag';
@@ -18,41 +18,64 @@ interface Input {
 const SearchBar: React.FC = () => {
   const dispatch = useAppDispatch();
   const state = useAppSelector((state) => state);
+
+  //검색 인풋창 데이터 입력
   const valueCheck = (event: React.ChangeEvent<HTMLInputElement>): void => {
-    dispatch(setTagContent(event.target.value));
+    dispatch(setInput(event.target.value));
   };
 
-  //  테그 추가
-  const addTagHandler = (event: KeyboardEvent<HTMLInputElement>): void => {
-    const tag: Array<string> = state.postInput.tag;
-    const tagContent = state.postInput.tagContent;
+  //유효성 검사 로직
+  const validation = () => {
+    const tag: Array<string> = state.header.tag;
+    const input = state.header.input;
+    // 태그 글자수 제한
+    if (input.length > 10) {
+      dispatch(setTagErr('태그는 10자 이내로 입력해주세요.'));
+      return;
+    }
+    // 태그 중복 입력 방지
+    if (tag.includes(input)) {
+      dispatch(setTagErr(''));
+      return;
+    }
+    // 공백 방지
+    if (input === '' && tag.length === 0) {
+      dispatch(setTagErr(''));
+      return;
+    }
+    // 띄어쓰기 방지
+    if (input.includes(' ')) {
+      dispatch(setTagErr('태그에 띄어쓰기를 포함할 수 없습니다.'));
+      return;
+    }
+    // 태그 개수 제한
+    if (tag.length >= 5) {
+      dispatch(setTagErr('태그는 5개까지만 입력 가능합니다.'));
+      return;
+    } else {
+      dispatch(setInput(''));
+      dispatch(setTagErr(''));
+      dispatch(setSearchTag(input.slice(1)));
+    }
+  };
 
-    // 유효성 검사
+  // 검색 방식 분기
+  const searchHandler = (event: KeyboardEvent<HTMLInputElement>): void => {
+    const tag: Array<string> = state.header.tag;
+    const input = state.header.input;
     if (event.key === 'Enter' && event.nativeEvent.isComposing === false) {
-      // 태그 중복 입력 방지
-      console.log(tagContent);
-      if (tag.includes(tagContent)) {
-        dispatch(setTagErr(''));
+      if (tag.length === 0 && input === '') {
         return;
       }
-      // 공백 방지
-      if (tagContent === '') {
-        dispatch(setTagErr(''));
-        return;
+      if (input !== '') {
+        if (input[0] === '#') {
+          validation();
+        } else {
+          //검색실행
+        }
       }
-      // 띄어쓰기 방지
-      if (tagContent.includes(' ')) {
-        dispatch(setTagErr('태그에 띄어쓰기를 포함할 수 없습니다.'));
-        return;
-      }
-      // 태그 개수 제한
-      if (tag.length >= 5) {
-        dispatch(setTagErr('태그는 5개까지만 입력 가능합니다.'));
-        return;
-      } else {
-        dispatch(setTagContent(''));
-        dispatch(setTagErr(''));
-        dispatch(setTag(tagContent));
+      if (tag.length !== 0 && input === '') {
+        //검색실행
       }
     }
   };
@@ -66,16 +89,16 @@ const SearchBar: React.FC = () => {
               className="tag-input"
               placeholder="관심있는 내용을 검색해보세요."
               onChange={valueCheck}
-              onKeyDown={addTagHandler}
-              value={state.postInput.tagContent}
+              onKeyDown={searchHandler}
+              value={state.header.input}
             ></Input>
             <Icon>
               <AiOutlineSearch size={26} />
             </Icon>
-            <Span>#태그를 검색하세요</Span>
+            {state.header.tag.length === 0 && <Span>#태그를 검색하세요</Span>}
             <TagConatiner>
-              {state.postInput.tag.map((tag, idx) => {
-                return <Tag key={idx} content={tag}></Tag>;
+              {state.header.tag.map((tag, idx) => {
+                return <Tag key={idx} content={tag} search={true}></Tag>;
               })}
             </TagConatiner>
           </InputWraper>
@@ -88,16 +111,16 @@ const SearchBar: React.FC = () => {
               className="tag-input"
               placeholder="관심있는 내용을 검색해보세요."
               onChange={valueCheck}
-              onKeyDown={addTagHandler}
-              value={state.postInput.tagContent}
+              onKeyDown={searchHandler}
+              value={state.header.input}
             ></Input>
             <Icon>
               <AiOutlineSearch size={26} />
             </Icon>
             <Error>{state.validation.tagErr}</Error>
             <TagConatiner>
-              {state.postInput.tag.map((tag, idx) => {
-                return <Tag key={idx} content={tag}></Tag>;
+              {state.header.tag.map((tag, idx) => {
+                return <Tag key={idx} content={tag} search={true}></Tag>;
               })}
             </TagConatiner>
           </InputWraper>

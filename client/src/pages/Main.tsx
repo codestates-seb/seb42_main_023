@@ -7,7 +7,6 @@ import PostList from '../components/mainP/PostList';
 function Main() {
   return (
     <>
-      {console.log('render')}
       <PostList />
       <PrevPageIcon />
       <NextPageIcon />
