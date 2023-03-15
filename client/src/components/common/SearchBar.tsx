@@ -6,6 +6,7 @@ import { setTagErr } from '../../slices/validationSlice';
 import { AiOutlineSearch } from 'react-icons/ai';
 import Tag from '../common/Tag';
 import SearchBtn from './SearchBtn';
+import axios from 'axios';
 
 interface Input {
   className: string;
@@ -23,6 +24,9 @@ const SearchBar: React.FC = () => {
   const valueCheck = (event: React.ChangeEvent<HTMLInputElement>): void => {
     dispatch(setInput(event.target.value));
   };
+
+  //Get 요청 실행
+  //   const getpostHandler = () => {};
 
   //유효성 검사 로직
   const validation = () => {
@@ -59,7 +63,7 @@ const SearchBar: React.FC = () => {
     }
   };
 
-  // 검색 방식 분기
+  //검색 방식 분기
   const searchHandler = (event: KeyboardEvent<HTMLInputElement>): void => {
     const tag: Array<string> = state.header.tag;
     const input = state.header.input;

@@ -22,19 +22,33 @@ function HeaderDefault() {
   ) : (
     <NavHead>
       <div>
-        <Home onClick={() => navigate('/')}>
+        <Main onClick={() => navigate('/')}>
           <img src={Logo} height={30}></img>
-        </Home>
+        </Main>
         <nav>
-          <NavBtn onClick={() => navigate('/happyhouse')} value={pathname}>
-            집구하기
-          </NavBtn>
-          <NavBtn onClick={() => navigate('/')} value={pathname}>
-            뜨는주식
-          </NavBtn>
-          <NavBtn onClick={() => navigate('/')} value={pathname}>
-            세금계산기
-          </NavBtn>
+          {['/seoulrent', '/recommendloan', '/happyhouse'].includes(
+            pathname,
+          ) ? (
+            <NavBtnClicked onClick={() => navigate('/happyhouse')}>
+              집구하기
+            </NavBtnClicked>
+          ) : (
+            <NavBtn onClick={() => navigate('/happyhouse')}>집구하기</NavBtn>
+          )}
+          {['/stock'].includes(pathname) ? (
+            <NavBtnClicked onClick={() => navigate('/')}>
+              뜨는주식
+            </NavBtnClicked>
+          ) : (
+            <NavBtn onClick={() => navigate('/')}>뜨는주식</NavBtn>
+          )}
+          {['/calculator'].includes(pathname) ? (
+            <NavBtnClicked onClick={() => navigate('/')}>
+              세금계산기
+            </NavBtnClicked>
+          ) : (
+            <NavBtn onClick={() => navigate('/')}>세금계산기</NavBtn>
+          )}
         </nav>
         <Btns>
           {pathname === '/' && <SearchBtn />}
@@ -54,37 +68,17 @@ function HeaderDefault() {
 }
 export default HeaderDefault;
 
-interface BtnProps {
-  value: string;
-  children: ReactNode;
-  onClick: () => void;
-}
-const NavBtn = styled.button<BtnProps>`
+const NavBtn = styled.button`
   background-color: #fff;
   cursor: pointer;
-  :nth-child(1) {
-    border-bottom: ${({ value }) =>
-      ['/seoulrent', '/recommendloan', '/happyhouse'].includes(value)
-        ? '1px solid #0069CA'
-        : ''};
-    color: ${({ value }) =>
-      ['/seoulrent', '/recommendloan', '/happyhouse'].includes(value)
-        ? '#0069CA'
-        : ''};
-  }
-  :nth-child(2) {
-    border-bottom: ${({ value }) =>
-      ['/stock'].includes(value) ? '1px solid #0069CA' : ''};
-    color: ${({ value }) => (['/stock'].includes(value) ? '#0069CA' : '')};
-  }
-  :nth-child(3) {
-    border-bottom: ${({ value }) =>
-      ['/calculator'].includes(value) ? '1px solid #0069CA' : ''};
-    color: ${({ value }) => (['/calculator'].includes(value) ? '#0069CA' : '')};
-  }
 `;
 
-const Home = styled.button`
+const NavBtnClicked = styled(NavBtn)`
+  border-bottom: 1px solid #0069ca;
+  color: #0069ca;
+`;
+
+const Main = styled.button`
   background-color: #fff;
   cursor: pointer;
 `;

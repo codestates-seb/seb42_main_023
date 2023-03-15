@@ -12,7 +12,7 @@ function SearchBtn() {
         onClick={() => {
           dispatch(setSearch(!header.search));
         }}
-        value={`${header.search}`}
+        pathname={`${header.search}`}
       >
         {header.search ? '검색취소' : '검색'}
       </Btn>
@@ -22,11 +22,7 @@ function SearchBtn() {
 
 export default SearchBtn;
 
-interface Button {
-  value: string;
-}
-
-const Btn = styled.button<Button>`
+const Btn = styled.button<{ pathname: string }>`
   padding: 6px 20px;
   box-sizing: border-box;
   border: 1px solid #d9d9d9;
