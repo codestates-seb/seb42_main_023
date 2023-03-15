@@ -14,6 +14,7 @@ import Main from './pages/Main';
 import store from './store/store';
 import Footer from './components/common/Footer';
 import HeaderDefault from './components/common/HeaderDefault';
+import MyPage from './pages/MyPage';
 
 const App: React.FC = () => {
   return (
@@ -36,6 +37,8 @@ const App: React.FC = () => {
               <Route path="/happyhouse" element={<HappyHouse />} />
               <Route path="/posts/create" element={<CreatePost />} />
               <Route path="/posts/update" element={<UpdatePost />} />
+              <Route path="/post/" element={<CreatePost />} />
+              <Route path="/mypage" element={<MyPage />} />
             </Routes>
           </main>
           <Footer />

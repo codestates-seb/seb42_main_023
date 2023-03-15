@@ -4,12 +4,16 @@ import styled from 'styled-components';
 const Item = styled.img`
   width: 74px;
   height: 50px;
-  background-color: #e3e8f0;
-  box-sizing: border-box;
   margin-right: 20px;
   border-radius: 4px;
-  border: none;
   object-fit: cover;
+`;
+const None = styled.div`
+  width: 74px;
+  height: 50px;
+  background-color: #e3e8f0;
+  margin-right: 20px;
+  border-radius: 4px;
 `;
 
 interface Props {
@@ -17,7 +21,7 @@ interface Props {
 }
 
 const Thumnail = ({ content }: Props) => {
-  return <>{content.length === 0 ? <Item /> : <Item src={content} />}</>;
+  return <>{content.length === 0 ? <None /> : <Item src={content} />}</>;
 };
 
 export default Thumnail;

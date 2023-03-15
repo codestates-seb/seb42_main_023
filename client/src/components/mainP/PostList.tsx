@@ -3,6 +3,7 @@ import Post from './Post';
 import axios from 'axios';
 import { useEffect, useState } from 'react';
 import type { PostItem } from './Post';
+import styled from 'styled-components';
 
 function PostList() {
   const [data, setData] = useState<PostItem[]>([]);
@@ -21,14 +22,16 @@ function PostList() {
       });
   }, []);
   return (
-    <ul>
+    <List>
       {data &&
         data.map((post) => {
           //key값 이후에 수정하기
           return <Post key={post.writer_id} post={post} />;
         })}
-    </ul>
+    </List>
   );
 }
 
 export default PostList;
+
+const List = styled.ul``;

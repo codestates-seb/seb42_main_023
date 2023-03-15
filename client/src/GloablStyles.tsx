@@ -5,7 +5,7 @@ const GlobalStyles = createGlobalStyle`
         box-sizing : border-box ;
         padding: 0;
         margin: 0;
-        border: 0;
+        border:0;
         font-weight: 400;
         font-size: 16px;
         font-family: -apple-system, "system-ui", "Segoe UI Adjusted", "Segoe UI", "Liberations Sans", sans-serif;
@@ -21,11 +21,13 @@ const GlobalStyles = createGlobalStyle`
     a {
     text-decoration: none;
     }
+    img{
+      border: 0;
+    }
 
     header {
       position: fixed;
       width: 100vw;
-      height: 60px;
       margin: auto; 
     }
     
