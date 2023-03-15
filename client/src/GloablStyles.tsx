@@ -20,31 +20,32 @@ const GlobalStyles = createGlobalStyle`
     
     a {
     text-decoration: none;
+    
     }
 
     header {
+      position: fixed;
       width: 100vw;
-      height: 80px;
-      border: 1px solid black;
+      height: 60px;
       margin: auto; 
     }
     
     main {
-    width: 1100px;
-    min-height: calc(100vh - 80px - 154px);
+    max-width: 1100px;
+    min-height: calc(100vh - 60px - 154px);
     height: 100%;
     border: 1px solid black;
-    margin: auto;    
+    margin:0 auto;  
+    padding-top: 120px;
     }   
 
     footer {
     width: 100vw;
     height: 154px;
-    border: 1px solid black;
     margin: auto;    
     }   
 
-    
+   
 
 `;
 

@@ -42,7 +42,7 @@ const Tag = ({ content, button }: Props) => {
   return (
     <>
       <Item>
-        <span>{'안녕' + content}</span>
+        <span>{content}</span>
         {!button && (
           <button onClick={deleteTagHandler}>
             <MdCancel size="13" />

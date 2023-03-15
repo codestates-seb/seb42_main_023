@@ -33,7 +33,7 @@ const Post = ({ post }: Props) => {
     const msDiff = date1.getTime() - date2.getTime();
     return Math.ceil(msDiff / 1000);
   };
-
+  //시간 차이를 년,월,일로 변환
   const timeSince = (date: string) => {
     const seconds = getDateDiff(date);
     let interval = Math.floor(seconds / 31536000);
