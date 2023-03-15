@@ -12,14 +12,14 @@ const questionData = [
     question: '고객님의 순자산은 3.61억원 이하이십니까?',
     answer: [
       { content: '예', next: 2 },
-      { content: '아니요', next: 'result', resultId: 5 },
+      { content: '아니요', resultId: 5 },
     ],
   },
   {
     id: 2,
     question: '고객님의 중소기업에 재직중이십니까?',
     answer: [
-      { content: '예', next: 'result', resultId: 0 },
+      { content: '예', resultId: 0 },
       { content: '아니요', next: 3 },
     ],
   },
@@ -27,7 +27,7 @@ const questionData = [
     id: 3,
     question: '고객님의 대상주택 보증금은 얼마입니까?',
     answer: [
-      { content: '5000만원 이하', next: 'result', resultId: 1 },
+      { content: '5000만원 이하', resultId: 1 },
       { content: '3억 이하', next: 4 },
     ],
   },
@@ -35,9 +35,9 @@ const questionData = [
     id: 4,
     question: '상여금을 포함한 연소득을 알려주세요.',
     answer: [
-      { content: '2천 이하', next: 'result', resultId: 2 },
-      { content: '4천 이하', next: 'result', resultId: 3 },
-      { content: '6천 이하', next: 'result', resultId: 4 },
+      { content: '2천 이하', resultId: 2 },
+      { content: '4천 이하', resultId: 3 },
+      { content: '6천 이하', resultId: 4 },
     ],
   },
   {
@@ -53,27 +53,27 @@ const questionData = [
     id: 6,
     question: '고객님의 대상주택 보증금은 얼마입니까?',
     answer: [
-      { content: '5천 이하', next: 'result', resultId: 6 },
-      { content: '1억 이하', next: 'result', resultId: 7 },
-      { content: '1억 초과', next: 'result', resultId: 8 },
+      { content: '5천 이하', resultId: 6 },
+      { content: '1억 이하', resultId: 7 },
+      { content: '1억 초과', resultId: 8 },
     ],
   },
   {
     id: 7,
     question: '고객님의 대상주택 보증금은 얼마입니까?',
     answer: [
-      { content: '5천 이하', next: 'result', resultId: 8 },
-      { content: '1억 이하', next: 'result', resultId: 9 },
-      { content: '1억 초과', next: 'result', resultId: 10 },
+      { content: '5천 이하', resultId: 8 },
+      { content: '1억 이하', resultId: 9 },
+      { content: '1억 초과', resultId: 10 },
     ],
   },
   {
     id: 8,
     question: '고객님의 대상주택 보증금은 얼마입니까?',
     answer: [
-      { content: '5천 이하', next: 'result', resultId: 10 },
-      { content: '1억 이하', next: 'result', resultId: 11 },
-      { content: '1억 초과', next: 'result', resultId: 12 },
+      { content: '5천 이하', resultId: 10 },
+      { content: '1억 이하', resultId: 11 },
+      { content: '1억 초과', resultId: 12 },
     ],
   },
 ];
