@@ -1,6 +1,6 @@
 package com.teamdragon.dragonmoney.app.domain.member.entity;
 
-import com.teamdragon.dragonmoney.app.global.audit.Auditable;
+import com.teamdragon.dragonmoney.app.global.audit.BaseTimeEntity;
 import com.teamdragon.dragonmoney.app.global.entity.DeleteResult;
 import lombok.*;
 
@@ -13,7 +13,7 @@ import javax.validation.constraints.Email;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class Member extends Auditable {
+public class Member extends BaseTimeEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
