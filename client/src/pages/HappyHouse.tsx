@@ -27,14 +27,14 @@ const HappyHouse: React.FC = () => {
           </div>
           <div>서울특별시</div>
         </Filter>
-        <HouseList>
-          <li>
-            <span>서울특별시</span>
-            <span>마포구 합정동</span>
-            <span>행복도시 3-1M5 블록 10년 공공임대주택리츠</span>
-          </li>
-          <li>마포구 합정동 행복도시...</li>
-        </HouseList>
+        <div>
+          <HouseItem href="google.com">
+            <span className="house-location">서울특별시</span>
+            <span className="house-name">
+              행복도시 3-1M5 블록 10년 공공임대주택리츠
+            </span>
+          </HouseItem>
+        </div>
       </div>
     </MainContainer>
   );
@@ -55,7 +55,6 @@ const MainContainer = styled.div`
 
 // 행복주택 페이지 상단에 제목과 설명을 담는 컨테이너
 const Title = styled.div`
-  background-color: aliceblue;
   margin-bottom: 40px;
   > h1 {
     font-size: 23px;
@@ -65,7 +64,7 @@ const Title = styled.div`
   > h2 {
     font-size: 16px;
     font-weight: 700;
-    margin-bottom: 5px;
+    margin-bottom: 6px;
   }
 `;
 
@@ -77,12 +76,28 @@ const Filter = styled.div`
     width: 130px;
     height: 35px;
     border: 1px solid #d4d4d4;
+    background-color: aliceblue;
+    cursor: pointer;
   }
 `;
 
-const HouseList = styled.ul`
-  background-color: red;
-  > li {
-    height: 50px;
+const HouseItem = styled.a`
+  height: 50px;
+  background-color: #f8f8f8;
+  border-bottom: 1px solid #d4d4d4;
+  display: flex;
+  align-items: center;
+  color: black;
+  cursor: pointer;
+
+  > .house-location {
+    background-color: #0069ca;
+    color: #fff;
+    font-size: 12px;
+    width: max-content;
+    height: max-content;
+    padding: 5px;
+    border-radius: 7px;
+    margin: 0px 10px;
   }
 `;

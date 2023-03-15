@@ -2,7 +2,7 @@ import React from 'react';
 import Post from './Post';
 import axios from 'axios';
 import { useEffect, useState } from 'react';
-import type { PostItem, Tags } from './Post';
+import type { PostItem } from './Post';
 
 function PostList() {
   const [data, setData] = useState<PostItem[]>([]);
@@ -14,7 +14,6 @@ function PostList() {
         'https://main-project-d9049-default-rtdb.asia-southeast1.firebasedatabase.app/POST.json',
       )
       .then((response) => {
-        console.log(response.data);
         setData(response.data);
       })
       .catch((error) => {
@@ -25,7 +24,7 @@ function PostList() {
     <ul>
       {data &&
         data.map((post) => {
-          console.log(new Date(post.createdAt));
+          //key값 이후에 수정하기
           return <Post key={post.writer_id} post={post} />;
         })}
     </ul>
