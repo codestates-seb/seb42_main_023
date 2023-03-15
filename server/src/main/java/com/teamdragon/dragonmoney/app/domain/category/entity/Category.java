@@ -1,11 +1,11 @@
 package com.teamdragon.dragonmoney.app.domain.category.entity;
 
-import com.teamdragon.dragonmoney.app.global.audit.Auditable;
+import com.teamdragon.dragonmoney.app.global.audit.BaseTimeEntity;
 
 import javax.persistence.*;
 
 @Entity
-public class Category extends Auditable {
+public class Category extends BaseTimeEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

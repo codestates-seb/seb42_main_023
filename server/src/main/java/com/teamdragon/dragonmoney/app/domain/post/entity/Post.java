@@ -1,11 +1,8 @@
 package com.teamdragon.dragonmoney.app.domain.post.entity;
 
 import com.teamdragon.dragonmoney.app.domain.category.entity.Category;
-import com.teamdragon.dragonmoney.app.domain.comment.entity.Comment;
 import com.teamdragon.dragonmoney.app.domain.member.entity.Member;
-import com.teamdragon.dragonmoney.app.domain.thumbdown.entity.Thumbdown;
-import com.teamdragon.dragonmoney.app.domain.thumbup.entity.Thumbup;
-import com.teamdragon.dragonmoney.app.global.audit.Auditable;
+import com.teamdragon.dragonmoney.app.global.audit.BaseTimeEntity;
 import com.teamdragon.dragonmoney.app.global.entity.DeleteResult;
 import lombok.Builder;
 import lombok.Getter;
@@ -13,13 +10,11 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
-import java.util.ArrayList;
-import java.util.List;
 
 @Getter
 @NoArgsConstructor
 @Entity
-public class Post extends Auditable {
+public class Post extends BaseTimeEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
