@@ -5,11 +5,11 @@ import { SiNaver } from 'react-icons/si';
 import { RiKakaoTalkFill } from 'react-icons/ri';
 
 const Login: React.FC = () => {
-  const CLIENT_ID = process.env.REACT_APP_CLIENT_ID;
+  const CLIENT_ID = process.env.REACT_APP_GOOGLE_CLIENT_ID;
   const requestGoogleLoginHandler = (): void => {
     console.log(CLIENT_ID);
     return window.location.assign(
-      `https://accounts.google.com/o/oauth2/v2/auth?scope=profile&response_type=code&client_id=${CLIENT_ID}&redirect_uri=http://localhost:8080/login/oauth2/code/google`,
+      `https://accounts.google.com/o/oauth2/v2/auth?scope=profile&response_type=code&client_id=${CLIENT_ID}&redirect_uri=http://hp5234-dragonmoney-front.s3-website.ap-northeast-2.amazonaws.com/login/oauth2/code/google`,
     );
   };
   return (

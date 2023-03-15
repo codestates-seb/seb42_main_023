@@ -75,7 +75,7 @@ const NavContainer = styled.nav`
       height: 50px;
       text-align: center;
       padding-top: 16px;
-      margin-top: 20px;
+      margin-top: 18px;
       cursor: pointer;
     }
     > .current {
