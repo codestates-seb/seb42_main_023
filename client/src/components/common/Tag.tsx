@@ -1,43 +1,36 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import styled from 'styled-components';
 import { MdCancel } from 'react-icons/md';
 import { useAppDispatch } from '../../hooks';
 import { deleteTag } from '../../slices/postInputSlice';
-import { deleteSarchTag } from '../../slices/headerSlice';
 
 interface Props {
   content: string;
   button?: string;
   search?: boolean;
 }
-//content props = 태그의 문자열
-//button props = 태그의 삭제 버튼 출력 여부
-//search props = 태그 삭제시 저장 state 분기
 
-const Tag = ({ content, button, search }: Props) => {
+const Tag = ({ content }: Props) => {
   const dispatch = useAppDispatch();
   const deleteTagHandler = () => {
     dispatch(deleteTag(content));
   };
-  const deleteSearchTagHandler = () => {
-    dispatch(deleteSarchTag(content));
-  };
   return (
     <>
-      <Item>
+      <TagItemWidthDelete>
         <span>{content}</span>
-        {!button && (
-          <button onClick={search ? deleteSearchTagHandler : deleteTagHandler}>
-            <MdCancel size="13" />
-          </button>
-        )}
-      </Item>
+        <button onClick={deleteTagHandler}>
+          <MdCancel size="13" />
+        </button>
+      </TagItemWidthDelete>
     </>
   );
 };
 
 export default Tag;
-const Item = styled.button`
+
+//삭제 버튼이 없는 태그
+export const TagItem = styled.button`
   position: relative;
   display: inline-flex;
   background-color: #e3e8f0;
@@ -50,6 +43,10 @@ const Item = styled.button`
   span {
     font-size: 13px;
   }
+`;
+
+//삭제 버튼이 있는 태그
+export const TagItemWidthDelete = styled(TagItem)`
   button {
     position: absolute;
     right: 5px;

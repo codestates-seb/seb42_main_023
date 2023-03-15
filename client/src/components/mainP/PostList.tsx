@@ -25,7 +25,7 @@ function PostList() {
     <List>
       {data &&
         data.map((post) => {
-          //key값 이후에 수정하기
+          //TODO: key값 수정하기
           return <Post key={post.writer_id} post={post} />;
         })}
     </List>

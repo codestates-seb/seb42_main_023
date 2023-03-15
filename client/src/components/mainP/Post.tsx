@@ -3,8 +3,8 @@ import styled from 'styled-components';
 import LikeIcon from '../../assets/common/LikeIcon';
 import TimeIcon from '../../assets/common/TimeIcon';
 import ViewIcon from '../../assets/common/ViewIcon';
-import Tag from '../common/Tag';
 import Thumnail from './Thumnail';
+import * as Styled from '../common/Tag';
 
 export interface Tags {
   id: number;
@@ -66,11 +66,11 @@ const Post = ({ post }: Props) => {
       <div>
         <h1>{post.title}</h1>
         <Itemside>
-          <Taglist>
+          <div>
             {post.tag.map((tag) => (
-              <Tag key={tag.id} content={tag.tag} button={'no'} />
+              <Styled.TagItem key={tag.id}>{tag.tag}</Styled.TagItem>
             ))}
-          </Taglist>
+          </div>
           <Info>
             <span>{post.writer_id}</span>
             <span>
@@ -117,7 +117,6 @@ const Itemside = styled.div`
     display: flex;
   }
 `;
-const Taglist = styled.div``;
 const Info = styled.div`
   span {
     color: #94969b;

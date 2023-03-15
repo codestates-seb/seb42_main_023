@@ -1,10 +1,15 @@
 import React, { KeyboardEvent } from 'react';
 import styled from 'styled-components';
 import { useAppDispatch, useAppSelector } from '../../hooks';
-import { setInput, setSearchTag } from '../../slices/headerSlice';
+import {
+  setInput,
+  setSearchTag,
+  deleteSarchTag,
+} from '../../slices/headerSlice';
 import { setTagErr } from '../../slices/validationSlice';
 import { AiOutlineSearch } from 'react-icons/ai';
-import Tag from '../common/Tag';
+import * as Styled from '../common/Tag';
+import { MdCancel } from 'react-icons/md';
 import SearchBtn from './SearchBtn';
 import axios from 'axios';
 
@@ -102,7 +107,14 @@ const SearchBar: React.FC = () => {
             {state.header.tag.length === 0 && <Span>#태그를 검색하세요</Span>}
             <TagConatiner>
               {state.header.tag.map((tag, idx) => {
-                return <Tag key={idx} content={tag} search={true}></Tag>;
+                return (
+                  <Styled.TagItemWidthDelete key={idx}>
+                    <span>{tag}</span>
+                    <button onClick={() => dispatch(deleteSarchTag(tag))}>
+                      <MdCancel size="13" />
+                    </button>
+                  </Styled.TagItemWidthDelete>
+                );
               })}
             </TagConatiner>
           </InputWraper>
@@ -124,13 +136,18 @@ const SearchBar: React.FC = () => {
             <Error>{state.validation.tagErr}</Error>
             <TagConatiner>
               {state.header.tag.map((tag, idx) => {
-                return <Tag key={idx} content={tag} search={true}></Tag>;
+                return (
+                  <Styled.TagItemWidthDelete key={idx}>
+                    <span>{tag}</span>
+                    <button onClick={() => dispatch(deleteSarchTag(tag))}>
+                      <MdCancel size="13" />
+                    </button>
+                  </Styled.TagItemWidthDelete>
+                );
               })}
             </TagConatiner>
           </InputWraper>
-          <div>
-            <SearchBtn />
-          </div>
+          <SearchBtn />
         </TagInputContainer>
       )}
     </>
