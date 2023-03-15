@@ -1,4 +1,5 @@
 *.DS_Store
+**/.DS_Store
 HELP.md
 .gradle
 build/
@@ -41,3 +42,6 @@ out/
 src/main/resources/application-local.yml
 src/main/resources/application-server.yml
 src/main/resources/application.yml
+src/test/resources/application-local.yml
+src/test/resources/application-server.yml
+src/test/resources/application.yml
