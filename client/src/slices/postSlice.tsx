@@ -10,7 +10,12 @@ const postSlice = createSlice({
     isCommentDislike: false,
     isReplyLike: false,
     isReplyDislike: false,
-    PopularPostData: undefined,
+    popularPosts: undefined,
+    postDetail: undefined,
+    comments: undefined,
+    replies: undefined,
+    isOpend: undefined,
+    totalReplies: [],
   },
   reducers: {
     // 게시물 좋아요
@@ -51,8 +56,35 @@ const postSlice = createSlice({
     getPopularPost: (state, action: PayloadAction<object>): void => {
       console.log('getPopularPost');
     },
-    setPopularPostData: (state, action: PayloadAction<object>): void => {
-      (state.PopularPostData as unknown) = action.payload;
+    setPopularPosts: (state, action: PayloadAction<object>): void => {
+      (state.popularPosts as unknown) = action.payload;
+    },
+    // 게시글
+    setPostDetail: (state, action: PayloadAction<object>): void => {
+      (state.postDetail as unknown) = action.payload;
+    },
+    // 댓글
+    setComments: (state, action: PayloadAction<object>): void => {
+      (state.comments as unknown) = action.payload;
+    },
+    // 답글
+    setReplies: (state, action: PayloadAction<object>): void => {
+      (state.replies as unknown) = action.payload;
+    },
+    // 렌더링 답글
+    setTotalReplies: (state, action: PayloadAction<Array<object>>): void => {
+      (state.totalReplies as Array<object>).push(...action.payload);
+    },
+    // 답글 클릭 여부
+    isOpened: (state, action: PayloadAction<object>): void => {
+      (state.isOpend as unknown) = action.payload;
+    },
+    // 답글 클릭 상태 변경
+    setIsOpened: (state, action: PayloadAction<number>): void => {
+      console.log(action.payload);
+      (state.isOpend! as Array<boolean>)[action.payload] = !(
+        state.isOpend! as Array<boolean>
+      )[action.payload];
     },
   },
 });
@@ -67,5 +99,11 @@ export const {
   setReplyLike,
   setReplyDislike,
   getPopularPost,
-  setPopularPostData,
+  setPopularPosts,
+  setPostDetail,
+  setComments,
+  setReplies,
+  setTotalReplies,
+  isOpened,
+  setIsOpened,
 } = postSlice.actions;

@@ -1,10 +1,20 @@
 import React from 'react';
 import styled from 'styled-components';
+import { useAppSelector } from '../../hooks';
+import { StateType, CommentType } from '../../types/PostDetail';
 
 const CommentInput: React.FC = () => {
+  const state = useAppSelector((state: StateType): StateType => {
+    return state;
+  });
   return (
     <CommentInputContainer>
-      <h1>댓글 54</h1>
+      <h1>
+        댓글{' '}
+        {state.postSlice.comments! &&
+          (state.postSlice.comments as CommentType).length}
+        개{' '}
+      </h1>
       <Input type="text" placeholder="댓글을 남겨 주세요"></Input>
       <AddCommentBtn>등록</AddCommentBtn>
     </CommentInputContainer>

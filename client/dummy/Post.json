@@ -1,4 +1,21 @@
 {
+  "reply": [
+    {
+      "commentId": 1,
+      "replyId": 1,
+      "memberName": "RP",
+      "memberImage": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT05FKRbwYdbvIz_7q6yf_3Oevdk6NIoPIFrA&usqp=CAU",
+      "createdAt": "2023-03-16T16:34:30.388",
+      "modifiedAt": "",
+      "isModified": false,
+      "replyCount": 1,
+      "thumbupCount": 14,
+      "thumbDownCount": 12,
+      "isThumbup": true,
+      "isThumbDown": false,
+      "content": "답글 입니다요."
+    }
+  ],
   "BEST_AWARDS_POST": [
     {
       "category_id": "",
@@ -518,7 +535,8 @@
       "thumbupCount": 14,
       "thumbDownCount": 12,
       "isThumbup": true,
-      "isThumbDown": false
+      "isThumbDown": false,
+      "content": "1등!! 첫번째 댓글 입니다요."
     },
     {
       "commentId": 2,
@@ -531,22 +549,191 @@
       "thumbupCount": 34,
       "thumbDownCount": 15,
       "isThumbup": false,
-      "isThumbDown": true
+      "isThumbDown": true,
+      "content": "2등 !! 두번째 댓글 입니다요."
     }
   ],
-  "reply": [
+
+  "recommendedPosts": [
     {
-      "replyId": 1,
-      "memberName": "RP",
-      "memberImage": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT05FKRbwYdbvIz_7q6yf_3Oevdk6NIoPIFrA&usqp=CAU",
-      "createdAt": "2023-03-16T16:34:30.388",
-      "modifiedAt": "",
-      "isModified": false,
-      "replyCount": 1,
-      "thumbupCount": 14,
-      "thumbDownCount": 12,
-      "isThumbup": true,
-      "isThumbDown": false
+      "postId": 1,
+      "title": "게시글 1 입니다.",
+      "tags": [
+        {
+          "tagId": 123123,
+          "tagName": "Java"
+        },
+        {
+          "tagId": 456456,
+          "tagName": "Python"
+        }
+      ],
+      "memberName": "작성자닉네임",
+      "createdAt": "2019-11-12T16:34:30.388",
+      "viewCount": 123123,
+      "thumbupCount": 123123
+    },
+    {
+      "postId": 2,
+      "title": "게시글 2 입니다.",
+      "tags": [
+        {
+          "tagId": 123123,
+          "tagName": "Java"
+        },
+        {
+          "tagId": 456456,
+          "tagName": "Python"
+        }
+      ],
+      "memberName": "작성자닉네임",
+      "createdAt": "2019-11-12T16:34:30.388",
+      "viewCount": 123123,
+      "thumbupCount": 123123
+    },
+    {
+      "postId": 3,
+      "title": "게시글 3 입니다.",
+      "tags": [
+        {
+          "tagId": 123123,
+          "tagName": "Java"
+        },
+        {
+          "tagId": 456456,
+          "tagName": "Python"
+        }
+      ],
+      "memberName": "작성자닉네임",
+      "createdAt": "2019-11-12T16:34:30.388",
+      "viewCount": 123123,
+      "thumbupCount": 123123
+    },
+    {
+      "postId": 4,
+      "title": "게시글 4 입니다.",
+      "tags": [
+        {
+          "tagId": 123123,
+          "tagName": "Java"
+        },
+        {
+          "tagId": 456456,
+          "tagName": "Python"
+        }
+      ],
+      "memberName": "작성자닉네임",
+      "createdAt": "2019-11-12T16:34:30.388",
+      "viewCount": 123123,
+      "thumbupCount": 123123
+    },
+    {
+      "postId": 5,
+      "title": "게시글 5 입니다.",
+      "tags": [
+        {
+          "tagId": 123123,
+          "tagName": "Java"
+        },
+        {
+          "tagId": 456456,
+          "tagName": "Python"
+        }
+      ],
+      "memberName": "작성자닉네임",
+      "createdAt": "2019-11-12T16:34:30.388",
+      "viewCount": 123123,
+      "thumbupCount": 123123
+    },
+    {
+      "postId": 6,
+      "title": "게시글 6 입니다.",
+      "tags": [
+        {
+          "tagId": 123123,
+          "tagName": "Java"
+        },
+        {
+          "tagId": 456456,
+          "tagName": "Python"
+        }
+      ],
+      "memberName": "작성자닉네임",
+      "createdAt": "2019-11-12T16:34:30.388",
+      "viewCount": 123123,
+      "thumbupCount": 123123
+    },
+    {
+      "postId": 7,
+      "title": "게시글 7 입니다.",
+      "tags": [
+        {
+          "tagId": 123123,
+          "tagName": "Java"
+        },
+        {
+          "tagId": 456456,
+          "tagName": "Python"
+        }
+      ],
+      "memberName": "작성자닉네임",
+      "createdAt": "2019-11-12T16:34:30.388",
+      "viewCount": 123123,
+      "thumbupCount": 123123
+    },
+    {
+      "postId": 8,
+      "title": "게시글 8 입니다.",
+      "tags": [
+        {
+          "tagId": 123123,
+          "tagName": "Java"
+        },
+        {
+          "tagId": 456456,
+          "tagName": "Python"
+        }
+      ],
+      "memberName": "작성자닉네임",
+      "createdAt": "2019-11-12T16:34:30.388",
+      "viewCount": 123123,
+      "thumbupCount": 123123
+    },
+    {
+      "postId": 9,
+      "title": "게시글 9 입니다.",
+      "tags": [
+        {
+          "tagId": 123123,
+          "tagName": "Java"
+        },
+        {
+          "tagId": 456456,
+          "tagName": "Python"
+        }
+      ],
+      "memberName": "작성자닉네임",
+      "createdAt": "2019-11-12T16:34:30.388",
+      "viewCount": 123123,
+      "thumbupCount": 123123
+    },
+    {
+      "postId": 10,
+      "title": "게시글 10 입니다.",
+      "tags": [
+        {
+          "tagId": 123123,
+          "tagName": "Java"
+        },
+        {
+          "tagId": 456456,
+          "tagName": "Python"
+        }
+      ],
+      "memberName": "작성자닉네임",
+      "createdAt": "2019-11-12T16:34:30.388",
+      "viewCount": 123123,
+      "thumbupCount": 123123
     }
   ]
 }
