@@ -1,29 +1,28 @@
-import React from 'react';
+import React, { useCallback } from 'react';
 import styled from 'styled-components';
+import axios from 'axios';
+import _ from 'lodash';
 import Reply from './Reply';
 import ReplyInput from './ReplyInput';
 import DislikeIcon from '../../assets/common/DislikeIcon';
 import LikeIcon from '../../assets/common/LikeIcon';
 import TimeIcon from '../../assets/common/TimeIcon';
-import { setCommentDislike, setCommentLike } from '../../slices/postSlice';
+import {
+  setCommentDislike,
+  setCommentLike,
+  setIsOpened,
+  setReplies,
+  setTotalReplies,
+} from '../../slices/postSlice';
 import { useAppDispatch, useAppSelector } from '../../hooks';
+import { StateType, ReplyType, CommentType } from '../../types/PostDetail';
 
-interface stateType {
-  postSlice: {
-    isLike: boolean;
-    isDislike: boolean;
-    isBookmark: boolean;
-    isCommentLike: boolean;
-    isCommentDislike: boolean;
-    isReplyLike: boolean;
-    isReplyDislike: boolean;
-  };
-}
 const Comment: React.FC = () => {
   const dispatch = useAppDispatch();
-  const state = useAppSelector((state: stateType): stateType => {
+  const state = useAppSelector((state: StateType): StateType => {
     return state;
   });
+
   // 댓글 좋아요 클릭 함수
   const CommentLiikeHandler = (): void => {
     dispatch(setCommentLike(state.postSlice.isCommentLike));
@@ -32,40 +31,106 @@ const Comment: React.FC = () => {
   const CommentDislikeHandler = (): void => {
     dispatch(setCommentDislike(state.postSlice.isCommentDislike));
   };
-  const img =
-    'https://img.khan.co.kr/news/2020/10/16/2020101601001687000138341.jpg';
+
+  // 답글 조회
+  const getReply = async (id: Partial<CommentType>) => {
+    // 댓글 아이디를 통해서 특정 답글을 조회 => 답글 리스트를 받아서 props로 전달
+    const commentid = id;
+    const response = await axios.get(
+      'https://main-project-d9049-default-rtdb.asia-southeast1.firebasedatabase.app/reply.json',
+    );
+    try {
+      const { data } = response;
+
+      dispatch(setReplies(data));
+      dispatch(setTotalReplies(data));
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  // 답글 조회
+  const confirmRepliesHandler = useCallback(
+    (commentId: Partial<CommentType>): void => {
+      getReply(commentId);
+    },
+    [],
+  );
+
   return (
     <CommentContainer>
-      <CommentInfo>
-        <ul className="content-info">
-          <li className="image">
-            <img src={img}></img>
-          </li>
-          <li className="nickname">NickName</li>
-          <TimeIcon />
-          <li className="created-time">12시간 전</li>
-          <li className="comment-update">수정</li>
-          <li className="comment-delete">삭제</li>
-          <button onClick={CommentLiikeHandler}>
-            <LikeIcon checked={state.postSlice.isCommentLike} />
-          </button>
-          <li className="comment-likes">30</li>
-          <button onClick={CommentDislikeHandler}>
-            <DislikeIcon checked={state.postSlice.isCommentDislike} />
-          </button>
-          <li className="comment-dislikes">20</li>
-        </ul>
-      </CommentInfo>
-      <CommentContent>
-        <div className="content">
-          이 편지는 영국에서 최초로 시작되어 일년에 한바퀴를 돌면서 받는
-          사람에게 행운을 주었고 지금은 당신에게로 옮겨진 이 편지는 4일 안에
-          당신 곁을 떠나야 합니다.
-        </div>
-        <ReplyBtn>답글</ReplyBtn>
-      </CommentContent>
-      <ReplyInput></ReplyInput>
-      <Reply></Reply>
+      {state.postSlice.comments! &&
+        (state.postSlice.comments as object[]).map(
+          (comment: Partial<CommentType>, idx) => {
+            const filtered =
+              state.postSlice.totalReplies &&
+              (
+                _.uniqBy(
+                  state.postSlice.totalReplies,
+                  'replyId',
+                ) as Array<object>
+              ).filter((reply) => {
+                return (reply as ReplyType).commentId === comment.commentId;
+              });
+
+            return (
+              <>
+                <CommentInfo key={comment.commentId}>
+                  <ul className="content-info">
+                    <li className="image">
+                      <img src={comment.memberImage}></img>
+                    </li>
+                    <li className="nickname">{comment.memberName}</li>
+                    <TimeIcon />
+                    <li className="created-time">12시간 전</li>
+                    <li className="comment-update">수정</li>
+                    <li className="comment-delete">삭제</li>
+                    <button onClick={CommentLiikeHandler}>
+                      <LikeIcon checked={comment.isThumbup!} />
+                    </button>
+                    <li className="comment-likes">{comment.thumbupCount}</li>
+                    <button onClick={CommentDislikeHandler}>
+                      <DislikeIcon checked={comment.isThumbDown!} />
+                    </button>
+                    <li className="comment-dislikes">
+                      {comment.thumbDownCount}
+                    </li>
+                  </ul>
+                </CommentInfo>
+                <CommentContent>
+                  <div className="content">{comment.content}</div>
+                  <ReplyBtn
+                    onClick={(): void => {
+                      confirmRepliesHandler(
+                        comment.commentId as Partial<CommentType>,
+                      );
+                      dispatch(setIsOpened(idx));
+                    }}
+                  >
+                    답글 {comment.replyCount}
+                  </ReplyBtn>
+                </CommentContent>
+                {state.postSlice.isOpend &&
+                (state.postSlice.isOpend as Array<boolean>)[idx] ? (
+                  <ReplyContainer>
+                    <ReplyInput></ReplyInput>
+                    {filtered! &&
+                      (filtered as Array<ReplyType>).map((reply: ReplyType) => {
+                        return (
+                          <>
+                            <Reply
+                              key={reply.replyId}
+                              replyInfo={reply}
+                            ></Reply>
+                          </>
+                        );
+                      })}
+                  </ReplyContainer>
+                ) : null}
+              </>
+            );
+          },
+        )}
     </CommentContainer>
   );
 };
@@ -77,7 +142,7 @@ const CommentContainer = styled.div`
   flex-direction: column;
   width: 720px;
   height: auto;
-  margin-top: 20px;
+
   h1 {
     font-size: 24px;
     font-weight: 400;
@@ -92,6 +157,9 @@ const CommentContainer = styled.div`
   }
   .content {
     height: 100%;
+    width: 100%;
+    display: flex;
+    justify-content: flex-start;
     width: auto;
   }
   .nickname {
@@ -110,7 +178,7 @@ const CommentContainer = styled.div`
   }
   .comment-delete {
     font-size: 16px;
-    margin: 3px 240px 0 5px;
+    margin: 3px 200px 0 5px;
     color: gray;
     cursor: pointer;
   }
@@ -130,6 +198,7 @@ const CommentInfo = styled.div`
   justify-content: center;
   width: 100%;
   height: 30px;
+  margin-top: 50px;
 `;
 
 const CommentContent = styled.div`
@@ -139,6 +208,16 @@ const CommentContent = styled.div`
   flex-direction: column;
   width: 720px;
   height: auto;
+  margin-bottom: 10px;
+`;
+
+const ReplyContainer = styled.div`
+  width: 100%;
+  height: 100%;
+  background-color: #ffffff;
+  color: #5c5c5c;
+
+  cursor: pointer;
 `;
 
 const ReplyBtn = styled.button`

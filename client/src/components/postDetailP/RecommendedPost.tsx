@@ -1,60 +1,33 @@
 import React from 'react';
 import styled from 'styled-components';
 import { BsDot } from 'react-icons/bs';
+import { useAppSelector } from '../../hooks';
+import ReactHtmlParser from 'react-html-parser';
+import { Link } from 'react-router-dom';
+import { StateType, PostType } from '../../types/PostDetail';
+
 const RecommendedPost: React.FC = () => {
+  const state = useAppSelector((state: StateType): StateType => {
+    return state;
+  });
+
   return (
     <RecommendedPostContainer>
       <ul>
-        <li>
-          <p>
-            <BsDot></BsDot>인터넷으로 돈버는 25가지 방법을 가르쳐드립니다.
-          </p>
-        </li>
-        <li>
-          <p>
-            <BsDot></BsDot>인터넷으로 돈버는 25가지 방법을 가르쳐드립니다.
-          </p>
-        </li>
-        <li>
-          <p>
-            <BsDot></BsDot>인터넷으로 돈버는 25가지 방법을 가르쳐드립니다.
-          </p>
-        </li>
-        <li>
-          <p>
-            <BsDot></BsDot>인터넷으로 돈버는 25가지 방법을 가르쳐드립니다.
-          </p>
-        </li>
-        <li>
-          <p>
-            <BsDot></BsDot>인터넷으로 돈버는 25가지 방법을 가르쳐드립니다.
-          </p>
-        </li>
-        <li>
-          <p>
-            <BsDot></BsDot>인터넷으로 돈버는 25가지 방법을 가르쳐드립니다.
-          </p>
-        </li>
-        <li>
-          <p>
-            <BsDot></BsDot>인터넷으로 돈버는 25가지 방법을 가르쳐드립니다.
-          </p>
-        </li>
-        <li>
-          <p>
-            <BsDot></BsDot>인터넷으로 돈버는 25가지 방법을 가르쳐드립니다.
-          </p>
-        </li>
-        <li>
-          <p>
-            <BsDot></BsDot>인터넷으로 돈버는 25가지 방법을 가르쳐드립니다.
-          </p>
-        </li>
-        <li>
-          <p>
-            <BsDot></BsDot>인터넷으로 돈버는 25가지 방법을 가르쳐드립니다.
-          </p>
-        </li>
+        {state.postSlice.popularPosts! &&
+          (state.postSlice.popularPosts as object[]).map(
+            (post: Partial<PostType>) => {
+              const url = `/posts/${post.postId}`;
+              return (
+                <li key={post.postId}>
+                  <p>
+                    <BsDot></BsDot>
+                    <Link to={url}>{ReactHtmlParser(post.title!)}</Link>
+                  </p>
+                </li>
+              );
+            },
+          )}
       </ul>
     </RecommendedPostContainer>
   );
@@ -76,5 +49,10 @@ const RecommendedPostContainer = styled.div`
     overflow: hidden;
     white-space: nowrap;
     cursor: pointer;
+  }
+  a {
+    text-decoration: none;
+    color: black;
+    font-weight: 550;
   }
 `;

@@ -20,6 +20,7 @@ const GlobalStyles = createGlobalStyle`
     
     a {
     text-decoration: none;
+    
     }
 
     header {
@@ -44,7 +45,7 @@ const GlobalStyles = createGlobalStyle`
     margin: auto;    
     }   
 
-    
+   
 
 `;
 

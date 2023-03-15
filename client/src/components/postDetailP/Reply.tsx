@@ -4,22 +4,11 @@ import DislikeIcon from '../../assets/common/DislikeIcon';
 import LikeIcon from '../../assets/common/LikeIcon';
 import { setReplyDislike, setReplyLike } from '../../slices/postSlice';
 import { useAppDispatch, useAppSelector } from '../../hooks';
+import { StateType, Props } from '../../types/PostDetail';
 
-interface stateType {
-  postSlice: {
-    isLike: boolean;
-    isDislike: boolean;
-    isBookmark: boolean;
-    isCommentLike: boolean;
-    isCommentDislike: boolean;
-    isReplyLike: boolean;
-    isReplyDislike: boolean;
-  };
-}
-
-const Reply: React.FC = () => {
+const Reply: React.FC<Props> = ({ replyInfo }: Props) => {
   const dispatch = useAppDispatch();
-  const state = useAppSelector((state: stateType): stateType => {
+  const state = useAppSelector((state: StateType): StateType => {
     return state;
   });
   // 답글 좋아요 클릭 함수
@@ -30,35 +19,64 @@ const Reply: React.FC = () => {
   const ReplyDislikeHandler = (): void => {
     dispatch(setReplyDislike(state.postSlice.isReplyDislike));
   };
-  const img =
-    'https://img.khan.co.kr/news/2020/10/16/2020101601001687000138341.jpg';
+
   return (
     <ReplyContainer>
-      <ReplyInfo>
+      {/* {replyInfo! &&
+        (replyInfo as Array<ReplyType>).map((reply: ReplyType) => {
+          return (
+            <>
+              <ReplyInfo key={reply.replyId}>
+                <ul className="reply-info">
+                  <li className="image">
+                    <img src={reply && reply.memberImage}></img>
+                  </li>
+                  <li className="nickname">{reply && reply.memberName}</li>
+                  <li className="reply-created-time">12시간 전</li>
+                  <li className="reply-update">수정</li>
+                  <li className="reply-delete">삭제</li>
+                  <button onClick={ReplyLiikeHandler}>
+                    <LikeIcon checked={reply && reply.isThumbup} />
+                  </button>
+                  <li className="reply-likes">{reply && reply.thumbupCount}</li>
+                  <button onClick={ReplyDislikeHandler}>
+                    <DislikeIcon checked={reply && reply.isThumbDown} />
+                  </button>
+                  <li className="reply-dislikes">
+                    {reply && reply.thumbupCount}
+                  </li>
+                </ul>
+              </ReplyInfo>
+              <ReplyContent>
+                <div className="content">{reply && reply.content}</div>
+              </ReplyContent>
+            </>
+          );
+        })} */}
+
+      <ReplyInfo key={replyInfo.replyId}>
         <ul className="reply-info">
           <li className="image">
-            <img src={img}></img>
+            <img src={replyInfo && replyInfo.memberImage}></img>
           </li>
-          <li className="nickname">NickName</li>
+          <li className="nickname">{replyInfo && replyInfo.memberName}</li>
           <li className="reply-created-time">12시간 전</li>
           <li className="reply-update">수정</li>
           <li className="reply-delete">삭제</li>
           <button onClick={ReplyLiikeHandler}>
-            <LikeIcon checked={state.postSlice.isReplyLike} />
+            <LikeIcon checked={replyInfo && replyInfo.isThumbup} />
           </button>
-          <li className="reply-likes">30</li>
+          <li className="reply-likes">{replyInfo && replyInfo.thumbupCount}</li>
           <button onClick={ReplyDislikeHandler}>
-            <DislikeIcon checked={state.postSlice.isReplyDislike} />
+            <DislikeIcon checked={replyInfo && replyInfo.isThumbDown} />
           </button>
-          <li className="reply-dislikes">20</li>
+          <li className="reply-dislikes">
+            {replyInfo && replyInfo.thumbupCount}
+          </li>
         </ul>
       </ReplyInfo>
       <ReplyContent>
-        <div className="content">
-          이 편지는 영국에서 최초로 시작되어 일년에 한바퀴를 돌면서 받는
-          사람에게 행운을 주었고 지금은 당신에게로 옮겨진 이 편지는 4일 안에
-          당신 곁을 떠나야 합니다.
-        </div>
+        <div className="content">{replyInfo && replyInfo.content}</div>
       </ReplyContent>
     </ReplyContainer>
   );
@@ -72,7 +90,7 @@ const ReplyContainer = styled.div`
   width: 670px;
   padding-left: 50px;
   height: auto;
-  margin-top: 20px;
+  margin-top: 25px;
 
   h1 {
     font-size: 24px;
@@ -89,6 +107,9 @@ const ReplyContainer = styled.div`
   .content {
     height: 100%;
     width: 100%;
+    display: flex;
+    justify-content: flex-start;
+    color: black;
   }
   .nickname {
     font-size: 16px;
@@ -106,7 +127,7 @@ const ReplyContainer = styled.div`
   }
   .reply-delete {
     font-size: 16px;
-    margin: 3px 204px 0 5px;
+    margin: 3px 164px 0 5px;
     color: gray;
     cursor: pointer;
   }
@@ -132,6 +153,7 @@ const ReplyContent = styled.div`
   padding-left: 50px;
   margin-top: 10px;
   display: flex;
+
   flex-direction: column;
   width: 670px;
   height: 100%;
