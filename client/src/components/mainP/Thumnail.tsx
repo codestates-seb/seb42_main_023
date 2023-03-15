@@ -8,6 +8,8 @@ const Item = styled.img`
   box-sizing: border-box;
   margin-right: 20px;
   border-radius: 4px;
+  border: none;
+  object-fit: cover;
 `;
 
 interface Props {
@@ -15,11 +17,7 @@ interface Props {
 }
 
 const Thumnail = ({ content }: Props) => {
-  return (
-    <>
-      <Item src={content} />
-    </>
-  );
+  return <>{content.length === 0 ? <Item /> : <Item src={content} />}</>;
 };
 
 export default Thumnail;

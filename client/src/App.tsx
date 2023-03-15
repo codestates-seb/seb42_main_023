@@ -12,6 +12,8 @@ import CreatePost from './pages/CreatePost';
 import UpdatePost from './pages/UpdatePost';
 import Main from './pages/Main';
 import store from './store/store';
+import Footer from './components/common/Footer';
+import HeaderDefault from './components/common/HeaderDefault';
 
 const App: React.FC = () => {
   return (
@@ -19,11 +21,14 @@ const App: React.FC = () => {
       <div className="App">
         <GlobalStyles />
         <BrowserRouter>
-          <header className="header">Header</header>
+          <HeaderDefault />
           <main>
             <Routes>
               <Route path="/" element={<Main />} />
               <Route path="/posts/:postId/" element={<PostDetail />} />
+              <Route path="/post/:postId/" element={<PostDetail />} />
+              <Route path="/post/" element={<CreatePost />} />
+              <Route path="/post/update" element={<UpdatePost />} />
               <Route path="/login" element={<Login />} />
               <Route path="/setnickname" element={<SetNickname />} />
               <Route path="/adminreport" element={<AdminReport />} />
@@ -33,7 +38,7 @@ const App: React.FC = () => {
               <Route path="/posts/update" element={<UpdatePost />} />
             </Routes>
           </main>
-          <footer className="footer">Footer</footer>
+          <Footer />
         </BrowserRouter>
       </div>
     </Provider>
