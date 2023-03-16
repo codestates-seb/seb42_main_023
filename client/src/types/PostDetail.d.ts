@@ -1,3 +1,5 @@
+export type NewType = StateType & SecondStateType;
+
 export interface StateType {
   postSlice: {
     isLike: boolean;

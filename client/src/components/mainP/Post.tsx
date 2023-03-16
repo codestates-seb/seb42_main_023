@@ -4,7 +4,7 @@ import LikeIcon from '../../assets/common/LikeIcon';
 import TimeIcon from '../../assets/common/TimeIcon';
 import ViewIcon from '../../assets/common/ViewIcon';
 import Thumnail from './Thumnail';
-import * as Styled from '../common/Tag';
+import { TagItem } from '../common/Tag';
 
 export interface Tags {
   id: number;
@@ -68,7 +68,7 @@ const Post = ({ post }: Props) => {
         <Itemside>
           <div>
             {post.tag.map((tag) => (
-              <Styled.TagItem key={tag.id}>{tag.tag}</Styled.TagItem>
+              <TagItem key={tag.id}>{tag.tag}</TagItem>
             ))}
           </div>
           <Info>

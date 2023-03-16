@@ -1,35 +1,28 @@
 import React from 'react';
+import { ButtonHTMLAttributes } from 'react';
 import styled from 'styled-components';
 
 const Btn = styled.button<Button>`
-  width: ${({ width }): string => width};
-  height: ${({ height }): string | undefined => height};
   background-color: #0069ca;
   color: #fff;
   box-sizing: border-box;
   cursor: pointer;
+  width: ${({ width }) => width};
+  height: ${({ height }) => height};
 `;
 
-interface Props {
-  content: string;
-  width: string;
-  height?: string;
-  onClick: React.MouseEventHandler<HTMLButtonElement>;
+interface IProps extends ButtonHTMLAttributes<HTMLButtonElement> {
+  content?: React.ReactNode;
+  width?: string | undefined;
+  height?: string | undefined;
 }
-
 interface Button {
-  width: string;
-  height?: string;
+  width?: string | undefined;
+  height?: string | undefined;
 }
 
-const BlueBtn = ({ content, width, height, onClick }: Props) => {
-  return (
-    <>
-      <Btn width={width} height={height} onClick={onClick}>
-        {content}
-      </Btn>
-    </>
-  );
+const BlueBtn: React.FC<IProps> = ({ content, ...props }) => {
+  return <button {...props}>{content}</button>;
 };
 
 export default BlueBtn;

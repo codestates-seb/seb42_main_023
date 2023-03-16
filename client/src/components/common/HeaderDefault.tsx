@@ -1,7 +1,6 @@
-import React, { ReactNode } from 'react';
+import React from 'react';
 import styled from 'styled-components';
 import { useNavigate, useLocation } from 'react-router-dom';
-import { useEffect, useState } from 'react';
 import { useAppSelector } from '../../hooks';
 import Logo from '../../assets/Logo.png';
 import LoginBtn from './LoginBtn';
