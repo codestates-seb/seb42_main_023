@@ -34,10 +34,10 @@ jobs:
       
       ## create properties file
       - name: make application-local.yml
-        if: contains(github.ref, 'be-dev') # branch 가 be-dev 인 경우
         run: |
           # spring의 resources 경로로 이동
           cd ./server/src/main/resources 
+          pwd
           
           # application.yml 파일 생성
           touch ./application.yml 
@@ -55,10 +55,10 @@ jobs:
       
       ## create properties file for Test 
       - name: make application-local.yml to test
-        if: contains(github.ref, 'be-dev') # branch 가 be-dev 인 경우
         run: |
           # spring의 resources 경로로 이동
           cd ./server/src/test/resources 
+          pwd
           
           # application.yml 파일 생성
           touch ./application.yml 
