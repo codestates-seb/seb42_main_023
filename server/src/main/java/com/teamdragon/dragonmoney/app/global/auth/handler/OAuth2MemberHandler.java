@@ -119,7 +119,7 @@ public class OAuth2MemberHandler extends SimpleUrlAuthenticationSuccessHandler {
                 .scheme("http")
                 .host("hp5234-dragonmoney-front.s3-website.ap-northeast-2.amazonaws.com")
 //                .port(80)
-                .path("/duplicated-name")
+                .path("/setnickname")
                 .queryParams(queryParams)
                 .build()
                 .toUri();
