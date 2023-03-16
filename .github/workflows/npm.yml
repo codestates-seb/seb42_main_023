@@ -27,8 +27,11 @@ jobs:
           npm install buffer --force
           npm install @types/react-html-parser --force
           npm install -save react-html-parser --force
-          npm i  @types/lodash --force 
-          npm i lodash --force
+          npm install  @types/lodash --force 
+          npm install lodash --force
+          npm install @types/js-cookie --force
+          npm install js-cookie
+          
 
         working-directory: ./client
 
