@@ -2,16 +2,16 @@ import React from 'react';
 import styled from 'styled-components';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 
 const SetNickname: React.FC = () => {
   const navigate = useNavigate();
-  // 서버는 회원가입이 완료된 유저를 닉네임 설정 페이지로 디라이렉트한다. uri에는 사용자를 임시로 식별할 수 있는 tempName을 담는다.\
+  const nicknameRef = useRef<HTMLInputElement>(null);
 
-  const [nickname, setNickname] = useState('');
   const [tempName, setTempName] = useState('');
   const [errorMsg, setErrorMsg] = useState('');
 
+  // 서버는 회원가입이 완료된 유저를 닉네임 설정 페이지로 디라이렉트한다. uri에는 사용자를 임시로 식별할 수 있는 tempName을 담는다.
   useEffect(() => {
     const url = new URL(window.location.href);
     const tempName = url.searchParams.get('tempName') ?? '';
@@ -19,6 +19,8 @@ const SetNickname: React.FC = () => {
   }, []);
 
   const setNicknameHandler = (): void => {
+    const nickname = nicknameRef.current!.value;
+
     axios
       .post('http://15.164.95.47:8080/members/duplicated-name', {
         name: nickname,
@@ -47,9 +49,9 @@ const SetNickname: React.FC = () => {
           <NicknameInput>
             <label htmlFor="nickname">닉네임</label>
             <input
-              name="nickname"
+              id="nickname"
               placeholder="커뮤니티에서 사용할 닉네임을 작성해주세요"
-              onChange={(e) => setNickname(e.target.value)}
+              ref={nicknameRef}
             />
             <p>{errorMsg}</p>
           </NicknameInput>

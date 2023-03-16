@@ -4,7 +4,7 @@ import styled from 'styled-components';
 const ReplyInput: React.FC = () => {
   return (
     <ReplyInputContainer>
-      <Input type="text" placeholder="댓글을 남겨 주세요"></Input>
+      <Input type="text" placeholder="답글을 남겨 주세요"></Input>
       <AddCommentBtn>등록</AddCommentBtn>
     </ReplyInputContainer>
   );
@@ -16,7 +16,7 @@ const ReplyInputContainer = styled.div`
   position: relative;
   width: 720px;
   height: auto;
-  margin-top: 30px;
+  margin-top: 20px;
   h1 {
     font-size: 24px;
     font-weight: 400;

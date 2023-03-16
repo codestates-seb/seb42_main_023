@@ -22,12 +22,7 @@ interface Button {
   height?: string;
 }
 
-const BlueBtn: React.FC<Props> = ({
-  content,
-  width,
-  height,
-  onClick,
-}: Props) => {
+const BlueBtn = ({ content, width, height, onClick }: Props) => {
   return (
     <>
       <Btn width={width} height={height} onClick={onClick}>
