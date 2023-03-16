@@ -5,7 +5,7 @@ import { useAppSelector } from '../../hooks';
 import Logo from '../../assets/Logo.png';
 import LoginBtn from './LoginBtn';
 import SearchBar from './SearchBar';
-import SearchBtn from './SearchBtn';
+import SearchBtn from './SearchToggle';
 import PostBtn from './PostBtn';
 import MediumProfileImg from './MediumProfileImg';
 

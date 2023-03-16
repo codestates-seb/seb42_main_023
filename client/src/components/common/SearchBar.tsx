@@ -10,8 +10,7 @@ import { setTagErr } from '../../slices/validationSlice';
 import { AiOutlineSearch } from 'react-icons/ai';
 import * as Styled from '../common/Tag';
 import { MdCancel } from 'react-icons/md';
-import SearchBtn from './SearchBtn';
-import axios from 'axios';
+import SearchBtn from './SearchToggle';
 
 interface Input {
   className: string;
@@ -159,6 +158,7 @@ export default SearchBar;
 const TagInputContainer = styled.div`
   display: flex;
   margin: 0 auto;
+  height: 53px;
 `;
 
 const InputWraper = styled.div`

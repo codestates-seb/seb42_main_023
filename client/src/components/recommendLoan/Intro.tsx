@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import BlueBtn from '../common/BlueBtn';
+import { BlueBtn } from '../../components/common/Btn';
 
 const Intro: React.FC = () => {
   return (
@@ -13,14 +13,13 @@ const Intro: React.FC = () => {
         </h2>
         <p>간단한 설문을 통해 나에게 맞는 공공대출 상품을 찾아보세요</p>
       </Question>
-      <BlueBtn
-        width="300px"
-        height="50px"
-        content="나에게 맞는 대출상품 찾기"
+      <FindBtn
         onClick={() => {
           //   nextQuestionHandler(0);
         }}
-      />
+      >
+        나에게 맞는 대출상품 찾기
+      </FindBtn>
     </IntroContainer>
   );
 };
@@ -51,4 +50,8 @@ const Question = styled.div`
     color: #5c5c5c;
     margin-top: 30px;
   }
+`;
+const FindBtn = styled(BlueBtn)`
+  width: 300px;
+  height: 50px;
 `;
