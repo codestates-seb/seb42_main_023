@@ -29,7 +29,7 @@ public class OAuth2Controller {
 
         return ResponseEntity.status(HttpStatus.OK)
                 .header("Access Token", accessToken)
-                .header("Set-Cookie", cookie.toString())
+                .header("Set-Cookie", "refresh="+cookie)
                 .build();
     }
 }
