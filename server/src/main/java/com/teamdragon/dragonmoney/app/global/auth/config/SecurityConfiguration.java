@@ -26,7 +26,7 @@ import java.util.Arrays;
 import static org.springframework.security.config.Customizer.withDefaults;
 
 @Configuration
-@EnableWebSecurity(debug = true)
+//@EnableWebSecurity(debug = true)
 @RequiredArgsConstructor
 public class SecurityConfiguration {
     private final JwtTokenizer jwtTokenizer;
@@ -71,7 +71,6 @@ public class SecurityConfiguration {
         CorsConfiguration configuration = new CorsConfiguration();
         configuration.setAllowCredentials(true);
         configuration.addAllowedOriginPattern("*");
-        configuration.setAllowedOrigins(Arrays.asList("*"));
         configuration.setAllowedMethods(Arrays.asList("GET","POST", "PATCH", "DELETE"));
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", configuration);
