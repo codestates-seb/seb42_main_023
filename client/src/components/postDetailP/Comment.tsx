@@ -34,16 +34,13 @@ const Comment: React.FC = () => {
 
   // 답글 조회
   const getReply = async (id: Partial<CommentType>) => {
-    // 댓글 아이디를 통해서 특정 답글을 조회 => 답글 리스트를 받아서 props로 전달
     const commentid = id;
-    const response = await axios.get(
-      'https://main-project-d9049-default-rtdb.asia-southeast1.firebasedatabase.app/reply.json',
-    );
+    const response = await axios.get(`/comments/${commentid}/replies`);
     try {
       const { data } = response;
-
-      dispatch(setReplies(data));
-      dispatch(setTotalReplies(data));
+      // console.log('data', data);
+      dispatch(setReplies(data.comment));
+      dispatch(setTotalReplies(data.comment));
     } catch (err) {
       console.log(err);
     }

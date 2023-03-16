@@ -10,7 +10,7 @@ const postSlice = createSlice({
     isCommentDislike: false,
     isReplyLike: false,
     isReplyDislike: false,
-    popularPosts: undefined,
+    reommendPosts: undefined,
     postDetail: undefined,
     comments: undefined,
     replies: undefined,
@@ -53,11 +53,9 @@ const postSlice = createSlice({
       console.log(action.payload);
       state.isReplyDislike = !state.isReplyDislike;
     },
-    getPopularPost: (state, action: PayloadAction<object>): void => {
-      console.log('getPopularPost');
-    },
-    setPopularPosts: (state, action: PayloadAction<object>): void => {
-      (state.popularPosts as unknown) = action.payload;
+    // 추천 게시물
+    setRecommendPosts: (state, action: PayloadAction<object>): void => {
+      (state.reommendPosts as unknown) = action.payload;
     },
     // 게시글
     setPostDetail: (state, action: PayloadAction<object>): void => {
@@ -98,8 +96,7 @@ export const {
   setCommentDislike,
   setReplyLike,
   setReplyDislike,
-  getPopularPost,
-  setPopularPosts,
+  setRecommendPosts,
   setPostDetail,
   setComments,
   setReplies,
