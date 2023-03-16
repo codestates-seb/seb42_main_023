@@ -5,6 +5,7 @@ import { FcGoogle } from 'react-icons/fc';
 import { SiNaver } from 'react-icons/si';
 import { RiKakaoTalkFill } from 'react-icons/ri';
 
+// 테스트용 주석 추가
 const Login: React.FC = () => {
   // 서버에 post 요청을 보내면, 서버는 클라이언트를 google계정선택화면인 'https://accounts.google.com/o/oauth/v2/auth/oauthchooseaccount?rediret-uri=서버주소' 로 redirect-uri를 붙여서 리다이렉트 해준다.
   const requestGoogleLoginHandler = (): void => {
