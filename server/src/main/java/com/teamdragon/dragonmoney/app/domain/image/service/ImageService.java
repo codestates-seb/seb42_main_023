@@ -8,6 +8,7 @@ import com.teamdragon.dragonmoney.app.global.exception.BusinessExceptionCode;
 import com.teamdragon.dragonmoney.app.global.exception.BusinessLogicException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -26,7 +27,8 @@ import java.util.stream.Collectors;
 public class ImageService {
 
     // 이미지 최대 크기 : 2MB : 2,000,000
-    private Integer FILE_MAX_SIZE = 2000000;
+    @Value("${file.upload-max-size}")
+    private Integer FILE_MAX_SIZE;
 
     // 허용 이미지 확장자
     private final String[] PERMISSION_FILE_EXT_ARR = {"GIF", "JPEG", "JPG", "PNG"};
