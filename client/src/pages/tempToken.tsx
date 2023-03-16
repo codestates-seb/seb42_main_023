@@ -25,14 +25,14 @@ const TempToken: React.FC = () => {
         console.log('res.headers', res.headers);
 
         // accessToken을 쿠키에 저장한다.
-        const accessToken = res.headers.AccessToken;
+        const accessToken = res.headers.Authorization;
         Cookies.set('accessToken', accessToken);
 
         // set-cookie헤더를 파싱하여 refreshToken을 찾고, 쿠키에 저장한다.
         const cookieHeader = res.headers['Set-Cookie'];
         console.log('cookieHeader:', cookieHeader);
 
-        const refreshToken = cookieHeader.match(/refresh=Bearer\s*([^;]+)/)[1];
+        const refreshToken = cookieHeader.match(/Refresh=Bearer\s*([^;]+)/)[1];
         console.log('refreshToken:', refreshToken);
 
         Cookies.set('refreshToken', refreshToken);
