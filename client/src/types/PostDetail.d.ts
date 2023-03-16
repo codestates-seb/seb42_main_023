@@ -7,12 +7,21 @@ export interface StateType {
     isCommentDislike: boolean;
     isReplyLike: boolean;
     isReplyDislike: boolean;
-    popularPosts: unknown;
+    reommendPosts: unknown;
     postDetail: unknown;
     comments: unknown;
     replies: unknown;
     isOpend: unknown;
     totalReplies: Array;
+  };
+}
+
+export interface SecondStateType {
+  comment: {
+    commentVal: string;
+    replyVal: string;
+    currentComment: unknown;
+    isEdit: unknown;
   };
 }
 
