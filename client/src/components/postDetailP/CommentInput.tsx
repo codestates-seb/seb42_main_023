@@ -1,12 +1,34 @@
-import React from 'react';
+import React, { useRef } from 'react';
 import styled from 'styled-components';
-import { useAppSelector } from '../../hooks';
-import { StateType, CommentType } from '../../types/PostDetail';
+import { useAppDispatch, useAppSelector } from '../../hooks';
+import { setComment } from '../../slices/commentSlice';
+import {
+  StateType,
+  CommentType,
+  SecondStateType,
+} from '../../types/PostDetail';
+
+interface Input {
+  className: string;
+  placeholder: string;
+  onChange: React.KeyboardEvent<HTMLInputElement>;
+  value: string;
+}
 
 const CommentInput: React.FC = () => {
-  const state = useAppSelector((state: StateType): StateType => {
-    return state;
-  });
+  const commentRef = useRef<HTMLInputElement>(null);
+  const dispatch = useAppDispatch();
+  const state = useAppSelector(
+    (state: StateType & SecondStateType): StateType & SecondStateType => {
+      return state;
+    },
+  );
+
+  const valueCheck = (event: React.ChangeEvent<HTMLInputElement>): void => {
+    dispatch(setComment(event.target.value));
+    console.log(state);
+  };
+
   return (
     <CommentInputContainer>
       <h1>
@@ -15,7 +37,12 @@ const CommentInput: React.FC = () => {
           (state.postSlice.comments as CommentType).length}
         개{' '}
       </h1>
-      <Input type="text" placeholder="댓글을 남겨 주세요"></Input>
+      <Input
+        type="text"
+        placeholder="댓글을 남겨 주세요"
+        ref={commentRef}
+        onChange={valueCheck}
+      ></Input>
       <AddCommentBtn>등록</AddCommentBtn>
     </CommentInputContainer>
   );

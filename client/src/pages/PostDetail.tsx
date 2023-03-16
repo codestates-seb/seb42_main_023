@@ -16,54 +16,51 @@ import {
   setComments,
   setDislike,
   setLike,
-  setPopularPosts,
+  setRecommendPosts,
   setPostDetail,
 } from '../slices/postSlice';
 import { useAppDispatch, useAppSelector } from '../hooks';
 import axios from 'axios';
 import { StateType, PostType, CommentType } from '../types/PostDetail';
+import { useParams } from 'react-router';
 
 const PostDetail: React.FC = () => {
   const dispatch = useAppDispatch();
   const state = useAppSelector((state: StateType): StateType => {
     return state;
   });
+  const params = useParams();
+  const postId = params.postId;
 
   // 게시글 조회
   const getPost = async () => {
-    const response = await axios.get(
-      'https://main-project-d9049-default-rtdb.asia-southeast1.firebasedatabase.app/posts.json',
-    );
+    const response = await axios.get(`/posts/${postId}`);
     try {
       const { data } = response;
-      dispatch(setPostDetail(data[0]));
+      dispatch(setPostDetail(data.posts[0]));
     } catch (err) {
       console.log(err);
     }
   };
   // 댓글 조회
   const getComments = async () => {
-    const response = await axios.get(
-      'https://main-project-d9049-default-rtdb.asia-southeast1.firebasedatabase.app/comments.json',
-    );
+    const response = await axios.get(`/posts/${postId}/comments`);
     try {
       const { data } = response;
       const isOpend = Array.from({ length: data.length }, (el) => (el = false));
       dispatch(isOpened(isOpend));
-      dispatch(setComments(data));
+      dispatch(setComments(data.comment));
     } catch (err) {
       console.log(err);
     }
   };
 
   // 추천 게시글 조회
-  const getPopularPost = async () => {
-    const response = await axios.get(
-      'https://main-project-d9049-default-rtdb.asia-southeast1.firebasedatabase.app/recommendedPosts.json',
-    );
+  const getRecommendPost = async () => {
+    const response = await axios.get('/posts/recommend');
     try {
       const { data } = response;
-      dispatch(setPopularPosts(data));
+      dispatch(setRecommendPosts(data));
     } catch (err) {
       console.log(err);
     }
@@ -72,7 +69,7 @@ const PostDetail: React.FC = () => {
   useEffect(() => {
     getPost();
     getComments();
-    getPopularPost();
+    getRecommendPost();
   }, []);
 
   // 좋아요 클릭 함수

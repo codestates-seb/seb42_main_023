@@ -10,12 +10,11 @@ const RecommendedPost: React.FC = () => {
   const state = useAppSelector((state: StateType): StateType => {
     return state;
   });
-
   return (
     <RecommendedPostContainer>
       <ul>
-        {state.postSlice.popularPosts! &&
-          (state.postSlice.popularPosts as object[]).map(
+        {state.postSlice.reommendPosts! &&
+          (state.postSlice.reommendPosts as object[]).map(
             (post: Partial<PostType>) => {
               const url = `/posts/${post.postId}`;
               return (
