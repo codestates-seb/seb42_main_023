@@ -16,10 +16,12 @@ import java.net.URI;
 import java.util.HashMap;
 import java.util.Map;
 
-@RestController
+
 @Slf4j
+@CrossOrigin
 @RequestMapping("/members")
 @RequiredArgsConstructor
+@RestController
 public class MemberController {
     private final MemberService memberService;
     private final MemberMapper memberMapper;
