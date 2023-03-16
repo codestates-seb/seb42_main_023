@@ -19,7 +19,7 @@ const CommentInput: React.FC = () => {
   const commentRef = useRef<HTMLInputElement>(null);
   const dispatch = useAppDispatch();
   const state = useAppSelector(
-    (state: StateType & SecondStateType): StateType & SecondStateType => {
+    (state: StateType | SecondStateType): StateType | SecondStateType => {
       return state;
     },
   );
@@ -33,8 +33,8 @@ const CommentInput: React.FC = () => {
     <CommentInputContainer>
       <h1>
         댓글{' '}
-        {state.postSlice.comments! &&
-          (state.postSlice.comments as CommentType).length}
+        {(state as StateType).postSlice.comments! &&
+          ((state as StateType).postSlice.comments as CommentType).length}
         개{' '}
       </h1>
       <Input
