@@ -37,6 +37,7 @@ jobs:
         run: |
           # spring의 resources 경로로 이동
           cd ./server/src/main/resources 
+          pwd
           
           # application.yml 파일 생성
           touch ./application.yml 
@@ -57,6 +58,7 @@ jobs:
         run: |
           # spring의 resources 경로로 이동
           cd ./server/src/test/resources 
+          pwd
           
           # application.yml 파일 생성
           touch ./application.yml 
