@@ -6,6 +6,7 @@ import com.teamdragon.dragonmoney.app.global.auth.handler.MemberAccessDeniedHand
 import com.teamdragon.dragonmoney.app.global.auth.handler.MemberAuthenticationEntryPoint;
 import com.teamdragon.dragonmoney.app.global.auth.handler.OAuth2MemberHandler;
 import com.teamdragon.dragonmoney.app.global.auth.jwt.JwtTokenizer;
+import com.teamdragon.dragonmoney.app.global.auth.service.OAuth2Service;
 import com.teamdragon.dragonmoney.app.global.auth.utils.CustomAuthorityUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
@@ -31,6 +32,7 @@ public class SecurityConfiguration {
     private final JwtTokenizer jwtTokenizer;
     private final CustomAuthorityUtils authorityUtils;
     private final MemberService memberService;
+    private final OAuth2Service oAuth2Service;
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
@@ -58,7 +60,7 @@ public class SecurityConfiguration {
                                 .anyRequest().permitAll()
                 )
                 .oauth2Login(oauth2 -> oauth2
-                        .successHandler(new OAuth2MemberHandler(jwtTokenizer, authorityUtils, memberService))
+                        .successHandler(new OAuth2MemberHandler(jwtTokenizer, authorityUtils, memberService, oAuth2Service))
                 );
 
         return http.build();
