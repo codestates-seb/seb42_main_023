@@ -32,6 +32,10 @@ public class Member extends BaseTimeEntity {
     @Column
     private String tempName;
 
+    @Column
+    @Setter
+    private String tempAccessToken;
+
     @Email
     @Column(length = 100, nullable = false)
     private String email;
