@@ -2,7 +2,6 @@ package com.teamdragon.dragonmoney.app.domain.tag.repository;
 
 import com.querydsl.jpa.JPAExpressions;
 import com.querydsl.jpa.impl.JPAQueryFactory;
-import com.teamdragon.dragonmoney.app.domain.post.entity.QPostTag;
 import com.teamdragon.dragonmoney.app.domain.tag.entity.QTag;
 import lombok.RequiredArgsConstructor;
 
