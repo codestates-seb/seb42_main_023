@@ -23,7 +23,13 @@ jobs:
 
       # 의존 파일 설치
       - name: Install Dependencies
-        run: npm install
+        run: |
+          npm install buffer --force
+          npm install @types/react-html-parser --force
+          npm install -save react-html-parser --force
+          npm i  @types/lodash --force 
+          npm i lodash --force
+
         working-directory: ./client
 
         # .env 파일 생성
