@@ -20,6 +20,7 @@ const GlobalStyles = createGlobalStyle`
     
     a {
     text-decoration: none;
+    
     }
     img{
       border: 0;
@@ -46,7 +47,7 @@ const GlobalStyles = createGlobalStyle`
     margin: auto;    
     }   
 
-    
+   
 
 `;
 

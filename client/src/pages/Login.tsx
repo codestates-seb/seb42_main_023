@@ -9,7 +9,7 @@ const Login: React.FC = () => {
   const requestGoogleLoginHandler = (): void => {
     console.log(CLIENT_ID);
     return window.location.assign(
-      `https://accounts.google.com/o/oauth2/v2/auth?scope=profile&response_type=code&client_id=${CLIENT_ID}&redirect_uri=http://hp5234-dragonmoney-front.s3-website.ap-northeast-2.amazonaws.com/login/oauth2/code/google`,
+      `https://accounts.google.com/o/oauth2/v2/auth?scope=profile&response_type=code&client_id=${CLIENT_ID}&redirect_uri=http://hp5234-dragonmoney-front.s3-website.ap-northeast-2.amazonaws.com/setnickname`,
     );
   };
   return (
