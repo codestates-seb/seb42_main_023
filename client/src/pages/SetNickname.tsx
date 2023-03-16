@@ -1,7 +1,46 @@
 import React from 'react';
 import styled from 'styled-components';
+import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
+import { useEffect, useState, useRef } from 'react';
 
 const SetNickname: React.FC = () => {
+  const navigate = useNavigate();
+  const nicknameRef = useRef<HTMLInputElement>(null);
+
+  const [tempName, setTempName] = useState('');
+  const [errorMsg, setErrorMsg] = useState('');
+
+  // 서버는 회원가입이 완료된 유저를 닉네임 설정 페이지로 디라이렉트한다. uri에는 사용자를 임시로 식별할 수 있는 tempName을 담는다.
+  useEffect(() => {
+    const url = new URL(window.location.href);
+    const tempName = url.searchParams.get('tempName') ?? '';
+    setTempName(tempName);
+  }, []);
+
+  const setNicknameHandler = (): void => {
+    const nickname = nicknameRef.current!.value;
+
+    axios
+      .post('http://15.164.95.47:8080/members/duplicated-name', {
+        name: nickname,
+        tempName: tempName,
+      })
+      .then((res) => {
+        // 닉네임 중복검사에서 성공하면, login 페이지로 redirect한다.
+        // 닉네임 중복검사에서 실패하면, 중복된 닉네임입니다라는 메세지를 띄운다.
+        if (res.data.useable) {
+          navigate('/login');
+        } else {
+          setErrorMsg('중복된 닉네임입니다.');
+        }
+      })
+      .catch((error) =>
+        // validation에서 실패했을 경우엔, 아래와 같은 메세지를 띄운다.
+        setErrorMsg('닉네임은 2자 이상 8자 이하로 작성해주세요.'),
+      );
+  };
+
   return (
     <>
       <NicknameFormMain>
@@ -10,12 +49,13 @@ const SetNickname: React.FC = () => {
           <NicknameInput>
             <label htmlFor="nickname">닉네임</label>
             <input
-              name="nickname"
+              id="nickname"
               placeholder="커뮤니티에서 사용할 닉네임을 작성해주세요"
+              ref={nicknameRef}
             />
-            <p>이미 사용중인 닉네임입니다</p>
+            <p>{errorMsg}</p>
           </NicknameInput>
-          <SignupBtn>가입하기</SignupBtn>
+          <SignupBtn onClick={setNicknameHandler}>가입하기</SignupBtn>
         </NicknameForm>
       </NicknameFormMain>
     </>
