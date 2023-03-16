@@ -225,3 +225,5 @@ const ReplyBtn = styled.button`
   margin-top: 15px;
   cursor: pointer;
 `;
+
+//충돌해결
