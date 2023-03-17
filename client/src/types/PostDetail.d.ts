@@ -1,3 +1,4 @@
+import { comments } from './../mocks/postData';
 export interface StateType {
   postSlice: {
     isLike: boolean;
@@ -13,6 +14,7 @@ export interface StateType {
     replies: unknown;
     isOpend: unknown;
     totalReplies: Array;
+    commentId: unknown;
   };
 }
 
