@@ -15,6 +15,7 @@ import store from './store/store';
 import Footer from './components/common/Footer';
 import HeaderDefault from './components/common/HeaderDefault';
 import TempToken from './pages/tempToken';
+import MyPage from './pages/MyPage';
 
 const App: React.FC = () => {
   return (
@@ -38,6 +39,8 @@ const App: React.FC = () => {
               <Route path="/post/" element={<CreatePost />} />
               <Route path="/post/update" element={<UpdatePost />} />
               <Route path="/temptoken" element={<TempToken />} />
+              <Route path="/post/" element={<CreatePost />} />
+              <Route path="/mypage" element={<MyPage />} />
             </Routes>
           </main>
           <Footer />

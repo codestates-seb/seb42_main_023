@@ -3,8 +3,7 @@ import styled from 'styled-components';
 import TitleInput from '../components/createPostP/TitleInput';
 import BodyInput from '../components/createPostP/BodyInput';
 import TagInput from '../components/createPostP/TagInput';
-import BlueBtn from '../components/common/BlueBtn';
-import WhiteBtn from '../components/common/WhiteBtn';
+import { BlueBtn, WhiteBtn } from '../components/common/Btn';
 import { useNavigate } from 'react-router-dom';
 import { useAppSelector } from '../hooks';
 
@@ -48,18 +47,8 @@ const CreatePost: React.FC = () => {
       <TagInput></TagInput>
 
       <BtnContainer>
-        <WhiteBtn
-          content="취소"
-          width="105px"
-          height="40px"
-          onClick={cancelAddHandler}
-        ></WhiteBtn>
-        <BlueBtn
-          content="작성"
-          width="105px"
-          height="40px"
-          onClick={addPostHandler}
-        ></BlueBtn>
+        <CancleBtn onClick={cancelAddHandler}>취소</CancleBtn>
+        <PostBtn onClick={addPostHandler}>작성</PostBtn>
       </BtnContainer>
     </Container>
   );
@@ -85,4 +74,14 @@ const BtnContainer = styled.div`
   height: 40px;
   margin-top: 70px;
   margin-bottom: 30px;
+`;
+
+const PostBtn = styled(BlueBtn)`
+  width: 105px;
+  height: 40px;
+`;
+
+const CancleBtn = styled(WhiteBtn)`
+  width: 105px;
+  height: 40px;
 `;

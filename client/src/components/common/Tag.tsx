@@ -4,17 +4,53 @@ import { MdCancel } from 'react-icons/md';
 import { useAppDispatch } from '../../hooks';
 import { deleteTag } from '../../slices/postInputSlice';
 
-const Item = styled.button`
+interface Props {
+  content: string;
+  button?: string;
+  search?: boolean;
+}
+
+const Tag = ({ content }: Props) => {
+  const dispatch = useAppDispatch();
+  const deleteTagHandler = () => {
+    dispatch(deleteTag(content));
+  };
+  return (
+    <>
+      <TagItemWidthDelete>
+        <span>{content}</span>
+        <button onClick={deleteTagHandler}>
+          <MdCancel size="13" />
+        </button>
+      </TagItemWidthDelete>
+    </>
+  );
+};
+
+export default Tag;
+
+//삭제 버튼이 없는 태그
+export const TagItem = styled.button`
+  position: relative;
   display: inline-flex;
   background-color: #e3e8f0;
   box-sizing: border-box;
-  padding: 4px 6px;
-  margin-right: 4px;
+  padding: 4px 0;
+  padding-left: 10px;
+  padding-right: 24px;
   border-radius: 30px;
+  margin-right: 4px;
   span {
     font-size: 13px;
   }
+`;
+
+//삭제 버튼이 있는 태그
+export const TagItemWidthDelete = styled(TagItem)`
   button {
+    position: absolute;
+    right: 5px;
+    top: 3px;
     align-items: center;
     background-color: #e3e8f0;
     margin-left: 4px;
@@ -26,31 +62,3 @@ const Item = styled.button`
     }
   }
 `;
-
-interface Props {
-  content: string;
-  button?: string;
-}
-
-const Tag = ({ content, button }: Props) => {
-  const dispatch = useAppDispatch();
-
-  const deleteTagHandler = () => {
-    console.log(content);
-    dispatch(deleteTag(content));
-  };
-  return (
-    <>
-      <Item>
-        <span>{content}</span>
-        {!button && (
-          <button onClick={deleteTagHandler}>
-            <MdCancel size="13" />
-          </button>
-        )}
-      </Item>
-    </>
-  );
-};
-
-export default Tag;

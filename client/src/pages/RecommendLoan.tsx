@@ -1,6 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import NavRealEstate from '../components/common/NavRealEstate';
+import { BlueBtn } from '../components/common/Btn';
 // import { questionData } from '../data/surveyData';
 // import Intro from '../components/recommendLoan/Intro';
 // import Question from '../components/recommendLoan/Question';

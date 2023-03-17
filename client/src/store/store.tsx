@@ -9,12 +9,16 @@ import {
   repliesApi,
   recomendedPostsApi,
 } from '../api/api';
+import headerSlice from '../slices/headerSlice';
+import commentSlice from '../slices/commentSlice';
 
 const store = configureStore({
   reducer: {
     postSlice: postSlice.reducer,
     postInput: postInputSlice.reducer,
+    comment: commentSlice.reducer,
     validation: validationSlice.reducer,
+    header: headerSlice.reducer,
     [postsApi.reducerPath]: postsApi.reducer,
     [commentsApi.reducerPath]: commentsApi.reducer,
     [repliesApi.reducerPath]: repliesApi.reducer,

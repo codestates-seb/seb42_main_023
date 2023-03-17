@@ -3,8 +3,8 @@ import styled from 'styled-components';
 import LikeIcon from '../../assets/common/LikeIcon';
 import TimeIcon from '../../assets/common/TimeIcon';
 import ViewIcon from '../../assets/common/ViewIcon';
-import Tag from '../common/Tag';
 import Thumnail from './Thumnail';
+import { TagItem } from '../common/Tag';
 
 export interface Tags {
   id: number;
@@ -61,16 +61,20 @@ const Post = ({ post }: Props) => {
   return (
     <Item>
       <div>
-        <Thumnail content={post.img} />
+        <a href="#">
+          <Thumnail content={post.img} />
+        </a>
       </div>
       <div>
-        <h1>{post.title}</h1>
+        <a href="#">
+          <h1>{post.title}</h1>
+        </a>
         <Itemside>
-          <Taglist>
+          <div>
             {post.tag.map((tag) => (
-              <Tag key={tag.id} content={tag.tag} button={'no'} />
+              <TagItem key={tag.id}>{tag.tag}</TagItem>
             ))}
-          </Taglist>
+          </div>
           <Info>
             <span>{post.writer_id}</span>
             <span>
@@ -96,7 +100,7 @@ export default Post;
 
 const Item = styled.li`
   height: 100px;
-  border-bottom: 1px solid #d9d9d9;
+  border-bottom: 1px solid var(--border-color);
   box-sizing: border-box;
   display: flex;
   justify-content: center;
@@ -117,11 +121,10 @@ const Itemside = styled.div`
     display: flex;
   }
 `;
-const Taglist = styled.div``;
 const Info = styled.div`
   span {
-    color: #94969b;
-    font-size: 12px;
+    color: var(--sub-font-color);
+    font-size: var(--sub-font-size);
     margin-left: 20px;
     flex-direction: row;
     display: flex;
