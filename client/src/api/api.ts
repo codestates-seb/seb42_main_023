@@ -58,11 +58,11 @@ export const commentsApi = createApi({
       },
     }),
     setComment: builder.mutation({
-      query: ({ postId }) => {
+      query: ({ postId, content }) => {
         return {
           url: `posts/${postId}/comments`,
           method: 'POST',
-          body: { postId },
+          body: { postId, content },
         };
       },
       invalidatesTags: (result, error, arg) => [

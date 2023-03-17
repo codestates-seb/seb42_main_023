@@ -12,11 +12,16 @@ import {
   setIsOpened,
   setCommentId,
   isOpened,
+  setTotalReplies,
 } from '../../slices/postSlice';
 import { useAppDispatch, useAppSelector } from '../../hooks';
 import { StateType, ReplyType, CommentType } from '../../types/PostDetail';
 import { commentsApi, repliesApi } from '../../api/api';
 import { useParams } from 'react-router';
+
+interface ReplyInput {
+  onClick(): void;
+}
 
 const Comment: React.FC = () => {
   const dispatch = useAppDispatch();
@@ -29,7 +34,21 @@ const Comment: React.FC = () => {
   const commentId = state.postSlice && state.postSlice.commentId;
   const replyQuery = repliesApi.useGetReplyQuery({ commentId });
 
+  // 답글 Open 여부 확인을 위한 배열 생성
+  if (
+    state.postSlice &&
+    commentQuery.isSuccess &&
+    state.postSlice.isOpend === undefined
+  ) {
+    const open = Array.from(
+      { length: commentQuery.data.comment.length },
+      (el) => (el = false),
+    );
+    dispatch(isOpened(open as Array<boolean>));
+  }
+
   //TODO 답글 추가하는 로직 필요함 Mutation 사용해 보기
+
   // 댓글 좋아요 클릭 함수
   const CommentLiikeHandler = (): void => {
     dispatch(setCommentLike(state.postSlice.isCommentLike));
@@ -40,32 +59,8 @@ const Comment: React.FC = () => {
   };
 
   // 답글 조회
-  const getReply = async (commentId: Partial<CommentType>) => {
-    // const commentid = id;
-    // const response = await axios.get(`/comments/${commentid}/replies`);
-    // try {
-    //   const { data } = response;
-    //   // console.log('data', data);
-    //   dispatch(setReplies(data.comment));
-    //   dispatch(setTotalReplies(data.comment));
-    // } catch (err) {
-    //   console.log(err);
-    // }
-  };
-
-  // console.log(open);
-  // dispatch(isOpened(open));
-
-  // 답글 조회
   const confirmRepliesHandler = useCallback(
     (commentId: Partial<CommentType>): void => {
-      // const open =
-      //   commentQuery.isSuccess &&
-      //   Array.from(
-      //     { length: commentQuery.data.comment.length },
-      //     (el) => (el = false),
-      //   );
-      // console.log('open', open);
       dispatch(setCommentId(commentId));
     },
     [],
@@ -77,14 +72,15 @@ const Comment: React.FC = () => {
         commentQuery.data.comment.map(
           (comment: Partial<CommentType>, idx: number) => {
             const filtered =
-              replyQuery.data &&
-              (_.uniqBy(replyQuery.data, 'replyId') as Array<object>).filter(
-                (reply) => {
-                  return (reply as ReplyType).commentId === comment.commentId;
-                },
-              );
-            // console.log('replies', replyQuery.data.comment);
-            // console.log('filtered', filtered);
+              state.postSlice.totalReplies &&
+              (
+                _.uniqBy(
+                  state.postSlice.totalReplies,
+                  'replyId',
+                ) as Array<object>
+              ).filter((reply) => {
+                return (reply as ReplyType).commentId === comment.commentId;
+              });
             return (
               <>
                 <CommentInfo key={comment.commentId}>
@@ -118,6 +114,11 @@ const Comment: React.FC = () => {
                         comment.commentId as Partial<CommentType>,
                       );
                       dispatch(setIsOpened(idx));
+                      dispatch(
+                        setTotalReplies(
+                          replyQuery.data.comment && replyQuery.data.comment,
+                        ),
+                      );
                     }}
                   >
                     답글 {comment.replyCount}

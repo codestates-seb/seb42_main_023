@@ -15,7 +15,6 @@ const RecommendedPost: React.FC = () => {
       <ul>
         {isSuccess &&
           data.map((post: Partial<PostType>) => {
-            console.log('testet', data);
             const url = `/posts/${post.postId}`;
             return (
               <li key={post.postId}>
