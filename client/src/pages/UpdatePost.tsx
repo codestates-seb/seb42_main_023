@@ -47,8 +47,8 @@ const UpdatePost: React.FC = () => {
       <TagInput></TagInput>
 
       <BtnContainer>
-        <WhiteBtn onClick={cancelAddHandler}>취소</WhiteBtn>
-        <BlueBtn onClick={addPostHandler}>수정</BlueBtn>
+        <CancleBtn onClick={cancelAddHandler}>취소</CancleBtn>
+        <PostBtn onClick={addPostHandler}>수정</PostBtn>
       </BtnContainer>
     </Container>
   );

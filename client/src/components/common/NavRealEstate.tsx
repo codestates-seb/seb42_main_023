@@ -63,7 +63,7 @@ export default NavRealEstate;
 const NavContainer = styled.nav`
   width: 140px;
   height: 400px;
-  border: 2px solid #d4d4d4;
+  border: 2px solid var(--border-color);
   > ul {
     height: 200px;
     width: 100%;
@@ -79,8 +79,8 @@ const NavContainer = styled.nav`
       cursor: pointer;
     }
     > .current {
-      background-color: #f8f8f8;
-      border: 1px solid #d4d4d4;
+      background-color: var(--background-dark-color);
+      border: 1px solid var(--border-color);
       font-weight: 700;
     }
   }

@@ -61,10 +61,14 @@ const Post = ({ post }: Props) => {
   return (
     <Item>
       <div>
-        <Thumnail content={post.img} />
+        <a href="#">
+          <Thumnail content={post.img} />
+        </a>
       </div>
       <div>
-        <h1>{post.title}</h1>
+        <a href="#">
+          <h1>{post.title}</h1>
+        </a>
         <Itemside>
           <div>
             {post.tag.map((tag) => (
@@ -96,7 +100,7 @@ export default Post;
 
 const Item = styled.li`
   height: 100px;
-  border-bottom: 1px solid #d9d9d9;
+  border-bottom: 1px solid var(--border-color);
   box-sizing: border-box;
   display: flex;
   justify-content: center;
@@ -119,8 +123,8 @@ const Itemside = styled.div`
 `;
 const Info = styled.div`
   span {
-    color: #94969b;
-    font-size: 12px;
+    color: var(--sub-font-color);
+    font-size: var(--sub-font-size);
     margin-left: 20px;
     flex-direction: row;
     display: flex;

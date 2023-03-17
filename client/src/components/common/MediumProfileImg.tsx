@@ -22,8 +22,17 @@ const Item = styled.img`
   width: 50px;
   height: 50px;
   cursor: pointer;
+
+  transition: all 0.3s linear;
+  :hover {
+    transform: scale(1.2);
+  }
 `;
 const Btn = styled.button`
   margin-left: 10px;
+  border-radius: 50%;
+  width: 50px;
+  height: 50px;
   background-color: #fff;
+  overflow: hidden;
 `;

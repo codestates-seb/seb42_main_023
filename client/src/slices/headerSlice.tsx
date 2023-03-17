@@ -1,5 +1,4 @@
-import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { type } from '@testing-library/user-event/dist/type';
+import { createSlice } from '@reduxjs/toolkit';
 
 interface Header {
   type: string;
