@@ -4,31 +4,18 @@ import styled from 'styled-components';
 import { commentsApi } from '../../api/api';
 import { useAppDispatch, useAppSelector } from '../../hooks';
 import { setComment } from '../../slices/commentSlice';
-import {
-  StateType,
-  CommentType,
-  SecondStateType,
-} from '../../types/PostDetail';
-
-interface Input {
-  className: string;
-  placeholder: string;
-  onChange: React.KeyboardEvent<HTMLInputElement>;
-  value: string;
-}
+import { CommentStateType } from '../../types/PostDetail';
 
 const CommentInput: React.FC = () => {
   const commentRef = useRef<HTMLInputElement>(null);
   const dispatch = useAppDispatch();
-  const state = useAppSelector(
-    (state: StateType | SecondStateType): StateType | SecondStateType => {
-      return state;
-    },
-  );
+  const state = useAppSelector((state: CommentStateType): CommentStateType => {
+    return state;
+  });
   const params = useParams();
   const postId = params.postId;
-
   const query = commentsApi.useGetCommentQuery({ postId });
+  // 댓글 추가 mutation
   const mutation = commentsApi.useSetCommentMutation();
   const setComments = mutation[0];
 
@@ -39,6 +26,27 @@ const CommentInput: React.FC = () => {
       postId: postId,
       content: commentRef.current!.value,
     });
+    commentRef.current!.value = '';
+  };
+
+  // 댓글 수정
+  const updateCommentHandler = async () => {
+    console.log('test');
+    await setComments({
+      postId: postId,
+      content: commentRef.current!.value,
+    });
+    commentRef.current!.value = '';
+  };
+
+  // 댓글 삭제
+  const deleteCommentHandler = async () => {
+    console.log('test');
+    await setComments({
+      postId: postId,
+      content: commentRef.current!.value,
+    });
+    commentRef.current!.value = '';
   };
 
   const valueCheck = (event: React.ChangeEvent<HTMLInputElement>): void => {
@@ -46,8 +54,8 @@ const CommentInput: React.FC = () => {
     console.log(commentRef.current!.value);
   };
 
-  const enterHandler = (event: React.KeyboardEvent<HTMLInputElement>) => {
-    if (event.key === 'Enter') {
+  const enterHandler = (event: React.KeyboardEvent<HTMLInputElement>): void => {
+    if (event.key === 'Enter' && event.nativeEvent.isComposing === false) {
       addCommentHandler();
     }
   };

@@ -1,44 +1,57 @@
 import React, { useCallback } from 'react';
 import styled from 'styled-components';
 import _ from 'lodash';
-import Reply from './Reply';
 import ReplyInput from './ReplyInput';
 import DislikeIcon from '../../assets/common/DislikeIcon';
 import LikeIcon from '../../assets/common/LikeIcon';
 import TimeIcon from '../../assets/common/TimeIcon';
-import {
-  setCommentDislike,
-  setCommentLike,
-  setIsOpened,
-  setCommentId,
-  isOpened,
-  setTotalReplies,
-} from '../../slices/postSlice';
+import Reply from './Reply';
 import { useAppDispatch, useAppSelector } from '../../hooks';
-import { StateType, ReplyType, CommentType } from '../../types/PostDetail';
 import { commentsApi, repliesApi } from '../../api/api';
 import { useParams } from 'react-router';
+import {
+  PostStateType,
+  CommentStateType,
+  ReplyStateType,
+  CommentType,
+  ReplyType,
+} from '../../types/PostDetail';
 
-interface ReplyInput {
-  onClick(): void;
-}
+import {
+  eidtComment,
+  setCommentDislike,
+  setCommentLike,
+  setCommentId,
+} from '../../slices/commentSlice';
+
+import {
+  isOpened,
+  setIsOpened,
+  setTotalReplies,
+} from '../../slices/replySlice';
 
 const Comment: React.FC = () => {
   const dispatch = useAppDispatch();
-  const state = useAppSelector((state: StateType): StateType => {
-    return state;
-  });
+  const state = useAppSelector(
+    (
+      state: PostStateType | CommentStateType | ReplyStateType,
+    ): PostStateType | CommentStateType | ReplyStateType => {
+      return state;
+    },
+  );
   const params = useParams();
   const postId = params.postId;
   const commentQuery = commentsApi.useGetCommentQuery({ postId });
-  const commentId = state.postSlice && state.postSlice.commentId;
+  const commentId =
+    (state as CommentStateType).comment &&
+    (state as CommentStateType).comment.commentId;
   const replyQuery = repliesApi.useGetReplyQuery({ commentId });
 
   // 답글 Open 여부 확인을 위한 배열 생성
   if (
-    state.postSlice &&
+    (state as ReplyStateType).reply &&
     commentQuery.isSuccess &&
-    state.postSlice.isOpend === undefined
+    (state as ReplyStateType).reply.isOpened === undefined
   ) {
     const open = Array.from(
       { length: commentQuery.data.comment.length },
@@ -47,15 +60,21 @@ const Comment: React.FC = () => {
     dispatch(isOpened(open as Array<boolean>));
   }
 
-  //TODO 답글 추가하는 로직 필요함 Mutation 사용해 보기
+  // 댓글 수정가능 상태
+  const editCommentHandler = async () => {
+    dispatch(eidtComment((state as CommentStateType).comment.isEdit));
+    console.log((state as CommentStateType).comment.isEdit);
+  };
 
   // 댓글 좋아요 클릭 함수
   const CommentLiikeHandler = (): void => {
-    dispatch(setCommentLike(state.postSlice.isCommentLike));
+    dispatch(setCommentLike((state as CommentStateType).comment.isCommentLike));
   };
   // 댓글 싫어요 클릭 함수
   const CommentDislikeHandler = (): void => {
-    dispatch(setCommentDislike(state.postSlice.isCommentDislike));
+    dispatch(
+      setCommentDislike((state as CommentStateType).comment.isCommentDislike),
+    );
   };
 
   // 답글 조회
@@ -72,10 +91,10 @@ const Comment: React.FC = () => {
         commentQuery.data.comment.map(
           (comment: Partial<CommentType>, idx: number) => {
             const filtered =
-              state.postSlice.totalReplies &&
+              (state as ReplyStateType).reply.totalReplies &&
               (
                 _.uniqBy(
-                  state.postSlice.totalReplies,
+                  (state as ReplyStateType).reply.totalReplies,
                   'replyId',
                 ) as Array<object>
               ).filter((reply) => {
@@ -90,8 +109,26 @@ const Comment: React.FC = () => {
                     </li>
                     <li className="nickname">{comment.memberName}</li>
                     <TimeIcon />
+
                     <li className="created-time">12시간 전</li>
-                    <li className="comment-update">수정</li>
+                    {(state as CommentStateType).comment &&
+                    (state as CommentStateType).comment.isEdit ? (
+                      <li
+                        className="comment-update"
+                        id="edit"
+                        onClick={editCommentHandler}
+                      >
+                        변경
+                      </li>
+                    ) : (
+                      <li
+                        className="comment-update"
+                        onClick={editCommentHandler}
+                      >
+                        수정
+                      </li>
+                    )}
+
                     <li className="comment-delete">삭제</li>
                     <button onClick={CommentLiikeHandler}>
                       <LikeIcon checked={comment.isThumbup!} />
@@ -106,7 +143,15 @@ const Comment: React.FC = () => {
                   </ul>
                 </CommentInfo>
                 <CommentContent>
-                  <div className="content">{comment.content}</div>
+                  {(state as CommentStateType).comment &&
+                  (state as CommentStateType).comment.isEdit ? (
+                    <input
+                      className="content"
+                      placeholder={comment.content}
+                    ></input>
+                  ) : (
+                    <div className="content">{comment.content}</div>
+                  )}
                   <ReplyBtn
                     onClick={(): void => {
                       console.log('commentId', comment.commentId);
@@ -124,8 +169,10 @@ const Comment: React.FC = () => {
                     답글 {comment.replyCount}
                   </ReplyBtn>
                 </CommentContent>
-                {state.postSlice.isOpend &&
-                (state.postSlice.isOpend as Array<boolean>)[idx] ? (
+                {(state as ReplyStateType).reply.isOpened &&
+                ((state as ReplyStateType).reply.isOpened as Array<boolean>)[
+                  idx
+                ] ? (
                   <ReplyContainer>
                     <ReplyInput></ReplyInput>
                     {filtered! &&
@@ -203,6 +250,9 @@ const CommentContainer = styled.div`
   .comment-dislikes {
     font-size: 16px;
     margin: 3px 15px 0 15px;
+  }
+  #edit {
+    color: #0069ca;
   }
 `;
 const CommentInfo = styled.div`

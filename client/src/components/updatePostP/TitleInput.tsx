@@ -17,7 +17,7 @@ const TitleInput: React.FC = () => {
 
   // 유효성 검사
   const validationTest = (): void => {
-    const titleValue = title.current?.value;
+    const titleValue = title!.current?.value;
     if (titleValue!.length === 0) {
       dispatch(setTitleErr('제목을 작성해주세요.'));
     }
