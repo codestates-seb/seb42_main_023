@@ -12,7 +12,6 @@ import MediumProfileImg from './MediumProfileImg';
 function HeaderDefault() {
   const navigate = useNavigate();
   const state = useAppSelector((state) => state);
-
   const { pathname } = useLocation();
   return state.header.search ? (
     <SearchHead>
@@ -67,12 +66,16 @@ function HeaderDefault() {
 }
 export default HeaderDefault;
 
-const NavBtn = styled.button`
+export const NavBtn = styled.button`
   background-color: #fff;
   cursor: pointer;
+  :hover {
+    color: #0069ca;
+    transition: 0.3s;
+  }
 `;
 
-const NavBtnClicked = styled(NavBtn)`
+export const NavBtnClicked = styled(NavBtn)`
   border-bottom: 1px solid #0069ca;
   color: #0069ca;
 `;
@@ -100,12 +103,6 @@ const NavHead = styled.header`
     width: 400px;
     display: flex;
     justify-content: space-between;
-    button {
-      :hover {
-        color: #0069ca;
-        transition: 0.3s;
-      }
-    }
   }
 `;
 const SearchHead = styled.header`

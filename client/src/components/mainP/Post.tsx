@@ -61,10 +61,14 @@ const Post = ({ post }: Props) => {
   return (
     <Item>
       <div>
-        <Thumnail content={post.img} />
+        <a href="#">
+          <Thumnail content={post.img} />
+        </a>
       </div>
       <div>
-        <h1>{post.title}</h1>
+        <a href="#">
+          <h1>{post.title}</h1>
+        </a>
         <Itemside>
           <div>
             {post.tag.map((tag) => (
@@ -101,6 +105,9 @@ const Item = styled.li`
   display: flex;
   justify-content: center;
   align-items: center;
+  a {
+    color: #000;
+  }
   h1 {
     font-size: 20px;
     margin-bottom: 4px;
