@@ -1,6 +1,5 @@
 import React, { useCallback } from 'react';
 import styled from 'styled-components';
-import axios from 'axios';
 import _ from 'lodash';
 import Reply from './Reply';
 import ReplyInput from './ReplyInput';
@@ -11,18 +10,26 @@ import {
   setCommentDislike,
   setCommentLike,
   setIsOpened,
-  setReplies,
-  setTotalReplies,
+  setCommentId,
+  isOpened,
 } from '../../slices/postSlice';
 import { useAppDispatch, useAppSelector } from '../../hooks';
 import { StateType, ReplyType, CommentType } from '../../types/PostDetail';
+import { commentsApi, repliesApi } from '../../api/api';
+import { useParams } from 'react-router';
 
 const Comment: React.FC = () => {
   const dispatch = useAppDispatch();
   const state = useAppSelector((state: StateType): StateType => {
     return state;
   });
+  const params = useParams();
+  const postId = params.postId;
+  const commentQuery = commentsApi.useGetCommentQuery({ postId });
+  const commentId = state.postSlice && state.postSlice.commentId;
+  const replyQuery = repliesApi.useGetReplyQuery({ commentId });
 
+  //TODO 답글 추가하는 로직 필요함 Mutation 사용해 보기
   // 댓글 좋아요 클릭 함수
   const CommentLiikeHandler = (): void => {
     dispatch(setCommentLike(state.postSlice.isCommentLike));
@@ -33,43 +40,51 @@ const Comment: React.FC = () => {
   };
 
   // 답글 조회
-  const getReply = async (id: Partial<CommentType>) => {
-    const commentid = id;
-    const response = await axios.get(`/comments/${commentid}/replies`);
-    try {
-      const { data } = response;
-      // console.log('data', data);
-      dispatch(setReplies(data.comment));
-      dispatch(setTotalReplies(data.comment));
-    } catch (err) {
-      console.log(err);
-    }
+  const getReply = async (commentId: Partial<CommentType>) => {
+    // const commentid = id;
+    // const response = await axios.get(`/comments/${commentid}/replies`);
+    // try {
+    //   const { data } = response;
+    //   // console.log('data', data);
+    //   dispatch(setReplies(data.comment));
+    //   dispatch(setTotalReplies(data.comment));
+    // } catch (err) {
+    //   console.log(err);
+    // }
   };
+
+  // console.log(open);
+  // dispatch(isOpened(open));
 
   // 답글 조회
   const confirmRepliesHandler = useCallback(
     (commentId: Partial<CommentType>): void => {
-      getReply(commentId);
+      // const open =
+      //   commentQuery.isSuccess &&
+      //   Array.from(
+      //     { length: commentQuery.data.comment.length },
+      //     (el) => (el = false),
+      //   );
+      // console.log('open', open);
+      dispatch(setCommentId(commentId));
     },
     [],
   );
 
   return (
     <CommentContainer>
-      {state.postSlice.comments! &&
-        (state.postSlice.comments as object[]).map(
-          (comment: Partial<CommentType>, idx) => {
+      {commentQuery.data &&
+        commentQuery.data.comment.map(
+          (comment: Partial<CommentType>, idx: number) => {
             const filtered =
-              state.postSlice.totalReplies &&
-              (
-                _.uniqBy(
-                  state.postSlice.totalReplies,
-                  'replyId',
-                ) as Array<object>
-              ).filter((reply) => {
-                return (reply as ReplyType).commentId === comment.commentId;
-              });
-
+              replyQuery.data &&
+              (_.uniqBy(replyQuery.data, 'replyId') as Array<object>).filter(
+                (reply) => {
+                  return (reply as ReplyType).commentId === comment.commentId;
+                },
+              );
+            // console.log('replies', replyQuery.data.comment);
+            // console.log('filtered', filtered);
             return (
               <>
                 <CommentInfo key={comment.commentId}>
@@ -98,6 +113,7 @@ const Comment: React.FC = () => {
                   <div className="content">{comment.content}</div>
                   <ReplyBtn
                     onClick={(): void => {
+                      console.log('commentId', comment.commentId);
                       confirmRepliesHandler(
                         comment.commentId as Partial<CommentType>,
                       );

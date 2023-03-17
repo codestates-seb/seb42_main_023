@@ -15,6 +15,7 @@ const postSlice = createSlice({
     comments: undefined,
     replies: undefined,
     isOpend: undefined,
+    commentId: undefined,
     totalReplies: [],
   },
   reducers: {
@@ -69,6 +70,10 @@ const postSlice = createSlice({
     setReplies: (state, action: PayloadAction<object>): void => {
       (state.replies as unknown) = action.payload;
     },
+    // 댓글 ID
+    setCommentId: (state, action: PayloadAction<object>): void => {
+      (state.commentId as unknown) = action.payload;
+    },
     // 렌더링 답글
     setTotalReplies: (state, action: PayloadAction<Array<object>>): void => {
       (state.totalReplies as Array<object>).push(...action.payload);
@@ -100,6 +105,7 @@ export const {
   setPostDetail,
   setComments,
   setReplies,
+  setCommentId,
   setTotalReplies,
   isOpened,
   setIsOpened,
