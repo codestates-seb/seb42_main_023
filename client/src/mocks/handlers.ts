@@ -7,6 +7,8 @@ export const handlers = [
   // 추천 게시물 조회
   rest.get('/posts/recommend', (req, res, ctx) => {
     const data = recomendedPosts;
+    const params = req.params;
+    console.log('test', data);
     return res(ctx.status(200), ctx.json(data));
   }),
 

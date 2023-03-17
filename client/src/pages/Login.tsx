@@ -9,19 +9,51 @@ import { RiKakaoTalkFill } from 'react-icons/ri';
 const Login: React.FC = () => {
   // 서버에 post 요청을 보내면, 서버는 클라이언트를 google계정선택화면인 'https://accounts.google.com/o/oauth/v2/auth/oauthchooseaccount?rediret-uri=서버주소' 로 redirect-uri를 붙여서 리다이렉트 해준다.
 
-  const CLIENT_ID = process.env.REACT_APP_GOOGLE_CLIENT_ID;
-  const requestGoogleLoginHandler = (): void => {
-    // axios.post('http://15.164.95.47:8080/oauth2/authorization/google', null);
-    return window.location.assign(
-      `https://accounts.google.com/o/oauth2/v2/auth?scope=profile&response_type=code&client_id=${CLIENT_ID}&redirect_uri=http://15.164.95.47/login/oauth2/code/google`,
-    );
-  };
+  // const CLIENT_ID = process.env.REACT_APP_GOOGLE_CLIENT_ID;
+  // const requestGoogleLoginHandler = (): void => {
+  //   // console.log('clientID:', CLIENT_ID);
+  //   axios.post(
+  //     'http://ec2-15-164-95-47.ap-northeast-2.compute.amazonaws.com/oauth2/authorization/google',
+  //     null,
+  //   );
+  // const clientid =
+  //   '837111839897-qut2rrrspaev8hr4fj35n6569k23f4ij.apps.googleusercontent.com';
+  // return window.location.assign(
+  //   `https://accounts.google.com/o/oauth2/v2/auth?scope=profile&response_type=code&client_id=${clientid}&redirect_uri=http://ec2-15-164-95-47.ap-northeast-2.compute.amazonaws.com/login/oauth2/code/google`,
+  // );
+  // };
 
   //   const CLIENT_ID = process.env.REACT_APP_GOOGLE_CLIENT_ID;
   //   console.log(CLIENT_ID);
   // return window.location.assign(
   //   `https://accounts.google.com/o/oauth2/v2/auth?scope=profile&response_type=code&client_id=${CLIENT_ID}&redirect_uri=http://hp5234-dragonmoney-front.s3-website.ap-northeast-2.amazonaws.com/redirect`,
   // );
+
+  // const loginKakaoHandler = () => {
+  //   const KAKAO_LOGIN_URL = 'https://dev.somojeon.site/oauth2/authorization/kakao';
+  //   const handleKakaoLogin = async () => {
+  //     const res = await getFetch(KAKAO_LOGIN_URL);
+  //     console.log('카카오톡 로그인 응답 : ', res);
+  //   };
+
+  //   axios.get(url, )
+
+  //   export const getFetch = async (url: string) => {
+  //     try {
+  //       const res = await axios.get(url);
+  //       return res.data;
+  //     } catch (err) {
+  //       console.error(err);
+  //     }
+  //   };
+  // }
+
+  const loginGoogleHandler = () => {
+    return window.location.assign(
+      'http://ec2-52-78-117-163.ap-northeast-2.compute.amazonaws.com/oauth2/authorization/google',
+    );
+    // "http://ec2-15-164-95-47.ap-northeast-2.compute.amazonaws.com/login/oauth2/code/google"
+  };
 
   return (
     <>
@@ -30,10 +62,13 @@ const Login: React.FC = () => {
           <div>Logo</div>
           <p>회원가입 없이 간편하게 로그인하세요</p>
           <LoginBtnContainer>
-            <button className="btn google" onClick={requestGoogleLoginHandler}>
-              <FcGoogle size="24" style={{ margin: '10px' }} />
-              Google로 로그인하기
-            </button>
+            <div>
+              <button className="btn google" onClick={loginGoogleHandler}>
+                <FcGoogle size="24" style={{ margin: '10px' }} />
+                Google로 로그인하기
+              </button>
+            </div>
+
             <button className="btn kakao">
               <RiKakaoTalkFill size="24" style={{ margin: '10px' }} />
               Kakao로 로그인하기

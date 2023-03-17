@@ -22,38 +22,6 @@ const Reply: React.FC<Props> = ({ replyInfo }: Props) => {
 
   return (
     <ReplyContainer>
-      {/* {replyInfo! &&
-        (replyInfo as Array<ReplyType>).map((reply: ReplyType) => {
-          return (
-            <>
-              <ReplyInfo key={reply.replyId}>
-                <ul className="reply-info">
-                  <li className="image">
-                    <img src={reply && reply.memberImage}></img>
-                  </li>
-                  <li className="nickname">{reply && reply.memberName}</li>
-                  <li className="reply-created-time">12시간 전</li>
-                  <li className="reply-update">수정</li>
-                  <li className="reply-delete">삭제</li>
-                  <button onClick={ReplyLiikeHandler}>
-                    <LikeIcon checked={reply && reply.isThumbup} />
-                  </button>
-                  <li className="reply-likes">{reply && reply.thumbupCount}</li>
-                  <button onClick={ReplyDislikeHandler}>
-                    <DislikeIcon checked={reply && reply.isThumbDown} />
-                  </button>
-                  <li className="reply-dislikes">
-                    {reply && reply.thumbupCount}
-                  </li>
-                </ul>
-              </ReplyInfo>
-              <ReplyContent>
-                <div className="content">{reply && reply.content}</div>
-              </ReplyContent>
-            </>
-          );
-        })} */}
-
       <ReplyInfo key={replyInfo.replyId}>
         <ul className="reply-info">
           <li className="image">

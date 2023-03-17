@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import styled from 'styled-components';
 import CommentInput from '../components/postDetailP/CommentInput';
 import Comment from '../components/postDetailP/Comment';
@@ -10,19 +10,11 @@ import ViewIcon from '../assets/common/ViewIcon';
 import CommentIcon from '../assets/common/CommentIcon';
 import DislikeIcon from '../assets/common/DislikeIcon';
 import LikeIcon from '../assets/common/LikeIcon';
-import {
-  isOpened,
-  setBookmark,
-  setComments,
-  setDislike,
-  setLike,
-  setRecommendPosts,
-  setPostDetail,
-} from '../slices/postSlice';
+import { setBookmark, setDislike, setLike } from '../slices/postSlice';
 import { useAppDispatch, useAppSelector } from '../hooks';
-import axios from 'axios';
-import { StateType, PostType, CommentType } from '../types/PostDetail';
+import { StateType } from '../types/PostDetail';
 import { useParams } from 'react-router';
+import { postsApi } from '../api/api';
 
 const PostDetail: React.FC = () => {
   const dispatch = useAppDispatch();
@@ -31,46 +23,8 @@ const PostDetail: React.FC = () => {
   });
   const params = useParams();
   const postId = params.postId;
-
-  // 게시글 조회
-  const getPost = async () => {
-    const response = await axios.get(`/posts/${postId}`);
-    try {
-      const { data } = response;
-      dispatch(setPostDetail(data.posts[0]));
-    } catch (err) {
-      console.log(err);
-    }
-  };
-  // 댓글 조회
-  const getComments = async () => {
-    const response = await axios.get(`/posts/${postId}/comments`);
-    try {
-      const { data } = response;
-      const isOpend = Array.from({ length: data.length }, (el) => (el = false));
-      dispatch(isOpened(isOpend));
-      dispatch(setComments(data.comment));
-    } catch (err) {
-      console.log(err);
-    }
-  };
-
-  // 추천 게시글 조회
-  const getRecommendPost = async () => {
-    const response = await axios.get('/posts/recommend');
-    try {
-      const { data } = response;
-      dispatch(setRecommendPosts(data));
-    } catch (err) {
-      console.log(err);
-    }
-  };
-
-  useEffect(() => {
-    getPost();
-    getComments();
-    getRecommendPost();
-  }, []);
+  const postDetailquery = postsApi.useGetPostQuery({ postId });
+  const { data, isSuccess } = postDetailquery;
 
   // 좋아요 클릭 함수
   const changeLiikeHandler = (): void => {
@@ -88,77 +42,40 @@ const PostDetail: React.FC = () => {
   return (
     <Container>
       <PostContainer>
-        <h1>
-          {state.postSlice.postDetail! &&
-            (state.postSlice.postDetail as PostType).title}
-        </h1>
+        <h1>{isSuccess && data.posts[0].title}</h1>
         <PostInfo>
           <ul className="post-info">
             <li className="image">
-              <img
-                src={
-                  state.postSlice.postDetail! &&
-                  (state.postSlice.postDetail as PostType).memberImage
-                }
-              ></img>
+              <img src={isSuccess && data.posts[0].memberImage}></img>
             </li>
             <li className="nickname">
-              {state.postSlice.postDetail! &&
-                (state.postSlice.postDetail as PostType).memberName}
+              {isSuccess && data.posts[0].memberName}
             </li>
             <TimeIcon />
             <li className="created-time">12시간 전</li>
             <ViewIcon />
-            <li className="views">
-              {state.postSlice.postDetail! &&
-                (state.postSlice.postDetail as PostType).viewCount}
-            </li>
+            <li className="views">{isSuccess && data.posts[0].viewCount}</li>
             <CommentIcon checked={true} />
-            <li className="comments">
-              {state.postSlice.comments! &&
-                (state.postSlice.comments as CommentType).length}
-            </li>
+            <li className="comments">{isSuccess && data.posts[0].length}</li>
             <button className="bookmark" onClick={changeBookmarkHandler}>
-              <BookmarkIcon
-                checked={
-                  state.postSlice.postDetail! &&
-                  (state.postSlice.postDetail! as PostType).isBookmarked
-                }
-              />
+              <BookmarkIcon checked={isSuccess && data.posts[0].isBookmarked} />
             </button>
             <BsThreeDots style={{ cursor: 'pointer' }} />
           </ul>
         </PostInfo>
         <PostContent>
-          <div>
-            {state.postSlice.postDetail! &&
-              (state.postSlice.postDetail! as PostType).content}
-          </div>
+          <div>{isSuccess && data.posts[0].content}</div>
 
           <ul className="post-info">
             <button onClick={changeLiikeHandler}>
-              <LikeIcon
-                checked={
-                  state.postSlice.postDetail! &&
-                  (state.postSlice.postDetail! as PostType).isThumbup
-                }
-              />
+              <LikeIcon checked={isSuccess && data.posts[0].isThumbup} />
             </button>
-            <li className="likes">
-              {state.postSlice.postDetail! &&
-                (state.postSlice.postDetail! as PostType).thumbupCount}
-            </li>
+            <li className="likes">{isSuccess && data.posts[0].thumbupCount}</li>
             <button onClick={changeDislikeHandler}>
-              <DislikeIcon
-                checked={
-                  state.postSlice.postDetail! &&
-                  (state.postSlice.postDetail! as PostType).isThumbDown
-                }
-              />
+              <DislikeIcon checked={isSuccess && data.posts[0].isThumbDown} />
             </button>
             <li className="dislikes">
-              {state.postSlice.postDetail! &&
-                (state.postSlice.postDetail! as PostType).thumbDownCount}
+              {isSuccess && data.posts[0].thumbDownCount}
             </li>
           </ul>
           <CommentInput></CommentInput>

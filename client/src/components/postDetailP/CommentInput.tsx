@@ -26,7 +26,6 @@ const CommentInput: React.FC = () => {
 
   const valueCheck = (event: React.ChangeEvent<HTMLInputElement>): void => {
     dispatch(setComment(event.target.value));
-    console.log(state);
   };
 
   return (

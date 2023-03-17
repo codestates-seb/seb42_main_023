@@ -1,5 +1,4 @@
 export type NewType = StateType & SecondStateType;
-
 export interface StateType {
   postSlice: {
     isLike: boolean;
@@ -15,6 +14,7 @@ export interface StateType {
     replies: unknown;
     isOpend: unknown;
     totalReplies: Array;
+    commentId: unknown;
   };
 }
 
