@@ -48,6 +48,13 @@ const Login: React.FC = () => {
   //   };
   // }
 
+  const loginGoogleHandler = () => {
+    return window.location.assign(
+      'http://ec2-52-78-117-163.ap-northeast-2.compute.amazonaws.com/oauth2/authorization/google',
+    );
+    // "http://ec2-15-164-95-47.ap-northeast-2.compute.amazonaws.com/login/oauth2/code/google"
+  };
+
   return (
     <>
       <LoginMain>
@@ -56,12 +63,10 @@ const Login: React.FC = () => {
           <p>회원가입 없이 간편하게 로그인하세요</p>
           <LoginBtnContainer>
             <div>
-              <a href="http://ec2-15-164-95-47.ap-northeast-2.compute.amazonaws.com/login/oauth2/code/google">
-                <span className="btn google">
-                  <FcGoogle size="24" style={{ margin: '10px' }} />
-                  Google로 로그인하기
-                </span>
-              </a>
+              <button className="btn google" onClick={loginGoogleHandler}>
+                <FcGoogle size="24" style={{ margin: '10px' }} />
+                Google로 로그인하기
+              </button>
             </div>
 
             <button className="btn kakao">
