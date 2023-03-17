@@ -52,7 +52,6 @@ const Login: React.FC = () => {
     return window.location.assign(
       'http://ec2-52-78-117-163.ap-northeast-2.compute.amazonaws.com/oauth2/authorization/google',
     );
-    // "http://ec2-15-164-95-47.ap-northeast-2.compute.amazonaws.com/login/oauth2/code/google"
   };
 
   return (
@@ -62,13 +61,10 @@ const Login: React.FC = () => {
           <div>Logo</div>
           <p>회원가입 없이 간편하게 로그인하세요</p>
           <LoginBtnContainer>
-            <div>
-              <button className="btn google" onClick={loginGoogleHandler}>
-                <FcGoogle size="24" style={{ margin: '10px' }} />
-                Google로 로그인하기
-              </button>
-            </div>
-
+            <button className="btn google" onClick={loginGoogleHandler}>
+              <FcGoogle size="24" style={{ margin: '10px' }} />
+              Google로 로그인하기
+            </button>
             <button className="btn kakao">
               <RiKakaoTalkFill size="24" style={{ margin: '10px' }} />
               Kakao로 로그인하기
