@@ -1,15 +1,27 @@
 import React from 'react';
 import styled from 'styled-components';
-import axios from 'axios';
+// import axios from 'axios';
 import { FcGoogle } from 'react-icons/fc';
 import { SiNaver } from 'react-icons/si';
 import { RiKakaoTalkFill } from 'react-icons/ri';
 
+// 테스트용 주석 추가
 const Login: React.FC = () => {
   // 서버에 post 요청을 보내면, 서버는 클라이언트를 google계정선택화면인 'https://accounts.google.com/o/oauth/v2/auth/oauthchooseaccount?rediret-uri=서버주소' 로 redirect-uri를 붙여서 리다이렉트 해준다.
+
+  const CLIENT_ID = process.env.REACT_APP_GOOGLE_CLIENT_ID;
   const requestGoogleLoginHandler = (): void => {
-    axios.post('http://15.164.95.47:8080/oauth2/authorization/google', null);
+    // axios.post('http://15.164.95.47:8080/oauth2/authorization/google', null);
+    return window.location.assign(
+      `https://accounts.google.com/o/oauth2/v2/auth?scope=profile&response_type=code&client_id=${CLIENT_ID}&redirect_uri=http://15.164.95.47/login/oauth2/code/google`,
+    );
   };
+
+  //   const CLIENT_ID = process.env.REACT_APP_GOOGLE_CLIENT_ID;
+  //   console.log(CLIENT_ID);
+  // return window.location.assign(
+  //   `https://accounts.google.com/o/oauth2/v2/auth?scope=profile&response_type=code&client_id=${CLIENT_ID}&redirect_uri=http://hp5234-dragonmoney-front.s3-website.ap-northeast-2.amazonaws.com/redirect`,
+  // );
 
   return (
     <>
