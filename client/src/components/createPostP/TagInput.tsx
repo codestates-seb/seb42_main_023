@@ -5,13 +5,6 @@ import { setTagContent, setTag } from '../../slices/postInputSlice';
 import { setTagErr } from '../../slices/validationSlice';
 import Tag from '../common/Tag';
 
-interface Input {
-  className: string;
-  placeholder: string;
-  onChange: React.KeyboardEvent<HTMLInputElement>;
-  value: string;
-}
-
 // 공통 컴포넌트
 const TagInput: React.FC = () => {
   const dispatch = useAppDispatch();

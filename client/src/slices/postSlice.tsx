@@ -84,7 +84,6 @@ const postSlice = createSlice({
     },
     // 답글 클릭 상태 변경
     setIsOpened: (state, action: PayloadAction<number>): void => {
-      console.log(action.payload);
       (state.isOpend! as Array<boolean>)[action.payload] = !(
         state.isOpend! as Array<boolean>
       )[action.payload];
