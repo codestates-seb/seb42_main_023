@@ -65,8 +65,8 @@ const LoginForm = styled.div`
   width: 503px;
   height: 426px;
   margin: auto;
-  background-color: #fcfcfc;
-  border: 2px solid #f4f4f4;
+  background-color: var(--background-color);
+  border: 2px solid var(--border-color);
   border-radius: 5px;
   display: flex;
   flex-direction: column;
@@ -87,7 +87,7 @@ const LoginBtnContainer = styled.div`
   justify-content: space-between;
   > .btn {
     height: 50px;
-    border: 1px solid #d4d4d4;
+    border: 1px solid var(--border-color);
     display: flex;
     justify-content: center;
     align-items: center;

@@ -8,6 +8,7 @@ import SearchBar from './SearchBar';
 import SearchBtn from './SearchToggle';
 import PostBtn from './PostBtn';
 import MediumProfileImg from './MediumProfileImg';
+import { NavBtn, NavBtnClicked } from '../common/Btn';
 
 function HeaderDefault() {
   const navigate = useNavigate();
@@ -66,26 +67,12 @@ function HeaderDefault() {
 }
 export default HeaderDefault;
 
-export const NavBtn = styled.button`
-  background-color: #fff;
-  cursor: pointer;
-  :hover {
-    color: #0069ca;
-    transition: 0.3s;
-  }
-`;
-
-export const NavBtnClicked = styled(NavBtn)`
-  border-bottom: 1px solid #0069ca;
-  color: #0069ca;
-`;
-
 const Main = styled.button`
   background-color: #fff;
   cursor: pointer;
 `;
 const NavHead = styled.header`
-  border-bottom: 1px solid #d9d9d9;
+  border-bottom: 1px solid var(--border-color);
   background-color: #fff;
   z-index: 98;
   padding: 10px 0;
@@ -106,7 +93,7 @@ const NavHead = styled.header`
   }
 `;
 const SearchHead = styled.header`
-  border-bottom: 1px solid #d9d9d9;
+  border-bottom: 1px solid var(--border-color);
   background-color: #fff;
   padding: 10px 0;
   z-index: 98;

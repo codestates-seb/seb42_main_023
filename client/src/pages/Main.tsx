@@ -4,7 +4,7 @@ import PostList from '../components/mainP/PostList';
 import Pagenation from '../components/mainP/Pagenation';
 import DropdownButton from '../components/mainP/DropdownButton';
 import { AiOutlineTrophy } from 'react-icons/ai';
-import { NavBtn, NavBtnClicked } from '../components/common/HeaderDefault';
+import { NavBtn, NavBtnClicked } from '../components/common/Btn';
 import { useLocation } from 'react-router-dom';
 
 const Main = () => {
@@ -36,6 +36,9 @@ const ComuntyBtn = styled(NavBtn)`
   svg {
     transform: translateY(2px);
   }
+`;
+const ClickComuntyBtn = styled(ComuntyBtn)`
+  color: var(--point-blue-color);
 `;
 const FilterWrap = styled.div`
   display: flex;

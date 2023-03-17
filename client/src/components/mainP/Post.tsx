@@ -100,14 +100,11 @@ export default Post;
 
 const Item = styled.li`
   height: 100px;
-  border-bottom: 1px solid #d9d9d9;
+  border-bottom: 1px solid var(--border-color);
   box-sizing: border-box;
   display: flex;
   justify-content: center;
   align-items: center;
-  a {
-    color: #000;
-  }
   h1 {
     font-size: 20px;
     margin-bottom: 4px;
@@ -126,8 +123,8 @@ const Itemside = styled.div`
 `;
 const Info = styled.div`
   span {
-    color: #94969b;
-    font-size: 12px;
+    color: var(--sub-font-color);
+    font-size: var(--sub-font-size);
     margin-left: 20px;
     flex-direction: row;
     display: flex;
