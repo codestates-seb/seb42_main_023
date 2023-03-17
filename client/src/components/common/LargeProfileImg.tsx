@@ -21,7 +21,6 @@ const Item = styled.img`
   object-fit: cover;
   width: 100px;
   height: 100px;
-
   transition: all 0.3s linear;
   :hover {
     transform: scale(1.2);
@@ -33,4 +32,5 @@ const Cover = styled.div`
   height: 100px;
   background-color: #fff;
   overflow: hidden;
+  box-shadow: 4px 4px 8px rgba(0, 0, 0, 0.15);
 `;

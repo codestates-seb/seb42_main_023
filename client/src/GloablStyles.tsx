@@ -39,6 +39,7 @@ const GlobalStyles = createGlobalStyle`
     }
     button{
       background-color: #fff;
+      cursor: pointer;
     }
     img{
       border: 0;

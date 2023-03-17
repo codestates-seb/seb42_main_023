@@ -11,6 +11,7 @@ import {
 } from '../api/api';
 import headerSlice from '../slices/headerSlice';
 import mainSlice from '../slices/mainSlice';
+import mypageSlice from '../slices/mypageSlice';
 import commentSlice from '../slices/commentSlice';
 
 const store = configureStore({
@@ -21,6 +22,7 @@ const store = configureStore({
     validation: validationSlice.reducer,
     header: headerSlice.reducer,
     main: mainSlice.reducer,
+    mypage: mypageSlice.reducer,
     [postsApi.reducerPath]: postsApi.reducer,
     [commentsApi.reducerPath]: commentsApi.reducer,
     [repliesApi.reducerPath]: repliesApi.reducer,
