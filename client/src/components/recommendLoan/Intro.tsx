@@ -2,7 +2,11 @@ import React from 'react';
 import styled from 'styled-components';
 import { BlueBtn } from '../../components/common/Btn';
 
-const Intro: React.FC = () => {
+interface Props {
+  nextQuestionHandler: (next: number) => void;
+}
+
+const Intro: React.FC<Props> = ({ nextQuestionHandler }) => {
   return (
     <IntroContainer>
       <div>Logo</div>
@@ -15,7 +19,7 @@ const Intro: React.FC = () => {
       </Question>
       <FindBtn
         onClick={() => {
-          //   nextQuestionHandler(0);
+          nextQuestionHandler(0);
         }}
       >
         나에게 맞는 대출상품 찾기

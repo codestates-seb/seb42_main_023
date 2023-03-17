@@ -2,35 +2,28 @@ import React from 'react';
 import styled from 'styled-components';
 import NavRealEstate from '../components/common/NavRealEstate';
 import { BlueBtn } from '../components/common/Btn';
-// import { questionData } from '../data/surveyData';
-// import Intro from '../components/recommendLoan/Intro';
-// import Question from '../components/recommendLoan/Question';
-// import { useState } from 'react';
+import { questionData } from '../data/surveyData';
+import Intro from '../components/recommendLoan/Intro';
+import Question from '../components/recommendLoan/Question';
+import { useState } from 'react';
 
-// interface questionData {
-//     id: number;
-//     question: string;
-//     answer: ({
-//         content: string;
-//         next: number;
-//         resultId?: undefined;
-//     } | {
-//         content: string;
-//         resultId: number;
-//         next?: undefined;
-//     })[];
-// }
+interface questionData {
+  id: number;
+  question: string;
+  answers: {
+    content: string;
+    next: number | null;
+    resultId?: number;
+  }[];
+}
 
 const RecommendLoan: React.FC = () => {
-  //   const [currentQuestion, setCurrentQuestion] = useState(null);
-  const nextQuestionHandler = (next: number) => {
-    // if (next === next) {
-    //   setCurrentQuestion(questionData[next]);
-    // } else if () {
-    //   next === resultId
-    //   move to result page.
-    // }
-    // }
+  const [currentQuestion, setCurrentQuestion] = useState<questionData | null>(
+    null,
+  );
+
+  const nextQuestionHandler = (next: number): void => {
+    // setCurrentQuestion(questionData[next]);
   };
 
   return (
@@ -38,10 +31,13 @@ const RecommendLoan: React.FC = () => {
       <NavRealEstate />
       <div className="content-container">
         <SurveyBox>
-          {/* {currentQuestion! ? (
+          {/* {!currentQuestion ? (
             <Intro nextQuestionHandler={nextQuestionHandler} />
           ) : (
-            <Question />
+            <Question
+              currentQuestion={currentQuestion}
+              nextQuestionHandler={nextQuestionHandler}
+            />
           )} */}
 
           {/* <Result /> */}

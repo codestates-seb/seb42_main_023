@@ -1,13 +1,34 @@
 import React from 'react';
 import styled from 'styled-components';
 
-const Question: React.FC = () => {
+interface questionData {
+  id: number;
+  question: string;
+  answers: {
+    content: string;
+    next: number | null;
+    resultId?: number | undefined;
+  }[];
+}
+
+interface Props {
+  currentQuestion: questionData;
+  nextQuestionHandler: (next: number | null) => void;
+}
+
+const Question: React.FC<Props> = ({
+  currentQuestion,
+  nextQuestionHandler,
+}) => {
   return (
     <QuestionContainer>
-      <h1>고객님은 만 19세 이상 34세 이하의 청년이십니까?</h1>
+      <h1>{currentQuestion.question}</h1>
       <div>
-        <AnswerBtn>네</AnswerBtn>
-        <AnswerBtn>아니요</AnswerBtn>
+        {currentQuestion.answers.map((answer, idx) => (
+          <AnswerBtn key={idx} onClick={() => nextQuestionHandler(answer.next)}>
+            {answer.content}
+          </AnswerBtn>
+        ))}
       </div>
     </QuestionContainer>
   );
