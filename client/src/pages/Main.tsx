@@ -50,6 +50,7 @@ const ComuntyBtn = styled(NavBtn)`
   font-size: 20px;
   margin-bottom: 10px;
   margin-right: 20px;
+  margin-left: 10px;
   svg {
     transform: translateY(2px);
   }
