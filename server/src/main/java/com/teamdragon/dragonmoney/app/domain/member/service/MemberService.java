@@ -59,9 +59,9 @@ public class MemberService {
         Member member = Member.builder()
                 .oauthkind(oauthKind)
                 .nameDuplicateCheck(false)
+                .profileImage(picture)
                 .tempName(tempName)
                 .email(email)
-                .profileImage(picture)
                 .build();
         return memberRepository.save(member);
     }

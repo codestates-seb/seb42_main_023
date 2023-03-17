@@ -1,5 +1,6 @@
 package com.teamdragon.dragonmoney.app.global.auth.handler;
 
+import com.teamdragon.dragonmoney.app.domain.member.entity.Member;
 import com.teamdragon.dragonmoney.app.domain.member.service.MemberService;
 import com.teamdragon.dragonmoney.app.global.auth.jwt.JwtTokenizer;
 import com.teamdragon.dragonmoney.app.global.auth.service.OAuth2Service;
@@ -71,6 +72,11 @@ public class OAuth2MemberHandler extends SimpleUrlAuthenticationSuccessHandler {
         }
     }
 
+//    private void saveNewMember(String oauthkind, String picture, String tempName, String email) {
+//        Member member = new Member(oauthkind, picture, tempName, email);
+//        memberService.saveMember(member);
+//    }
+
     //닉네임 중복 검사 페이지로 리다이렉트(uri에 uuid를 담아서 보낸다.)
     private void redirectNameCheckPage(HttpServletRequest request, HttpServletResponse response, String tempName) throws IOException {
         String uri = createCheckNameURI(tempName).toString();
@@ -98,16 +104,6 @@ public class OAuth2MemberHandler extends SimpleUrlAuthenticationSuccessHandler {
         String accessToken = jwtTokenizer.generateAccessToken(claims, subject, expiration, base64EncodedSecretKey);
 
         return accessToken;
-    }
-
-    private String delegateRefreshToken(String name) {
-        String subject = name;
-        Date expiration = jwtTokenizer.getTokenExpiration(jwtTokenizer.getRefreshTokenExpirationMinutes());
-        String base64EncodedSecretKey = jwtTokenizer.encodeBase64SecretKey(jwtTokenizer.getSecretKey());
-
-        String refreshToken = jwtTokenizer.generateRefreshToken(subject, expiration, base64EncodedSecretKey);
-
-        return refreshToken;
     }
 
     private URI createCheckNameURI(String tempName) {
@@ -139,20 +135,4 @@ public class OAuth2MemberHandler extends SimpleUrlAuthenticationSuccessHandler {
                 .build()
                 .toUri();
     }
-
-    //로그인 성공 시 클라이언트에 보낼 response 데이터
-//    private void loginResponse(HttpServletResponse response, String name, List<String> authorities, Boolean checkName) throws IOException {
-//        String accessToken = delegateAccessToken(name, authorities);
-//        String refreshToken = delegateRefreshToken(name);
-//        response.setHeader("Access Token", accessToken);
-//        response.setHeader("Refresh Token", refreshToken);
-//        response.setHeader("nameDuplicateCheck", String.valueOf(checkName));
-//    }
-
-    //신규 회원 가입 시 클라이언트에 보낼 response 데이터
-//    private void loginFailResponse(HttpServletResponse response, String uuid, Boolean checkName) throws IOException {
-//        response.setHeader("uuid", uuid);
-//        response.setHeader("nameDuplicateCheck", String.valueOf(checkName));
-//    }
-
 }
