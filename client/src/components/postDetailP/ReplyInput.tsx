@@ -13,6 +13,8 @@ const ReplyInput: React.FC = () => {
 export default ReplyInput;
 
 const ReplyInputContainer = styled.div`
+  display: flex;
+  justify-content: flex-end;
   position: relative;
   width: 720px;
   height: auto;
@@ -23,7 +25,7 @@ const ReplyInputContainer = styled.div`
   }
 `;
 const Input = styled.input`
-  width: 720px;
+  width: 670px;
   height: 50px;
   border: 1px solid #d4d4d4;
   padding: 0 10px 0 10px;

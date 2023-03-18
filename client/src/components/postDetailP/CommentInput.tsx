@@ -3,7 +3,7 @@ import { useParams } from 'react-router-dom';
 import styled from 'styled-components';
 import { commentsApi } from '../../api/api';
 import { useAppDispatch, useAppSelector } from '../../hooks';
-import { setComment } from '../../slices/commentSlice';
+import { addCommentEdit, isEdit, setComment } from '../../slices/commentSlice';
 import { CommentStateType } from '../../types/PostDetail';
 
 const CommentInput: React.FC = () => {
@@ -18,7 +18,7 @@ const CommentInput: React.FC = () => {
   // 댓글 추가 mutation
   const mutation = commentsApi.useSetCommentMutation();
   const setComments = mutation[0];
-
+  console.log('queryData', query.data);
   // 댓글 추가
   const addCommentHandler = async () => {
     console.log('test');
@@ -26,6 +26,7 @@ const CommentInput: React.FC = () => {
       postId: postId,
       content: commentRef.current!.value,
     });
+    dispatch(addCommentEdit(false));
     commentRef.current!.value = '';
   };
 

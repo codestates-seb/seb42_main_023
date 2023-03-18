@@ -4,15 +4,28 @@ import DislikeIcon from '../../assets/common/DislikeIcon';
 import LikeIcon from '../../assets/common/LikeIcon';
 import { setReplyDislike, setReplyLike } from '../../slices/replySlice';
 import { useAppDispatch, useAppSelector } from '../../hooks';
-import { PostStateType, ReplyStateType, Props } from '../../types/PostDetail';
+import {
+  PostStateType,
+  ReplyStateType,
+  CommentStateType,
+  Props,
+} from '../../types/PostDetail';
+import { repliesApi } from '../../api/api';
 
 const Reply: React.FC<Props> = ({ replyInfo }: Props) => {
   const dispatch = useAppDispatch();
   const state = useAppSelector(
-    (state: PostStateType | ReplyStateType): PostStateType | ReplyStateType => {
+    (
+      state: PostStateType | ReplyStateType,
+    ): PostStateType | ReplyStateType | CommentStateType => {
       return state;
     },
   );
+  const commentId =
+    (state as CommentStateType).comment &&
+    (state as CommentStateType).comment.commentId;
+  const replyQuery = repliesApi.useGetReplyQuery({ commentId });
+
   // 답글 좋아요 클릭 함수
   const ReplyLiikeHandler = (): void => {
     dispatch(setReplyLike((state as ReplyStateType).reply.isReplyLike));
@@ -75,10 +88,14 @@ const ReplyContainer = styled.div`
     padding: 30px 0 30px 0;
   }
   .content {
-    height: 100%;
-    width: 100%;
+    display: flex;
+    align-items: center;
+    width: 660px;
+    height: 50px;
+    padding-left: 10px;
     display: flex;
     justify-content: flex-start;
+    width: auto;
     color: black;
   }
   .nickname {
