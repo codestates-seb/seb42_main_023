@@ -91,7 +91,6 @@ jobs:
       
       ## remove client
       - name: remove client
-        if: contains(github.ref, 'be-dev') # branch 가 be-dev 인 경우
         run: |
           # 클라이언트 디렉토리 삭제
           rm -rf client
