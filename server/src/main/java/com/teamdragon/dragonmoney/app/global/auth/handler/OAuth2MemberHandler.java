@@ -1,13 +1,11 @@
 package com.teamdragon.dragonmoney.app.global.auth.handler;
 
-import com.teamdragon.dragonmoney.app.domain.member.entity.Member;
 import com.teamdragon.dragonmoney.app.domain.member.service.MemberService;
 import com.teamdragon.dragonmoney.app.global.auth.jwt.JwtTokenizer;
 import com.teamdragon.dragonmoney.app.global.auth.service.OAuth2Service;
 import com.teamdragon.dragonmoney.app.global.auth.utils.CustomAuthorityUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.oauth2.client.web.OAuth2LoginAuthenticationFilter;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler;
 import org.springframework.stereotype.Component;
@@ -66,16 +64,10 @@ public class OAuth2MemberHandler extends SimpleUrlAuthenticationSuccessHandler {
             String tempName = UUID.randomUUID().toString();
             //DB에 정보 저장
             memberService.saveMember("google", picture, tempName, email);
-//            loginFailResponse(response, uuid,false);
             //중복 검사 페이지로 리다이렉트
             redirectNameCheckPage(request, response, tempName);
         }
     }
-
-//    private void saveNewMember(String oauthkind, String picture, String tempName, String email) {
-//        Member member = new Member(oauthkind, picture, tempName, email);
-//        memberService.saveMember(member);
-//    }
 
     //닉네임 중복 검사 페이지로 리다이렉트(uri에 uuid를 담아서 보낸다.)
     private void redirectNameCheckPage(HttpServletRequest request, HttpServletResponse response, String tempName) throws IOException {
@@ -113,8 +105,8 @@ public class OAuth2MemberHandler extends SimpleUrlAuthenticationSuccessHandler {
         return UriComponentsBuilder
                 .newInstance()
                 .scheme("http")
-                .host("hp5234-dragonmoney-front.s3-website.ap-northeast-2.amazonaws.com")
-//                .port(80)
+//                .host("hp5234-dragonmoney-front.s3-website.ap-northeast-2.amazonaws.com")
+                .host("thedragonmoney.com")
                 .path("/setnickname")
                 .queryParams(queryParams)
                 .build()
@@ -128,8 +120,8 @@ public class OAuth2MemberHandler extends SimpleUrlAuthenticationSuccessHandler {
         return UriComponentsBuilder
                 .newInstance()
                 .scheme("http")
-                .host("hp5234-dragonmoney-front.s3-website.ap-northeast-2.amazonaws.com")
-//                .port(80)
+//                .host("hp5234-dragonmoney-front.s3-website.ap-northeast-2.amazonaws.com")
+                .host("thedragonmoney.com")
                 .path("/temptoken")
                 .queryParams(queryParams)
                 .build()
