@@ -32,7 +32,7 @@ public class JwtVerificationFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         //특정 예외 타입의 Exception이 catch 되면 해당 Exception을 HttpServletRequest의 애트리뷰트(Attribute)로 추가
-        //예외가 발생하게 되면 SecurityContext에 클라이언트의 인증 정보(Authentication 객체)가 저장되지 않습니다.
+        //예외가 발생하게 되면 SecurityContext에 클라이언트의 인증 정보(Authentication 객체)가 저장되지 않는다..
 
         try {
             Map<String, Object> claims = verifyJws(request);    //JWT를 검증하는데 사용되는 private 메서드
@@ -50,7 +50,7 @@ public class JwtVerificationFilter extends OncePerRequestFilter {
         filterChain.doFilter(request, response);
     }
 
-    //특정 조건에 부합하면(true이면) 해당 Filter의 동작을 수행하지 않고 다음 Filter로 건너뛰도록 해줍니다.
+    //특정 조건에 부합하면(true이면) 해당 Filter의 동작을 수행하지 않고 다음 Filter로 건너뛰도록 한다.
     @Override
     protected boolean shouldNotFilter(HttpServletRequest request) throws ServletException {
         //Authorization header의 값을 얻은 후에
@@ -63,23 +63,23 @@ public class JwtVerificationFilter extends OncePerRequestFilter {
     }
 
     private Map<String, Object> verifyJws(HttpServletRequest request) {
-        //request의 header에서 JWT를 얻고 있습니다.
+        //request의 header에서 JWT를 얻고 있다.
         // JWT는 클라이언트가 response header로 전달받은 JWT를 request header에 추가해서 서버 측에 전송한 것
         //replace() 메서드를 이용해 “Bearer “부분을 제거
         String jws = request.getHeader("Authorization").replace("Bearer ", "");
-        // JWT 서명(Signature)을 검증하기 위한 Secret Key를 얻습니다.
+        // JWT 서명(Signature)을 검증하기 위한 Secret Key를 얻는다.
         String base64EncodedSecretKey = jwtTokenizer.encodeBase64SecretKey(jwtTokenizer.getSecretKey());
-        //JWT에서 Claims를 파싱합니다.
-        //Claims가 정상적으로 파싱이 되면 서명 검증 역시 자연스럽게 성공한 것
+        //JWT에서 Claims를 파싱.
+        //Claims가 정상적으로 파싱이 되면 서명 검증 성공
         Map<String, Object> claims = jwtTokenizer.getClaims(jws, base64EncodedSecretKey).getBody();
 
         return claims;
     }
 
     private void setAuthenticationToContext(Map<String, Object> claims) {
-        //JWT에서 파싱한 Claims에서 name을 얻습니다.
+        //JWT에서 파싱한 Claims에서 name을 얻는다.
         String name = (String) claims.get("username");
-        //JWT의 Claims에서 얻은 권한 정보를 기반으로 List<GrantedAuthority 를 생성합니다.
+        //JWT의 Claims에서 얻은 권한 정보를 기반으로 List<GrantedAuthority 를 생성
         List<GrantedAuthority> authorities = authorityUtils.createAuthorities((List)claims.get("roles"));
         //username과 List<GrantedAuthority 를 포함한 Authentication 객체를 생성
         Authentication authentication = new UsernamePasswordAuthenticationToken(name, null, authorities);

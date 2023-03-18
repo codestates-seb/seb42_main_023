@@ -8,11 +8,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.Cookie;
 
@@ -20,12 +16,12 @@ import javax.servlet.http.Cookie;
 @CrossOrigin
 @Slf4j
 @RequiredArgsConstructor
-@Controller
+@RestController
 public class OAuth2Controller {
     @Getter
     @Value("${jwt.refresh-token-expiration-minutes}")
     private int refreshTokenExpirationMinutes;
-    private OAuth2Service oAuth2Service;
+    private final OAuth2Service oAuth2Service;
 
     @PostMapping("/auth/callback/google")
     public ResponseEntity getAccess(@RequestBody TempAccessTokenDto tempAccessTokenDto) {
@@ -37,7 +33,7 @@ public class OAuth2Controller {
         cookie.isHttpOnly();
 
         return ResponseEntity.status(HttpStatus.OK)
-                .header("Access Token", accessToken)
+                .header("Authorization", accessToken)
                 .header("Set-Cookie", "Refresh="+cookie)
                 .build();
     }

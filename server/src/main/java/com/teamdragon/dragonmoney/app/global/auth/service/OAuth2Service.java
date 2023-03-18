@@ -2,23 +2,23 @@ package com.teamdragon.dragonmoney.app.global.auth.service;
 
 import com.teamdragon.dragonmoney.app.domain.member.entity.Member;
 import com.teamdragon.dragonmoney.app.domain.member.repository.MemberRepository;
+import com.teamdragon.dragonmoney.app.domain.member.service.MemberService;
 import com.teamdragon.dragonmoney.app.global.auth.jwt.JwtTokenizer;
-import com.teamdragon.dragonmoney.app.global.auth.utils.CustomAuthorityUtils;
-import com.teamdragon.dragonmoney.app.global.exception.BusinessExceptionCode;
-import com.teamdragon.dragonmoney.app.global.exception.BusinessLogicException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Optional;
 
-@Service
 @RequiredArgsConstructor
+@Transactional
+@Service
 public class OAuth2Service {
     private final JwtTokenizer jwtTokenizer;
     private final MemberRepository memberRepository;
+    private final MemberService memberService;
 
     //Access Token 발급
     public String delegateAccessToken(String tempAccessToken) {
@@ -44,18 +44,18 @@ public class OAuth2Service {
         Member member = findMemberByTempAccessToken(tempAccessToken);
         String name = member.getName();
 
-        String subject = name;
         Date expiration = jwtTokenizer.getTokenExpiration(jwtTokenizer.getRefreshTokenExpirationMinutes());
         String base64EncodedSecretKey = jwtTokenizer.encodeBase64SecretKey(jwtTokenizer.getSecretKey());
 
-        String refreshToken = jwtTokenizer.generateRefreshToken(subject, expiration, base64EncodedSecretKey);
+        String refreshToken = jwtTokenizer.generateRefreshToken(name, expiration, base64EncodedSecretKey);
 
         return refreshToken;
     }
 
     //tempAccessToken 저장
     public Member updatedTempAccessToken(String name, String tempAccessToken) {
-        Member member = memberRepository.findByTempName(name);
+//        Optional<Member> member = memberRepository.findByName(name);
+        Member member = memberService.findVerifiedMemberName(name);
         member.setTempAccessToken(tempAccessToken);
 
         return memberRepository.save(member);
