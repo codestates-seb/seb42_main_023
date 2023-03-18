@@ -8,7 +8,7 @@ public enum BusinessExceptionCode {
     USER_EXISTS(409, null, "User already exists"),
     USER_NOT_FOUND(404, null, "User not found"),
     CATEGORY_NOT_FOUND(404, null, "Category not found"),
-    POST_NOT_FOUND(404, null, "Post not found"),
+    POSTS_NOT_FOUND(404, null, "Posts not found"),
     COMMENT_NOT_FOUND(404, null, "Comment not found"),
     REPLY_NOT_FOUND(404, null, "Reply not found"),
     THUMBUP_NOT_FOUND(404, null, "Thumbup not found"),

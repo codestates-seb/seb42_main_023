@@ -1,4 +1,4 @@
-package com.teamdragon.dragonmoney.app.domain.post.entity;
+package com.teamdragon.dragonmoney.app.domain.posts.entity;
 
 import com.teamdragon.dragonmoney.app.domain.tag.entity.Tag;
 import lombok.Builder;
@@ -8,7 +8,7 @@ import javax.persistence.*;
 
 @NoArgsConstructor
 @Entity
-public class PostTag {
+public class PostsTag {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -16,15 +16,15 @@ public class PostTag {
 
     @ManyToOne
     @JoinColumn(name = "POST_ID")
-    private Post post;
+    private Posts posts;
 
     @ManyToOne
     @JoinColumn(name = "TAG_ID")
     private Tag tag;
 
     @Builder
-    public PostTag(Post post, Tag tag) {
-        this.post = post;
+    public PostsTag(Posts posts, Tag tag) {
+        this.posts = posts;
         this.tag = tag;
     }
 }

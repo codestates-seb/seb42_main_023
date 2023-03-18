@@ -5,7 +5,7 @@ import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.teamdragon.dragonmoney.app.domain.tag.entity.QTag;
 import lombok.RequiredArgsConstructor;
 
-import static com.teamdragon.dragonmoney.app.domain.post.entity.QPostTag.*;
+import static com.teamdragon.dragonmoney.app.domain.posts.entity.QPostsTag.postsTag;
 import static com.teamdragon.dragonmoney.app.domain.tag.entity.QTag.*;
 
 @RequiredArgsConstructor
@@ -24,9 +24,9 @@ public class TagRepositoryImpl implements TagRepositoryCustom {
                         JPAExpressions
                                 .select(tag.id)
                                 .from(tag)
-                                .leftJoin(postTag)
-                                .on(tag.id.eq(postTag.tag.id))
-                                .where(postTag.post.isNull())
+                                .leftJoin(postsTag)
+                                .on(tag.id.eq(postsTag.tag.id))
+                                .where(postsTag.posts.isNull())
                 ))
                 .execute();
     }

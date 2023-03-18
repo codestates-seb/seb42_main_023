@@ -1,7 +1,7 @@
 package com.teamdragon.dragonmoney.app.domain.image.entity;
 
 import com.teamdragon.dragonmoney.app.domain.member.entity.Member;
-import com.teamdragon.dragonmoney.app.domain.post.entity.Post;
+import com.teamdragon.dragonmoney.app.domain.posts.entity.Posts;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -23,7 +23,7 @@ public class Image {
 
     @ManyToOne
     @JoinColumn(name = "POST_ID")
-    private Post post;
+    private Posts posts;
 
     @Column(length = 200)
     private String url;

@@ -1,9 +1,9 @@
-package com.teamdragon.dragonmoney.app.domain.post.repository;
+package com.teamdragon.dragonmoney.app.domain.posts.repository;
 
-import com.teamdragon.dragonmoney.app.domain.post.entity.Post;
+import com.teamdragon.dragonmoney.app.domain.posts.entity.Posts;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-public interface PostRepository extends JpaRepository<Post, Long> {
+public interface PostsRepository extends JpaRepository<Posts, Long>, PostsRepositoryCustom {
     // 게시글 조회 : 요청페이지번호, 정렬기준
 
     // 게시글 목록 조회 : 태그목록 + 제목

@@ -1,7 +1,9 @@
-package com.teamdragon.dragonmoney.app.domain.post.entity;
+package com.teamdragon.dragonmoney.app.domain.posts.entity;
 
 import com.teamdragon.dragonmoney.app.domain.category.entity.Category;
 import com.teamdragon.dragonmoney.app.domain.member.entity.Member;
+import com.teamdragon.dragonmoney.app.domain.thumb.Thumb;
+import com.teamdragon.dragonmoney.app.domain.thumb.ThumbCountable;
 import com.teamdragon.dragonmoney.app.global.audit.BaseTimeEntity;
 import com.teamdragon.dragonmoney.app.global.entity.DeleteResult;
 import lombok.Builder;
@@ -14,7 +16,7 @@ import javax.persistence.*;
 @Getter
 @NoArgsConstructor
 @Entity
-public class Post extends BaseTimeEntity {
+public class Posts extends BaseTimeEntity implements ThumbCountable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -50,6 +52,15 @@ public class Post extends BaseTimeEntity {
     @JoinColumn(name = "DELETE_RESULT_ID")
     private DeleteResult deleteResult;
 
+    @Column
+    private Long thumbupCount;
+
+    @Column
+    private Long thumbdownCount;
+
+    @Column
+    private Long commentCount;
+
 //    @OneToMany(mappedBy = "post")
 //    private List<Comment> comments = new ArrayList<>();
 //
@@ -61,17 +72,6 @@ public class Post extends BaseTimeEntity {
 //
 //    @OneToMany(mappedBy = "post")
 //    private List<PostTag> tags = new ArrayList<>();
-
-    @Builder
-    public Post(Member writer, Category category, Long viewCount, String title, String content, State state, DeleteResult deleteResult) {
-        this.writer = writer;
-        this.category = category;
-        this.viewCount = viewCount;
-        this.title = title;
-        this.content = content;
-        this.state = state;
-        this.deleteResult = deleteResult;
-    }
 
     // 게시글 상태
     public enum State {
@@ -98,5 +98,21 @@ public class Post extends BaseTimeEntity {
         OrderBy(String orderBy) {
             this.orderBy = orderBy;
         }
+    }
+
+    @Builder
+    public Posts(Member writer, Category category, Long viewCount, String title, String content, State state, DeleteResult deleteResult) {
+        this.writer = writer;
+        this.category = category;
+        this.viewCount = viewCount;
+        this.title = title;
+        this.content = content;
+        this.state = state;
+        this.deleteResult = deleteResult;
+    }
+
+    @Override
+    public Thumb getThumbCount() {
+        return new Thumb(this.thumbupCount, thumbdownCount);
     }
 }
