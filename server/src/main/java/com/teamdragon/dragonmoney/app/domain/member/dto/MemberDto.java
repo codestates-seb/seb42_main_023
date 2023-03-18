@@ -13,7 +13,6 @@ public class MemberDto {
     @Getter
     public static class PostTemp {
         @NotBlank
-        @NotNull
         @Size(min = 2, max = 8)
         @Pattern(regexp = "^[0-9A-Za-z가-힣]{2,30}$",
                 message = "숫자, 영어, 한글이 포함된 2글자 이상 8글자 이하 이름만 사용 가능합니다.")
