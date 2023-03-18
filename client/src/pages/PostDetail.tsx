@@ -25,7 +25,6 @@ const PostDetail: React.FC = () => {
   const postId = params.postId;
   const postDetailQuery = postsApi.useGetPostQuery({ postId });
   const { data, isSuccess } = postDetailQuery;
-  console.log(postDetailQuery);
 
   // 좋아요 클릭 함수
   const changeLiikeHandler = (): void => {

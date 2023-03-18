@@ -6,8 +6,8 @@ const replySlice = createSlice({
     isReplyLike: false,
     isReplyDislike: false,
     replyValue: '',
-    totalReplies: [],
     isOpened: undefined,
+    totalReplies: [],
   },
   reducers: {
     // 답글 좋아요

@@ -6,9 +6,10 @@ const commentSlice = createSlice({
     isCommentLike: false,
     isCommentDislike: false,
     commentValue: '',
+    editValue: '',
     currentComment: undefined,
-    isEdit: false,
     commentId: undefined,
+    isEdit: undefined,
   },
   reducers: {
     // 댓글 좋아요
@@ -25,9 +26,9 @@ const commentSlice = createSlice({
     setComment: (state, action: PayloadAction<string>) => {
       (state.commentValue as unknown) = action.payload;
     },
-    // 댓글 수정가능 상태
-    eidtComment: (state, action: PayloadAction<boolean>) => {
-      state.isEdit = !state.isEdit;
+    // 댓글 수정 내용
+    editComment: (state, action: PayloadAction<string>) => {
+      (state.commentValue as unknown) = action.payload;
     },
     // 댓글 삭제
     deleteComment: (state, action: PayloadAction<object>) => {
@@ -37,6 +38,20 @@ const commentSlice = createSlice({
     setCommentId: (state, action: PayloadAction<object>): void => {
       (state.commentId as unknown) = action.payload;
     },
+    // 댓글 수정 여부
+    isEdit: (state, action: PayloadAction<object>): void => {
+      (state.isEdit as unknown) = action.payload;
+    },
+    // 답글 수정 상태 변경
+    setIsEdit: (state, action: PayloadAction<number>): void => {
+      (state.isEdit! as Array<boolean>)[action.payload] = !(
+        state.isEdit! as Array<boolean>
+      )[action.payload];
+    },
+    // edit 댓글 추가
+    addCommentEdit: (state, action: PayloadAction<boolean>): void => {
+      (state.isEdit! as Array<boolean>).push(action.payload);
+    },
   },
 });
 
@@ -45,7 +60,10 @@ export const {
   setCommentLike,
   setCommentDislike,
   setComment,
-  eidtComment,
+  editComment,
   deleteComment,
   setCommentId,
+  isEdit,
+  setIsEdit,
+  addCommentEdit,
 } = commentSlice.actions;
