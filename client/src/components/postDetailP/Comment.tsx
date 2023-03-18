@@ -53,6 +53,7 @@ const Comment: React.FC = () => {
   const commentId =
     (state as CommentStateType).comment &&
     (state as CommentStateType).comment.commentId;
+
   // 댓글 답글 조회
   const replyQuery = repliesApi.useGetReplyQuery({ commentId });
   const { isSuccess, data } = replyQuery;
@@ -103,18 +104,8 @@ const Comment: React.FC = () => {
 
   return (
     <CommentContainer>
-      {comentSucccess &&
+      {commentQuery.data &&
         commentQuery.data.comment.map((comment: CommentType, idx: number) => {
-          // const filtered =
-          //   (state as ReplyStateType).reply.totalReplies &&
-          //   (
-          //     _.uniqBy(
-          //       (state as ReplyStateType).reply.totalReplies,
-          //       'replyId',
-          //     ) as Array<object>
-          //   ).filter((reply) => {
-          //     return (reply as ReplyType).commentId === comment.commentId;
-          //   });
           return (
             <>
               <CommentInfo key={comment.commentId}>
@@ -128,6 +119,7 @@ const Comment: React.FC = () => {
                   <li className="created-time">12시간 전</li>
 
                   {comentSucccess &&
+                  (state as CommentStateType).comment.isEdit !== undefined &&
                   (
                     (state as CommentStateType).comment.isEdit as Array<boolean>
                   )[idx] ? (
@@ -168,9 +160,9 @@ const Comment: React.FC = () => {
                 </ul>
               </CommentInfo>
               <CommentContent>
-                {(state as CommentStateType).comment &&
+                {(state as CommentStateType).comment.isEdit !== undefined &&
                 ((state as CommentStateType).comment.isEdit as Array<boolean>)[
-                  idx!
+                  idx
                 ] ? (
                   // 댓글 수정 시 생기는 INPUT
                   <input
