@@ -89,7 +89,7 @@ public class OAuth2MemberHandler extends SimpleUrlAuthenticationSuccessHandler {
 //        claims.put("roles", authorities);
 
         String subject = name;
-        Date expiration = jwtTokenizer.getTokenExpiration(jwtTokenizer.getAccessTokenExpirationMinutes());
+        Date expiration = jwtTokenizer.getTokenExpiration(jwtTokenizer.getTempAccessTokenExpirationMinutes());
 
         String base64EncodedSecretKey = jwtTokenizer.encodeBase64SecretKey(jwtTokenizer.getSecretKey());
 
