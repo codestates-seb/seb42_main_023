@@ -12,31 +12,31 @@ import DislikeIcon from '../assets/common/DislikeIcon';
 import LikeIcon from '../assets/common/LikeIcon';
 import { setBookmark, setDislike, setLike } from '../slices/postSlice';
 import { useAppDispatch, useAppSelector } from '../hooks';
-import { StateType } from '../types/PostDetail';
+import { PostStateType } from '../types/PostDetail';
 import { useParams } from 'react-router';
 import { postsApi } from '../api/api';
 
 const PostDetail: React.FC = () => {
   const dispatch = useAppDispatch();
-  const state = useAppSelector((state: StateType): StateType => {
+  const state = useAppSelector((state: PostStateType): PostStateType => {
     return state;
   });
   const params = useParams();
   const postId = params.postId;
-  const postDetailquery = postsApi.useGetPostQuery({ postId });
-  const { data, isSuccess } = postDetailquery;
+  const postDetailQuery = postsApi.useGetPostQuery({ postId });
+  const { data, isSuccess } = postDetailQuery;
 
   // 좋아요 클릭 함수
   const changeLiikeHandler = (): void => {
-    dispatch(setLike(state.postSlice.isLike));
+    dispatch(setLike(state.post.isLike));
   };
   // 싫어요 클릭 함수
   const changeDislikeHandler = (): void => {
-    dispatch(setDislike(state.postSlice.isDislike));
+    dispatch(setDislike(state.post.isDislike));
   };
   // 북마크 클릭 함수
   const changeBookmarkHandler = (): void => {
-    dispatch(setBookmark(state.postSlice.isBookmark));
+    dispatch(setBookmark(state.post.isBookmark));
   };
 
   return (
