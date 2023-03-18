@@ -26,6 +26,8 @@ public class MemberService {
 
         Member createdmember = Member.builder()
                 .name(member.getName())
+                .oauthkind("google")
+                .nameDuplicateCheck(true)
                 .email(member.getEmail())
                 .profileImage(member.getProfileImage())
                 .state(Member.MemberState.ACTIVE)
@@ -143,7 +145,7 @@ public class MemberService {
     }
 
     //회원 이름을 통해 회원 존재의 유무 확인
-    private Member findVerifiedMemberName(String name) {
+    public Member findVerifiedMemberName(String name) {
         Optional<Member> optionalAnswer = memberRepository.findByName(name);
 
         return optionalAnswer
