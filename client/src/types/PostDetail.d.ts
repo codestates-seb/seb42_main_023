@@ -13,8 +13,9 @@ export interface CommentStateType {
     isCommentLike: boolean;
     isCommentDislike: boolean;
     commentValue: string;
+    editValue: string;
     currentComment: unknown;
-    isEdit: boolean;
+    isEdit: unknown;
     commentId: unknown;
   };
 }
