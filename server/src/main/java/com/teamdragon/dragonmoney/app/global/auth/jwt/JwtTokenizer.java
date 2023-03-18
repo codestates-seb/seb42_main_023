@@ -23,6 +23,10 @@ public class JwtTokenizer {
     private String secretKey;
 
     @Getter
+    @Value("${jwt.tempAccess-token-expiration-minutes}")
+    private int tempAccessTokenExpirationMinutes;
+
+    @Getter
     @Value("${jwt.access-token-expiration-minutes}")
     private int accessTokenExpirationMinutes;
 
@@ -85,6 +89,7 @@ public class JwtTokenizer {
                 .parseClaimsJws(jws);   // JWT를 파싱해서 Claims를 얻는다.
     }
 
+    //토큰 유지 시간
     public Date getTokenExpiration(int expirationMinutes) {
         Calendar calendar = Calendar.getInstance();
         calendar.add(Calendar.MINUTE, expirationMinutes);
