@@ -41,7 +41,8 @@ public class Post extends BaseTimeEntity {
     private String content;
 
     @Setter
-    @Column(length = 20)
+    @Column
+    @Enumerated(value = EnumType.STRING)
     private State state;
 
     @Setter
