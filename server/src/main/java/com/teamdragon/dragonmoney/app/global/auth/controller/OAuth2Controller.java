@@ -25,7 +25,7 @@ public class OAuth2Controller {
 
     @PostMapping("/auth/callback/google")
     public ResponseEntity getAccess(@RequestBody TempAccessTokenDto tempAccessTokenDto) {
-        String accessToken = oAuth2Service.delegateAccessToken(tempAccessTokenDto.getTempAccessToken());
+        String accessToken = "Bearer " + oAuth2Service.delegateAccessToken(tempAccessTokenDto.getTempAccessToken());
         String refreshToken = oAuth2Service.delegateRefreshToken(tempAccessTokenDto.getTempAccessToken());
 
         Cookie cookie = new Cookie("Refresh", refreshToken);

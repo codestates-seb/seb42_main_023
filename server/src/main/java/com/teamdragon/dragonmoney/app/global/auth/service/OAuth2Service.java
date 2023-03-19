@@ -20,6 +20,21 @@ public class OAuth2Service {
     private final MemberRepository memberRepository;
     private final MemberService memberService;
 
+    //Temp Access Token 발급
+    public String delegateTempAccessToken(String name) {
+        Map<String, Object> claims = new HashMap<>();
+        claims.put("name", name);
+
+        String subject = name;
+        Date expiration = jwtTokenizer.getTokenExpiration(jwtTokenizer.getTempAccessTokenExpirationMinutes());
+
+        String base64EncodedSecretKey = jwtTokenizer.encodeBase64SecretKey(jwtTokenizer.getSecretKey());
+
+        String accessToken = jwtTokenizer.generateAccessToken(claims, subject, expiration, base64EncodedSecretKey);
+
+        return accessToken;
+    }
+
     //Access Token 발급
     public String delegateAccessToken(String tempAccessToken) {
         Member member = findMemberByTempAccessToken(tempAccessToken);
