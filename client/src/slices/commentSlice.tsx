@@ -10,16 +10,15 @@ const commentSlice = createSlice({
     currentComment: undefined,
     commentId: undefined,
     isEdit: undefined,
+    isOpenDelete: false,
   },
   reducers: {
     // 댓글 좋아요
     setCommentLike: (state, action: PayloadAction<boolean>): void => {
-      console.log(action.payload);
       state.isCommentLike = !state.isCommentLike;
     },
     // 댓글 싫어요
     setCommentDislike: (state, action: PayloadAction<boolean>): void => {
-      console.log(action.payload);
       state.isCommentDislike = !state.isCommentDislike;
     },
     // 댓글 내용
@@ -52,6 +51,10 @@ const commentSlice = createSlice({
     addCommentEdit: (state, action: PayloadAction<boolean>): void => {
       (state.isEdit! as Array<boolean>).push(action.payload);
     },
+    // edit 댓글 추가
+    isOpenDelete: (state, action: PayloadAction<boolean>): void => {
+      state.isOpenDelete = !state.isOpenDelete;
+    },
   },
 });
 
@@ -66,4 +69,5 @@ export const {
   isEdit,
   setIsEdit,
   addCommentEdit,
+  isOpenDelete,
 } = commentSlice.actions;

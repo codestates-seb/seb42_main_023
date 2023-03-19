@@ -17,6 +17,7 @@ export interface CommentStateType {
     currentComment: unknown;
     isEdit: unknown;
     commentId: unknown;
+    isOpenDelete: boolean;
   };
 }
 

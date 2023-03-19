@@ -12,83 +12,105 @@ import DislikeIcon from '../assets/common/DislikeIcon';
 import LikeIcon from '../assets/common/LikeIcon';
 import { setBookmark, setDislike, setLike } from '../slices/postSlice';
 import { useAppDispatch, useAppSelector } from '../hooks';
-import { PostStateType } from '../types/PostDetail';
+import { PostStateType, CommentStateType } from '../types/PostDetail';
 import { useParams } from 'react-router';
-import { postsApi } from '../api/api';
+import { postsApi, commentsApi } from '../api/api';
+import { isOpenDelete } from '../slices/commentSlice';
 
 const PostDetail: React.FC = () => {
   const dispatch = useAppDispatch();
-  const state = useAppSelector((state: PostStateType): PostStateType => {
-    return state;
-  });
+  const state = useAppSelector(
+    (
+      state: PostStateType | CommentStateType,
+    ): PostStateType | CommentStateType => {
+      return state;
+    },
+  );
   const params = useParams();
   const postId = params.postId;
   const postDetailQuery = postsApi.useGetPostQuery({ postId });
   const { data, isSuccess } = postDetailQuery;
-
+  const commentQuery = commentsApi.useGetCommentQuery({ postId });
   // 좋아요 클릭 함수
   const changeLiikeHandler = (): void => {
-    dispatch(setLike(state.post.isLike));
+    dispatch(setLike((state as PostStateType).post.isLike));
   };
   // 싫어요 클릭 함수
   const changeDislikeHandler = (): void => {
-    dispatch(setDislike(state.post.isDislike));
+    dispatch(setDislike((state as PostStateType).post.isDislike));
   };
   // 북마크 클릭 함수
   const changeBookmarkHandler = (): void => {
-    dispatch(setBookmark(state.post.isBookmark));
+    dispatch(setBookmark((state as PostStateType).post.isBookmark));
+  };
+  // 삭제 확인 모달창
+  const confirmDeleteHandler = (): void => {
+    dispatch(isOpenDelete((state as CommentStateType).comment.isOpenDelete));
   };
 
   return (
-    <Container>
-      <PostContainer>
-        <h1>{isSuccess && data.posts[0].title}</h1>
-        <PostInfo>
-          <ul className="post-info">
-            <li className="image">
-              <img src={isSuccess && data.posts[0].memberImage}></img>
-            </li>
-            <li className="nickname">
-              {isSuccess && data.posts[0].memberName}
-            </li>
-            <TimeIcon />
-            <li className="created-time">12시간 전</li>
-            <ViewIcon />
-            <li className="views">{isSuccess && data.posts[0].viewCount}</li>
-            <CommentIcon checked={true} />
-            <li className="comments">{isSuccess && data.posts[0].length}</li>
-            <button className="bookmark" onClick={changeBookmarkHandler}>
-              <BookmarkIcon checked={isSuccess && data.posts[0].isBookmarked} />
-            </button>
-            <BsThreeDots style={{ cursor: 'pointer' }} />
-          </ul>
-        </PostInfo>
-        <PostContent>
-          <div>{isSuccess && data.posts[0].content}</div>
+    <>
+      {commentQuery.data && (state as CommentStateType).comment.isOpenDelete ? (
+        <ModalContainer>
+          <DeleteModal>
+            <div onClick={confirmDeleteHandler}> 취소 </div>
+          </DeleteModal>
+        </ModalContainer>
+      ) : null}
+      <Container>
+        <PostContainer>
+          <h1>{isSuccess && data.posts[0].title}</h1>
+          <PostInfo>
+            <ul className="post-info">
+              <li className="image">
+                <img src={isSuccess && data.posts[0].memberImage}></img>
+              </li>
+              <li className="nickname">
+                {isSuccess && data.posts[0].memberName}
+              </li>
+              <TimeIcon />
+              <li className="created-time">12시간 전</li>
+              <ViewIcon />
+              <li className="views">{isSuccess && data.posts[0].viewCount}</li>
+              <CommentIcon checked={true} />
+              <li className="comments">{isSuccess && data.posts[0].length}</li>
+              <button className="bookmark" onClick={changeBookmarkHandler}>
+                <BookmarkIcon
+                  checked={isSuccess && data.posts[0].isBookmarked}
+                />
+              </button>
+              <BsThreeDots style={{ cursor: 'pointer' }} />
+            </ul>
+          </PostInfo>
+          <PostContent>
+            <div>{isSuccess && data.posts[0].content}</div>
 
-          <ul className="post-info">
-            <button onClick={changeLiikeHandler}>
-              <LikeIcon checked={isSuccess && data.posts[0].isThumbup} />
-            </button>
-            <li className="likes">{isSuccess && data.posts[0].thumbupCount}</li>
-            <button onClick={changeDislikeHandler}>
-              <DislikeIcon checked={isSuccess && data.posts[0].isThumbDown} />
-            </button>
-            <li className="dislikes">
-              {isSuccess && data.posts[0].thumbDownCount}
-            </li>
-          </ul>
-          <CommentInput></CommentInput>
-          <Comment></Comment>
-        </PostContent>
-      </PostContainer>
-      <RecommendedPostContainer>
-        <div className="recommended-post">
-          <RecommendedPost></RecommendedPost>
-        </div>
-      </RecommendedPostContainer>
-      {/* <ProfilePreview></ProfilePreview> */}
-    </Container>
+            <ul className="post-info">
+              <button onClick={changeLiikeHandler}>
+                <LikeIcon checked={isSuccess && data.posts[0].isThumbup} />
+              </button>
+              <li className="likes">
+                {isSuccess && data.posts[0].thumbupCount}
+              </li>
+              <button onClick={changeDislikeHandler}>
+                <DislikeIcon checked={isSuccess && data.posts[0].isThumbDown} />
+              </button>
+              <li className="dislikes">
+                {isSuccess && data.posts[0].thumbDownCount}
+              </li>
+            </ul>
+            <CommentInput></CommentInput>
+            <Comment></Comment>
+          </PostContent>
+        </PostContainer>
+        <RecommendedPostContainer>
+          <div className="recommended-post">
+            <RecommendedPost></RecommendedPost>
+          </div>
+        </RecommendedPostContainer>
+        {/* <ProfilePreview></ProfilePreview> */}
+      </Container>
+    </>
   );
 };
 
@@ -97,8 +119,10 @@ export default PostDetail;
 const Container = styled.div`
   display: grid;
   grid-template-columns: 760px 340px;
+  position: relative;
   width: 100%;
   height: 100%;
+  max-height: 1000px;
   overflow: scroll;
 `;
 // Post 컨테이너
@@ -207,4 +231,41 @@ const RecommendedPostContainer = styled.div`
     background-color: white;
     border: 2px solid #d4d4d4;
   }
+`;
+
+// 모달 컨테이너
+const ModalContainer = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: absolute;
+  width: 100vw;
+  height: 100%;
+  left: 0;
+  top: 50px;
+  bottom: 0;
+  z-index: 2;
+`;
+// const ModalBackgound = styled.div`
+//   display: flex;
+//   justify-content: center;
+//   align-items: center;
+//   position: absolute;
+//   width: 100vw;
+//   height: 100%;
+//   opacity: 0.8;
+// `;
+
+// 댓글 확인 삭제창
+const DeleteModal = styled.div`
+  width: 500px;
+  height: 300px;
+  position: absolute;
+  top: 300px;
+  background-color: #ffffff;
+  border: solid 1px #5c5c5c;
+  border-radius: 5px;
+  color: #5c5c5c;
+  cursor: pointer;
+  opacity: none;
 `;
