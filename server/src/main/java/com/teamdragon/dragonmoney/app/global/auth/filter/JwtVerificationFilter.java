@@ -63,8 +63,6 @@ public class JwtVerificationFilter extends OncePerRequestFilter {
     }
 
     private Map<String, Object> verifyJws(HttpServletRequest request) {
-        //request의 header에서 JWT를 얻고 있다.
-        // JWT는 클라이언트가 response header로 전달받은 JWT를 request header에 추가해서 서버 측에 전송한 것
         //replace() 메서드를 이용해 “Bearer “부분을 제거
         String jws = request.getHeader("Authorization").replace("Bearer ", "");
         // JWT 서명(Signature)을 검증하기 위한 Secret Key를 얻는다.
@@ -76,14 +74,13 @@ public class JwtVerificationFilter extends OncePerRequestFilter {
         return claims;
     }
 
+    //토큰을 파싱해서 SecurityContext 에 담는다.
     private void setAuthenticationToContext(Map<String, Object> claims) {
-        //JWT에서 파싱한 Claims에서 name을 얻는다.
-        String name = (String) claims.get("username");
-        //JWT의 Claims에서 얻은 권한 정보를 기반으로 List<GrantedAuthority 를 생성
-        List<GrantedAuthority> authorities = authorityUtils.createAuthorities((List)claims.get("roles"));
-        //username과 List<GrantedAuthority 를 포함한 Authentication 객체를 생성
-        Authentication authentication = new UsernamePasswordAuthenticationToken(name, null, authorities);
+        String name = (String) claims.get("name");
+//        List<GrantedAuthority> authorities = authorityUtils.createAuthorities((List)claims.get("roles"));
+
         PrincipalDto principal = new PrincipalDto(name);
+        Authentication authentication = new UsernamePasswordAuthenticationToken(principal, null, null);
 
         //SecurityContext에 Authentication 객체를 저장
         SecurityContextHolder.getContext().setAuthentication(authentication);
