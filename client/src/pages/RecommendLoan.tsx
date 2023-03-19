@@ -1,36 +1,26 @@
 import React from 'react';
 import styled from 'styled-components';
+import { useState } from 'react';
+import { questionData } from '../data/surveyData';
 import NavRealEstate from '../components/common/NavRealEstate';
-import { BlueBtn } from '../components/common/Btn';
-// import { questionData } from '../data/surveyData';
-// import Intro from '../components/recommendLoan/Intro';
-// import Question from '../components/recommendLoan/Question';
-// import { useState } from 'react';
-
-// interface questionData {
-//     id: number;
-//     question: string;
-//     answer: ({
-//         content: string;
-//         next: number;
-//         resultId?: undefined;
-//     } | {
-//         content: string;
-//         resultId: number;
-//         next?: undefined;
-//     })[];
-// }
+import Intro from '../components/recommendLoan/Intro';
+import Question from '../components/recommendLoan/Question';
+import Result from '../components/recommendLoan/Result';
+import { questionDataType } from '../types/RecommendedLoan';
 
 const RecommendLoan: React.FC = () => {
-  //   const [currentQuestion, setCurrentQuestion] = useState(null);
+  const [currentQuestion, setCurrentQuestion] =
+    useState<questionDataType | null>(null);
+
+  const [result, setResult] = useState<string | null>(null);
+
   const nextQuestionHandler = (next: number) => {
-    // if (next === next) {
-    //   setCurrentQuestion(questionData[next]);
-    // } else if () {
-    //   next === resultId
-    //   move to result page.
-    // }
-    // }
+    setCurrentQuestion(questionData[next]);
+  };
+
+  const showResultHandler = (result: string) => {
+    setCurrentQuestion(null);
+    setResult(result);
   };
 
   return (
@@ -38,13 +28,19 @@ const RecommendLoan: React.FC = () => {
       <NavRealEstate />
       <div className="content-container">
         <SurveyBox>
-          {/* {currentQuestion! ? (
+          {!currentQuestion && !result && (
             <Intro nextQuestionHandler={nextQuestionHandler} />
-          ) : (
-            <Question />
-          )} */}
+          )}
 
-          {/* <Result /> */}
+          {currentQuestion && (
+            <Question
+              currentQuestion={currentQuestion}
+              nextQuestionHandler={nextQuestionHandler}
+              showResultHandler={showResultHandler}
+            />
+          )}
+
+          {result && <Result result={result} />}
         </SurveyBox>
       </div>
     </MainContainer>

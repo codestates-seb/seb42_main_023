@@ -1,13 +1,36 @@
 import React from 'react';
 import styled from 'styled-components';
+import { questionDataType } from '../../types/RecommendedLoan';
 
-const Question: React.FC = () => {
+interface Props {
+  currentQuestion: questionDataType;
+  nextQuestionHandler: (next: number) => void;
+  showResultHandler: (result: string) => void;
+}
+
+const Question: React.FC<Props> = ({
+  currentQuestion,
+  nextQuestionHandler,
+  showResultHandler,
+}) => {
   return (
     <QuestionContainer>
-      <h1>고객님은 만 19세 이상 34세 이하의 청년이십니까?</h1>
+      <h1>{currentQuestion.question}</h1>
       <div>
-        <AnswerBtn>네</AnswerBtn>
-        <AnswerBtn>아니요</AnswerBtn>
+        {currentQuestion.answers.map((answer, idx) => (
+          <AnswerBtn
+            key={idx}
+            onClick={() => {
+              if ('next' in answer) {
+                nextQuestionHandler(answer.next);
+              } else if ('result' in answer) {
+                showResultHandler(answer.result);
+              }
+            }}
+          >
+            {answer.content}
+          </AnswerBtn>
+        ))}
       </div>
     </QuestionContainer>
   );
