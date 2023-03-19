@@ -1,4 +1,4 @@
-import React, { useRef } from 'react';
+import React, { useEffect, useRef } from 'react';
 import styled from 'styled-components';
 import _ from 'lodash';
 import ReplyInput from './ReplyInput';
@@ -23,6 +23,7 @@ import {
   setCommentId,
   isEdit,
   setIsEdit,
+  isOpenDelete,
 } from '../../slices/commentSlice';
 
 import {
@@ -53,10 +54,11 @@ const Comment: React.FC = () => {
   const commentId =
     (state as CommentStateType).comment &&
     (state as CommentStateType).comment.commentId;
+
   // 댓글 답글 조회
   const replyQuery = repliesApi.useGetReplyQuery({ commentId });
   const { isSuccess, data } = replyQuery;
-
+  console.log('data', data);
   const contentEditInput = useRef<HTMLInputElement>(null);
 
   // 답글 Open 여부 확인을 위한 배열 생성
@@ -85,36 +87,51 @@ const Comment: React.FC = () => {
   }
 
   // 댓글 좋아요 클릭 함수
-  const CommentLiikeHandler = (): void => {
+  const commentLiikeHandler = (): void => {
     dispatch(setCommentLike((state as CommentStateType).comment.isCommentLike));
   };
 
   // 댓글 싫어요 클릭 함수
-  const CommentDislikeHandler = (): void => {
+  const commentDislikeHandler = (): void => {
     dispatch(
       setCommentDislike((state as CommentStateType).comment.isCommentDislike),
     );
   };
 
-  // 답글 조회
+  // 삭제 확인 모달창
+  const confirmDeleteHandler = (): void => {
+    dispatch(isOpenDelete((state as CommentStateType).comment.isOpenDelete));
+  };
+
+  // 특정 댓글의 답글 조회
   const confirmRepliesHandler = (commentId: Partial<CommentType>): void => {
     dispatch(setCommentId(commentId));
   };
 
+  useEffect(() => {
+    // 답글 데이터가 변경될 때마다 총 답글 데이터 반영
+    dispatch(setTotalReplies(replyQuery.data && replyQuery.data.comment));
+  }, [data]);
+
   return (
     <CommentContainer>
-      {comentSucccess &&
+      {commentQuery.data &&
         commentQuery.data.comment.map((comment: CommentType, idx: number) => {
-          // const filtered =
-          //   (state as ReplyStateType).reply.totalReplies &&
-          //   (
-          //     _.uniqBy(
-          //       (state as ReplyStateType).reply.totalReplies,
-          //       'replyId',
-          //     ) as Array<object>
-          //   ).filter((reply) => {
-          //     return (reply as ReplyType).commentId === comment.commentId;
-          //   });
+          const filtered =
+            (state as ReplyStateType).reply.totalReplies &&
+            (
+              _.uniqBy(
+                (state as ReplyStateType).reply.totalReplies,
+                'replyId',
+              ) as Array<object>
+            ).filter((reply) => {
+              return (reply as ReplyType).commentId === comment.commentId;
+            });
+          console.log(
+            'totalReplies',
+            (state as ReplyStateType).reply.totalReplies,
+          );
+          console.log('filtered', filtered);
           return (
             <>
               <CommentInfo key={comment.commentId}>
@@ -128,6 +145,7 @@ const Comment: React.FC = () => {
                   <li className="created-time">12시간 전</li>
 
                   {comentSucccess &&
+                  (state as CommentStateType).comment.isEdit !== undefined &&
                   (
                     (state as CommentStateType).comment.isEdit as Array<boolean>
                   )[idx] ? (
@@ -156,21 +174,23 @@ const Comment: React.FC = () => {
                     </li>
                   )}
 
-                  <li className="comment-delete">삭제</li>
-                  <button onClick={CommentLiikeHandler}>
+                  <li className="comment-delete" onClick={confirmDeleteHandler}>
+                    삭제
+                  </li>
+                  <button onClick={commentLiikeHandler}>
                     <LikeIcon checked={comment.isThumbup!} />
                   </button>
                   <li className="comment-likes">{comment.thumbupCount}</li>
-                  <button onClick={CommentDislikeHandler}>
+                  <button onClick={commentDislikeHandler}>
                     <DislikeIcon checked={comment.isThumbDown!} />
                   </button>
                   <li className="comment-dislikes">{comment.thumbDownCount}</li>
                 </ul>
               </CommentInfo>
               <CommentContent>
-                {(state as CommentStateType).comment &&
+                {(state as CommentStateType).comment.isEdit !== undefined &&
                 ((state as CommentStateType).comment.isEdit as Array<boolean>)[
-                  idx!
+                  idx
                 ] ? (
                   // 댓글 수정 시 생기는 INPUT
                   <input
@@ -182,16 +202,11 @@ const Comment: React.FC = () => {
                   <div className="content">{comment.content}</div>
                 )}
                 <ReplyBtn
-                  onClick={(): void => {
+                  onClick={(event): void => {
                     confirmRepliesHandler(
                       comment.commentId as Partial<CommentType>,
                     );
                     dispatch(setIsOpened(idx));
-                    dispatch(
-                      setTotalReplies(
-                        replyQuery.data && replyQuery.data.comment,
-                      ),
-                    );
                   }}
                 >
                   답글 {comment.replyCount}
@@ -202,23 +217,17 @@ const Comment: React.FC = () => {
               ((state as ReplyStateType).reply.isOpened as Array<boolean>)[
                 idx
               ] ? (
-                <ReplyContainer>
+                <ReplyContainer data-opened="false">
                   <ReplyInput></ReplyInput>
 
-                  {isSuccess &&
-                    data! &&
-                    (data.comment as Array<ReplyType>).map(
-                      (reply: ReplyType) => {
-                        return (
-                          <>
-                            <Reply
-                              key={reply.replyId}
-                              replyInfo={reply}
-                            ></Reply>
-                          </>
-                        );
-                      },
-                    )}
+                  {filtered &&
+                    (filtered as Array<ReplyType>).map((reply: ReplyType) => {
+                      return (
+                        <>
+                          <Reply key={reply.replyId} replyInfo={reply}></Reply>
+                        </>
+                      );
+                    })}
                 </ReplyContainer>
               ) : null}
             </>
@@ -336,5 +345,3 @@ const ReplyBtn = styled.button`
   margin-top: 15px;
   cursor: pointer;
 `;
-
-//충돌해결
