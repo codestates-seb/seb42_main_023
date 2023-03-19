@@ -53,7 +53,7 @@ const RecommendLoan: React.FC = () => {
 
 export default RecommendLoan;
 
-const MainContainer = styled.div`
+export const MainContainer = styled.div`
   display: flex;
   > .content-container {
     border: 1px solid #d4d4d4;
@@ -68,7 +68,7 @@ const MainContainer = styled.div`
   }
 `;
 
-const SurveyBox = styled.div`
+export const SurveyBox = styled.div`
   width: 80%;
   height: 95%;
   background-color: #fff;

@@ -25,14 +25,14 @@ function HeaderDefault() {
           <img src={Logo} height={30}></img>
         </Main>
         <nav>
-          {['/seoulrent', '/recommendloan', '/happyhouse'].includes(
+          {['/seoulrent', '/recommendedloan', '/happyhouse'].includes(
             pathname,
           ) ? (
-            <NavBtnClicked onClick={() => navigate('/happyhouse')}>
+            <NavBtnClicked onClick={() => navigate('/seoulrent')}>
               집구하기
             </NavBtnClicked>
           ) : (
-            <NavBtn onClick={() => navigate('/happyhouse')}>집구하기</NavBtn>
+            <NavBtn onClick={() => navigate('/seoulrent')}>집구하기</NavBtn>
           )}
           {['/stock'].includes(pathname) ? (
             <NavBtnClicked onClick={() => navigate('/')}>
