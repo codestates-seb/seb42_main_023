@@ -99,3 +99,19 @@ export const repliesApi = createApi({
     }),
   }),
 });
+//TODO: data API
+// 페이지네이션 API
+export const PostPagenationApi = createApi({
+  reducerPath: 'postPagenationApi',
+  baseQuery: fetchBaseQuery({ baseUrl: 'http://localhost:3000' }),
+  tagTypes: ['PostPagenation'],
+  endpoints: (builder) => ({
+    getPostPagenation: builder.query({
+      query: ({ recommend }) => `posts/${recommend}`,
+      providesTags: (result, error, arg) => {
+        console.log(result, error, arg);
+        return [{ type: 'PostPagenation', id: arg.recommend }];
+      },
+    }),
+  }),
+});

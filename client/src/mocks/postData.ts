@@ -323,3 +323,14 @@ export const recomendedPosts = [
     thumbupCount: 123123,
   },
 ];
+//전체 페이지 리스트
+export const pages = [
+  {
+    pageInfo: {
+      page: 1,
+      size: 10,
+      totalElement: 123,
+      totalPage: 13,
+    },
+  },
+];
