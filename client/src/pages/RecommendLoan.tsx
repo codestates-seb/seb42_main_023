@@ -1,29 +1,26 @@
 import React from 'react';
 import styled from 'styled-components';
-import NavRealEstate from '../components/common/NavRealEstate';
-import { BlueBtn } from '../components/common/Btn';
+import { useState } from 'react';
 import { questionData } from '../data/surveyData';
+import NavRealEstate from '../components/common/NavRealEstate';
 import Intro from '../components/recommendLoan/Intro';
 import Question from '../components/recommendLoan/Question';
-import { useState } from 'react';
-
-interface questionData {
-  id: number;
-  question: string;
-  answers: {
-    content: string;
-    next: number | null;
-    resultId?: number;
-  }[];
-}
+import Result from '../components/recommendLoan/Result';
+import { questionDataType } from '../types/RecommendedLoan';
 
 const RecommendLoan: React.FC = () => {
-  const [currentQuestion, setCurrentQuestion] = useState<questionData | null>(
-    null,
-  );
+  const [currentQuestion, setCurrentQuestion] =
+    useState<questionDataType | null>(null);
 
-  const nextQuestionHandler = (next: number): void => {
-    // setCurrentQuestion(questionData[next]);
+  const [result, setResult] = useState<string | null>(null);
+
+  const nextQuestionHandler = (next: number) => {
+    setCurrentQuestion(questionData[next]);
+  };
+
+  const showResultHandler = (result: string) => {
+    setCurrentQuestion(null);
+    setResult(result);
   };
 
   return (
@@ -31,16 +28,19 @@ const RecommendLoan: React.FC = () => {
       <NavRealEstate />
       <div className="content-container">
         <SurveyBox>
-          {/* {!currentQuestion ? (
+          {!currentQuestion && !result && (
             <Intro nextQuestionHandler={nextQuestionHandler} />
-          ) : (
+          )}
+
+          {currentQuestion && (
             <Question
               currentQuestion={currentQuestion}
               nextQuestionHandler={nextQuestionHandler}
+              showResultHandler={showResultHandler}
             />
-          )} */}
+          )}
 
-          {/* <Result /> */}
+          {result && <Result result={result} />}
         </SurveyBox>
       </div>
     </MainContainer>

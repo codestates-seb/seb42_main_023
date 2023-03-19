@@ -1,31 +1,33 @@
 import React from 'react';
 import styled from 'styled-components';
-
-interface questionData {
-  id: number;
-  question: string;
-  answers: {
-    content: string;
-    next: number | null;
-    resultId?: number | undefined;
-  }[];
-}
+import { questionDataType } from '../../types/RecommendedLoan';
 
 interface Props {
-  currentQuestion: questionData;
-  nextQuestionHandler: (next: number | null) => void;
+  currentQuestion: questionDataType;
+  nextQuestionHandler: (next: number) => void;
+  showResultHandler: (result: string) => void;
 }
 
 const Question: React.FC<Props> = ({
   currentQuestion,
   nextQuestionHandler,
+  showResultHandler,
 }) => {
   return (
     <QuestionContainer>
       <h1>{currentQuestion.question}</h1>
       <div>
         {currentQuestion.answers.map((answer, idx) => (
-          <AnswerBtn key={idx} onClick={() => nextQuestionHandler(answer.next)}>
+          <AnswerBtn
+            key={idx}
+            onClick={() => {
+              if ('next' in answer) {
+                nextQuestionHandler(answer.next);
+              } else if ('result' in answer) {
+                showResultHandler(answer.result);
+              }
+            }}
+          >
             {answer.content}
           </AnswerBtn>
         ))}
