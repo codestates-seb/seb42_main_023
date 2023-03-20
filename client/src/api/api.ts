@@ -9,7 +9,6 @@ export const recomendedPostsApi = createApi({
     getRomendedPosts: builder.query({
       query: ({ recommend }) => `posts/${recommend}`,
       providesTags: (result, error, arg) => {
-        console.log(result, error, arg);
         return [{ type: 'RecomendedPosts', id: arg.recommend }];
       },
     }),
@@ -25,7 +24,6 @@ export const postsApi = createApi({
     getPost: builder.query({
       query: ({ postId }) => `posts/${postId}`,
       providesTags: (result, error, arg) => {
-        console.log(result, error, arg);
         return [{ type: 'Post', id: arg.postId }];
       },
     }),
@@ -53,7 +51,6 @@ export const commentsApi = createApi({
     getComment: builder.query({
       query: ({ postId }) => `posts/${postId}/comments`,
       providesTags: (result, error, arg) => {
-        console.log(result, error, arg);
         return [{ type: 'Comment', id: arg.postId }];
       },
     }),
@@ -81,7 +78,6 @@ export const repliesApi = createApi({
     getReply: builder.query({
       query: ({ commentId }) => `comments/${commentId}/replies`,
       providesTags: (result, error, arg) => {
-        console.log(result, error, arg);
         return [{ type: 'Reply', id: arg.commentId }];
       },
     }),
@@ -96,22 +92,6 @@ export const repliesApi = createApi({
       invalidatesTags: (result, error, arg) => [
         { type: 'Reply', id: arg.commentId },
       ],
-    }),
-  }),
-});
-//TODO: data API
-// 페이지네이션 API
-export const PostPagenationApi = createApi({
-  reducerPath: 'postPagenationApi',
-  baseQuery: fetchBaseQuery({ baseUrl: 'http://localhost:3000' }),
-  tagTypes: ['PostPagenation'],
-  endpoints: (builder) => ({
-    getPostPagenation: builder.query({
-      query: ({ recommend }) => `posts/${recommend}`,
-      providesTags: (result, error, arg) => {
-        console.log(result, error, arg);
-        return [{ type: 'PostPagenation', id: arg.recommend }];
-      },
     }),
   }),
 });

@@ -1,6 +1,5 @@
 import React from 'react';
 import styled from 'styled-components';
-import Post from '../mainP/Post';
 import PostList from '../mainP/PostList';
 function MyPostList() {
   return (

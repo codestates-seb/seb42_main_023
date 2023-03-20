@@ -1,12 +1,6 @@
 //TODO MSW 핸들러 추가(서버 사이드 코드)
 import { rest } from 'msw';
-import {
-  replies,
-  postDetail,
-  recomendedPosts,
-  comments,
-  pages,
-} from './postData';
+import { replies, postDetail, recomendedPosts, comments } from './postData';
 
 // MSW 핸들러
 export const handlers = [
@@ -42,9 +36,7 @@ export const handlers = [
   rest.get('/posts/:postId/comments', (req, res, ctx) => {
     const data = comments;
     const params = req.params;
-    console.log(params);
     const id = params.postId;
-    console.log('comments!!!!!');
     // 답글 id값에 따른 필터링
     const filtered = data.filter((el) => {
       return el.postId === Number(id);
@@ -80,12 +72,5 @@ export const handlers = [
       comment: filtered,
     };
     return res(ctx.status(200), ctx.json(result));
-  }),
-
-  //페이지데이터 불러오기
-  rest.get(`/posts`, (req, res, ctx) => {
-    const data = pages;
-    console.log('test', data);
-    return res(ctx.status(200), ctx.json(data));
   }),
 ];
