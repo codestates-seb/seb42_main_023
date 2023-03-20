@@ -29,14 +29,12 @@ const App: React.FC = () => {
               <Route path="/" element={<Main />} />
               <Route path="/posts/:postId/" element={<PostDetail />} />
               <Route path="/posts/create" element={<CreatePost />} />
-              <Route path="/posts/update" element={<UpdatePost />} />
+              <Route path="/posts/update/:postId" element={<UpdatePost />} />
               <Route path="/login" element={<Login />} />
               <Route path="/setnickname" element={<SetNickname />} />
               <Route path="/adminreport" element={<AdminReport />} />
               <Route path="/recommendedloan" element={<RecommendLoan />} />
               <Route path="/happyhouse" element={<HappyHouse />} />
-              <Route path="/post/" element={<CreatePost />} />
-              <Route path="/post/update" element={<UpdatePost />} />
               <Route path="/temptoken" element={<TempToken />} />
               <Route path="/post/" element={<CreatePost />} />
               <Route path="/mypage" element={<MyPage />} />

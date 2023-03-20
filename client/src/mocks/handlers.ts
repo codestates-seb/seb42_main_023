@@ -135,6 +135,10 @@ export const handlers = [
     return res(ctx.status(201), ctx.json({ data }));
   }),
 
+  // 신고 추가
+  rest.post('/reports', async (req, res, ctx) => {
+    return res(ctx.status(201), ctx.json({ res: 'report created!!' }));
+  }),
   //--------------------------- PATCH --------------------------------
 
   // 댓글 수정
@@ -165,7 +169,6 @@ export const handlers = [
   // 답글 수정
   rest.patch('/replies/:replies', async (req, res, ctx) => {
     const data = replies;
-    const params = req.params;
     const newData = await req.json();
 
     const result = data.map((reply) => {
