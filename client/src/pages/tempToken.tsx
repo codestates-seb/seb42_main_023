@@ -18,7 +18,7 @@ const TempToken: React.FC = () => {
     const tempAccessToken = url.searchParams.get('tempAccessToken');
 
     axios
-      .post('http://15.164.95.47:8080/auth/callback/google', {
+      .post('https://thedragonmoney.com/auth/callback/google', {
         tempAccessToken,
       })
       .then((res) => {
