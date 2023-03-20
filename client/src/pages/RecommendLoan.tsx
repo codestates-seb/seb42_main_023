@@ -1,26 +1,24 @@
 import React from 'react';
 import styled from 'styled-components';
-import { useState } from 'react';
-import { questionData } from '../data/surveyData';
 import NavRealEstate from '../components/common/NavRealEstate';
 import Intro from '../components/recommendLoan/Intro';
 import Question from '../components/recommendLoan/Question';
 import Result from '../components/recommendLoan/Result';
-import { questionDataType } from '../types/RecommendedLoan';
+import { questionData } from '../data/surveyData';
+import { useAppDispatch, useAppSelector } from '../hooks';
+import { setCurrentQuestion, setResultId } from '../slices/surveySlice';
 
 const RecommendLoan: React.FC = () => {
-  const [currentQuestion, setCurrentQuestion] =
-    useState<questionDataType | null>(null);
-
-  const [result, setResult] = useState<string | null>(null);
+  const dispatch = useAppDispatch();
+  const { currentQuestion, resultId } = useAppSelector((state) => state.survey);
 
   const nextQuestionHandler = (next: number) => {
-    setCurrentQuestion(questionData[next]);
+    dispatch(setCurrentQuestion(questionData[next]));
   };
 
   const showResultHandler = (result: string) => {
-    setCurrentQuestion(null);
-    setResult(result);
+    dispatch(setCurrentQuestion(null));
+    dispatch(setResultId(result));
   };
 
   return (
@@ -28,19 +26,18 @@ const RecommendLoan: React.FC = () => {
       <NavRealEstate />
       <div className="content-container">
         <SurveyBox>
-          {!currentQuestion && !result && (
+          {!currentQuestion && !resultId && (
             <Intro nextQuestionHandler={nextQuestionHandler} />
           )}
 
           {currentQuestion && (
             <Question
-              currentQuestion={currentQuestion}
               nextQuestionHandler={nextQuestionHandler}
               showResultHandler={showResultHandler}
             />
           )}
 
-          {result && <Result result={result} />}
+          {resultId && <Result />}
         </SurveyBox>
       </div>
     </MainContainer>

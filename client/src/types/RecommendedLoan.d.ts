@@ -15,9 +15,3 @@ export interface questionDataType {
   question: string;
   answers: Next[];
 }
-
-export interface resultDataType {
-  id: string;
-  content: string;
-  link: string;
-}

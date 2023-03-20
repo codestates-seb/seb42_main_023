@@ -11,6 +11,7 @@ import {
 } from '../api/api';
 import headerSlice from '../slices/headerSlice';
 import commentSlice from '../slices/commentSlice';
+import surveySlice from '../slices/surveySlice';
 
 const store = configureStore({
   reducer: {
@@ -19,6 +20,7 @@ const store = configureStore({
     comment: commentSlice.reducer,
     validation: validationSlice.reducer,
     header: headerSlice.reducer,
+    survey: surveySlice.reducer,
     [postsApi.reducerPath]: postsApi.reducer,
     [commentsApi.reducerPath]: commentsApi.reducer,
     [repliesApi.reducerPath]: repliesApi.reducer,

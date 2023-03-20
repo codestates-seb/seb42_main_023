@@ -1,23 +1,25 @@
 import React from 'react';
 import styled from 'styled-components';
-import { questionDataType } from '../../types/RecommendedLoan';
+import { useAppSelector } from '../../hooks';
 
 interface Props {
-  currentQuestion: questionDataType;
   nextQuestionHandler: (next: number) => void;
   showResultHandler: (result: string) => void;
 }
 
 const Question: React.FC<Props> = ({
-  currentQuestion,
   nextQuestionHandler,
   showResultHandler,
 }) => {
+  const currentQuestion = useAppSelector(
+    (state) => state.survey.currentQuestion,
+  );
+
   return (
     <QuestionContainer>
-      <h1>{currentQuestion.question}</h1>
+      <h1>{currentQuestion!.question}</h1>
       <div>
-        {currentQuestion.answers.map((answer, idx) => (
+        {currentQuestion!.answers.map((answer, idx) => (
           <AnswerBtn
             key={idx}
             onClick={() => {
