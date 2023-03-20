@@ -1,15 +1,20 @@
 import React from 'react';
 import styled from 'styled-components';
+import { BlueBtn } from '../components/common/Btn';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import { useEffect, useState, useRef } from 'react';
+import { useAppDispatch, useAppSelector } from '../hooks';
+import { setNicknameErr } from '../slices/nicknameSlice';
 
 const SetNickname: React.FC = () => {
   const navigate = useNavigate();
+  const dispatch = useAppDispatch();
+
   const nicknameRef = useRef<HTMLInputElement>(null);
+  const nicknameErr = useAppSelector((state) => state.nickname.nicknameErr);
 
   const [tempName, setTempName] = useState('');
-  const [errorMsg, setErrorMsg] = useState('');
 
   // 서버는 회원가입이 완료된 유저를 닉네임 설정 페이지로 디라이렉트한다. uri에는 사용자를 임시로 식별할 수 있는 tempName을 담는다.
   useEffect(() => {
@@ -22,7 +27,7 @@ const SetNickname: React.FC = () => {
     const nickname = nicknameRef.current!.value;
 
     axios
-      .post('http://15.164.95.47:8080/members/duplicated-name', {
+      .post('https://thedragonmoney.com/members/duplicated-name', {
         name: nickname,
         tempName: tempName,
       })
@@ -32,12 +37,13 @@ const SetNickname: React.FC = () => {
         if (res.data.useable) {
           navigate('/login');
         } else {
-          setErrorMsg('중복된 닉네임입니다.');
+          // dispatch(changeSetting('중복된 닉네임입니다.'))
+          dispatch(setNicknameErr('중복된 닉네임입니다.'));
         }
       })
       .catch((error) =>
         // validation에서 실패했을 경우엔, 아래와 같은 메세지를 띄운다.
-        setErrorMsg('닉네임은 2자 이상 8자 이하로 작성해주세요.'),
+        dispatch(setNicknameErr('닉네임은 2자 이상 8자 이하로 작성해주세요.')),
       );
   };
 
@@ -53,7 +59,7 @@ const SetNickname: React.FC = () => {
               placeholder="커뮤니티에서 사용할 닉네임을 작성해주세요"
               ref={nicknameRef}
             />
-            <p>{errorMsg}</p>
+            <p>{nicknameErr}</p>
           </NicknameInput>
           <SignupBtn onClick={setNicknameHandler}>가입하기</SignupBtn>
         </NicknameForm>
@@ -73,7 +79,7 @@ const NicknameFormMain = styled.div`
   justify-content: center;
 `;
 
-// 로그인 폼
+// 닉네임 폼
 const NicknameForm = styled.div`
   width: 503px;
   height: 426px;
@@ -87,6 +93,7 @@ const NicknameForm = styled.div`
   align-items: center;
 `;
 
+// 닉네임 입력 label과 input 컨테이너
 const NicknameInput = styled.div`
   display: flex;
   flex-direction: column;
@@ -106,12 +113,8 @@ const NicknameInput = styled.div`
   }
 `;
 
-// 버튼 컴포넌트 가져오면 지우기
-const SignupBtn = styled.button`
-  background-color: #0069ca;
-  color: #fff;
-  font-weight: 700;
+// 가입하기 버튼
+const SignupBtn = styled(BlueBtn)`
   width: 305px;
   height: 54px;
-  cursor: pointer;
 `;
