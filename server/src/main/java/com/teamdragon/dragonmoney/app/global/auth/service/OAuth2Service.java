@@ -3,6 +3,7 @@ package com.teamdragon.dragonmoney.app.global.auth.service;
 import com.teamdragon.dragonmoney.app.domain.member.entity.Member;
 import com.teamdragon.dragonmoney.app.domain.member.repository.MemberRepository;
 import com.teamdragon.dragonmoney.app.domain.member.service.MemberService;
+import com.teamdragon.dragonmoney.app.global.auth.dto.LoginResponseDto;
 import com.teamdragon.dragonmoney.app.global.auth.jwt.JwtTokenizer;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -74,6 +75,17 @@ public class OAuth2Service {
         member.setTempAccessToken(tempAccessToken);
 
         return memberRepository.save(member);
+    }
+
+    //로그인 정보 찾기
+    public LoginResponseDto findLoginMember(String tempAccessToken) {
+        Member member = memberRepository.findByTempAccessToken(tempAccessToken);
+        String name = member.getName();
+        String picture = member.getProfileImage();
+        LoginResponseDto loginResponseDto = new LoginResponseDto();
+        loginResponseDto.setName(name);
+        loginResponseDto.setPicture(picture);
+        return loginResponseDto;
     }
 
     //해당 임시 토큰을 가진 회원이 있는지 조회
