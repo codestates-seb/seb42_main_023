@@ -29,7 +29,7 @@ const SetNickname: React.FC = () => {
     axios
       .post('https://thedragonmoney.com/members/duplicated-name', {
         name: nickname,
-        tempName: tempName,
+        TempName: tempName,
       })
       .then((res) => {
         // 닉네임 중복검사에서 성공하면, login 페이지로 redirect한다.
