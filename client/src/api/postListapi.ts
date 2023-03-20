@@ -13,3 +13,18 @@ export const postListApi = createApi({
     }),
   }),
 });
+// 주간인기글 API
+export const weeklyPopularApi = createApi({
+  reducerPath: 'weeklyPopularApi',
+  baseQuery: fetchBaseQuery({ baseUrl: 'http://localhost:3000' }),
+  tagTypes: ['weeklyPopular'],
+  endpoints: (builder) => ({
+    getPostList: builder.query({
+      query: ({ endpoint }) => `posts/${endpoint}`,
+      providesTags: (result, error, arg) => {
+        console.log(result, error, arg);
+        return [{ type: 'weeklyPopular', id: arg.recommend }];
+      },
+    }),
+  }),
+});

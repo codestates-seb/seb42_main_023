@@ -1,16 +1,25 @@
 //TODO MSW 핸들러 추가(서버 사이드 코드)
 import { rest } from 'msw';
 import { replies, postDetail, recomendedPosts, comments } from './postData';
-
+import { posts, weeklyPopular } from './postListData';
 // MSW 핸들러
 export const handlers = [
+  //커뮤니티 게시글 불러오기
+  rest.get(`/posts`, (req, res, ctx) => {
+    const data = posts;
+    return res(ctx.status(200), ctx.json(data));
+  }),
   // 추천 게시물 조회
   rest.get('/posts/recommend', (req, res, ctx) => {
     const data = recomendedPosts;
     const params = req.params;
     return res(ctx.status(200), ctx.json(data));
   }),
-
+  //주간인기글 불러오기
+  rest.get(`/posts/weekly-popular`, (req, res, ctx) => {
+    const data = weeklyPopular;
+    return res(ctx.status(200), ctx.json(data));
+  }),
   //  게시글 상세 조회
   rest.get('/posts/:postId', (req, res, ctx) => {
     const data = postDetail;
@@ -24,7 +33,7 @@ export const handlers = [
       pageInfo: {
         page: 1,
         size: 10,
-        totalElement: 123,
+        totalElement: 133,
         totalPage: 13,
       },
       posts: filtered,

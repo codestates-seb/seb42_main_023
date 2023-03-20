@@ -9,7 +9,7 @@ import {
   repliesApi,
   recomendedPostsApi,
 } from '../api/api';
-import { postListApi } from '../api/postListapi';
+import { postListApi, weeklyPopularApi } from '../api/postListapi';
 import headerSlice from '../slices/headerSlice';
 import mainSlice from '../slices/mainSlice';
 import mypageSlice from '../slices/mypageSlice';
@@ -29,6 +29,7 @@ const store = configureStore({
     [repliesApi.reducerPath]: repliesApi.reducer,
     [recomendedPostsApi.reducerPath]: recomendedPostsApi.reducer,
     [postListApi.reducerPath]: postListApi.reducer,
+    [weeklyPopularApi.reducerPath]: weeklyPopularApi.reducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware()
@@ -37,6 +38,7 @@ const store = configureStore({
       .concat(repliesApi.middleware)
       .concat(recomendedPostsApi.middleware)
       .concat(postListApi.middleware)
+      .concat(weeklyPopularApi.middleware)
       .concat(logger),
 });
 
