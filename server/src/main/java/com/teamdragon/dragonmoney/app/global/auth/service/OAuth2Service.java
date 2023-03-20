@@ -94,7 +94,7 @@ public class OAuth2Service {
 
     //해당 임시 토큰을 가진 회원이 있는지 조회
     public Member findMemberByTempAccessToken(String tempAccessToken) {
-        Optional<Member> optionalMember = memberRepository.findByTempName(tempAccessToken);
+        Optional<Member> optionalMember = memberRepository.findByTempAccessToken(tempAccessToken);
 
         return optionalMember
                 .orElseThrow( () -> new BusinessLogicException(BusinessExceptionCode.USER_NOT_FOUND));

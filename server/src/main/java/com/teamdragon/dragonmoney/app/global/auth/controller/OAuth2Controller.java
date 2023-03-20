@@ -12,6 +12,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletResponse;
+import javax.validation.Valid;
 
 //정식 Access Token Refresh Token 발급
 @CrossOrigin
@@ -26,21 +28,21 @@ public class OAuth2Controller {
 
     //정식 토큰 발급
     @PostMapping("/auth/callback/google")
-    public ResponseEntity getToken(@RequestBody TempAccessTokenDto tempAccessTokenDto) {
+    public ResponseEntity getToken(@Valid @RequestBody TempAccessTokenDto tempAccessTokenDto,
+                                   HttpServletResponse servletResponse) {
         String accessToken = "Bearer " + oAuth2Service.delegateAccessToken(tempAccessTokenDto.getTempAccessToken());
         String refreshToken = oAuth2Service.delegateRefreshToken(tempAccessTokenDto.getTempAccessToken());
 
         Cookie cookie = new Cookie("Refresh", refreshToken);
         cookie.setMaxAge(refreshTokenExpirationMinutes);
         cookie.isHttpOnly();
+        servletResponse.addCookie(cookie);
 
-//        LoginResponseDto response = oAuth2Service.findLoginMember(tempAccessTokenDto.getTempAccessToken());
+        LoginResponseDto response = oAuth2Service.findLoginMember(tempAccessTokenDto.getTempAccessToken());
 
         return ResponseEntity.status(HttpStatus.OK)
                 .header("Authorization", accessToken)
-                .header("Set-Cookie", "Refresh="+cookie)
-                .build();
-//                .body(response);
+                .body(response);
     }
 
     //Refresh Token 재발급
