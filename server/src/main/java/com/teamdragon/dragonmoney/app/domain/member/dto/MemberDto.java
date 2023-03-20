@@ -13,12 +13,12 @@ public class MemberDto {
     @Getter
     public static class PostTemp {
         @NotBlank
-        @Size(min = 2, max = 8)
+        @Size(min = 2, max = 30)
         @Pattern(regexp = "^[0-9A-Za-z가-힣]{2,30}$",
                 message = "숫자, 영어, 한글이 포함된 2글자 이상 8글자 이하 이름만 사용 가능합니다.")
         private String name;
         @NotBlank
-        @Size(max = 40)
+        @Size(max = 100)
         private String email;
         @NotBlank
         @Size(max = 250)
@@ -37,8 +37,8 @@ public class MemberDto {
     public static class Post {
         @NotBlank
         @NotNull
-        @Size(min = 2, max = 8)
-        @Pattern(regexp = "^[0-9A-Za-z가-힣]{2,8}$",
+        @Size(min = 2, max = 30)
+        @Pattern(regexp = "^[0-9A-Za-z가-힣]{2,30}$",
                 message = "숫자, 영어, 한글이 포함된 2글자 이상 8글자 이하 이름만 사용 가능합니다.")
         private String name;
 
