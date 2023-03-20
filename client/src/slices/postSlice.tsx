@@ -8,6 +8,8 @@ const postSlice = createSlice({
     isBookmark: false,
     reommendPosts: undefined,
     postDetail: undefined,
+    type: undefined,
+    isOpenDelete: false,
   },
   reducers: {
     // 게시물 좋아요
@@ -33,6 +35,13 @@ const postSlice = createSlice({
     setPostDetail: (state, action: PayloadAction<object>): void => {
       (state.postDetail as unknown) = action.payload;
     },
+    // 현재 선택한 삭제 버튼 종류 지정(게시글, 댓글, 답글)
+    setType: (state, action: PayloadAction<string>): void => {
+      (state.type as unknown) = action.payload;
+    },
+    isOpenDelete: (state, action: PayloadAction<boolean>): void => {
+      state.isOpenDelete = !state.isOpenDelete;
+    },
   },
 });
 
@@ -43,4 +52,6 @@ export const {
   setBookmark,
   setRecommendPosts,
   setPostDetail,
+  setType,
+  isOpenDelete,
 } = postSlice.actions;

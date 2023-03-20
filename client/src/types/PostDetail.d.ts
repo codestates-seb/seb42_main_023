@@ -5,6 +5,8 @@ export interface PostStateType {
     isBookmark: boolean;
     reommendPosts: unknown;
     postDetail: unknown;
+    type: unknown;
+    isOpenDelete: boolean;
   };
 }
 
@@ -13,11 +15,8 @@ export interface CommentStateType {
     isCommentLike: boolean;
     isCommentDislike: boolean;
     commentValue: string;
-    editValue: string;
-    currentComment: unknown;
-    isEdit: unknown;
     commentId: unknown;
-    isOpenDelete: boolean;
+    isEdit: unknown;
   };
 }
 
@@ -26,8 +25,10 @@ export interface ReplyStateType {
     isReplyLike: boolean;
     isReplyDislike: boolean;
     replyValue: string;
-    totalReplies: Array;
+    replyId: number;
+    isEdit: unknown;
     isOpened: unknown;
+    totalReplies: Array;
   };
 }
 
@@ -79,6 +80,11 @@ export interface ReplyType {
   content: string;
 }
 
-export interface Props {
+export interface CommentProps {
+  commentInfo: CommentType;
+}
+
+export interface ReplyProps {
   replyInfo: ReplyType;
+  idx: number;
 }

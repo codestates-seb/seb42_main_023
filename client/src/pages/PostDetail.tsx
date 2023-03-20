@@ -10,27 +10,45 @@ import ViewIcon from '../assets/common/ViewIcon';
 import CommentIcon from '../assets/common/CommentIcon';
 import DislikeIcon from '../assets/common/DislikeIcon';
 import LikeIcon from '../assets/common/LikeIcon';
-import { setBookmark, setDislike, setLike } from '../slices/postSlice';
+import {
+  isOpenDelete,
+  setBookmark,
+  setDislike,
+  setLike,
+} from '../slices/postSlice';
 import { useAppDispatch, useAppSelector } from '../hooks';
-import { PostStateType, CommentStateType } from '../types/PostDetail';
+import {
+  PostStateType,
+  CommentStateType,
+  ReplyStateType,
+} from '../types/PostDetail';
 import { useParams } from 'react-router';
-import { postsApi, commentsApi } from '../api/api';
-import { isOpenDelete } from '../slices/commentSlice';
+import { postsApi, commentsApi, repliesApi } from '../api/api';
+import { BlueBtn, WhiteBtn } from '../components/common/Btn';
 
 const PostDetail: React.FC = () => {
   const dispatch = useAppDispatch();
   const state = useAppSelector(
     (
-      state: PostStateType | CommentStateType,
-    ): PostStateType | CommentStateType => {
+      state: PostStateType | CommentStateType | ReplyStateType,
+    ): PostStateType | CommentStateType | ReplyStateType => {
       return state;
     },
   );
   const params = useParams();
   const postId = params.postId;
+  // 게시글
   const postDetailQuery = postsApi.useGetPostQuery({ postId });
   const { data, isSuccess } = postDetailQuery;
+  const postMutation = postsApi.useDeletePostMutation();
+  const deletePost = postMutation[0];
+  // 댓글
   const commentQuery = commentsApi.useGetCommentQuery({ postId });
+  const commentMutation = commentsApi.useDeleteCommentMutation();
+  const deleteComment = commentMutation[0];
+  // 답글
+  const replyMutation = repliesApi.useDeleteReplyMutation();
+  const deleteReply = replyMutation[0];
   // 좋아요 클릭 함수
   const changeLiikeHandler = (): void => {
     dispatch(setLike((state as PostStateType).post.isLike));
@@ -43,17 +61,64 @@ const PostDetail: React.FC = () => {
   const changeBookmarkHandler = (): void => {
     dispatch(setBookmark((state as PostStateType).post.isBookmark));
   };
-  // 삭제 확인 모달창
+  // 삭제 확인 모달창 오픈
   const confirmDeleteHandler = (): void => {
-    dispatch(isOpenDelete((state as CommentStateType).comment.isOpenDelete));
+    dispatch(isOpenDelete((state as PostStateType).post.isOpenDelete));
   };
+  // 데이터 삭제(게시글, 댓글, 답글)
+  const deleteData = (): void => {
+    // 게시글 삭제 로직
+    if (
+      (state as PostStateType).post &&
+      (state as PostStateType).post.type === '게시글'
+    ) {
+      deletePost(postId);
+      confirmDeleteHandler();
+      console.log('comment delete');
+    }
+    // 댓글 삭제 로직
+    if (
+      (state as PostStateType).post &&
+      (state as PostStateType).post.type === '댓글'
+    ) {
+      deleteComment(
+        (state as CommentStateType).comment &&
+          (state as CommentStateType).comment.commentId,
+      );
+      confirmDeleteHandler();
+      console.log('comment delete');
+    }
+    // 답글 삭제 로직
+    if (
+      (state as PostStateType).post &&
+      (state as PostStateType).post.type === '답글'
+    ) {
+      deleteReply(
+        (state as ReplyStateType).reply &&
+          (state as ReplyStateType).reply.replyId,
+      );
+      confirmDeleteHandler();
+      console.log('comment delete');
+    }
+  };
+
+  // 삭제 문구
+  const deleteConfirm = `${
+    (state as PostStateType).post && (state as PostStateType).post.type
+  }을 정말 삭제하시겠습니까?`;
 
   return (
     <>
-      {commentQuery.data && (state as CommentStateType).comment.isOpenDelete ? (
+      {commentQuery.data && (state as PostStateType).post.isOpenDelete ? (
         <ModalContainer>
           <DeleteModal>
-            <div onClick={confirmDeleteHandler}> 취소 </div>
+            <div onClick={confirmDeleteHandler}> </div>
+            <div className="delete">삭제</div>
+            <div className="delete-content">{deleteConfirm}</div>
+            <BtnContainer>
+              <DeleteBtn onClick={deleteData}>삭제하기</DeleteBtn>
+              <CancelBtn onClick={confirmDeleteHandler}>취소</CancelBtn>
+            </BtnContainer>
           </DeleteModal>
         </ModalContainer>
       ) : null}
@@ -246,26 +311,51 @@ const ModalContainer = styled.div`
   bottom: 0;
   z-index: 2;
 `;
-// const ModalBackgound = styled.div`
-//   display: flex;
-//   justify-content: center;
-//   align-items: center;
-//   position: absolute;
-//   width: 100vw;
-//   height: 100%;
-//   opacity: 0.8;
-// `;
 
-// 댓글 확인 삭제창
+// 게시글, 댓글, 답글 삭제 확인창
 const DeleteModal = styled.div`
-  width: 500px;
-  height: 300px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+  width: 550px;
+  height: 290px;
   position: absolute;
   top: 300px;
   background-color: #ffffff;
-  border: solid 1px #5c5c5c;
+  border: solid 1px #d4d4d4;
   border-radius: 5px;
   color: #5c5c5c;
   cursor: pointer;
   opacity: none;
+
+  .delete {
+    font-size: 26px;
+    margin: 0 0 0 30px;
+  }
+
+  .delete-content {
+    font-size: 20px;
+    margin: 0 0 0 30px;
+  }
+`;
+// 버튼 컨테이너
+const BtnContainer = styled.div`
+  display: flex;
+  justify-content: space-around;
+  margin-top: 20px;
+  margin-bottom: 20px;
+`;
+// 삭제 버튼
+const DeleteBtn = styled(BlueBtn)`
+  width: 220px;
+  height: 60px;
+  font-size: 20px;
+  font-weight: 400px;
+`;
+// 취소 버튼
+const CancelBtn = styled(WhiteBtn)`
+  width: 220px;
+  height: 60px;
+  font-size: 20px;
+  font-weight: 400px;
 `;

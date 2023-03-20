@@ -2,60 +2,36 @@ import React, { useRef } from 'react';
 import { useParams } from 'react-router-dom';
 import styled from 'styled-components';
 import { commentsApi } from '../../api/api';
-import { useAppDispatch, useAppSelector } from '../../hooks';
-import { addCommentEdit, isEdit, setComment } from '../../slices/commentSlice';
-import { CommentStateType } from '../../types/PostDetail';
+import { useAppDispatch } from '../../hooks';
+import { addCommentEdit, setComment } from '../../slices/commentSlice';
 
 const CommentInput: React.FC = () => {
   const commentRef = useRef<HTMLInputElement>(null);
   const dispatch = useAppDispatch();
-  const state = useAppSelector((state: CommentStateType): CommentStateType => {
-    return state;
-  });
   const params = useParams();
   const postId = params.postId;
   const query = commentsApi.useGetCommentQuery({ postId });
   // 댓글 추가 mutation
   const mutation = commentsApi.useSetCommentMutation();
   const setComments = mutation[0];
-  console.log('queryData', query.data);
+
   // 댓글 추가
   const addCommentHandler = async () => {
     console.log('test');
     await setComments({
       postId: postId,
-      content: commentRef.current!.value,
+      content: commentRef.current?.value,
     });
     dispatch(addCommentEdit(false));
     commentRef.current!.value = '';
   };
 
-  // 댓글 수정
-  const updateCommentHandler = async () => {
-    console.log('test');
-    await setComments({
-      postId: postId,
-      content: commentRef.current!.value,
-    });
-    commentRef.current!.value = '';
-  };
-
-  // 댓글 삭제
-  const deleteCommentHandler = async () => {
-    console.log('test');
-    await setComments({
-      postId: postId,
-      content: commentRef.current!.value,
-    });
-    commentRef.current!.value = '';
-  };
-
   const valueCheck = (event: React.ChangeEvent<HTMLInputElement>): void => {
     dispatch(setComment(event.target.value));
-    console.log(commentRef.current!.value);
   };
 
   const enterHandler = (event: React.KeyboardEvent<HTMLInputElement>): void => {
+    if (!commentRef.current?.value) return;
     if (event.key === 'Enter' && event.nativeEvent.isComposing === false) {
       addCommentHandler();
     }

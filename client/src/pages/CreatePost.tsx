@@ -47,7 +47,7 @@ const CreatePost: React.FC = () => {
       <TagInput></TagInput>
 
       <BtnContainer>
-        <CancleBtn onClick={cancelAddHandler}>취소</CancleBtn>
+        <CancelBtn onClick={cancelAddHandler}>취소</CancelBtn>
         <PostBtn onClick={addPostHandler}>작성</PostBtn>
       </BtnContainer>
     </Container>
@@ -81,7 +81,7 @@ const PostBtn = styled(BlueBtn)`
   height: 40px;
 `;
 
-const CancleBtn = styled(WhiteBtn)`
+const CancelBtn = styled(WhiteBtn)`
   width: 105px;
   height: 40px;
 `;
