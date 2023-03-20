@@ -1,18 +1,26 @@
-import React from 'react';
+import React, { useRef } from 'react';
 import styled from 'styled-components';
 import DislikeIcon from '../../assets/common/DislikeIcon';
 import LikeIcon from '../../assets/common/LikeIcon';
-import { setReplyDislike, setReplyLike } from '../../slices/replySlice';
+import {
+  isEdit,
+  setIsEdit,
+  setReplyDislike,
+  setReplyLike,
+  setReplytId,
+} from '../../slices/replySlice';
 import { useAppDispatch, useAppSelector } from '../../hooks';
 import {
   PostStateType,
   ReplyStateType,
   CommentStateType,
-  Props,
+  ReplyProps,
 } from '../../types/PostDetail';
 import { repliesApi } from '../../api/api';
+import { isOpenDelete, setType } from '../../slices/postSlice';
 
-const Reply: React.FC<Props> = ({ replyInfo }: Props) => {
+const Reply: React.FC<ReplyProps> = ({ replyInfo, idx }: ReplyProps) => {
+  const replyEditInput = useRef<HTMLInputElement>(null);
   const dispatch = useAppDispatch();
   const state = useAppSelector(
     (
@@ -21,10 +29,16 @@ const Reply: React.FC<Props> = ({ replyInfo }: Props) => {
       return state;
     },
   );
+
   const commentId =
     (state as CommentStateType).comment &&
     (state as CommentStateType).comment.commentId;
+  // 답글
   const replyQuery = repliesApi.useGetReplyQuery({ commentId });
+  console.log('reply', replyQuery.data);
+  const replySucccess = replyQuery.isSuccess;
+  const replyMutation = repliesApi.useUpdataReplyMutation();
+  const updateMutation = replyMutation[0];
 
   // 답글 좋아요 클릭 함수
   const ReplyLiikeHandler = (): void => {
@@ -33,6 +47,30 @@ const Reply: React.FC<Props> = ({ replyInfo }: Props) => {
   // 답글 싫어요 클릭 함수
   const ReplyDislikeHandler = (): void => {
     dispatch(setReplyDislike((state as ReplyStateType).reply.isReplyDislike));
+  };
+
+  // 답글 Edit 여부 확인을 위한 배열 생성
+  if (
+    replyQuery.isSuccess &&
+    (state as ReplyStateType).reply.isEdit === undefined
+  ) {
+    const edit = Array.from(
+      { length: replyQuery.data.comment.length },
+      (el) => (el = false),
+    );
+
+    dispatch(isEdit(edit as Array<boolean>));
+  }
+
+  // 삭제 확인 모달창
+  const confirmDeleteHandler = (): void => {
+    dispatch(isOpenDelete((state as PostStateType).post.isOpenDelete));
+  };
+
+  const typeChecker = (event: React.MouseEvent<HTMLElement>) => {
+    if (event.target instanceof HTMLElement) {
+      dispatch(setType(event.target.id));
+    }
   };
 
   return (
@@ -44,8 +82,49 @@ const Reply: React.FC<Props> = ({ replyInfo }: Props) => {
           </li>
           <li className="nickname">{replyInfo && replyInfo.memberName}</li>
           <li className="reply-created-time">12시간 전</li>
-          <li className="reply-update">수정</li>
-          <li className="reply-delete">삭제</li>
+
+          {replySucccess &&
+          (state as ReplyStateType).reply.isEdit !== undefined &&
+          ((state as ReplyStateType).reply.isEdit as Array<boolean>)[idx] ? (
+            <li
+              className="reply-update"
+              id="edit"
+              onClick={(): void => {
+                if (!replyEditInput.current?.value) {
+                  dispatch(setIsEdit(idx));
+                  return;
+                }
+                dispatch(setIsEdit(idx));
+                updateMutation({
+                  replyId: replyInfo.replyId,
+                  content: replyEditInput.current?.value,
+                });
+              }}
+            >
+              변경
+            </li>
+          ) : (
+            <li
+              className="reply-update"
+              onClick={(): void => {
+                dispatch(setIsEdit(idx));
+              }}
+            >
+              수정
+            </li>
+          )}
+
+          <li
+            className="reply-delete"
+            id="답글"
+            onClick={(event: React.MouseEvent<HTMLElement>) => {
+              dispatch(setReplytId(replyInfo.replyId));
+              typeChecker(event);
+              confirmDeleteHandler();
+            }}
+          >
+            삭제
+          </li>
           <button onClick={ReplyLiikeHandler}>
             <LikeIcon checked={replyInfo && replyInfo.isThumbup} />
           </button>
@@ -58,8 +137,19 @@ const Reply: React.FC<Props> = ({ replyInfo }: Props) => {
           </li>
         </ul>
       </ReplyInfo>
+
       <ReplyContent>
-        <div className="content">{replyInfo && replyInfo.content}</div>
+        {(state as ReplyStateType).reply.isEdit !== undefined &&
+        ((state as ReplyStateType).reply.isEdit as Array<boolean>)[idx] ? (
+          // 댓글 수정 시 생기는 INPUT
+          <input
+            className="edit-reply"
+            placeholder={replyInfo && replyInfo.content}
+            ref={replyEditInput}
+          ></input>
+        ) : (
+          <div className="content">{replyInfo && replyInfo.content}</div>
+        )}
       </ReplyContent>
     </ReplyContainer>
   );
@@ -140,8 +230,16 @@ const ReplyContent = styled.div`
   padding-left: 50px;
   margin-top: 10px;
   display: flex;
-
   flex-direction: column;
   width: 670px;
   height: 100%;
+  .edit-reply {
+    width: 660px;
+    height: 50px;
+    border-bottom: 1px solid #d4d4d4;
+    padding: 3px 0 0 10px;
+    ::placeholder {
+      color: #0099ca;
+    }
+  }
 `;

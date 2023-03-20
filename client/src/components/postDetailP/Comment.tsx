@@ -9,6 +9,7 @@ import Reply from './Reply';
 import { useAppDispatch, useAppSelector } from '../../hooks';
 import { commentsApi, repliesApi } from '../../api/api';
 import { useParams } from 'react-router';
+import { isOpenDelete, setType } from '../../slices/postSlice';
 import {
   PostStateType,
   CommentStateType,
@@ -23,7 +24,6 @@ import {
   setCommentId,
   isEdit,
   setIsEdit,
-  isOpenDelete,
 } from '../../slices/commentSlice';
 
 import {
@@ -58,7 +58,6 @@ const Comment: React.FC = () => {
   // 댓글 답글 조회
   const replyQuery = repliesApi.useGetReplyQuery({ commentId });
   const { isSuccess, data } = replyQuery;
-  console.log('data', data);
   const contentEditInput = useRef<HTMLInputElement>(null);
 
   // 답글 Open 여부 확인을 위한 배열 생성
@@ -82,7 +81,6 @@ const Comment: React.FC = () => {
       { length: commentQuery.data.comment.length },
       (el) => (el = false),
     );
-
     dispatch(isEdit(edit as Array<boolean>));
   }
 
@@ -100,18 +98,26 @@ const Comment: React.FC = () => {
 
   // 삭제 확인 모달창
   const confirmDeleteHandler = (): void => {
-    dispatch(isOpenDelete((state as CommentStateType).comment.isOpenDelete));
+    dispatch(isOpenDelete((state as PostStateType).post.isOpenDelete));
   };
 
   // 특정 댓글의 답글 조회
-  const confirmRepliesHandler = (commentId: Partial<CommentType>): void => {
+  const confirmRepliesHandler = (commentId: number): void => {
     dispatch(setCommentId(commentId));
   };
 
   useEffect(() => {
     // 답글 데이터가 변경될 때마다 총 답글 데이터 반영
-    dispatch(setTotalReplies(replyQuery.data && replyQuery.data.comment));
+    if (replyQuery.data) {
+      dispatch(setTotalReplies(replyQuery.data && replyQuery.data.comment));
+    }
   }, [data]);
+
+  const typeChecker = (event: React.MouseEvent<HTMLElement>): void => {
+    if (event.target instanceof HTMLElement) {
+      dispatch(setType(event.target.id));
+    }
+  };
 
   return (
     <CommentContainer>
@@ -127,11 +133,7 @@ const Comment: React.FC = () => {
             ).filter((reply) => {
               return (reply as ReplyType).commentId === comment.commentId;
             });
-          console.log(
-            'totalReplies',
-            (state as ReplyStateType).reply.totalReplies,
-          );
-          console.log('filtered', filtered);
+
           return (
             <>
               <CommentInfo key={comment.commentId}>
@@ -153,6 +155,10 @@ const Comment: React.FC = () => {
                       className="comment-update"
                       id="edit"
                       onClick={(): void => {
+                        if (!contentEditInput.current?.value) {
+                          dispatch(setIsEdit(idx));
+                          return;
+                        }
                         dispatch(setIsEdit(idx));
                         updateMutation({
                           postId: postId,
@@ -174,15 +180,23 @@ const Comment: React.FC = () => {
                     </li>
                   )}
 
-                  <li className="comment-delete" onClick={confirmDeleteHandler}>
+                  <li
+                    className="comment-delete"
+                    id="댓글"
+                    onClick={(event: React.MouseEvent<HTMLElement>): void => {
+                      dispatch(setCommentId(comment.commentId));
+                      typeChecker(event);
+                      confirmDeleteHandler();
+                    }}
+                  >
                     삭제
                   </li>
                   <button onClick={commentLiikeHandler}>
-                    <LikeIcon checked={comment.isThumbup!} />
+                    <LikeIcon checked={comment.isThumbup} />
                   </button>
                   <li className="comment-likes">{comment.thumbupCount}</li>
                   <button onClick={commentDislikeHandler}>
-                    <DislikeIcon checked={comment.isThumbDown!} />
+                    <DislikeIcon checked={comment.isThumbDown} />
                   </button>
                   <li className="comment-dislikes">{comment.thumbDownCount}</li>
                 </ul>
@@ -202,10 +216,8 @@ const Comment: React.FC = () => {
                   <div className="content">{comment.content}</div>
                 )}
                 <ReplyBtn
-                  onClick={(event): void => {
-                    confirmRepliesHandler(
-                      comment.commentId as Partial<CommentType>,
-                    );
+                  onClick={(): void => {
+                    confirmRepliesHandler(comment.commentId as number);
                     dispatch(setIsOpened(idx));
                   }}
                 >
@@ -218,16 +230,22 @@ const Comment: React.FC = () => {
                 idx
               ] ? (
                 <ReplyContainer data-opened="false">
-                  <ReplyInput></ReplyInput>
+                  <ReplyInput commentInfo={comment}></ReplyInput>
 
                   {filtered &&
-                    (filtered as Array<ReplyType>).map((reply: ReplyType) => {
-                      return (
-                        <>
-                          <Reply key={reply.replyId} replyInfo={reply}></Reply>
-                        </>
-                      );
-                    })}
+                    (filtered as Array<ReplyType>).map(
+                      (reply: ReplyType, idx: number) => {
+                        return (
+                          <>
+                            <Reply
+                              key={reply.replyId}
+                              replyInfo={reply}
+                              idx={idx}
+                            ></Reply>
+                          </>
+                        );
+                      },
+                    )}
                 </ReplyContainer>
               ) : null}
             </>
@@ -333,7 +351,6 @@ const ReplyContainer = styled.div`
   height: 100%;
   background-color: #ffffff;
   color: #5c5c5c;
-
   cursor: pointer;
 `;
 
