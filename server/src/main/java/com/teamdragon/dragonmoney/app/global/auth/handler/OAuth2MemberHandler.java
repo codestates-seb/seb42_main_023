@@ -42,7 +42,6 @@ public class OAuth2MemberHandler extends SimpleUrlAuthenticationSuccessHandler {
 
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
-        System.out.println("# Redirect to Frontend");
         var oAuth2User = (OAuth2User)authentication.getPrincipal();
 
 //        String name = String.valueOf(oAuth2User.getAttributes().get("name"));
@@ -89,7 +88,7 @@ public class OAuth2MemberHandler extends SimpleUrlAuthenticationSuccessHandler {
 
         return UriComponentsBuilder
                 .newInstance()
-                .scheme("http")
+                .scheme("https")
                 .host("hp5234-dragonmoney-front.s3-website.ap-northeast-2.amazonaws.com")
 //                .host("thedragonmoney.com")
                 .path("/setnickname")
@@ -104,7 +103,7 @@ public class OAuth2MemberHandler extends SimpleUrlAuthenticationSuccessHandler {
 
         return UriComponentsBuilder
                 .newInstance()
-                .scheme("http")
+                .scheme("https")
                 .host("hp5234-dragonmoney-front.s3-website.ap-northeast-2.amazonaws.com")
 //                .host("thedragonmoney.com")
                 .path("/temptoken")
