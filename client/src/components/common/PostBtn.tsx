@@ -6,7 +6,7 @@ function PostBtn() {
   const navigate = useNavigate();
   return (
     <>
-      <Btn onClick={() => navigate('/posts/create')}>글쓰기</Btn>
+      <Btn onClick={() => navigate('/post/update')}>글쓰기</Btn>
     </>
   );
 }

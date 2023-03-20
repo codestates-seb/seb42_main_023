@@ -30,7 +30,7 @@ const BodyInput: React.FC = () => {
     const bodyValue = state.postInput.body;
     const html = stringToHTML(bodyValue);
     const realValue = html.textContent;
-
+    console.log(realValue?.length);
     if (realValue) {
       if (realValue?.length < 9) {
         dispatch(setBodyErr('본문은 10자 이상 작성해주세요.'));

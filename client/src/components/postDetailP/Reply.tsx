@@ -7,7 +7,7 @@ import {
   setIsEdit,
   setReplyDislike,
   setReplyLike,
-  setReplyId,
+  setReplytId,
 } from '../../slices/replySlice';
 import { useAppDispatch, useAppSelector } from '../../hooks';
 import {
@@ -17,12 +17,7 @@ import {
   ReplyProps,
 } from '../../types/PostDetail';
 import { repliesApi } from '../../api/api';
-import {
-  setIsOpenDelete,
-  setIsOpenReport,
-  setReportType,
-  setDeleteType,
-} from '../../slices/postSlice';
+import { isOpenDelete, setType } from '../../slices/postSlice';
 
 const Reply: React.FC<ReplyProps> = ({ replyInfo, idx }: ReplyProps) => {
   const replyEditInput = useRef<HTMLInputElement>(null);
@@ -69,20 +64,12 @@ const Reply: React.FC<ReplyProps> = ({ replyInfo, idx }: ReplyProps) => {
 
   // 삭제 확인 모달창
   const confirmDeleteHandler = (): void => {
-    dispatch(setIsOpenDelete((state as PostStateType).post.isOpenDelete));
+    dispatch(isOpenDelete((state as PostStateType).post.isOpenDelete));
   };
 
-  const deleteTypeChecker = (event: React.MouseEvent<HTMLElement>) => {
+  const typeChecker = (event: React.MouseEvent<HTMLElement>) => {
     if (event.target instanceof HTMLElement) {
-      dispatch(setDeleteType(event.target.id));
-    }
-  };
-
-  // 신고 카테고리 확인
-  const reportTypeChecker = (event: React.MouseEvent<HTMLElement>): void => {
-    if (event.target instanceof HTMLElement) {
-      dispatch(setReplyId(Number(event.target.dataset.replyid)));
-      dispatch(setReportType(event.target.dataset.category!));
+      dispatch(setType(event.target.id));
     }
   };
 
@@ -131,25 +118,12 @@ const Reply: React.FC<ReplyProps> = ({ replyInfo, idx }: ReplyProps) => {
             className="reply-delete"
             id="답글"
             onClick={(event: React.MouseEvent<HTMLElement>) => {
-              dispatch(setReplyId(replyInfo.replyId));
-              deleteTypeChecker(event);
+              dispatch(setReplytId(replyInfo.replyId));
+              typeChecker(event);
               confirmDeleteHandler();
             }}
           >
             삭제
-          </li>
-          <li
-            className="reply-report"
-            data-category="reply"
-            data-replyId={String(replyInfo.replyId)}
-            onClick={(event): void => {
-              dispatch(
-                setIsOpenReport((state as PostStateType).post.isOpenReport),
-              );
-              reportTypeChecker(event);
-            }}
-          >
-            신고
           </li>
           <button onClick={ReplyLiikeHandler}>
             <LikeIcon checked={replyInfo && replyInfo.isThumbup} />
@@ -225,18 +199,13 @@ const ReplyContainer = styled.div`
   .reply-update {
     font-size: 16px;
     margin: 3px 15px 0 35px;
-
+    color: gray;
     cursor: pointer;
   }
   .reply-delete {
     font-size: 16px;
-    margin: 3px 15px 0 5px;
-    cursor: pointer;
-  }
-  .reply-report {
-    font-size: 16px;
-    margin: 3px 110px 0 5px;
-    color: #ca0000;
+    margin: 3px 164px 0 5px;
+    color: gray;
     cursor: pointer;
   }
   .reply-likes {

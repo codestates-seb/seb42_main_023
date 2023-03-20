@@ -9,12 +9,7 @@ import Reply from './Reply';
 import { useAppDispatch, useAppSelector } from '../../hooks';
 import { commentsApi, repliesApi } from '../../api/api';
 import { useParams } from 'react-router';
-import {
-  setIsOpenDelete,
-  setIsOpenReport,
-  setReportType,
-  setDeleteType,
-} from '../../slices/postSlice';
+import { isOpenDelete, setType } from '../../slices/postSlice';
 import {
   PostStateType,
   CommentStateType,
@@ -103,27 +98,12 @@ const Comment: React.FC = () => {
 
   // 삭제 확인 모달창
   const confirmDeleteHandler = (): void => {
-    dispatch(setIsOpenDelete((state as PostStateType).post.isOpenDelete));
+    dispatch(isOpenDelete((state as PostStateType).post.isOpenDelete));
   };
 
   // 특정 댓글의 답글 조회
   const confirmRepliesHandler = (commentId: number): void => {
     dispatch(setCommentId(commentId));
-  };
-
-  // 삭제 타입 확인
-  const deleteTypeChecker = (event: React.MouseEvent<HTMLElement>): void => {
-    if (event.target instanceof HTMLElement) {
-      dispatch(setDeleteType(event.target.id));
-    }
-  };
-
-  // 신고 카테고리 확인
-  const reportTypeChecker = (event: React.MouseEvent<HTMLElement>): void => {
-    if (event.target instanceof HTMLElement) {
-      dispatch(setCommentId(Number(event.target.dataset.commentid)));
-      dispatch(setReportType(event.target.dataset.category!));
-    }
   };
 
   useEffect(() => {
@@ -132,6 +112,13 @@ const Comment: React.FC = () => {
       dispatch(setTotalReplies(replyQuery.data && replyQuery.data.comment));
     }
   }, [data]);
+
+  const typeChecker = (event: React.MouseEvent<HTMLElement>): void => {
+    if (event.target instanceof HTMLElement) {
+      dispatch(setType(event.target.id));
+    }
+  };
+
   return (
     <CommentContainer>
       {commentQuery.data &&
@@ -198,26 +185,11 @@ const Comment: React.FC = () => {
                     id="댓글"
                     onClick={(event: React.MouseEvent<HTMLElement>): void => {
                       dispatch(setCommentId(comment.commentId));
-                      deleteTypeChecker(event);
+                      typeChecker(event);
                       confirmDeleteHandler();
                     }}
                   >
                     삭제
-                  </li>
-                  <li
-                    className="comment-report"
-                    data-category="comment"
-                    data-commentId={String(comment.commentId)}
-                    onClick={(event): void => {
-                      dispatch(
-                        setIsOpenReport(
-                          (state as PostStateType).post.isOpenReport,
-                        ),
-                      );
-                      reportTypeChecker(event);
-                    }}
-                  >
-                    신고
                   </li>
                   <button onClick={commentLiikeHandler}>
                     <LikeIcon checked={comment.isThumbup} />
@@ -324,19 +296,13 @@ const CommentContainer = styled.div`
   .comment-update {
     font-size: 16px;
     margin: 3px 15px 0 35px;
-
+    color: gray;
     cursor: pointer;
   }
   .comment-delete {
     font-size: 16px;
-    margin: 3px 15px 0 5px;
-
-    cursor: pointer;
-  }
-  .comment-report {
-    font-size: 16px;
-    margin: 3px 150px 0 5px;
-    color: #ca0000;
+    margin: 3px 200px 0 5px;
+    color: gray;
     cursor: pointer;
   }
   .comment-likes {
@@ -384,6 +350,7 @@ const ReplyContainer = styled.div`
   width: 100%;
   height: 100%;
   background-color: #ffffff;
+  color: #5c5c5c;
   cursor: pointer;
 `;
 
