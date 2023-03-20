@@ -1,9 +1,10 @@
 import React from 'react';
 import styled from 'styled-components';
-import { BlueBtn } from '../common/Btn';
+import { BlueBtn, WhiteBtn } from '../common/Btn';
 import { resultData } from '../../data/surveyData';
 import { useAppDispatch, useAppSelector } from '../../hooks';
 import { setCurrentQuestion, setResultId } from '../../slices/surveySlice';
+import { AiFillCheckCircle } from 'react-icons/ai';
 
 const Result: React.FC = () => {
   const dispatch = useAppDispatch();
@@ -18,12 +19,15 @@ const Result: React.FC = () => {
 
   return (
     <ResultContainer>
-      <div>{matchedResult!.content}</div>
-      <div className="more-info">
-        <a href={matchedResult!.link}>자세히 알아보기</a>
-        <a href="https://menhuf.molit.go.kr/">대출신청 바로가기</a>
+      <AiFillCheckCircle fill="#0069CA" size="24" />
+      <h1>{matchedResult!.content}</h1>
+      <h2>{matchedResult!.subinfo}</h2>
+      <div>
+        <CheckoutBtn onClick={() => window.open(matchedResult!.link, '_blank')}>
+          추천상품 자세히 알아보기
+        </CheckoutBtn>
+        <RetryBtn onClick={ResetSurvey}>다시 설문하기</RetryBtn>
       </div>
-      <RetryBtn onClick={ResetSurvey}>다시 설문하기</RetryBtn>
     </ResultContainer>
   );
 };
@@ -37,22 +41,35 @@ const ResultContainer = styled.div`
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  > .more-info {
+  > h1 {
+    font-size: 20px;
+    font-weight: 700;
+    margin: 20px 0px 10px 0px;
+  }
+
+  > h2 {
+    color: #94969b;
+    margin-bottom: 20px;
+  }
+
+  > div {
     display: flex;
-    margin: 30px 0px;
-    > a {
-      background-color: var(--hover-point-blue-color);
-      color: #fff;
-      width: max-content;
-      height: max-content;
-      padding: 10px;
-      margin-right: 30px;
-      border-radius: 5px;
-    }
+    flex-direction: column;
   }
 `;
 
+// 추천상품 자세히 알아보기 버튼
+const CheckoutBtn = styled(WhiteBtn)`
+  width: 250px;
+  height: 50px;
+  padding: 10px;
+  margin: 5px;
+`;
+
+// 다시 설문하기 버튼
 const RetryBtn = styled(BlueBtn)`
   width: 250px;
   height: 50px;
+  padding: 10px;
+  margin: 5px;
 `;
