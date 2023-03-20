@@ -19,7 +19,7 @@ const SetNickname: React.FC = () => {
   // 서버는 회원가입이 완료된 유저를 닉네임 설정 페이지로 디라이렉트한다. uri에는 사용자를 임시로 식별할 수 있는 tempName을 담는다.
   useEffect(() => {
     const url = new URL(window.location.href);
-    const tempName = url.searchParams.get('TempName') ?? '';
+    const tempName = url.searchParams.get('tempName') ?? '';
     setTempName(tempName);
   }, []);
 
@@ -31,7 +31,7 @@ const SetNickname: React.FC = () => {
     axios
       .post('https://thedragonmoney.com/members/duplicated-name', {
         name: nickname,
-        TempName: tempName,
+        tempName: tempName,
       })
       .then((res) => {
         // 닉네임 중복검사에서 성공하면, login 페이지로 redirect한다.
