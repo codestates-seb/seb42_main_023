@@ -9,7 +9,7 @@ import Reply from './Reply';
 import { useAppDispatch, useAppSelector } from '../../hooks';
 import { commentsApi, repliesApi } from '../../api/api';
 import { useParams } from 'react-router';
-import { isOpenDelete, setType } from '../../slices/postSlice';
+import { setIsOpenDelete, setType } from '../../slices/postSlice';
 import {
   PostStateType,
   CommentStateType,
@@ -98,7 +98,7 @@ const Comment: React.FC = () => {
 
   // 삭제 확인 모달창
   const confirmDeleteHandler = (): void => {
-    dispatch(isOpenDelete((state as PostStateType).post.isOpenDelete));
+    dispatch(setIsOpenDelete((state as PostStateType).post.isOpenDelete));
   };
 
   // 특정 댓글의 답글 조회

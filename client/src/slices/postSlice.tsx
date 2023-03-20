@@ -1,5 +1,10 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
+interface Comunity {
+  type: string;
+  payload: boolean;
+}
+
 const postSlice = createSlice({
   name: 'post',
   initialState: {
@@ -10,6 +15,7 @@ const postSlice = createSlice({
     postDetail: undefined,
     type: undefined,
     isOpenDelete: false,
+    isOpenFilter: false,
   },
   reducers: {
     // 게시물 좋아요
@@ -39,8 +45,13 @@ const postSlice = createSlice({
     setType: (state, action: PayloadAction<string>): void => {
       (state.type as unknown) = action.payload;
     },
-    isOpenDelete: (state, action: PayloadAction<boolean>): void => {
+    // 삭제창 오픈
+    setIsOpenDelete: (state, action: PayloadAction<boolean>): void => {
       state.isOpenDelete = !state.isOpenDelete;
+    },
+    // 필터 오픈
+    setIsOpenFilter: (state, action: Comunity): void => {
+      state.isOpenFilter = action.payload;
     },
   },
 });
@@ -53,5 +64,6 @@ export const {
   setRecommendPosts,
   setPostDetail,
   setType,
-  isOpenDelete,
+  setIsOpenDelete,
+  setIsOpenFilter,
 } = postSlice.actions;

@@ -17,7 +17,7 @@ import {
   ReplyProps,
 } from '../../types/PostDetail';
 import { repliesApi } from '../../api/api';
-import { isOpenDelete, setType } from '../../slices/postSlice';
+import { setIsOpenDelete, setType } from '../../slices/postSlice';
 
 const Reply: React.FC<ReplyProps> = ({ replyInfo, idx }: ReplyProps) => {
   const replyEditInput = useRef<HTMLInputElement>(null);
@@ -64,7 +64,7 @@ const Reply: React.FC<ReplyProps> = ({ replyInfo, idx }: ReplyProps) => {
 
   // 삭제 확인 모달창
   const confirmDeleteHandler = (): void => {
-    dispatch(isOpenDelete((state as PostStateType).post.isOpenDelete));
+    dispatch(setIsOpenDelete((state as PostStateType).post.isOpenDelete));
   };
 
   const typeChecker = (event: React.MouseEvent<HTMLElement>) => {

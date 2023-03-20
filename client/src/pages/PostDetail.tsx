@@ -4,14 +4,13 @@ import CommentInput from '../components/postDetailP/CommentInput';
 import Comment from '../components/postDetailP/Comment';
 import RecommendedPost from '../components/postDetailP/RecommendedPost';
 import BookmarkIcon from '../assets/common/BookmarkIcon';
-import { BsThreeDots } from 'react-icons/bs';
 import TimeIcon from '../assets/common/TimeIcon';
 import ViewIcon from '../assets/common/ViewIcon';
 import CommentIcon from '../assets/common/CommentIcon';
 import DislikeIcon from '../assets/common/DislikeIcon';
 import LikeIcon from '../assets/common/LikeIcon';
 import {
-  isOpenDelete,
+  setIsOpenDelete,
   setBookmark,
   setDislike,
   setLike,
@@ -25,6 +24,7 @@ import {
 import { useParams } from 'react-router';
 import { postsApi, commentsApi, repliesApi } from '../api/api';
 import { BlueBtn, WhiteBtn } from '../components/common/Btn';
+import DropdownButton from '../components/postDetailP/DropdownButton';
 
 const PostDetail: React.FC = () => {
   const dispatch = useAppDispatch();
@@ -63,7 +63,7 @@ const PostDetail: React.FC = () => {
   };
   // 삭제 확인 모달창 오픈
   const confirmDeleteHandler = (): void => {
-    dispatch(isOpenDelete((state as PostStateType).post.isOpenDelete));
+    dispatch(setIsOpenDelete((state as PostStateType).post.isOpenDelete));
   };
   // 데이터 삭제(게시글, 댓글, 답글)
   const deleteData = (): void => {
@@ -144,7 +144,7 @@ const PostDetail: React.FC = () => {
                   checked={isSuccess && data.posts[0].isBookmarked}
                 />
               </button>
-              <BsThreeDots style={{ cursor: 'pointer' }} />
+              <DropdownButton></DropdownButton>
             </ul>
           </PostInfo>
           <PostContent>

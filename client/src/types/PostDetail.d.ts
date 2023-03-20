@@ -7,6 +7,7 @@ export interface PostStateType {
     postDetail: unknown;
     type: unknown;
     isOpenDelete: boolean;
+    isOpenFilter: boolean;
   };
 }
 
