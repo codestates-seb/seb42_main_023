@@ -1,7 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
 import PostList from '../components/mainP/PostList';
-import Pagenation from '../components/mainP/Pagenation';
 import DropdownButton from '../components/mainP/DropdownButton';
 import { AiOutlineTrophy } from 'react-icons/ai';
 import { NavBtn } from '../components/common/Btn';
@@ -39,7 +38,6 @@ const Main = () => {
         <DropdownButton />
       </FilterWrap>
       <PostList />
-      <Pagenation />
     </>
   );
 };

@@ -2,17 +2,15 @@ import React, { useEffect } from 'react';
 import styled from 'styled-components';
 import NextPageIcon from '../../assets/common/NextPageIcon';
 import PrevPageIcon from '../../assets/common/PrevPageIcon';
-import { useParams } from 'react-router-dom';
 
-// interface {
-//     dataPerPage:number,
-//     totalData:number,
-//     paginate:number,
-// }
+interface Page {
+  page: number;
+  size: number;
+  totalPage: number;
+}
 
-const Pagination = () => {
+const Pagination = ({ page, size, totalPage }: Page) => {
   const limit = 5;
-  const { activePage } = useParams();
 
   useEffect(() => {
     // TODO:데이터를 불러오면 보여주는 페이지 개수에 따라서 자르기

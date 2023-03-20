@@ -33,7 +33,7 @@ function WeeklyPopular() {
                     {post.title}
                     <div>
                       <BsTrophy size={20} />
-                      <span>{index}</span>
+                      <span>{index + 1}</span>
                     </div>
                   </h1>
                 </Link>

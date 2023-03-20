@@ -6,6 +6,7 @@ import LikeIcon from '../../assets/common/LikeIcon';
 import TimeIcon from '../../assets/common/TimeIcon';
 import ViewIcon from '../../assets/common/ViewIcon';
 import Thumnail from './Thumnail';
+import Pagenation from './Pagenation';
 import { TagItem } from '../common/Tag';
 import { Link } from 'react-router-dom';
 import { postListApi } from '../../api/postListapi';
@@ -77,6 +78,13 @@ function PostList() {
             </Item>
           );
         })}
+      {isSuccess && (
+        <Pagenation
+          page={data.pageInfo.page}
+          size={data.pageInfo.size}
+          totalPage={data.pageInfo.totalPage}
+        />
+      )}
     </List>
   );
 }
