@@ -19,7 +19,7 @@ const SetNickname: React.FC = () => {
   // 서버는 회원가입이 완료된 유저를 닉네임 설정 페이지로 디라이렉트한다. uri에는 사용자를 임시로 식별할 수 있는 tempName을 담는다.
   useEffect(() => {
     const url = new URL(window.location.href);
-    const tempName = url.searchParams.get('tempName') ?? '';
+    const tempName = url.searchParams.get('TempName') ?? '';
     setTempName(tempName);
   }, []);
 
