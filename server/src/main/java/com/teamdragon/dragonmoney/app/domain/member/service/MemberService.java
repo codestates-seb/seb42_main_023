@@ -77,8 +77,12 @@ public class MemberService {
 
     //uuid를 통해 회원 조회 및 이름 수정
     public Member updateMemberName(String tempName, String name) {
-        Member memberOptional = memberRepository.findByTempName(tempName);
+//        Member memberOptional = memberRepository.findByTempName(tempName);
+//
+//        memberOptional.setName(name);
+//        memberOptional.setNameDuplicateCheck(true);
 
+        Member memberOptional = findVerifiedMemberTempName(tempName);
         memberOptional.setName(name);
         memberOptional.setNameDuplicateCheck(true);
 
@@ -147,6 +151,13 @@ public class MemberService {
     //회원 이름을 통해 회원 존재의 유무 확인
     public Member findVerifiedMemberName(String name) {
         Optional<Member> optionalAnswer = memberRepository.findByName(name);
+
+        return optionalAnswer
+                .orElseThrow( () -> new BusinessLogicException(BusinessExceptionCode.USER_NOT_FOUND));
+    }
+
+    public Member findVerifiedMemberTempName(String tempName) {
+        Optional<Member> optionalAnswer = memberRepository.findByTempName(tempName);
 
         return optionalAnswer
                 .orElseThrow( () -> new BusinessLogicException(BusinessExceptionCode.USER_NOT_FOUND));
