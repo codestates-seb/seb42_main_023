@@ -2,13 +2,22 @@ import React, { useRef } from 'react';
 import styled from 'styled-components';
 import { useAppDispatch, useAppSelector } from '../../hooks';
 import { FiMoreHorizontal } from 'react-icons/fi';
-import { setIsOpenFilter } from '../../slices/postSlice';
+import {
+  setIsOpenDelete,
+  setIsOpenFilter,
+  setType,
+} from '../../slices/postSlice';
+import { useParams } from 'react-router-dom';
+import { PostStateType } from '../../types/PostDetail';
 
 const DropdownButton = () => {
   const dispatch = useAppDispatch();
   const state = useAppSelector((state) => {
     return state;
   });
+  const params = useParams();
+  console.log(params.postId);
+
   const dropdownRef = useRef<HTMLDivElement>(null);
   const options: ['신고하기', '수정하기', '삭제하기'] = [
     '신고하기',
@@ -16,10 +25,19 @@ const DropdownButton = () => {
     '삭제하기',
   ];
 
-  const handleSelect = (option: '신고하기' | '수정하기' | '삭제하기') => {
-    console.log(option);
+  // 삭제 확인 모달창
+  const confirmDeleteHandler = (): void => {
+    dispatch(setIsOpenDelete((state as PostStateType).post.isOpenDelete));
+  };
 
-    dispatch(setIsOpenFilter(false));
+  const typeChecker = (event: React.MouseEvent<HTMLElement>) => {
+    if (event.target instanceof HTMLElement) {
+      dispatch(setType(event.target.id));
+    }
+  };
+
+  const handleSelect = (option: '신고하기' | '수정하기' | '삭제하기') => {
+    if (option === '삭제하기') confirmDeleteHandler();
   };
 
   const handleToggle = () => {
@@ -50,7 +68,15 @@ const DropdownButton = () => {
       {state.post.isOpenFilter && (
         <List>
           {options.map((option) => (
-            <ListItem key={option} onClick={(): void => handleSelect(option)}>
+            <ListItem
+              id="게시글"
+              key={option}
+              onClick={(event: React.MouseEvent<HTMLElement>) => {
+                handleSelect(option);
+                dispatch(setIsOpenFilter(false));
+                typeChecker(event);
+              }}
+            >
               {option}
             </ListItem>
           ))}

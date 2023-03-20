@@ -21,7 +21,7 @@ import {
   CommentStateType,
   ReplyStateType,
 } from '../types/PostDetail';
-import { useParams } from 'react-router';
+import { useParams, useNavigate } from 'react-router';
 import { postsApi, commentsApi, repliesApi } from '../api/api';
 import { BlueBtn, WhiteBtn } from '../components/common/Btn';
 import DropdownButton from '../components/postDetailP/DropdownButton';
@@ -35,6 +35,7 @@ const PostDetail: React.FC = () => {
       return state;
     },
   );
+  const navigate = useNavigate();
   const params = useParams();
   const postId = params.postId;
   // 게시글
@@ -74,7 +75,8 @@ const PostDetail: React.FC = () => {
     ) {
       deletePost(postId);
       confirmDeleteHandler();
-      console.log('comment delete');
+      console.log('post delete');
+      navigate('/');
     }
     // 댓글 삭제 로직
     if (

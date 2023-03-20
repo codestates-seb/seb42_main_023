@@ -1,10 +1,5 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
-interface Comunity {
-  type: string;
-  payload: boolean;
-}
-
 const postSlice = createSlice({
   name: 'post',
   initialState: {
@@ -50,7 +45,7 @@ const postSlice = createSlice({
       state.isOpenDelete = !state.isOpenDelete;
     },
     // 필터 오픈
-    setIsOpenFilter: (state, action: Comunity): void => {
+    setIsOpenFilter: (state, action: PayloadAction<boolean>): void => {
       state.isOpenFilter = action.payload;
     },
   },
