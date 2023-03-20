@@ -56,6 +56,11 @@ public class MemberDto {
     }
 
     @Setter
+    public static class duplicatedPost {
+        private Boolean useable;
+    }
+
+    @Setter
     @Getter
     public static class IntroResponse {
         private String intro;
