@@ -6,11 +6,8 @@ const commentSlice = createSlice({
     isCommentLike: false,
     isCommentDislike: false,
     commentValue: '',
-    editValue: '',
-    currentComment: undefined,
     commentId: undefined,
     isEdit: undefined,
-    isOpenDelete: false,
   },
   reducers: {
     // 댓글 좋아요
@@ -25,23 +22,15 @@ const commentSlice = createSlice({
     setComment: (state, action: PayloadAction<string>) => {
       (state.commentValue as unknown) = action.payload;
     },
-    // 댓글 수정 내용
-    editComment: (state, action: PayloadAction<string>) => {
-      (state.commentValue as unknown) = action.payload;
-    },
-    // 댓글 삭제
-    deleteComment: (state, action: PayloadAction<object>) => {
-      console.log(action.payload);
-    },
     // 댓글 ID
-    setCommentId: (state, action: PayloadAction<object>): void => {
+    setCommentId: (state, action: PayloadAction<number>): void => {
       (state.commentId as unknown) = action.payload;
     },
     // 댓글 수정 여부
     isEdit: (state, action: PayloadAction<object>): void => {
       (state.isEdit as unknown) = action.payload;
     },
-    // 답글 수정 상태 변경
+    // 댓글 수정 상태 변경
     setIsEdit: (state, action: PayloadAction<number>): void => {
       (state.isEdit! as Array<boolean>)[action.payload] = !(
         state.isEdit! as Array<boolean>
@@ -51,10 +40,7 @@ const commentSlice = createSlice({
     addCommentEdit: (state, action: PayloadAction<boolean>): void => {
       (state.isEdit! as Array<boolean>).push(action.payload);
     },
-    // edit 댓글 추가
-    isOpenDelete: (state, action: PayloadAction<boolean>): void => {
-      state.isOpenDelete = !state.isOpenDelete;
-    },
+    // 댓글 삭제창 오픈
   },
 });
 
@@ -63,11 +49,8 @@ export const {
   setCommentLike,
   setCommentDislike,
   setComment,
-  editComment,
-  deleteComment,
   setCommentId,
   isEdit,
   setIsEdit,
   addCommentEdit,
-  isOpenDelete,
 } = commentSlice.actions;

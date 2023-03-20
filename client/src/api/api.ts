@@ -122,7 +122,7 @@ export const commentsApi = createApi({
         };
       },
       invalidatesTags: (result, error, arg) => [
-        { type: 'Comment', id: arg.content },
+        { type: 'Comment', id: arg.postId },
       ],
     }),
   }),
@@ -139,21 +139,19 @@ export const repliesApi = createApi({
       query: ({ commentId }) => `comments/${commentId}/replies`,
       providesTags: (result, error, arg) => {
         console.log(result, error, arg);
-        return [{ type: 'Reply', id: arg.commentId }];
+        return [{ type: 'Reply', id: 'reply' }];
       },
     }),
     // 답글 추가
     setReply: builder.mutation({
-      query: ({ commentId }) => {
+      query: ({ commentId, content }) => {
         return {
           url: `comments/${commentId}/replies`,
           method: 'POST',
-          body: { commentId },
+          body: { commentId, content },
         };
       },
-      invalidatesTags: (result, error, arg) => [
-        { type: 'Reply', id: arg.commentId },
-      ],
+      invalidatesTags: (result, error, arg) => [{ type: 'Reply', id: 'reply' }],
     }),
     // 답글 수정
     updataReply: builder.mutation({
@@ -161,13 +159,11 @@ export const repliesApi = createApi({
         return {
           url: `replies/${replyId}/`,
           method: 'PATCH',
-          body: { content },
+          body: { replyId, content },
         };
       },
 
-      invalidatesTags: (result, error, arg) => [
-        { type: 'Reply', id: arg.content },
-      ],
+      invalidatesTags: (result, error, arg) => [{ type: 'Reply', id: 'reply' }],
     }),
     // 답글 삭제
     deleteReply: builder.mutation({
@@ -177,9 +173,7 @@ export const repliesApi = createApi({
           method: 'DELETE',
         };
       },
-      invalidatesTags: (result, error, arg) => [
-        { type: 'Reply', id: arg.content },
-      ],
+      invalidatesTags: (result, error, arg) => [{ type: 'Reply', id: 'reply' }],
     }),
   }),
 });
