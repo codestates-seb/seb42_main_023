@@ -22,7 +22,6 @@ export const weeklyPopularApi = createApi({
     getPostList: builder.query({
       query: ({ endpoint }) => `posts/${endpoint}`,
       providesTags: (result, error, arg) => {
-        console.log(result, error, arg);
         return [{ type: 'weeklyPopular', id: arg.recommend }];
       },
     }),

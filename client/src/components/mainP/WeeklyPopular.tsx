@@ -8,14 +8,9 @@ import { Link } from 'react-router-dom';
 import styled from 'styled-components';
 import { weeklyPopularApi } from '../../api/postListapi';
 import { timeSince } from '../mainP/Timecalculator';
-import { PostItem, Item, Itemside, Info, Tag } from './CommunityPost';
+import { PostItem, Itemside, Info, Tag } from './PostList';
 
 function WeeklyPopular() {
-  //   useEffect(() => {
-  //     axios('http://localhost:3000/posts/weekly-popular').then((response) => {
-  //       console.log(response.data);
-  //     });
-  //   }, []);
   const weeklyPopularquery = weeklyPopularApi.useGetPostListQuery({
     endpoint: 'weekly-popular',
   });
@@ -28,12 +23,12 @@ function WeeklyPopular() {
           return (
             <WeeklyBestItem key={post.postId}>
               <div>
-                <a href="#">
+                <Link to={`/posts/${post.postId}`}>
                   <Thumnail content={post.imgUrl} />
-                </a>
+                </Link>
               </div>
               <div>
-                <Link to={`#`}>
+                <Link to={`/posts/${post.postId}`}>
                   <h1>
                     {post.title}
                     <div>
@@ -73,7 +68,22 @@ function WeeklyPopular() {
 }
 
 export default WeeklyPopular;
-
+const Item = styled.li`
+  height: 100px;
+  border-bottom: 1px solid var(--border-color);
+  box-sizing: border-box;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 0 10px;
+  h1 {
+    font-size: 20px;
+    margin-bottom: 4px;
+  }
+  > div:nth-child(2) {
+    flex-grow: 1;
+  }
+`;
 const WeeklyBestItem = styled(Item)`
   background-color: var(--background-blue-color);
   h1 {

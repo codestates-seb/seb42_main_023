@@ -39,6 +39,7 @@ const store = configureStore({
       .concat(recomendedPostsApi.middleware)
       .concat(postListApi.middleware)
       .concat(weeklyPopularApi.middleware)
+
       .concat(logger),
 });
 
