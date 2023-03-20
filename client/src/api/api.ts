@@ -10,7 +10,6 @@ export const recomendedPostsApi = createApi({
     getRomendedPosts: builder.query({
       query: ({ recommend }) => `posts/${recommend}`,
       providesTags: (result, error, arg) => {
-        console.log(result, error, arg);
         return [{ type: 'RecomendedPosts', id: arg.recommend }];
       },
     }),
@@ -27,7 +26,6 @@ export const postsApi = createApi({
     getPost: builder.query({
       query: ({ postId }) => `posts/${postId}`,
       providesTags: (result, error, arg) => {
-        console.log(result, error, arg);
         return [{ type: 'Post', id: arg.postId }];
       },
     }),
@@ -83,7 +81,6 @@ export const commentsApi = createApi({
     getComment: builder.query({
       query: ({ postId }) => `posts/${postId}/comments`,
       providesTags: (result, error, arg) => {
-        console.log(result, error, arg);
         return [{ type: 'Comment', id: arg.postId }];
       },
     }),

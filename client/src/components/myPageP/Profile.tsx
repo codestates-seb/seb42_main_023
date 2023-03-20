@@ -1,19 +1,22 @@
-import React from 'react';
+import React, { useRef, useEffect } from 'react';
 import styled from 'styled-components';
 import LargeProfileImg from '../common/LargeProfileImg';
 import { BsPencil } from 'react-icons/bs';
 import DropdownButton from './DropdownButton';
+import ProfileEdit from './ProfileEdit';
 import { IconBtn } from '../common/Btn';
 import { useAppDispatch, useAppSelector } from '../../hooks';
-import { setEditOpen } from '../../slices/mypageSlice';
+import { setEditOpen, setEditWidth } from '../../slices/mypageSlice';
 function Profile() {
   const dispatch = useAppDispatch();
-  const content = '안녕하세요.저는 돈버는 토끼입니다.모두 부자되세요.';
-  const { EditOpen } = useAppSelector(({ mypage }) => mypage);
-
+  const { EditOpen, content } = useAppSelector(({ mypage }) => mypage);
+  const divRef = useRef<HTMLDivElement>(null);
+  //자기소개 input토글
   const EditOpenHandler = () => {
+    dispatch(setEditWidth(divRef.current?.offsetWidth as number));
     dispatch(setEditOpen(!EditOpen));
   };
+
   return (
     <ProfileWrap>
       <div>
@@ -21,17 +24,14 @@ function Profile() {
         <article>
           <h1>Bunny</h1>
           {EditOpen ? (
-            <Input>
-              <input value={content}></input>
-              <button onClick={EditOpenHandler}>저장</button>
-            </Input>
+            <ProfileEdit />
           ) : (
-            <span>
+            <div ref={divRef}>
               {content}
-              <IconBtn onClick={EditOpenHandler}>
+              <EditBtn onClick={EditOpenHandler}>
                 <BsPencil />
-              </IconBtn>
-            </span>
+              </EditBtn>
+            </div>
           )}
         </article>
       </div>
@@ -63,19 +63,6 @@ const ProfileWrap = styled.div`
     display: felx;
   }
 `;
-const Input = styled.div`
-  display: flex;
-  input {
-    width: 40vw;
-    :focus {
-      outline: none;
-    }
-  }
-  button {
-    width: 40px;
-
-    :hover {
-      color: var(--point-blue-color);
-    }
-  }
+const EditBtn = styled(IconBtn)`
+  margin-left: 24px;
 `;

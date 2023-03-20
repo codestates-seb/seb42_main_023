@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useRef } from 'react';
 import styled from 'styled-components';
 import { useAppDispatch, useAppSelector } from '../../hooks';
 import { setFilter, setFilterOpen } from '../../slices/mypageSlice';

@@ -16,6 +16,7 @@ import {
   recomendedPostsApi,
   reportApi,
 } from '../api/api';
+import { postListApi, weeklyPopularApi } from '../api/postListapi';
 import surveySlice from '../slices/surveySlice';
 
 const store = configureStore({
@@ -35,6 +36,8 @@ const store = configureStore({
     [repliesApi.reducerPath]: repliesApi.reducer,
     [recomendedPostsApi.reducerPath]: recomendedPostsApi.reducer,
     [reportApi.reducerPath]: reportApi.reducer,
+    [postListApi.reducerPath]: postListApi.reducer,
+    [weeklyPopularApi.reducerPath]: weeklyPopularApi.reducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware()
@@ -43,6 +46,9 @@ const store = configureStore({
       .concat(repliesApi.middleware)
       .concat(recomendedPostsApi.middleware)
       .concat(reportApi.middleware)
+      .concat(postListApi.middleware)
+      .concat(weeklyPopularApi.middleware)
+
       .concat(logger),
 });
 

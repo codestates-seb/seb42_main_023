@@ -2,7 +2,7 @@ import { createSlice } from '@reduxjs/toolkit';
 
 interface Comunity {
   type: string;
-  payload: boolean;
+  payload: '' | 'best-awards';
 }
 interface Filter {
   type: string;
@@ -12,11 +12,15 @@ interface Page {
   type: string;
   payload: number;
 }
+interface Open {
+  type: string;
+  payload: boolean;
+}
 
 const mainSlice = createSlice({
   name: 'mainstates',
   initialState: {
-    community: true,
+    community: '',
     filter: '최신순',
     filterOpen: false,
     page: 1,
@@ -31,7 +35,7 @@ const mainSlice = createSlice({
       state.filter = action.payload;
     },
     // 정렬옵션 선택창
-    setFilterOpen: (state, action: Comunity): void => {
+    setFilterOpen: (state, action: Open): void => {
       state.filterOpen = action.payload;
     },
     // 페이지네이션
