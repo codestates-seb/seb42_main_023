@@ -1,48 +1,53 @@
 import React, { useRef } from 'react';
+import { useParams } from 'react-router-dom';
 import styled from 'styled-components';
-import { useAppDispatch, useAppSelector } from '../../hooks';
-import { setComment } from '../../slices/commentSlice';
-import {
-  StateType,
-  CommentType,
-  SecondStateType,
-} from '../../types/PostDetail';
-
-interface Input {
-  className: string;
-  placeholder: string;
-  onChange: React.KeyboardEvent<HTMLInputElement>;
-  value: string;
-}
+import { commentsApi } from '../../api/api';
+import { useAppDispatch } from '../../hooks';
+import { addCommentEdit, setComment } from '../../slices/commentSlice';
 
 const CommentInput: React.FC = () => {
   const commentRef = useRef<HTMLInputElement>(null);
   const dispatch = useAppDispatch();
-  const state = useAppSelector(
-    (state: StateType | SecondStateType): StateType | SecondStateType => {
-      return state;
-    },
-  );
+  const params = useParams();
+  const postId = params.postId;
+  const query = commentsApi.useGetCommentQuery({ postId });
+  // 댓글 추가 mutation
+  const mutation = commentsApi.useSetCommentMutation();
+  const setComments = mutation[0];
+
+  // 댓글 추가
+  const addCommentHandler = async () => {
+    console.log('test');
+    await setComments({
+      postId: postId,
+      content: commentRef.current?.value,
+    });
+    dispatch(addCommentEdit(false));
+    commentRef.current!.value = '';
+  };
 
   const valueCheck = (event: React.ChangeEvent<HTMLInputElement>): void => {
     dispatch(setComment(event.target.value));
   };
 
+  const enterHandler = (event: React.KeyboardEvent<HTMLInputElement>): void => {
+    if (!commentRef.current?.value) return;
+    if (event.key === 'Enter' && event.nativeEvent.isComposing === false) {
+      addCommentHandler();
+    }
+  };
+
   return (
     <CommentInputContainer>
-      <h1>
-        댓글{' '}
-        {(state as StateType).postSlice.comments! &&
-          ((state as StateType).postSlice.comments as CommentType).length}
-        개{' '}
-      </h1>
+      <h1>댓글 {query.data && query.data.comment.length}개 </h1>
       <Input
         type="text"
         placeholder="댓글을 남겨 주세요"
         ref={commentRef}
         onChange={valueCheck}
+        onKeyDown={enterHandler}
       ></Input>
-      <AddCommentBtn>등록</AddCommentBtn>
+      <AddCommentBtn onClick={addCommentHandler}>등록</AddCommentBtn>
     </CommentInputContainer>
   );
 };

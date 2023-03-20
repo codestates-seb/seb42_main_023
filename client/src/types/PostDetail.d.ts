@@ -1,29 +1,34 @@
-export type NewType = StateType & SecondStateType;
-export interface StateType {
-  postSlice: {
+export interface PostStateType {
+  post: {
     isLike: boolean;
     isDislike: boolean;
     isBookmark: boolean;
-    isCommentLike: boolean;
-    isCommentDislike: boolean;
-    isReplyLike: boolean;
-    isReplyDislike: boolean;
     reommendPosts: unknown;
     postDetail: unknown;
-    comments: unknown;
-    replies: unknown;
-    isOpend: unknown;
-    totalReplies: Array;
-    commentId: unknown;
+    type: unknown;
+    isOpenDelete: boolean;
   };
 }
 
-export interface SecondStateType {
+export interface CommentStateType {
   comment: {
-    commentVal: string;
-    replyVal: string;
-    currentComment: unknown;
+    isCommentLike: boolean;
+    isCommentDislike: boolean;
+    commentValue: string;
+    commentId: unknown;
     isEdit: unknown;
+  };
+}
+
+export interface ReplyStateType {
+  reply: {
+    isReplyLike: boolean;
+    isReplyDislike: boolean;
+    replyValue: string;
+    replyId: number;
+    isEdit: unknown;
+    isOpened: unknown;
+    totalReplies: Array;
   };
 }
 
@@ -75,6 +80,11 @@ export interface ReplyType {
   content: string;
 }
 
-interface Props {
+export interface CommentProps {
+  commentInfo: CommentType;
+}
+
+export interface ReplyProps {
   replyInfo: ReplyType;
+  idx: number;
 }

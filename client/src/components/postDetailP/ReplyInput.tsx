@@ -1,11 +1,55 @@
-import React from 'react';
+import React, { useRef } from 'react';
 import styled from 'styled-components';
+import { repliesApi } from '../../api/api';
+import { useAppDispatch, useAppSelector } from '../../hooks';
+import { addReplyEdit, isEdit, setReply } from '../../slices/replySlice';
+import { ReplyStateType, CommentProps } from '../../types/PostDetail';
 
-const ReplyInput: React.FC = () => {
+const ReplyInput: React.FC<CommentProps> = ({ commentInfo }: CommentProps) => {
+  const replyRef = useRef<HTMLInputElement>(null);
+  const dispatch = useAppDispatch();
+  const commentId = commentInfo.commentId;
+
+  const mutation = repliesApi.useSetReplyMutation();
+  const setReplys = mutation[0];
+
+  // 답글 추가
+  const addReplyHandler = async () => {
+    await setReplys({
+      commentId: commentId,
+      content: replyRef.current!.value,
+    });
+    dispatch(addReplyEdit(false));
+    replyRef.current!.value = '';
+  };
+
+  const valueCheck = (event: React.ChangeEvent<HTMLInputElement>): void => {
+    dispatch(setReply(event.target.value));
+  };
+
+  const enterHandler = (event: React.KeyboardEvent<HTMLInputElement>): void => {
+    if (!replyRef.current!.value) return;
+    if (event.key === 'Enter' && event.nativeEvent.isComposing === false) {
+      addReplyHandler();
+    }
+  };
   return (
     <ReplyInputContainer>
-      <Input type="text" placeholder="답글을 남겨 주세요"></Input>
-      <AddCommentBtn>등록</AddCommentBtn>
+      <Input
+        type="text"
+        placeholder="답글을 남겨 주세요"
+        ref={replyRef}
+        onChange={valueCheck}
+        onKeyDown={enterHandler}
+      ></Input>
+      <AddCommentBtn
+        onClick={(event) => {
+          console.log(event.target);
+          addReplyHandler();
+        }}
+      >
+        등록
+      </AddCommentBtn>
     </ReplyInputContainer>
   );
 };
@@ -13,6 +57,8 @@ const ReplyInput: React.FC = () => {
 export default ReplyInput;
 
 const ReplyInputContainer = styled.div`
+  display: flex;
+  justify-content: flex-end;
   position: relative;
   width: 720px;
   height: auto;
@@ -23,7 +69,7 @@ const ReplyInputContainer = styled.div`
   }
 `;
 const Input = styled.input`
-  width: 720px;
+  width: 670px;
   height: 50px;
   border: 1px solid #d4d4d4;
   padding: 0 10px 0 10px;

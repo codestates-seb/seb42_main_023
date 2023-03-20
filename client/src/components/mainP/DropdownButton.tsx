@@ -1,22 +1,29 @@
 import React, { useState, useRef } from 'react';
 import styled from 'styled-components';
 import { BsFillCaretDownFill } from 'react-icons/bs';
+import { useAppDispatch, useAppSelector } from '../../hooks';
+import { setFilter, setFilterOpen } from '../../slices/mainSlice';
 
 const DropdownButton = () => {
-  const [selectedOption, setSelectedOption] = useState('최신순');
-  const [isOpen, setIsOpen] = useState(false);
+  const dispatch = useAppDispatch();
+  const { filter, filterOpen } = useAppSelector(({ main }) => main);
   const dropdownRef = useRef<HTMLDivElement>(null);
-  const options = ['최신순', '좋아요순', '조회순'];
+  const options: ['최신순', '좋아요순', '조회순'] = [
+    '최신순',
+    '좋아요순',
+    '조회순',
+  ];
 
-  const handleSelect = (option: string) => {
-    setSelectedOption(option);
+  const handleSelect = (option: '최신순' | '좋아요순' | '조회순') => {
+    dispatch(setFilter(option));
     //query login
     // onSelect(option);
-    setIsOpen(false);
+    dispatch(setFilterOpen(false));
   };
 
   const handleToggle = () => {
-    setIsOpen(!isOpen);
+    console.log(filterOpen);
+    dispatch(setFilterOpen(!filterOpen));
   };
 
   const handleClickOutside = (event: MouseEvent) => {
@@ -24,7 +31,7 @@ const DropdownButton = () => {
       dropdownRef.current &&
       !dropdownRef.current.contains(event.target as Node)
     ) {
-      setIsOpen(false);
+      dispatch(setFilterOpen(false));
     }
   };
 
@@ -38,10 +45,10 @@ const DropdownButton = () => {
   return (
     <Dropdown ref={dropdownRef}>
       <Button onClick={handleToggle}>
-        {selectedOption}
+        {filter}
         <BsFillCaretDownFill />
       </Button>
-      {isOpen && (
+      {filterOpen && (
         <List>
           {options.map((option) => (
             <ListItem key={option} onClick={() => handleSelect(option)}>

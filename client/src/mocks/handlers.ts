@@ -3,11 +3,13 @@ import { rest } from 'msw';
 import { replies, postDetail, recomendedPosts, comments } from './postData';
 
 // MSW 핸들러
+
+//--------------------------- GET --------------------------------
+
 export const handlers = [
   // 추천 게시물 조회
   rest.get('/posts/recommend', (req, res, ctx) => {
     const data = recomendedPosts;
-    const params = req.params;
     console.log('test', data);
     return res(ctx.status(200), ctx.json(data));
   }),
@@ -75,5 +77,128 @@ export const handlers = [
       comment: filtered,
     };
     return res(ctx.status(200), ctx.json(result));
+  }),
+
+  //--------------------------- POST --------------------------------
+
+  // 댓글 추가
+  rest.post('/posts/:postId/comments', async (req, res, ctx) => {
+    const data = comments;
+    const params = req.params;
+    const id = params.postId;
+    const newData = await req.json();
+
+    data.push({
+      postId: Number(id),
+      commentId: 123,
+      memberName: 'newMember',
+      memberImage:
+        'https://image.edaily.co.kr/images/Photo/files/NP/S/2021/06/PS21060200161.jpg',
+      createdAt: String(new Date()),
+      modifiedAt: '',
+      isModified: false,
+      replyCount: 0,
+      thumbupCount: 0,
+      thumbDownCount: 0,
+      isThumbup: false,
+      isThumbDown: false,
+      content: newData.content,
+    });
+
+    return res(ctx.status(201), ctx.json({ data }));
+  }),
+
+  // 답글 추가
+  rest.post('/comments/:commentId/replies', async (req, res, ctx) => {
+    const data = replies;
+    const params = req.params;
+    const id = params.commentId;
+    const newData = await req.json();
+    console.log('params', params);
+    console.log('newData', newData);
+    data.push({
+      commentId: Number(id),
+      replyId: Math.random(),
+      memberName: 'RP',
+      memberImage:
+        'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT05FKRbwYdbvIz_7q6yf_3Oevdk6NIoPIFrA&usqp=CAU',
+      createdAt: String(new Date()),
+      modifiedAt: '',
+      isModified: false,
+      thumbupCount: 14,
+      thumbDownCount: 12,
+      isThumbup: true,
+      isThumbDown: false,
+      content: newData.content,
+    });
+
+    return res(ctx.status(201), ctx.json({ data }));
+  }),
+
+  //--------------------------- PATCH --------------------------------
+
+  // 댓글 수정
+  rest.patch('/comments/:commentId', async (req, res, ctx) => {
+    const data = comments;
+    const params = req.params;
+
+    const commentId = params.commentId;
+    const newData = await req.json();
+
+    const result = data.map((post) => {
+      if (
+        post.postId === Number(newData.postId) &&
+        post.commentId === Number(commentId)
+      ) {
+        post.content = newData.content;
+      }
+      return post;
+    });
+    console.log('newData', newData);
+    console.log('data', data);
+    console.log('reqBody', req.body);
+    console.log('result', result);
+
+    return res(ctx.status(200), ctx.json(result));
+  }),
+
+  // 답글 수정
+  rest.patch('/replies/:replies', async (req, res, ctx) => {
+    const data = replies;
+    const params = req.params;
+    const newData = await req.json();
+
+    const result = data.map((reply) => {
+      console.log('abc', reply);
+      if (reply.replyId === Number(newData.replyId)) {
+        reply.content = newData.content;
+      }
+      return reply;
+    });
+    console.log('newData', newData);
+    console.log('data', data);
+    console.log('reqBody', req.body);
+    console.log('result', result);
+
+    return res(ctx.status(200), ctx.json(result));
+  }),
+  //--------------------------- DELETE --------------------------------
+
+  // 게시글 삭제
+  rest.delete('/posts/:postId', async (req, res, ctx) => {
+    // 삭제는 구현 불필요
+    return res(ctx.status(200), ctx.json({ res: 'Delete Complete' }));
+  }),
+
+  // 댓글 삭제
+  rest.delete('/comments/:commentId', async (req, res, ctx) => {
+    // 삭제는 구현 불필요
+    return res(ctx.status(200), ctx.json({ res: 'Delete Complete' }));
+  }),
+
+  // 답글 삭제
+  rest.delete('/replies/:replyId', async (req, res, ctx) => {
+    // 삭제는 구현 불필요
+    return res(ctx.status(200), ctx.json({ res: 'Delete Complete' }));
   }),
 ];
