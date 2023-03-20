@@ -33,12 +33,14 @@ public class OAuth2Controller {
         Cookie cookie = new Cookie("Refresh", refreshToken);
         cookie.setMaxAge(refreshTokenExpirationMinutes);
         cookie.isHttpOnly();
-        LoginResponseDto response = oAuth2Service.findLoginMember(tempAccessTokenDto.getTempAccessToken());
+
+//        LoginResponseDto response = oAuth2Service.findLoginMember(tempAccessTokenDto.getTempAccessToken());
 
         return ResponseEntity.status(HttpStatus.OK)
                 .header("Authorization", accessToken)
                 .header("Set-Cookie", "Refresh="+cookie)
-                .body(response);
+                .build();
+//                .body(response);
     }
 
     //Refresh Token 재발급
