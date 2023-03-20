@@ -3,7 +3,7 @@ import LikeIcon from '../../assets/common/LikeIcon';
 import TimeIcon from '../../assets/common/TimeIcon';
 import ViewIcon from '../../assets/common/ViewIcon';
 import Thumnail from './Thumnail';
-import { TagItem } from '../common/Tag';
+import { BsTrophy } from 'react-icons/bs';
 import { Link } from 'react-router-dom';
 import styled from 'styled-components';
 import { weeklyPopularApi } from '../../api/postListapi';
@@ -24,7 +24,7 @@ function WeeklyPopular() {
   return (
     <>
       {isSuccess &&
-        data.posts.map((post: PostItem) => {
+        data.posts.map((post: PostItem, index: number) => {
           return (
             <WeeklyBestItem key={post.postId}>
               <div>
@@ -34,7 +34,13 @@ function WeeklyPopular() {
               </div>
               <div>
                 <Link to={`#`}>
-                  <h1>{post.title}</h1>
+                  <h1>
+                    {post.title}
+                    <div>
+                      <BsTrophy size={20} />
+                      <span>{index}</span>
+                    </div>
+                  </h1>
                 </Link>
                 <Itemside>
                   <div>
@@ -70,4 +76,22 @@ export default WeeklyPopular;
 
 const WeeklyBestItem = styled(Item)`
   background-color: var(--background-blue-color);
+  h1 {
+    div {
+      position: relative;
+      display: inline-block;
+      svg {
+        color: var(--point-blue-color);
+        margin-left: 10px;
+        transform: translateY(2px);
+      }
+      span {
+        position: absolute;
+        font-size: 10px;
+        right: 7px;
+        top: 3px;
+        color: var(--point-blue-color);
+      }
+    }
+  }
 `;
