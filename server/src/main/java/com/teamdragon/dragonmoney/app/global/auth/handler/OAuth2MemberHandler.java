@@ -84,7 +84,7 @@ public class OAuth2MemberHandler extends SimpleUrlAuthenticationSuccessHandler {
 
     private URI createCheckNameURI(String tempName) {
         MultiValueMap<String, String> queryParams = new LinkedMultiValueMap<>();
-        queryParams.add("tempName", tempName);
+        queryParams.add("TempName", tempName);
 
         return UriComponentsBuilder
                 .newInstance()
