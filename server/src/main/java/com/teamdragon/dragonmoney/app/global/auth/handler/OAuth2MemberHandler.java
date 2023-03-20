@@ -88,7 +88,7 @@ public class OAuth2MemberHandler extends SimpleUrlAuthenticationSuccessHandler {
 
         return UriComponentsBuilder
                 .newInstance()
-                .scheme("https")
+                .scheme("http")
                 .host("hp5234-dragonmoney-front.s3-website.ap-northeast-2.amazonaws.com")
 //                .host("thedragonmoney.com")
                 .path("/setnickname")
@@ -103,7 +103,7 @@ public class OAuth2MemberHandler extends SimpleUrlAuthenticationSuccessHandler {
 
         return UriComponentsBuilder
                 .newInstance()
-                .scheme("https")
+                .scheme("http")
                 .host("hp5234-dragonmoney-front.s3-website.ap-northeast-2.amazonaws.com")
 //                .host("thedragonmoney.com")
                 .path("/temptoken")
