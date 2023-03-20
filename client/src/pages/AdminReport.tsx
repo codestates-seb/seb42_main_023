@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import Report from '../components/adminReport/Report';
+import Report from '../components/handleReport/Report';
 import { useState, ChangeEvent } from 'react';
 
 const AdminReport: React.FC = () => {

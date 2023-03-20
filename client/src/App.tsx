@@ -7,7 +7,7 @@ import Login from './pages/Login';
 import SetNickname from './pages/SetNickname';
 import RecommendLoan from './pages/RecommendLoan';
 import HappyHouse from './pages/HappyHouse';
-import AdminReport from './pages/AdminReport';
+// import AdminReport from './pages/AdminReport';
 import CreatePost from './pages/CreatePost';
 import UpdatePost from './pages/UpdatePost';
 import Main from './pages/Main';
@@ -16,6 +16,8 @@ import Footer from './components/common/Footer';
 import HeaderDefault from './components/common/HeaderDefault';
 import TempToken from './pages/tempToken';
 import MyPage from './pages/MyPage';
+import HandledPost from './pages/HandledPost';
+import NotHandledPost from './pages/NotHandledPost';
 
 const App: React.FC = () => {
   return (
@@ -32,7 +34,7 @@ const App: React.FC = () => {
               <Route path="/posts/update" element={<UpdatePost />} />
               <Route path="/login" element={<Login />} />
               <Route path="/setnickname" element={<SetNickname />} />
-              <Route path="/adminreport" element={<AdminReport />} />
+              {/* <Route path="/adminreport" element={<AdminReport />} /> */}
               <Route path="/recommendedloan" element={<RecommendLoan />} />
               <Route path="/happyhouse" element={<HappyHouse />} />
               <Route path="/post/" element={<CreatePost />} />
@@ -40,6 +42,8 @@ const App: React.FC = () => {
               <Route path="/temptoken" element={<TempToken />} />
               <Route path="/post/" element={<CreatePost />} />
               <Route path="/mypage" element={<MyPage />} />
+              <Route path="/handledpost" element={<HandledPost />} />
+              <Route path="/nothandledpost" element={<NotHandledPost />} />
             </Routes>
           </main>
           <Footer />
