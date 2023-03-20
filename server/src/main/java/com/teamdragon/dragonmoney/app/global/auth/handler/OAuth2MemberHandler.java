@@ -42,7 +42,6 @@ public class OAuth2MemberHandler extends SimpleUrlAuthenticationSuccessHandler {
 
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
-        System.out.println("# Redirect to Frontend");
         var oAuth2User = (OAuth2User)authentication.getPrincipal();
 
 //        String name = String.valueOf(oAuth2User.getAttributes().get("name"));
@@ -85,7 +84,7 @@ public class OAuth2MemberHandler extends SimpleUrlAuthenticationSuccessHandler {
 
     private URI createCheckNameURI(String tempName) {
         MultiValueMap<String, String> queryParams = new LinkedMultiValueMap<>();
-        queryParams.add("tempName", tempName);
+        queryParams.add("TempName", tempName);
 
         return UriComponentsBuilder
                 .newInstance()

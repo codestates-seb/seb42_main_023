@@ -77,8 +77,12 @@ public class MemberService {
 
     //uuid를 통해 회원 조회 및 이름 수정
     public Member updateMemberName(String tempName, String name) {
-        Member memberOptional = memberRepository.findByTempName(tempName);
+//        Member memberOptional = memberRepository.findByTempName(tempName);
+//
+//        memberOptional.setName(name);
+//        memberOptional.setNameDuplicateCheck(true);
 
+        Member memberOptional = findVerifiedMemberTempName(tempName);
         memberOptional.setName(name);
         memberOptional.setNameDuplicateCheck(true);
 
@@ -152,19 +156,10 @@ public class MemberService {
                 .orElseThrow( () -> new BusinessLogicException(BusinessExceptionCode.USER_NOT_FOUND));
     }
 
-//    //로그인한 이름과 비교(권한 관련. 추후 수정 예정)
-//    private void compareNameAndLoginName(String name) {
-//        if (!name.equals(getLoginUserName()))
-//            throw new AuthLogicException(AuthExceptionCode.USER_UNAUTHORIZED);
-//    }
-//    private String getLoginUserName() {
-//        String  name = null;
-//        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-//        if (authentication != null && authentication.getPrincipal() instanceof PrincipalDto) {
-//            PrincipalDto principal = (PrincipalDto) authentication.getPrincipal();
-//            name = principal.getName();
-//        }
-//
-//        return name;
-//    }
+    public Member findVerifiedMemberTempName(String tempName) {
+        Optional<Member> optionalMember = memberRepository.findByTempName(tempName);
+
+        return optionalMember
+                .orElseThrow( () -> new BusinessLogicException(BusinessExceptionCode.USER_NOT_FOUND));
+    }
 }

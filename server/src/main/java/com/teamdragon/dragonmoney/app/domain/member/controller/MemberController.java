@@ -47,14 +47,16 @@ public class MemberController {
     @PostMapping("/duplicated-name")
     public ResponseEntity postMember(@Valid @RequestBody MemberDto.Post post) {
 
-//        Map<String,Boolean> response = new HashMap<>();
-        MemberDto.duplicatedPost response = new MemberDto.duplicatedPost();
+        Map<String,Boolean> response = new HashMap<>();
+//        MemberDto.duplicatedPost response = new MemberDto.duplicatedPost();
 
         if (!memberService.duplicatedName(post.getName())) {         //같은 닉네임이 있을 때
-            response.setUseable(false);
+//            response.setUseable(false);
+            response.put("useable", false);
         } else {                                                     //같은 닉네임이 없을 때
             memberService.updateMemberName(post.getTempName(), post.getName());
-            response.setUseable(true);
+//            response.setUseable(true);
+            response.put("useable", true);
         }
 
         return ResponseEntity.status(HttpStatus.OK).body(response);

@@ -3,7 +3,10 @@ package com.teamdragon.dragonmoney.app.global.auth.service;
 import com.teamdragon.dragonmoney.app.domain.member.entity.Member;
 import com.teamdragon.dragonmoney.app.domain.member.repository.MemberRepository;
 import com.teamdragon.dragonmoney.app.domain.member.service.MemberService;
+import com.teamdragon.dragonmoney.app.global.auth.dto.LoginResponseDto;
 import com.teamdragon.dragonmoney.app.global.auth.jwt.JwtTokenizer;
+import com.teamdragon.dragonmoney.app.global.exception.BusinessExceptionCode;
+import com.teamdragon.dragonmoney.app.global.exception.BusinessLogicException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -11,6 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 
 @RequiredArgsConstructor
 @Transactional
@@ -76,9 +80,23 @@ public class OAuth2Service {
         return memberRepository.save(member);
     }
 
+    //로그인 정보 찾기
+    public LoginResponseDto findLoginMember(String tempAccessToken) {
+        Member member = findMemberByTempAccessToken(tempAccessToken);
+        String name = member.getName();
+        String picture = member.getProfileImage();
+
+        LoginResponseDto loginResponseDto = new LoginResponseDto();
+        loginResponseDto.setName(name);
+        loginResponseDto.setPicture(picture);
+        return loginResponseDto;
+    }
+
     //해당 임시 토큰을 가진 회원이 있는지 조회
     public Member findMemberByTempAccessToken(String tempAccessToken) {
+        Optional<Member> optionalMember = memberRepository.findByTempAccessToken(tempAccessToken);
 
-        return memberRepository.findByTempAccessToken(tempAccessToken);
+        return optionalMember
+                .orElseThrow( () -> new BusinessLogicException(BusinessExceptionCode.USER_NOT_FOUND));
     }
 }
