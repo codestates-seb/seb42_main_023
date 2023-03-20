@@ -8,7 +8,7 @@ import { RiKakaoTalkFill } from 'react-icons/ri';
 const Login: React.FC = () => {
   const loginGoogleHandler = () => {
     return window.location.assign(
-      'https://hp5234-dragonmoney-front.s3-website.ap-northeast-2.amazonaws.com/oauth2/authorization/google',
+      'https://thedragonmoney.com/oauth2/authorization/google',
     );
   };
 
