@@ -15,6 +15,7 @@ import {
   repliesApi,
   recomendedPostsApi,
 } from '../api/api';
+import surveySlice from '../slices/surveySlice';
 
 const store = configureStore({
   reducer: {
@@ -26,6 +27,7 @@ const store = configureStore({
     header: headerSlice.reducer,
     main: mainSlice.reducer,
     mypage: mypageSlice.reducer,
+    survey: surveySlice.reducer,
     nickname: nicknameSlice.reducer,
     [postsApi.reducerPath]: postsApi.reducer,
     [commentsApi.reducerPath]: commentsApi.reducer,
