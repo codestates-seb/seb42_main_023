@@ -138,7 +138,6 @@ export const repliesApi = createApi({
     getReply: builder.query({
       query: ({ commentId }) => `comments/${commentId}/replies`,
       providesTags: (result, error, arg) => {
-        console.log(result, error, arg);
         return [{ type: 'Reply', id: 'reply' }];
       },
     }),
@@ -157,7 +156,7 @@ export const repliesApi = createApi({
     updataReply: builder.mutation({
       query: ({ replyId, content }) => {
         return {
-          url: `replies/${replyId}/`,
+          url: `replies/${replyId}`,
           method: 'PATCH',
           body: { replyId, content },
         };
@@ -168,12 +167,51 @@ export const repliesApi = createApi({
     // 답글 삭제
     deleteReply: builder.mutation({
       query: ({ replyId }) => {
+        console.log('id', replyId);
         return {
-          url: `replies/${replyId}/`,
+          url: `replies/${replyId}`,
           method: 'DELETE',
         };
       },
       invalidatesTags: (result, error, arg) => [{ type: 'Reply', id: 'reply' }],
+    }),
+  }),
+});
+
+// 신고 API
+export const reportApi = createApi({
+  reducerPath: 'reportApi',
+  baseQuery: fetchBaseQuery({ baseUrl: 'http://localhost:3000' }),
+  tagTypes: ['Report'],
+  endpoints: (builder) => ({
+    // 신고 조회
+    getReport: builder.query({
+      query: ({}) => `reports`,
+      providesTags: (result, error, arg) => {
+        return [{ type: 'Report', id: 'report' }];
+      },
+    }),
+    // 신고 추가
+    setReport: builder.mutation({
+      query: ({
+        reportReason,
+        description,
+        targetType,
+        postId,
+        commentId,
+        replyId,
+        reporterName,
+      }) => {
+        return {
+          url: `reports`,
+          method: 'POST',
+          body: { targetType },
+        };
+      },
+
+      invalidatesTags: (result, error, arg) => [
+        { type: 'Report', id: 'report' },
+      ],
     }),
   }),
 });

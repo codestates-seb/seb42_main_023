@@ -5,9 +5,11 @@ import { FiMoreHorizontal } from 'react-icons/fi';
 import {
   setIsOpenDelete,
   setIsOpenFilter,
-  setType,
+  setIsOpenReport,
+  setDeleteType,
+  setReportType,
 } from '../../slices/postSlice';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { PostStateType } from '../../types/PostDetail';
 
 const DropdownButton = () => {
@@ -16,7 +18,8 @@ const DropdownButton = () => {
     return state;
   });
   const params = useParams();
-  console.log(params.postId);
+  const postId = params.postId;
+  const navigate = useNavigate();
 
   const dropdownRef = useRef<HTMLDivElement>(null);
   const options: ['신고하기', '수정하기', '삭제하기'] = [
@@ -32,33 +35,28 @@ const DropdownButton = () => {
 
   const typeChecker = (event: React.MouseEvent<HTMLElement>) => {
     if (event.target instanceof HTMLElement) {
-      dispatch(setType(event.target.id));
+      dispatch(setDeleteType(event.target.id));
     }
   };
 
+  // 신고 모달창 오픈
+  const reportHandler = (): void => {
+    dispatch(setIsOpenReport((state as PostStateType).post.isOpenReport));
+  };
+
+  // Select option에 따른 로직
   const handleSelect = (option: '신고하기' | '수정하기' | '삭제하기') => {
+    if (option === '신고하기') {
+      dispatch(setReportType('post'));
+      reportHandler();
+    }
+    if (option === '수정하기') navigate(`/posts/update/${postId}`);
     if (option === '삭제하기') confirmDeleteHandler();
   };
 
   const handleToggle = () => {
     dispatch(setIsOpenFilter(!state.post.isOpenFilter));
   };
-
-  const handleClickOutside = (event: MouseEvent) => {
-    if (
-      dropdownRef.current &&
-      !dropdownRef.current.contains(event.target as Node)
-    ) {
-      dispatch(setIsOpenFilter(false));
-    }
-  };
-
-  React.useEffect(() => {
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => {
-      document.removeEventListener('mousedown', handleClickOutside);
-    };
-  }, []);
 
   return (
     <Dropdown ref={dropdownRef}>
@@ -93,9 +91,10 @@ const Dropdown = styled.div`
 
 const Button = styled.button`
   border: none;
-  width: 100px;
+  width: 60px;
   height: 40px;
   position: absolute;
+  left: 20px;
   bottom: -20px;
   background-color: #fff;
   svg {

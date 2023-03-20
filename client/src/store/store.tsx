@@ -13,6 +13,7 @@ import {
   commentsApi,
   repliesApi,
   recomendedPostsApi,
+  reportApi,
 } from '../api/api';
 
 const store = configureStore({
@@ -29,6 +30,7 @@ const store = configureStore({
     [commentsApi.reducerPath]: commentsApi.reducer,
     [repliesApi.reducerPath]: repliesApi.reducer,
     [recomendedPostsApi.reducerPath]: recomendedPostsApi.reducer,
+    [reportApi.reducerPath]: reportApi.reducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware()
@@ -36,6 +38,7 @@ const store = configureStore({
       .concat(commentsApi.middleware)
       .concat(repliesApi.middleware)
       .concat(recomendedPostsApi.middleware)
+      .concat(reportApi.middleware)
       .concat(logger),
 });
 

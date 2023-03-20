@@ -8,7 +8,6 @@ const replySlice = createSlice({
     replyValue: '',
     replyId: undefined,
     isEdit: undefined,
-
     isOpened: undefined,
     totalReplies: [],
   },
@@ -26,7 +25,7 @@ const replySlice = createSlice({
       (state.replyValue as unknown) = action.payload;
     },
     // 답글 ID
-    setReplytId: (state, action: PayloadAction<number>): void => {
+    setReplyId: (state, action: PayloadAction<number>): void => {
       (state.replyId as unknown) = action.payload;
     },
     // 답글 수정 여부
@@ -65,7 +64,7 @@ export const {
   setReplyLike,
   setReplyDislike,
   setReply,
-  setReplytId,
+  setReplyId,
   isEdit,
   setIsEdit,
   addReplyEdit,
