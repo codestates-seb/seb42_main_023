@@ -27,7 +27,7 @@ const SetNickname: React.FC = () => {
     const nickname = nicknameRef.current!.value;
 
     axios
-      .post('http://15.164.95.47:8080/members/duplicated-name', {
+      .post('https://thedragonmoney.com/members/duplicated-name', {
         name: nickname,
         tempName: tempName,
       })
