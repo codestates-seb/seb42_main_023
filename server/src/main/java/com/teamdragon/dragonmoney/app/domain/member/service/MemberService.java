@@ -157,25 +157,9 @@ public class MemberService {
     }
 
     public Member findVerifiedMemberTempName(String tempName) {
-        Optional<Member> optionalAnswer = memberRepository.findByTempName(tempName);
+        Optional<Member> optionalMember = memberRepository.findByTempName(tempName);
 
-        return optionalAnswer
+        return optionalMember
                 .orElseThrow( () -> new BusinessLogicException(BusinessExceptionCode.USER_NOT_FOUND));
     }
-
-//    //로그인한 이름과 비교(권한 관련. 추후 수정 예정)
-//    private void compareNameAndLoginName(String name) {
-//        if (!name.equals(getLoginUserName()))
-//            throw new AuthLogicException(AuthExceptionCode.USER_UNAUTHORIZED);
-//    }
-//    private String getLoginUserName() {
-//        String  name = null;
-//        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-//        if (authentication != null && authentication.getPrincipal() instanceof PrincipalDto) {
-//            PrincipalDto principal = (PrincipalDto) authentication.getPrincipal();
-//            name = principal.getName();
-//        }
-//
-//        return name;
-//    }
 }
