@@ -16,10 +16,11 @@ const TempToken: React.FC = () => {
   useEffect(() => {
     const url = new URL(window.location.href);
     const tempAccessToken = url.searchParams.get('tempAccessToken');
+    console.log('tempAccessToken', tempAccessToken);
 
     axios
       .post('https://thedragonmoney.com/auth/callback/google', {
-        tempAccessToken,
+        tempAccessToken: tempAccessToken,
       })
       .then((res) => {
         console.log('res', res);
