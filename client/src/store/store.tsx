@@ -17,6 +17,7 @@ import { commentsApi } from '../api/commentApi';
 import { reportApi } from '../api/reportApi';
 // import { apiSlice } from '../api/apiSlice';
 import { nicknameApi } from '../api/nicknameApi';
+import { tempTokenApi } from '../api/tempTokenAPi';
 
 const store = configureStore({
   reducer: {
@@ -41,6 +42,7 @@ const store = configureStore({
     [postListApi.reducerPath]: postListApi.reducer,
     [weeklyPopularApi.reducerPath]: weeklyPopularApi.reducer,
     [nicknameApi.reducerPath]: nicknameApi.reducer,
+    [tempTokenApi.reducerPath]: tempTokenApi.reducer,
     // [apiSlice.reducerPath]: apiSlice.reducer,
   },
   middleware: (getDefaultMiddleware) =>
@@ -52,7 +54,9 @@ const store = configureStore({
       .concat(reportApi.middleware)
       .concat(postListApi.middleware)
       .concat(weeklyPopularApi.middleware)
-      .concat(apiSlice.middleware)
+      .concat(nicknameApi.middleware)
+      .concat(tempTokenApi.middleware)
+      // .concat(apiSlice.middleware)
 
       .concat(logger),
 });

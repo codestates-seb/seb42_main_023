@@ -1,7 +1,8 @@
 import React from 'react';
-import axios from 'axios';
+// import axios from 'axios';
 import { useEffect } from 'react';
-import Cookies from 'js-cookie';
+// import Cookies from 'js-cookie';
+import { usePostTempTokenMutation } from '../api/tempTokenAPi';
 
 // ! 로그인 성공 후 로직
 // 1. 로그인에 성공하면 Google Resource Server는 backend서버로 유저 정보를 전송한다.
@@ -12,7 +13,7 @@ import Cookies from 'js-cookie';
 // 6. 클라이언트는 서버에게서 오는 유저 정보 (닉네임, 프로필사진) 을 로컬스토리지에 저장한다.
 
 // 모든 요청에 withCredentials가 true로 설정된다.
-axios.defaults.withCredentials = true;
+// axios.defaults.withCredentials = true;
 
 const TempToken: React.FC = () => {
   useEffect(() => {
@@ -20,42 +21,55 @@ const TempToken: React.FC = () => {
     const tempAccessToken = url.searchParams.get('tempAccessToken');
     console.log('tempAccessToken', tempAccessToken);
 
-    axios
-      .post('https://thedragonmoney.com/auth/callback/google', {
-        tempAccessToken: tempAccessToken,
-      })
+    const [postTempToken] = usePostTempTokenMutation();
+
+    postTempToken({ tempAccessToken })
+      .unwrap()
       .then((res) => {
-        console.log('res', res);
-        console.log('res.headers', res.headers);
-        console.log('res.data', res.data);
-
-        const { headers, data } = res;
-
-        // header에 담겨온 accessToken을 쿠키에 저장한다. Refresh token은 쿠키에 담겨서 온다.
-        // 쿠키에 담겨온 refreshToken을 찾고, 쿠키에 저장한다.
-        const accessToken = headers.authorization;
-        const refreshToken = headers.refresh;
-        console.log('accessToken', accessToken);
-        console.log('refreshToken', refreshToken);
-        if (accessToken) {
-          Cookies.set('Authorization', accessToken);
-        }
-        if (refreshToken) {
-          Cookies.set('Refresh', refreshToken);
-        }
-
-        // 유저 정보를 로컬스토리지에 저장한다.
-        const nickname = data.name;
-        const profilePic = data.picture;
-        localStorage.setItem('nickname', nickname);
-        localStorage.setItem('profilePic', profilePic);
-
-        // 로그인이 완료된 유저를 메인페이지로 리디렉팅한다.
-        // window.location.href = '/';
-      });
+        console.log('res in tempToken', res);
+      })
+      .catch((err) => console.log('err in tempToken', err));
   }, []);
 
   return <div>Loading</div>;
 };
 
 export default TempToken;
+
+// JUST FOR SAFETY
+//   axios
+//     .post('https://thedragonmoney.com/auth/callback/google', {
+//       tempAccessToken: tempAccessToken,
+//     })
+//     .then((res) => {
+//       console.log('res', res);
+//       console.log('res.headers', res.headers);
+//       console.log('res.data', res.data);
+
+//       const { headers, data } = res;
+
+//       // header에 담겨온 accessToken을 쿠키에 저장한다. Refresh token은 쿠키에 담겨서 온다.
+//       // 쿠키에 담겨온 refreshToken을 찾고, 쿠키에 저장한다.
+//       const accessToken = headers.authorization;
+//       const refreshToken = headers.refresh;
+//       console.log('accessToken', accessToken);
+//       console.log('refreshToken', refreshToken);
+//       if (accessToken) {
+//         Cookies.set('Authorization', accessToken);
+//       }
+//       if (refreshToken) {
+//         Cookies.set('Refresh', refreshToken);
+//       }
+
+//       // 유저 정보를 로컬스토리지에 저장한다.
+//       const nickname = data.name;
+//       const profilePic = data.picture;
+//       localStorage.setItem('nickname', nickname);
+//       localStorage.setItem('profilePic', profilePic);
+
+//       // 로그인이 완료된 유저를 메인페이지로 리디렉팅한다.
+//       // window.location.href = '/';
+//     });
+// }, []);
+
+// return <div>Loading</div>;
