@@ -1,7 +1,7 @@
 import React from 'react';
 
-function NotHandledPost() {
+function ReportsDeleted() {
   return <div>NotHandledPost</div>;
 }
 
-export default NotHandledPost;
+export default ReportsDeleted;

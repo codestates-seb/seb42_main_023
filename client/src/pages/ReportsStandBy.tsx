@@ -1,8 +1,8 @@
 import React from 'react';
-import NavAdmin from '../components/handleReport/NavAdmin';
+import NavAdmin from '../components/AdminP/NavAdmin';
 import styled from 'styled-components';
 
-function HandledPost() {
+function ReportsStandBy() {
   return (
     <HandledPostMain>
       <NavAdmin />
@@ -10,7 +10,7 @@ function HandledPost() {
   );
 }
 
-export default HandledPost;
+export default ReportsStandBy;
 
 const HandledPostMain = styled.div`
   background-color: red;
