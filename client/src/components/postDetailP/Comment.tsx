@@ -1,4 +1,6 @@
 import React, { useEffect, useRef } from 'react';
+import { useParams } from 'react-router';
+import { useAppDispatch, useAppSelector } from '../../hooks';
 import styled from 'styled-components';
 import _ from 'lodash';
 import ReplyInput from './ReplyInput';
@@ -6,9 +8,8 @@ import DislikeIcon from '../../assets/common/DislikeIcon';
 import LikeIcon from '../../assets/common/LikeIcon';
 import TimeIcon from '../../assets/common/TimeIcon';
 import Reply from './Reply';
-import { useAppDispatch, useAppSelector } from '../../hooks';
-import { commentsApi, repliesApi } from '../../api/api';
-import { useParams } from 'react-router';
+import { repliesApi } from '../../api/replyApi';
+import { commentsApi } from '../../api/commentApi';
 import {
   setIsOpenDelete,
   setIsOpenReport,
@@ -22,7 +23,6 @@ import {
   CommentType,
   ReplyType,
 } from '../../types/PostDetail';
-
 import {
   setCommentDislike,
   setCommentLike,
@@ -30,7 +30,6 @@ import {
   isEdit,
   setIsEdit,
 } from '../../slices/commentSlice';
-
 import {
   isOpened,
   setIsOpened,
@@ -48,19 +47,16 @@ const Comment: React.FC = () => {
   );
   const params = useParams();
   const postId = params.postId;
+  const commentId = 'comment' in state && state.comment?.commentId;
   // 댓글 조회
   const commentQuery = commentsApi.useGetCommentQuery({ postId });
   const comentSucccess = commentQuery.isSuccess;
 
   // 댓글 업데이트
   const commentMutation = commentsApi.useUpdateCommentMutation();
-  const updateMutation = commentMutation[0];
+  const [updateMutation] = commentMutation;
 
-  const commentId =
-    (state as CommentStateType).comment &&
-    (state as CommentStateType).comment.commentId;
-
-  // 댓글 답글 조회
+  // 답글 조회
   const replyQuery = repliesApi.useGetReplyQuery({ commentId });
   const { isSuccess, data } = replyQuery;
   const contentEditInput = useRef<HTMLInputElement>(null);
@@ -137,14 +133,15 @@ const Comment: React.FC = () => {
       {commentQuery.data &&
         commentQuery.data.comment.map((comment: CommentType, idx: number) => {
           const filtered =
-            (state as ReplyStateType).reply.totalReplies &&
+            'reply' in state &&
+            state.reply.totalReplies &&
             (
               _.uniqBy(
-                (state as ReplyStateType).reply.totalReplies,
+                'reply' in state && state.reply.totalReplies,
                 'replyId',
               ) as Array<object>
-            ).filter((reply) => {
-              return (reply as ReplyType).commentId === comment.commentId;
+            ).filter((reply: Partial<ReplyType>) => {
+              return reply.commentId === comment.commentId;
             });
 
           return (
@@ -159,11 +156,10 @@ const Comment: React.FC = () => {
 
                   <li className="created-time">12시간 전</li>
 
-                  {comentSucccess &&
-                  (state as CommentStateType).comment.isEdit !== undefined &&
-                  (
-                    (state as CommentStateType).comment.isEdit as Array<boolean>
-                  )[idx] ? (
+                  {'comment' in state &&
+                  ((comentSucccess && state.comment.isEdit !== undefined) ||
+                    null) &&
+                  state.comment.isEdit[idx] ? (
                     <li
                       className="comment-update"
                       id="edit"
@@ -211,7 +207,7 @@ const Comment: React.FC = () => {
                     onClick={(event): void => {
                       dispatch(
                         setIsOpenReport(
-                          (state as PostStateType).post.isOpenReport,
+                          'post' in state && state.post.isOpenReport,
                         ),
                       );
                       reportTypeChecker(event);
@@ -230,10 +226,9 @@ const Comment: React.FC = () => {
                 </ul>
               </CommentInfo>
               <CommentContent>
-                {(state as CommentStateType).comment.isEdit !== undefined &&
-                ((state as CommentStateType).comment.isEdit as Array<boolean>)[
-                  idx
-                ] ? (
+                {'comment' in state &&
+                state.comment.isEdit !== undefined &&
+                state.comment.isEdit[idx] ? (
                   // 댓글 수정 시 생기는 INPUT
                   <input
                     className="edit-content"
@@ -252,14 +247,11 @@ const Comment: React.FC = () => {
                   답글 {comment.replyCount}
                 </ReplyBtn>
               </CommentContent>
-              {isSuccess &&
-              (state as ReplyStateType).reply.isOpened &&
-              ((state as ReplyStateType).reply.isOpened as Array<boolean>)[
-                idx
-              ] ? (
+              {'reply' in state &&
+              ((isSuccess && state.reply.isOpened !== undefined) || null) &&
+              state.reply.isOpened[idx] ? (
                 <ReplyContainer data-opened="false">
                   <ReplyInput commentInfo={comment}></ReplyInput>
-
                   {filtered &&
                     (filtered as Array<ReplyType>).map(
                       (reply: ReplyType, idx: number) => {

@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import { BsDot } from 'react-icons/bs';
 import { Link } from 'react-router-dom';
 import { PostType } from '../../types/PostDetail';
-import { recomendedPostsApi } from '../../api/api';
+import { recomendedPostsApi } from '../../api/postApi';
 
 const RecommendedPost: React.FC = () => {
   const recommendPostsQuery = recomendedPostsApi.useGetRomendedPostsQuery({
