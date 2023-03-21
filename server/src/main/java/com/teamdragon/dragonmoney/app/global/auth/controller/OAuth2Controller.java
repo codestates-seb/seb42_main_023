@@ -33,18 +33,19 @@ public class OAuth2Controller {
         String accessToken = "Bearer " + oAuth2Service.delegateAccessToken(tempAccessTokenDto.getTempAccessToken());
         String refreshToken = oAuth2Service.delegateRefreshToken(tempAccessTokenDto.getTempAccessToken());
 
-        Cookie cookie = new Cookie("Refresh", refreshToken);
-        cookie.setMaxAge(refreshTokenExpirationMinutes);
+//        Cookie cookie = new Cookie("Refresh", refreshToken);
+//        cookie.setMaxAge(refreshTokenExpirationMinutes);
 //        cookie.setSecure(true);
 //        cookie.setHttpOnly(false);
 //        cookie.setPath("/");
 //        cookie.isHttpOnly();
-        servletResponse.addCookie(cookie);
+//        servletResponse.addCookie(cookie);
 
         LoginResponseDto response = oAuth2Service.findLoginMember(tempAccessTokenDto.getTempAccessToken());
 
         return ResponseEntity.status(HttpStatus.OK)
                 .header("Authorization", accessToken)
+                .header("Refresh", refreshToken)
                 .body(response);
     }
 
