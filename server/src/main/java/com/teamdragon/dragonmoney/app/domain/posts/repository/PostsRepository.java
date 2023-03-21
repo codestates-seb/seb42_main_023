@@ -5,7 +5,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface PostsRepository extends JpaRepository<Posts, Long>, PostsRepositoryCustom {
 
-
     // 게시글 조회 : 요청페이지번호, 정렬기준
 
     // 게시글 목록 조회 : 태그목록 + 제목

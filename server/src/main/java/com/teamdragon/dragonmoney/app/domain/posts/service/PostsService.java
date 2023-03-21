@@ -2,6 +2,7 @@ package com.teamdragon.dragonmoney.app.domain.posts.service;
 
 import com.teamdragon.dragonmoney.app.domain.category.entity.Category;
 import com.teamdragon.dragonmoney.app.domain.category.service.CategoryService;
+import com.teamdragon.dragonmoney.app.domain.comment.service.CommentService;
 import com.teamdragon.dragonmoney.app.domain.image.entity.Image;
 import com.teamdragon.dragonmoney.app.domain.image.service.ImageService;
 import com.teamdragon.dragonmoney.app.domain.member.entity.Member;
@@ -38,11 +39,11 @@ import java.util.stream.Collectors;
 public class PostsService implements ThumbCountService {
 
     private final PostsRepository postsRepository;
-    private final CategoryService categoryService;
     private final PostsTagRepository postsTagRepository;
+    private final CategoryService categoryService;
     private final TagService tagService;
     private final ImageService imageService;
-    // 1페이지 표시할 게시글 수
+
     private final int PAGE_ELEMENT_SIZE = 10;
     // 현재 운영에 사용되는 카테고리는 1개 이다.
     private final Long CURRENT_CATEGORY_ID = 1L;
@@ -83,8 +84,9 @@ public class PostsService implements ThumbCountService {
     // 게시글 삭제
     public Long removePosts(Member loginMember, Long postsId){
         Posts findPosts = checkOwner(loginMember, postsId);
-        DeleteResult deleteResult
-                = DeleteResult.builder().deleteReason(DeleteResult.Reason.SELF_DELETED).build();
+        DeleteResult deleteResult = DeleteResult.builder()
+                .deleteReason(DeleteResult.Reason.SELF_DELETED)
+                .build();
         findPosts.changeStateToDeleted(deleteResult);
 
         // 태그 삭제

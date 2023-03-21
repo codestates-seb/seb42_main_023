@@ -1,6 +1,7 @@
 package com.teamdragon.dragonmoney.app.domain.posts.entity;
 
 import com.teamdragon.dragonmoney.app.domain.category.entity.Category;
+import com.teamdragon.dragonmoney.app.domain.comment.entity.Comment;
 import com.teamdragon.dragonmoney.app.domain.image.entity.Image;
 import com.teamdragon.dragonmoney.app.domain.member.entity.Member;
 import com.teamdragon.dragonmoney.app.domain.thumb.Thumb;
@@ -26,15 +27,12 @@ public class Posts extends BaseTimeEntity implements ThumbCountable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Setter
     @Column
     private Long viewCount;
 
-    @Setter
     @Column(length = 80)
     private String title;
 
-    @Setter
     @Column(columnDefinition = "TEXT")
     private String content;
 
@@ -47,8 +45,7 @@ public class Posts extends BaseTimeEntity implements ThumbCountable {
     @Column
     private Long commentCount;
 
-    @Setter
-    @Column
+    @Column(length = 20)
     @Enumerated(value = EnumType.STRING)
     private State state;
 
@@ -60,10 +57,9 @@ public class Posts extends BaseTimeEntity implements ThumbCountable {
     @JoinColumn(name = "CATEGORY_ID")
     private Category category;
 
-    //    @OneToMany(mappedBy = "posts")
-    //    private List<Comment> comments = new ArrayList<>();
+    @OneToMany(mappedBy = "posts")
+    private List<Comment> comments = new ArrayList<>();
 
-    @Setter
     @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
     @JoinColumn(name = "DELETE_RESULT_ID")
     private DeleteResult deleteResult;
@@ -73,7 +69,7 @@ public class Posts extends BaseTimeEntity implements ThumbCountable {
 
     @OneToMany(mappedBy = "posts", cascade = CascadeType.PERSIST)
     private List<PostsTag> postsTags = new ArrayList<>();
-//
+
     @OneToMany(mappedBy = "parentPosts")
     private List<Thumbup> thumbups = new ArrayList<>();
 
@@ -140,6 +136,13 @@ public class Posts extends BaseTimeEntity implements ThumbCountable {
         return new Thumb(this.thumbupCount, this.thumbdownCount);
     }
 
+    public void addComment(Comment comment) {
+        this.comments.add(comment);
+        if (comment.getPosts() != this) {
+            comment.includedThisPosts(this);
+        }
+    }
+
     public void addImage(Image image) {
         this.images.add(image);
         if (image.getPosts() != this) {
@@ -152,6 +155,10 @@ public class Posts extends BaseTimeEntity implements ThumbCountable {
         if (postsTag.getPosts() != this) {
             postsTag.includedThisPosts(this);
         }
+    }
+
+    public void updateComments(List<Comment> comments) {
+        this.comments = comments;
     }
 
     public void updateTitle(String title) {

@@ -57,7 +57,7 @@ public class PostsRepositoryImpl implements PostsRepositoryCustom {
         em.clear();
         return queryFactory
                 .select(Projections.constructor(PostsDto.PostsDetail.class,
-                        posts,
+                        posts.as("posts"),
                         ExpressionUtils.as(JPAExpressions.select(bookmark.id)
                                 .from(bookmark)
                                 .where(bookmark.member.id.eq(loginMemberId),
@@ -97,14 +97,14 @@ public class PostsRepositoryImpl implements PostsRepositoryCustom {
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
                 .fetch();
-        JPAQuery<Long> longJPAQuery = queryFactory
+        JPAQuery<Long> countQuery = queryFactory
                 .select(posts.count())
                 .distinct()
                 .from(posts)
                 .leftJoin(posts.postsTags, postsTag).fetchJoin()
                 .leftJoin(postsTag.tag, tag).fetchJoin();
 
-        return PageableExecutionUtils.getPage(content, pageable, longJPAQuery::fetchOne);
+        return PageableExecutionUtils.getPage(content, pageable, countQuery::fetchOne);
     }
 
     // Posts 목록 조회 : 검색결과 + 페이징
@@ -159,12 +159,12 @@ public class PostsRepositoryImpl implements PostsRepositoryCustom {
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
                 .fetch();
-        JPAQuery<Long> longJPAQuery = queryFactory
+        JPAQuery<Long> countQuery = queryFactory
                 .select(posts.count())
                 .from(posts)
                 .where(posts.writer.name.eq(memberName));
 
-        return PageableExecutionUtils.getPage(content, pageable, longJPAQuery::fetchOne);
+        return PageableExecutionUtils.getPage(content, pageable, countQuery::fetchOne);
     }
 
     // 조회수 증가
