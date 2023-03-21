@@ -35,7 +35,7 @@ public class OAuth2Controller {
 
         Cookie cookie = new Cookie("Refresh", refreshToken);
         cookie.setMaxAge(refreshTokenExpirationMinutes);
-        cookie.isHttpOnly();
+//        cookie.isHttpOnly();
         servletResponse.addCookie(cookie);
 
         LoginResponseDto response = oAuth2Service.findLoginMember(tempAccessTokenDto.getTempAccessToken());
