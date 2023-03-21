@@ -10,6 +10,7 @@ const replySlice = createSlice({
     isEdit: undefined,
     isOpened: undefined,
     totalReplies: [],
+    replyCnt: undefined,
   },
   reducers: {
     // 답글 좋아요
@@ -56,6 +57,10 @@ const replySlice = createSlice({
         state.isOpened! as Array<boolean>
       )[action.payload];
     },
+    // 답글 개수
+    setReplyCnt: (state, action: PayloadAction<object>): void => {
+      (state.replyCnt as unknown) = action.payload;
+    },
   },
 });
 
@@ -71,4 +76,5 @@ export const {
   setTotalReplies,
   isOpened,
   setIsOpened,
+  setReplyCnt,
 } = replySlice.actions;

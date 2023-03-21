@@ -38,6 +38,7 @@ const Reply: React.FC<ReplyProps> = ({ replyInfo, idx }: ReplyProps) => {
     },
   );
   const commentId = 'comment' in state && state.comment?.commentId;
+  const replyId = 'reply' in state && state.reply?.replyId;
   // 답글
   const replyQuery = repliesApi.useGetReplyQuery({ commentId });
   const replySucccess = replyQuery.isSuccess;
@@ -98,6 +99,7 @@ const Reply: React.FC<ReplyProps> = ({ replyInfo, idx }: ReplyProps) => {
           <li className="nickname">{replyInfo && replyInfo.memberName}</li>
           <li className="reply-created-time">{time} 전</li>
           {'reply' in state &&
+          replyInfo.replyId === replyId &&
           ((replySucccess && state.reply.isEdit !== undefined) || null) &&
           state.reply.isEdit[idx] ? (
             <li
@@ -119,9 +121,11 @@ const Reply: React.FC<ReplyProps> = ({ replyInfo, idx }: ReplyProps) => {
             </li>
           ) : (
             <li
+              // TODO
               className="reply-update"
               onClick={(): void => {
                 dispatch(setCommentId(replyInfo.commentId));
+                dispatch(setReplyId(replyInfo.replyId));
                 dispatch(setIsEdit(idx));
               }}
             >
@@ -168,6 +172,7 @@ const Reply: React.FC<ReplyProps> = ({ replyInfo, idx }: ReplyProps) => {
       <ReplyContent>
         {/* TODO  답글 수정 모드 버그 수정 필요 => dataSet 활용하기!! edit 기본 값을 false로 하고 클릭 시 event.target의 dataSet을 변경 */}
         {'reply' in state &&
+        replyInfo.replyId === replyId &&
         state.reply.isEdit !== undefined &&
         state.reply.isEdit[idx] ? (
           // 댓글 수정 시 생기는 INPUT

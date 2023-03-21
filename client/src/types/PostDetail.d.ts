@@ -36,6 +36,7 @@ export interface ReplyStateType {
     isEdit: Array<boolean>;
     isOpened: Array<boolean>;
     totalReplies: Array;
+    replyCont: number;
   };
 }
 

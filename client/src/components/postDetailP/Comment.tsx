@@ -104,11 +104,6 @@ const Comment: React.FC = () => {
     dispatch(setIsOpenDelete((state as PostStateType).post.isOpenDelete));
   };
 
-  // 특정 댓글의 답글 조회
-  const confirmRepliesHandler = (commentId: number): void => {
-    dispatch(setCommentId(commentId));
-  };
-
   // 삭제 타입 확인
   const deleteTypeChecker = (event: React.MouseEvent<HTMLElement>): void => {
     if (event.target instanceof HTMLElement) {
