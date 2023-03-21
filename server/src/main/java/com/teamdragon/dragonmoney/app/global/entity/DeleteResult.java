@@ -23,10 +23,24 @@ public class DeleteResult {
     private LocalDateTime deletedAt;
 
     @Column
-    private String deleteReason;
+    @Enumerated(value = EnumType.STRING)
+    private Reason deleteReason;
 
     @Builder
-    public DeleteResult(String deleteReason) {
+    public DeleteResult(Reason deleteReason) {
         this.deleteReason = deleteReason;
+    }
+
+    @Getter
+    public enum Reason {
+        SELF_DELETED("작성자 본인에 의한 삭제"),
+        DELETED_BY_REPORT("신고에 의한 삭제"),
+        DELETED_BY_PARENT("상위객체 삭제로 인한 삭제");
+
+        private String reason;
+
+        Reason(String reason) {
+            this.reason = reason;
+        }
     }
 }

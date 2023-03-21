@@ -2,10 +2,12 @@ package com.teamdragon.dragonmoney.app.domain.posts.entity;
 
 import com.teamdragon.dragonmoney.app.domain.tag.entity.Tag;
 import lombok.Builder;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 
+@Getter
 @NoArgsConstructor
 @Entity
 public class PostsTag {
@@ -15,7 +17,7 @@ public class PostsTag {
     private Long id;
 
     @ManyToOne
-    @JoinColumn(name = "POST_ID")
+    @JoinColumn(name = "POSTS_ID")
     private Posts posts;
 
     @ManyToOne
@@ -26,5 +28,12 @@ public class PostsTag {
     public PostsTag(Posts posts, Tag tag) {
         this.posts = posts;
         this.tag = tag;
+    }
+
+    public void includedThisPosts(Posts posts){
+        this.posts = posts;
+        if (!this.posts.getPostsTags().contains(this)) {
+            this.posts.getPostsTags().add(this);
+        }
     }
 }

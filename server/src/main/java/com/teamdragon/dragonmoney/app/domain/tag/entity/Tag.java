@@ -6,6 +6,7 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 
+
 @Getter
 @NoArgsConstructor
 @Entity
@@ -18,6 +19,7 @@ public class Tag {
     @Column(length = 50)
     private String name;
 
+    // 매퍼 변환용
     @Builder
     public Tag(String name) {
         this.name = name;

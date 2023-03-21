@@ -3,11 +3,13 @@ package com.teamdragon.dragonmoney.app.domain.image.entity;
 import com.teamdragon.dragonmoney.app.domain.member.entity.Member;
 import com.teamdragon.dragonmoney.app.domain.posts.entity.Posts;
 import lombok.Builder;
+import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 
+@Data
 @Getter
 @NoArgsConstructor
 @Entity
@@ -22,7 +24,7 @@ public class Image {
     private Member uploader;
 
     @ManyToOne
-    @JoinColumn(name = "POST_ID")
+    @JoinColumn(name = "POSTS_ID")
     private Posts posts;
 
     @Column(length = 200)
@@ -34,7 +36,7 @@ public class Image {
     @Column(length = 10)
     private String extension;
 
-    @Enumerated
+    @Enumerated(value = EnumType.STRING)
     private State state;
 
     public enum State {
@@ -50,10 +52,19 @@ public class Image {
     }
 
     @Builder
-    public Image(String url, String fileName, String extension, State state) {
+    public Image(Long id, Member uploader, String url, String fileName, String extension, State state) {
+        this.id = id; // 매퍼 사용용
+        this.uploader = uploader;
         this.url = url;
         this.fileName = fileName;
         this.extension = extension;
         this.state = state;
+    }
+
+    public void includedThisPosts(Posts posts){
+        this.posts = posts;
+        if (!this.posts.getImages().contains(this)) {
+            this.posts.getImages().add(this);
+        }
     }
 }
