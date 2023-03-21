@@ -43,48 +43,58 @@ public class ImageService {
         String storeFileName = createStoreFileName(originalFilename);
 
         String url = uploadImageToCloud(multipartFile, ext, storeFileName);
-        return saveImageToDB(url, ext, storeFileName);
+        return saveImageToDB(loginMember, url, ext, storeFileName);
+    }
+
+//    // 게시글 등록 이미지 확정
+//    public void postImages(List<Image> images, Posts savePosts){
+//        List<Long> imageIds = images.stream()
+//                .map(Image::getId)
+//                .collect(Collectors.toList());
+//        List<Image> findImages = imageRepository.findImagesByIds(imageIds);
+//        for (Image findImage : findImages) {
+//            findImage.includedThisPosts(savePosts);
+//        }
+//        imageRepository.saveAll(findImages);
+//    }
+
+    // 이미지들 검색
+    public List<Image> findImages(List<Image> images) {
+        List<Long> imageIds = images.stream()
+                .map(Image::getId)
+                .collect(Collectors.toList());
+        return imageRepository.findAllByIds(imageIds);
     }
 
     // 이미지들 삭제
-    public void removeImages(Member loginMember, List<Image> reqImages) {
-        List<Image> deleteImages = new ArrayList<>();
-        // 업로더 본인 확인
-        for (Image reqImage : reqImages) {
-            Optional<Image> verifyImage = findVerifyImage(reqImage.getFileName());
-            if (verifyImage.isPresent()){
-                Image image = verifyImage.get();
-                if (image.getUploader().getId().equals(loginMember.getId())) {
-                    deleteImages.add(image);
-                }
-            }
-        }
+    public void removeImages(Member loginMember, List<Image> removeImages) {
+        List<Long> imageIds = removeImages.stream().map(i -> i.getId()).collect(Collectors.toList());
+        List<Image> findImages = imageRepository.findAllByIdsAndMemberId(imageIds, loginMember.getId());
         // 클라우드 복수 이미지 삭제
-        removeImagesFromCloud(deleteImages);
-
+        removeImagesFromCloud(findImages);
         // DB 삭제
-        saveImageFromDB(deleteImages);
+        removeImageFromDB(findImages);
     }
 
     // 복수 이미지 삭제 : DB
-    private void saveImageFromDB(List<Image> deleteImages) {
-        List<Long> imageIds = deleteImages.stream()
+    private void removeImageFromDB(List<Image> removeImages) {
+        List<Long> imageIds = removeImages.stream()
                 .map(Image::getId)
                 .collect(Collectors.toList());
         imageRepository.deleteImagesByIds(imageIds);
     }
 
     // 복수 이미지 삭제 : 클라우드
-    private void removeImagesFromCloud(List<Image> deleteImages) {
-        List<String> deleteFileNames = deleteImages.stream()
+    private void removeImagesFromCloud(List<Image> removeImages) {
+        List<String> deleteFileNames = removeImages.stream()
                 .map(Image::getFileName)
                 .collect(Collectors.toList());
         s3Service.removeFiles(deleteFileNames);
     }
 
     // 이미지 단일 조회 : fileName
-    private Optional<Image> findVerifyImage(String fileName) {
-        return imageRepository.findByFileName(fileName);
+    private Optional<Image> findVerifyImageById(Long imageId) {
+        return imageRepository.findById(imageId);
     }
 
     // 이미지 업로드 : 클라우드
@@ -99,9 +109,10 @@ public class ImageService {
     }
 
     // 이미지 저장 : DB
-    private Image saveImageToDB(String url, String ext, String storeFileName) {
+    private Image saveImageToDB(Member loginMember, String url, String ext, String storeFileName) {
         Image image = Image.builder()
                 .url(url)
+                .uploader(loginMember)
                 .fileName(storeFileName)
                 .extension(ext)
                 .state(Image.State.WRITING)
@@ -127,7 +138,7 @@ public class ImageService {
     }
 
     // 이미지 확장자 검증
-    private boolean isVerificationExt(MultipartFile multipartFile ) {
+    private boolean isVerifyExt(MultipartFile multipartFile ) {
         String ext = extractExt(multipartFile.getOriginalFilename());
         String upperExt = ext.toUpperCase();
 
