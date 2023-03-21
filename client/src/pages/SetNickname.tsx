@@ -1,50 +1,44 @@
 import React from 'react';
 import styled from 'styled-components';
 import { BlueBtn } from '../components/common/Btn';
-import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import { useEffect, useState, useRef } from 'react';
 import { useAppDispatch, useAppSelector } from '../hooks';
 import { setNicknameErr } from '../slices/nicknameSlice';
+import { usePostNicknameMutation } from '../api/nicknameApi';
 
 const SetNickname: React.FC = () => {
+  // Tools
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
+  const [postNickname] = usePostNicknameMutation();
 
-  const nicknameRef = useRef<HTMLInputElement>(null);
-  const nicknameErr = useAppSelector((state) => state.nickname.nicknameErr);
-
+  // 서버에 보내야 할 데이터 1: tempName -  서버는 회원가입이 완료된 유저를 닉네임 설정 페이지로 리다이렉트한다. uri에는 사용자를 임시로 식별할 수 있는 tempName을 담는다.
   const [tempName, setTempName] = useState('');
-
-  // 서버는 회원가입이 완료된 유저를 닉네임 설정 페이지로 디라이렉트한다. uri에는 사용자를 임시로 식별할 수 있는 tempName을 담는다.
   useEffect(() => {
     const url = new URL(window.location.href);
     const tempName = url.searchParams.get('TempName') ?? '';
     setTempName(tempName);
   }, []);
 
-  const setNicknameHandler = (): void => {
-    const nickname = nicknameRef.current!.value;
-    console.log('nickname:', nickname);
-    console.log('tempname:', tempName);
+  // 서버에 보내야 할 데이터 2: nickname
+  const nicknameRef = useRef<HTMLInputElement>(null);
+  const nicknameErr = useAppSelector((state) => state.nickname.nicknameErr);
 
-    axios
-      .post('https://thedragonmoney.com/members/duplicated-name', {
-        name: nickname,
-        tempName: tempName,
-      })
+  // '가입하기' 버튼을 눌렀을 때 실행되는 함수
+  const setNicknameHandler = () => {
+    const nickname = nicknameRef.current!.value;
+
+    postNickname({ name: nickname, tempName: tempName })
+      .unwrap()
       .then((res) => {
-        // 닉네임 중복검사에서 성공하면, login 페이지로 redirect한다.
-        // 닉네임 중복검사에서 실패하면, 중복된 닉네임입니다라는 메세지를 띄운다.
-        if (res.data.useable) {
+        if (res.useable) {
           navigate('/login');
         } else {
-          // dispatch(changeSetting('중복된 닉네임입니다.'))
           dispatch(setNicknameErr('중복된 닉네임입니다.'));
         }
       })
       .catch((error) =>
-        // validation에서 실패했을 경우엔, 아래와 같은 메세지를 띄운다.
         dispatch(setNicknameErr('닉네임은 2자 이상 8자 이하로 작성해주세요.')),
       );
   };
@@ -120,3 +114,24 @@ const SignupBtn = styled(BlueBtn)`
   width: 305px;
   height: 54px;
 `;
+
+// JUST FOR SAFETY
+// axios
+//   .post('https://thedragonmoney.com/members/duplicated-name', {
+//     name: nickname,
+//     tempName: tempName,
+//   })
+//   .then((res) => {
+//     // 닉네임 중복검사에서 성공하면, login 페이지로 redirect한다.
+//     // 닉네임 중복검사에서 실패하면, 중복된 닉네임입니다라는 메세지를 띄운다.
+//     if (res.data.useable) {
+//       navigate('/login');
+//     } else {
+//       // dispatch(changeSetting('중복된 닉네임입니다.'))
+//       dispatch(setNicknameErr('중복된 닉네임입니다.'));
+//     }
+//   })
+//   .catch((error) =>
+//     // validation에서 실패했을 경우엔, 아래와 같은 메세지를 띄운다.
+//     dispatch(setNicknameErr('닉네임은 2자 이상 8자 이하로 작성해주세요.')),
+//   );
