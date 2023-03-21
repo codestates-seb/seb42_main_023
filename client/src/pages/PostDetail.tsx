@@ -35,6 +35,7 @@ import { repliesApi } from '../api/replyApi';
 import { postsApi } from '../api/postApi';
 import { reportApi } from '../api/reportApi';
 import { commentsApi } from '../api/commentApi';
+import { timeSince } from '../components/mainP/Timecalculator';
 
 const reportOption = [
   '영리목적/홍보성',
@@ -93,6 +94,11 @@ const PostDetail: React.FC = () => {
   // 신고 추가
   const reportMutation = reportApi.useSetReportMutation();
   const [sendReport] = reportMutation;
+
+  // 시간 계산
+  const time = timeSince(isSuccess && data.posts[0].createdAt);
+  // 게시글 수정 여부
+  const isEdit = isSuccess && data.posts[0].modifiedAt !== '';
 
   // 좋아요 클릭 함수
   const changeLiikeHandler = (): void => {
@@ -311,7 +317,10 @@ const PostDetail: React.FC = () => {
       ) : null}
       <Container onClick={handleClickOutside}>
         <PostContainer>
-          <h1>{isSuccess && data.posts[0].title}</h1>
+          <div className="post-title">
+            <h1>{isSuccess && data.posts[0].title}</h1>
+            {isEdit ? <p>(수정됨)</p> : null}
+          </div>
           <PostInfo>
             <ul className="post-info">
               <li className="image">
@@ -321,11 +330,13 @@ const PostDetail: React.FC = () => {
                 {isSuccess && data.posts[0].memberName}
               </li>
               <TimeIcon />
-              <li className="created-time">12시간 전</li>
+              <li className="created-time">{time} 전</li>
               <ViewIcon />
               <li className="views">{isSuccess && data.posts[0].viewCount}</li>
               <CommentIcon checked={true} />
-              <li className="comments">{isSuccess && data.posts[0].length}</li>
+              <li className="comments">
+                {commentQuery.data && commentQuery.data.comment.length}
+              </li>
               <button className="bookmark" onClick={changeBookmarkHandler}>
                 <BookmarkIcon
                   checked={isSuccess && data.posts[0].isBookmarked}
@@ -385,6 +396,19 @@ const PostContainer = styled.div`
   height: 100%;
   padding: 75px 50px 75px 15px;
 
+  .post-title {
+    display: flex;
+    align-items: center;
+    margin: 0 0 30px 0;
+    > h1 {
+      font-size: 24px;
+      font-weight: bold;
+    }
+    > p {
+      font-size: 16px;
+      margin: 0 0 0 15px;
+    }
+  }
   h1 {
     font-size: 24px;
     font-weight: bold;
@@ -400,23 +424,26 @@ const PostContainer = styled.div`
     border-bottom: 1px solid #d4d4d4;
   }
   .nickname {
-    max-width: 100px;
-    width: 100px;
+    max-width: 130px;
+    width: 130px;
     text-align: center;
     font-size: 16px;
     margin: 2px 15px 0 2px;
   }
   .created-time {
+    width: 65px;
     font-size: 16px;
-    margin: 3px 15px 0 5px;
+    margin: 3px 10px 0 5px;
   }
   .views {
+    width: 40px;
     font-size: 16px;
-    margin: 1px 15px 0 5px;
+    margin: 1px 25px 0 5px;
   }
   .comments {
+    width: 40px;
     font-size: 16px;
-    margin: 1px 300px 0 5px;
+    margin: 1px 200px 0 5px;
   }
   .bookmark {
     margin: 1px 20px 0 5px;

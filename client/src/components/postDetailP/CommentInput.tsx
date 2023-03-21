@@ -17,7 +17,6 @@ const CommentInput: React.FC = () => {
 
   // 댓글 추가
   const addCommentHandler = async () => {
-    console.log('test');
     await setComments({
       postId: postId,
       content: commentRef.current?.value,
@@ -47,7 +46,14 @@ const CommentInput: React.FC = () => {
         onChange={valueCheck}
         onKeyDown={enterHandler}
       ></Input>
-      <AddCommentBtn onClick={addCommentHandler}>등록</AddCommentBtn>
+      <AddCommentBtn
+        onClick={() => {
+          if (!commentRef.current?.value) return;
+          addCommentHandler();
+        }}
+      >
+        등록
+      </AddCommentBtn>
     </CommentInputContainer>
   );
 };

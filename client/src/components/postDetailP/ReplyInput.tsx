@@ -44,7 +44,7 @@ const ReplyInput: React.FC<CommentProps> = ({ commentInfo }: CommentProps) => {
       ></Input>
       <AddCommentBtn
         onClick={(event) => {
-          console.log(event.target);
+          if (!replyRef.current!.value) return;
           addReplyHandler();
         }}
       >

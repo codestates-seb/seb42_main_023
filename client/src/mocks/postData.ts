@@ -99,7 +99,7 @@ export const replies = [
     memberImage:
       'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT05FKRbwYdbvIz_7q6yf_3Oevdk6NIoPIFrA&usqp=CAU',
     createdAt: '2023-03-16T16:34:30.388',
-    modifiedAt: '',
+    modifiedAt: '2023-03-18T16:34:30.388',
     isModified: false,
     thumbupCount: 14,
     thumbDownCount: 12,
