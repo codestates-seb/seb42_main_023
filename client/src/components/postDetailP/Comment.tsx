@@ -248,7 +248,8 @@ const Comment: React.FC = () => {
                 )}
                 <ReplyBtn
                   onClick={(): void => {
-                    confirmRepliesHandler(comment.commentId as number);
+                    // confirmRepliesHandler(comment.commentId);
+                    dispatch(setCommentId(comment.commentId));
                     dispatch(setIsOpened(idx));
                   }}
                 >

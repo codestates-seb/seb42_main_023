@@ -25,6 +25,7 @@ import {
   setDeleteType,
 } from '../../slices/postSlice';
 import { timeSince } from '../mainP/Timecalculator';
+import { setCommentId } from '../../slices/commentSlice';
 
 const Reply: React.FC<ReplyProps> = ({ replyInfo, idx }: ReplyProps) => {
   const replyEditInput = useRef<HTMLInputElement>(null);
@@ -39,7 +40,6 @@ const Reply: React.FC<ReplyProps> = ({ replyInfo, idx }: ReplyProps) => {
   const commentId = 'comment' in state && state.comment?.commentId;
   // 답글
   const replyQuery = repliesApi.useGetReplyQuery({ commentId });
-  console.log('reply', replyQuery.data);
   const replySucccess = replyQuery.isSuccess;
   const replyMutation = repliesApi.useUpdataReplyMutation();
   const updateMutation = replyMutation[0];
@@ -121,6 +121,7 @@ const Reply: React.FC<ReplyProps> = ({ replyInfo, idx }: ReplyProps) => {
             <li
               className="reply-update"
               onClick={(): void => {
+                dispatch(setCommentId(replyInfo.commentId));
                 dispatch(setIsEdit(idx));
               }}
             >
