@@ -35,6 +35,7 @@ import {
   setIsOpened,
   setTotalReplies,
 } from '../../slices/replySlice';
+import { timeSince } from '../mainP/Timecalculator';
 
 const Comment: React.FC = () => {
   const dispatch = useAppDispatch();
@@ -64,13 +65,14 @@ const Comment: React.FC = () => {
   // 답글 Open 여부 확인을 위한 배열 생성
   if (
     commentQuery.isSuccess &&
-    (state as ReplyStateType).reply.isOpened === undefined
+    'reply' in state &&
+    state.reply.isOpened === undefined
   ) {
     const open = Array.from(
       { length: commentQuery.data.comment.length },
       (el) => (el = false),
     );
-    dispatch(isOpened(open as Array<boolean>));
+    dispatch(isOpened(open));
   }
 
   // 댓글 Edit 여부 확인을 위한 배열 생성
@@ -102,11 +104,6 @@ const Comment: React.FC = () => {
     dispatch(setIsOpenDelete((state as PostStateType).post.isOpenDelete));
   };
 
-  // 특정 댓글의 답글 조회
-  const confirmRepliesHandler = (commentId: number): void => {
-    dispatch(setCommentId(commentId));
-  };
-
   // 삭제 타입 확인
   const deleteTypeChecker = (event: React.MouseEvent<HTMLElement>): void => {
     if (event.target instanceof HTMLElement) {
@@ -132,7 +129,7 @@ const Comment: React.FC = () => {
     <CommentContainer>
       {commentQuery.data &&
         commentQuery.data.comment.map((comment: CommentType, idx: number) => {
-          const filtered =
+          const filtered: Array<ReplyType> =
             'reply' in state &&
             state.reply.totalReplies &&
             (
@@ -143,6 +140,10 @@ const Comment: React.FC = () => {
             ).filter((reply: Partial<ReplyType>) => {
               return reply.commentId === comment.commentId;
             });
+          // 시간 계산
+          const time = timeSince(comment.createdAt);
+          // 답글 수정 여부
+          const commentIsEdit = comment.modifiedAt !== '';
 
           return (
             <>
@@ -154,7 +155,7 @@ const Comment: React.FC = () => {
                   <li className="nickname">{comment.memberName}</li>
                   <TimeIcon />
 
-                  <li className="created-time">12시간 전</li>
+                  <li className="created-time">{time} 전</li>
 
                   {'comment' in state &&
                   ((comentSucccess && state.comment.isEdit !== undefined) ||
@@ -236,11 +237,14 @@ const Comment: React.FC = () => {
                     ref={contentEditInput}
                   ></input>
                 ) : (
-                  <div className="content">{comment.content}</div>
+                  <div className="content">
+                    {comment.content} {commentIsEdit ? '(수정됨)' : null}
+                  </div>
                 )}
                 <ReplyBtn
                   onClick={(): void => {
-                    confirmRepliesHandler(comment.commentId as number);
+                    // confirmRepliesHandler(comment.commentId);
+                    dispatch(setCommentId(comment.commentId));
                     dispatch(setIsOpened(idx));
                   }}
                 >
@@ -253,19 +257,17 @@ const Comment: React.FC = () => {
                 <ReplyContainer data-opened="false">
                   <ReplyInput commentInfo={comment}></ReplyInput>
                   {filtered &&
-                    (filtered as Array<ReplyType>).map(
-                      (reply: ReplyType, idx: number) => {
-                        return (
-                          <>
-                            <Reply
-                              key={reply.replyId}
-                              replyInfo={reply}
-                              idx={idx}
-                            ></Reply>
-                          </>
-                        );
-                      },
-                    )}
+                    filtered.map((reply: ReplyType, idx: number) => {
+                      return (
+                        <>
+                          <Reply
+                            key={reply.replyId}
+                            replyInfo={reply}
+                            idx={idx}
+                          ></Reply>
+                        </>
+                      );
+                    })}
                 </ReplyContainer>
               ) : null}
             </>
@@ -306,28 +308,31 @@ const CommentContainer = styled.div`
     width: auto;
   }
   .nickname {
+    width: 130px;
     font-size: 16px;
     margin: 2px 15px 0 5px;
   }
   .created-time {
+    width: 65px;
     font-size: 16px;
     margin: 3px 15px 0 5px;
   }
   .comment-update {
+    width: 40px;
     font-size: 16px;
     margin: 3px 15px 0 35px;
-
     cursor: pointer;
   }
   .comment-delete {
+    width: 40px;
     font-size: 16px;
     margin: 3px 15px 0 5px;
-
     cursor: pointer;
   }
   .comment-report {
+    width: 40px;
     font-size: 16px;
-    margin: 3px 150px 0 5px;
+    margin: 3px 120px 0 5px;
     color: #ca0000;
     cursor: pointer;
   }

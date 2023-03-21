@@ -24,6 +24,8 @@ import {
   setReportType,
   setDeleteType,
 } from '../../slices/postSlice';
+import { timeSince } from '../mainP/Timecalculator';
+import { setCommentId } from '../../slices/commentSlice';
 
 const Reply: React.FC<ReplyProps> = ({ replyInfo, idx }: ReplyProps) => {
   const replyEditInput = useRef<HTMLInputElement>(null);
@@ -36,9 +38,9 @@ const Reply: React.FC<ReplyProps> = ({ replyInfo, idx }: ReplyProps) => {
     },
   );
   const commentId = 'comment' in state && state.comment?.commentId;
+  const replyId = 'reply' in state && state.reply?.replyId;
   // 답글
   const replyQuery = repliesApi.useGetReplyQuery({ commentId });
-  console.log('reply', replyQuery.data);
   const replySucccess = replyQuery.isSuccess;
   const replyMutation = repliesApi.useUpdataReplyMutation();
   const updateMutation = replyMutation[0];
@@ -83,7 +85,10 @@ const Reply: React.FC<ReplyProps> = ({ replyInfo, idx }: ReplyProps) => {
       dispatch(setReportType(event.target.dataset.category!));
     }
   };
-
+  // 시간 계산
+  const time = timeSince(replyInfo.createdAt);
+  // 답글 수정 여부
+  const replyIsEdit = replyInfo.modifiedAt !== '';
   return (
     <ReplyContainer>
       <ReplyInfo key={replyInfo.replyId}>
@@ -92,8 +97,9 @@ const Reply: React.FC<ReplyProps> = ({ replyInfo, idx }: ReplyProps) => {
             <img src={replyInfo && replyInfo.memberImage}></img>
           </li>
           <li className="nickname">{replyInfo && replyInfo.memberName}</li>
-          <li className="reply-created-time">12시간 전</li>
+          <li className="reply-created-time">{time} 전</li>
           {'reply' in state &&
+          replyInfo.replyId === replyId &&
           ((replySucccess && state.reply.isEdit !== undefined) || null) &&
           state.reply.isEdit[idx] ? (
             <li
@@ -115,8 +121,11 @@ const Reply: React.FC<ReplyProps> = ({ replyInfo, idx }: ReplyProps) => {
             </li>
           ) : (
             <li
+              // TODO
               className="reply-update"
               onClick={(): void => {
+                dispatch(setCommentId(replyInfo.commentId));
+                dispatch(setReplyId(replyInfo.replyId));
                 dispatch(setIsEdit(idx));
               }}
             >
@@ -163,8 +172,9 @@ const Reply: React.FC<ReplyProps> = ({ replyInfo, idx }: ReplyProps) => {
       <ReplyContent>
         {/* TODO  답글 수정 모드 버그 수정 필요 => dataSet 활용하기!! edit 기본 값을 false로 하고 클릭 시 event.target의 dataSet을 변경 */}
         {'reply' in state &&
+        replyInfo.replyId === replyId &&
         state.reply.isEdit !== undefined &&
-        (state.reply.isEdit as Array<boolean>)[idx] ? (
+        state.reply.isEdit[idx] ? (
           // 댓글 수정 시 생기는 INPUT
           <input
             className="edit-reply"
@@ -172,7 +182,9 @@ const Reply: React.FC<ReplyProps> = ({ replyInfo, idx }: ReplyProps) => {
             ref={replyEditInput}
           ></input>
         ) : (
-          <div className="content">{replyInfo && replyInfo.content}</div>
+          <div className="content">
+            {replyInfo && replyInfo.content} {replyIsEdit ? '(수정됨)' : null}
+          </div>
         )}
       </ReplyContent>
     </ReplyContainer>
@@ -213,25 +225,29 @@ const ReplyContainer = styled.div`
     color: black;
   }
   .nickname {
+    width: 130px;
     font-size: 16px;
     margin: 2px 15px 0 5px;
   }
   .reply-created-time {
+    width: 65px;
     font-size: 16px;
     margin: 3px 15px 0 5px;
   }
   .reply-update {
+    width: 40px;
     font-size: 16px;
     margin: 3px 15px 0 35px;
-
     cursor: pointer;
   }
   .reply-delete {
+    width: 40px;
     font-size: 16px;
     margin: 3px 15px 0 5px;
     cursor: pointer;
   }
   .reply-report {
+    width: 40px;
     font-size: 16px;
     margin: 3px 110px 0 5px;
     color: #ca0000;

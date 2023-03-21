@@ -91,10 +91,10 @@ const Dropdown = styled.div`
 
 const Button = styled.button`
   border: none;
-  width: 60px;
+  width: 20px;
   height: 40px;
   position: absolute;
-  left: 20px;
+  left: 45px;
   bottom: -20px;
   background-color: #fff;
   svg {

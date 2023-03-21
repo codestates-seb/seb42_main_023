@@ -2,6 +2,7 @@ import React, { useRef } from 'react';
 import styled from 'styled-components';
 import { repliesApi } from '../../api/replyApi';
 import { useAppDispatch } from '../../hooks';
+import { setCommentId } from '../../slices/commentSlice';
 import { addReplyEdit, setReply } from '../../slices/replySlice';
 import { CommentProps } from '../../types/PostDetail';
 
@@ -15,6 +16,8 @@ const ReplyInput: React.FC<CommentProps> = ({ commentInfo }: CommentProps) => {
 
   // 답글 추가
   const addReplyHandler = async () => {
+    console.log('commentId', commentId);
+    console.log('value', replyRef.current!.value);
     await setReplys({
       commentId: commentId,
       content: replyRef.current!.value,
@@ -29,7 +32,9 @@ const ReplyInput: React.FC<CommentProps> = ({ commentInfo }: CommentProps) => {
 
   const enterHandler = (event: React.KeyboardEvent<HTMLInputElement>): void => {
     if (!replyRef.current!.value) return;
+
     if (event.key === 'Enter' && event.nativeEvent.isComposing === false) {
+      dispatch(setCommentId(commentInfo.commentId));
       addReplyHandler();
     }
   };
@@ -44,7 +49,8 @@ const ReplyInput: React.FC<CommentProps> = ({ commentInfo }: CommentProps) => {
       ></Input>
       <AddCommentBtn
         onClick={(event) => {
-          console.log(event.target);
+          dispatch(setCommentId(commentInfo.commentId));
+          if (!replyRef.current!.value) return;
           addReplyHandler();
         }}
       >
