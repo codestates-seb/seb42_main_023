@@ -1,31 +1,30 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import styled from 'styled-components';
 import NextPageIcon from '../../assets/common/NextPageIcon';
 import PrevPageIcon from '../../assets/common/PrevPageIcon';
 
-// interface {
-//     dataPerPage:number,
-//     totalData:number,
-//     paginate:number,
-// }
+interface Page {
+  page: number;
+  size: number;
+  totalPage: number;
+}
 
-const Pagination = () => {
-  //   const [activePage, setActivePage] = useState(1);
-  //   const pageNumbers = [];
+const Pagination = ({ page, size, totalPage }: Page) => {
+  const limit = 5;
 
-  //   for (let i = 1; i <= Math.ceil(totalData / dataPerPage); i++) {
-  //     pageNumbers.push(i);
-  //   }
-
-  //   const handleClick = (event, number) => {
-  //     event.preventDefault();
-  //     setActivePage(number);
-  //     paginate(number);
-  //   };
-  const pageNumbers = [1, 2, 3, 4, 5];
+  useEffect(() => {
+    // TODO:데이터를 불러오면 보여주는 페이지 개수에 따라서 자르기
+    // setTotalPage(data.pageInfo.totalPages);
+    // setOffset(num ? Math.floor((num - 1) / limit) * limit : 0);
+    // setPageNumbers(
+    // Array.from(Array(data.pageInfo.totalPages))
+    // .map((el, idx) => idx + 1)
+    // .slice(offset, offset + limit))
+  });
+  const pageNumbers = [1, 2, 3, 4, 5, 6, 7, 8];
 
   return (
-    <Pages>
+    <PaginationContainer>
       <ul className="pagination">
         <PrevPageIcon />
         {pageNumbers.map((number) => (
@@ -44,13 +43,13 @@ const Pagination = () => {
         ))}
         <NextPageIcon />
       </ul>
-    </Pages>
+    </PaginationContainer>
   );
 };
 
 export default Pagination;
 
-const Pages = styled.nav`
+const PaginationContainer = styled.nav`
   width: 100%;
   display: flex;
   justify-content: center;

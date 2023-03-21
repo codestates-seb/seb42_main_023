@@ -1,6 +1,15 @@
 import React from 'react';
 import styled from 'styled-components';
 
+interface Props {
+  content: string;
+}
+
+const Thumnail = ({ content }: Props) => {
+  return <>{content.length === 0 ? <None /> : <Item src={content} />}</>;
+};
+
+export default Thumnail;
 const Item = styled.img`
   width: 74px;
   height: 50px;
@@ -15,13 +24,3 @@ const None = styled.div`
   margin-right: 20px;
   border-radius: 4px;
 `;
-
-interface Props {
-  content: string;
-}
-
-const Thumnail = ({ content }: Props) => {
-  return <>{content.length === 0 ? <None /> : <Item src={content} />}</>;
-};
-
-export default Thumnail;

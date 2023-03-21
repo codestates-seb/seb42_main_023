@@ -1,13 +1,12 @@
 import React from 'react';
 import styled from 'styled-components';
 import PostList from '../components/mainP/PostList';
-import Pagenation from '../components/mainP/Pagenation';
 import DropdownButton from '../components/mainP/DropdownButton';
 import { AiOutlineTrophy } from 'react-icons/ai';
-import { NavBtn, NavBtnClicked } from '../components/common/Btn';
+import { NavBtn } from '../components/common/Btn';
 import { useLocation } from 'react-router-dom';
 import { useAppDispatch, useAppSelector } from '../hooks';
-import { setCommunity, setPage } from '../slices/mainSlice';
+import { setCommunity } from '../slices/mainSlice';
 
 const Main = () => {
   const { pathname } = useLocation();
@@ -17,15 +16,15 @@ const Main = () => {
     <>
       <FilterWrap>
         <div>
-          {community ? (
+          {community === '' ? (
             <ClickComuntyBtn>커뮤니티</ClickComuntyBtn>
           ) : (
-            <ComuntyBtn onClick={() => dispatch(setCommunity(!community))}>
+            <ComuntyBtn onClick={() => dispatch(setCommunity(''))}>
               커뮤니티
             </ComuntyBtn>
           )}
-          {community ? (
-            <ComuntyBtn onClick={() => dispatch(setCommunity(!community))}>
+          {community === '' ? (
+            <ComuntyBtn onClick={() => dispatch(setCommunity('best-awards'))}>
               <AiOutlineTrophy size={20} />
               명예의전당
             </ComuntyBtn>
@@ -39,7 +38,6 @@ const Main = () => {
         <DropdownButton />
       </FilterWrap>
       <PostList />
-      <Pagenation />
     </>
   );
 };
