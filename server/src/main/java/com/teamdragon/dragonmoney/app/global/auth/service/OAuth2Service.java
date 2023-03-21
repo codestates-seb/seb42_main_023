@@ -11,6 +11,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -71,6 +72,36 @@ public class OAuth2Service {
         return refreshToken;
     }
 
+    //Refresh Token DB에 저장
+//    public RefreshToken refreshTokenSaveOrUpdate(String tempAccessToken, String refreshToken) {
+//        Member member = findMemberByTempAccessToken(tempAccessToken);
+//        String name = member.getName();
+//
+//        RefreshToken findRefreshToken = findByMemberName(name);
+//        if (findRefreshToken != null) {
+//            return update(refreshToken);
+//        } else {
+//            return save(refreshToken, name);
+//        }
+//    }
+//
+//    public RefreshToken findByMemberName(String name) {
+//        return refreshTokenRepository.findByMemberName(name).orElse(null);
+//    }
+//
+//    private RefreshToken save(String refreshToken, String name) {
+//        RefreshToken refreshTokenEntity = new RefreshToken();
+//        refreshTokenEntity.setKeyValue(refreshToken);
+//        refreshTokenEntity.setMemberName(name);
+//        return refreshTokenRepository.save(refreshToken);
+//    }
+//
+//    private RefreshToken update(RefreshToken refreshToken) {
+//        RefreshToken originalRefreshToken = findByMemberId(refreshToken.getMember().getMemberId());
+//        originalRefreshToken.setKeyValue(refreshToken.getKeyValue());
+//        return refreshTokenRepository.save(originalRefreshToken);
+//    }
+
     //tempAccessToken 저장
     public Member updatedTempAccessToken(String name, String tempAccessToken) {
 //        Optional<Member> member = memberRepository.findByName(name);
@@ -78,6 +109,17 @@ public class OAuth2Service {
         member.setTempAccessToken(tempAccessToken);
 
         return memberRepository.save(member);
+    }
+
+    //Resresh Token 파싱
+    public String refreshTokenGetMemberName(HttpServletRequest request) {
+        String jws = request.getHeader("Refresh");
+        String base64EncodedSecretKey = jwtTokenizer.encodeBase64SecretKey(jwtTokenizer.getSecretKey());
+        Map<String, Object> claims = jwtTokenizer.getClaims(jws, base64EncodedSecretKey).getBody();
+
+        String name = String.valueOf(claims.get("sub"));
+
+        return name;
     }
 
     //로그인 정보 찾기

@@ -52,11 +52,17 @@ public class SecurityConfiguration {
                 .apply(new CustomFilterConfigurer())
                 .and()
                 .authorizeHttpRequests(authorize -> authorize
-////                        .antMatchers(HttpMethod.POST, "/*/members").permitAll()
-////                        .antMatchers(HttpMethod.PATCH, "/*/members/**").hasRole("USER")
-////                        .antMatchers(HttpMethod.GET, "/*/members").hasRole("ADMIN")
-////                        .antMatchers(HttpMethod.GET, "/*/members/**").hasAnyRole("USER", "ADMIN")
-////                        .antMatchers(HttpMethod.DELETE, "/*/members/**").hasRole("USER")
+////                        .antMatchers(HttpMethod.POST, "/members").permitAll()
+////                        .antMatchers(HttpMethod.PATCH, "/members/**").hasRole("USER")
+////                        .antMatchers(HttpMethod.GET, "/members").permitAll()
+////                        .antMatchers(HttpMethod.GET, "/members/**").permitAll()
+////                        .antMatchers(HttpMethod.DELETE, "/members/**").hasRole("USER")
+
+////                        .antMatchers(HttpMethod.POST, "/reports").hasRole("ADMIN")
+////                        .antMatchers(HttpMethod.PATCH, "/reports/**").denyAll()
+////                        .antMatchers(HttpMethod.GET, "/reports").hasRole("ADMIN")
+////                        .antMatchers(HttpMethod.GET, "/reports/**").hasAnyRole("ADMIN")
+////                        .antMatchers(HttpMethod.DELETE, "/reports/**").hasRole("ADMIN")
                                 .anyRequest().permitAll()
                 )
                 .oauth2Login(oauth2 -> oauth2
@@ -73,7 +79,9 @@ public class SecurityConfiguration {
         configuration.addAllowedOriginPattern("http://localhost:3000");
         configuration.addAllowedOriginPattern("http://hp5234-dragonmoney-front.s3-website.ap-northeast-2.amazonaws.com");
         configuration.addAllowedHeader("*");
-//        configuration.addAllowedOriginPattern("*");
+        configuration.addExposedHeader("Authorization");
+        configuration.addExposedHeader("Refresh");
+        configuration.addExposedHeader("Access-Control-Allow-Credentials");
         configuration.setAllowedMethods(Arrays.asList("GET","POST", "PATCH", "DELETE"));
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", configuration);
