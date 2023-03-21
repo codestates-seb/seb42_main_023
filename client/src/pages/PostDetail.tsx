@@ -9,6 +9,10 @@ import ViewIcon from '../assets/common/ViewIcon';
 import CommentIcon from '../assets/common/CommentIcon';
 import DislikeIcon from '../assets/common/DislikeIcon';
 import LikeIcon from '../assets/common/LikeIcon';
+import DropdownButton from '../components/postDetailP/DropdownButton';
+import { BlueBtn, WhiteBtn } from '../components/common/Btn';
+import { ReactComponent as CheckedIcon } from '../assets/checked.svg';
+import { ReactComponent as NoCheckedIcon } from '../assets/noChecked.svg';
 import {
   setIsOpenDelete,
   setBookmark,
@@ -18,20 +22,19 @@ import {
   setIsOpenFilter,
   setReportOption,
 } from '../slices/postSlice';
+import { setReportErr } from '../slices/validationSlice';
 import { useAppDispatch, useAppSelector } from '../hooks';
 import {
   PostStateType,
   CommentStateType,
   ReplyStateType,
-  validationStateType,
+  ValidationStateType,
 } from '../types/PostDetail';
 import { useParams, useNavigate } from 'react-router';
-import { postsApi, commentsApi, repliesApi, reportApi } from '../api/api';
-import { BlueBtn, WhiteBtn } from '../components/common/Btn';
-import DropdownButton from '../components/postDetailP/DropdownButton';
-import { ReactComponent as CheckedIcon } from '../assets/checked.svg';
-import { ReactComponent as NoCheckedIcon } from '../assets/noChecked.svg';
-import { setReportErr } from '../slices/validationSlice';
+import { repliesApi } from '../api/replyApi';
+import { postsApi } from '../api/postApi';
+import { reportApi } from '../api/reportApi';
+import { commentsApi } from '../api/commentApi';
 
 const reportOption = [
   '영리목적/홍보성',
@@ -59,93 +62,94 @@ const PostDetail: React.FC = () => {
         | PostStateType
         | CommentStateType
         | ReplyStateType
-        | validationStateType,
+        | ValidationStateType,
     ):
       | PostStateType
       | CommentStateType
       | ReplyStateType
-      | validationStateType => {
+      | ValidationStateType => {
       return state;
     },
   );
   const navigate = useNavigate();
   const params = useParams();
   const postId = params.postId;
-  // 게시글
+  const commentId = 'comment' in state ? state.comment?.commentId : null;
+  const replyId = 'reply' in state ? state.reply?.replyId : null;
+  const reportReason = 'post' in state ? state.post.reportOption : null;
+  const reportErr = 'validation' in state ? state.validation.reportErr : null;
+  // 게시글 조회 및 추가
   const postDetailQuery = postsApi.useGetPostQuery({ postId });
   const { data, isSuccess } = postDetailQuery;
   const postMutation = postsApi.useDeletePostMutation();
-  const deletePost = postMutation[0];
-  // 댓글
+  const [deletePost] = postMutation;
+  // 댓글 조회 및 삭제
   const commentQuery = commentsApi.useGetCommentQuery({ postId });
   const commentMutation = commentsApi.useDeleteCommentMutation();
-  const deleteComment = commentMutation[0];
-  // 답글
+  const [deleteComment] = commentMutation;
+  // 답글 삭제
   const replyMutation = repliesApi.useDeleteReplyMutation();
-  const deleteReply = replyMutation[0];
-  // 신고
+  const [deleteReply] = replyMutation;
+  // 신고 추가
   const reportMutation = reportApi.useSetReportMutation();
-  const sendReport = reportMutation[0];
+  const [sendReport] = reportMutation;
+
   // 좋아요 클릭 함수
   const changeLiikeHandler = (): void => {
-    dispatch(setLike((state as PostStateType).post.isLike));
+    if ('post' in state) {
+      dispatch(setLike(state.post.isLike));
+    }
   };
   // 싫어요 클릭 함수
   const changeDislikeHandler = (): void => {
-    dispatch(setDislike((state as PostStateType).post.isDislike));
+    if ('post' in state) {
+      dispatch(setDislike(state.post.isDislike));
+    }
   };
   // 북마크 클릭 함수
   const changeBookmarkHandler = (): void => {
-    dispatch(setBookmark((state as PostStateType).post.isBookmark));
+    if ('post' in state) {
+      dispatch(setBookmark(state.post.isBookmark));
+    }
   };
   // 삭제 확인 모달창 오픈
   const confirmDeleteHandler = (): void => {
-    dispatch(setIsOpenDelete((state as PostStateType).post.isOpenDelete));
+    if ('post' in state) {
+      dispatch(setIsOpenDelete(state.post.isOpenDelete));
+    }
   };
   // 신고 모달창 오픈
   const reportHandler = (): void => {
-    dispatch(setIsOpenReport((state as PostStateType).post.isOpenReport));
+    if ('post' in state) {
+      dispatch(setIsOpenReport(state.post.isOpenReport));
+    }
   };
   // 데이터 삭제(게시글, 댓글, 답글)
   const deleteData = (): void => {
     // 게시글 삭제 로직
-    if (
-      (state as PostStateType).post &&
-      (state as PostStateType).post.deleteType === '게시글'
-    ) {
+    if ('post' in state && state.post?.deleteType === '게시글') {
       deletePost({ postId });
       confirmDeleteHandler();
       console.log('post delete');
       navigate('/');
     }
     // 댓글 삭제 로직
-    if (
-      (state as PostStateType).post &&
-      (state as PostStateType).post.deleteType === '댓글'
-    ) {
-      const commentId =
-        (state as CommentStateType).comment &&
-        (state as CommentStateType).comment.commentId;
+    if ('post' in state && state.post?.deleteType === '댓글') {
       deleteComment({ commentId });
       confirmDeleteHandler();
       console.log('comment delete');
     }
     // 답글 삭제 로직
-    if (
-      (state as PostStateType).post &&
-      (state as PostStateType).post.deleteType === '답글'
-    ) {
-      const replyId =
-        (state as ReplyStateType).reply &&
-        (state as ReplyStateType).reply.replyId;
+    if ('post' in state && state.post?.deleteType === '답글') {
       deleteReply({ replyId });
       confirmDeleteHandler();
       console.log('reply delete');
     }
   };
+
   // 드롭다운 클로즈
   const handleClickOutside = (event: MouseEvent) => {
-    if ((state as PostStateType).post.isOpenFilter) {
+    if ('post' in state && state.post.isOpenFilter) {
       dispatch(setIsOpenFilter(false));
     }
   };
@@ -153,12 +157,11 @@ const PostDetail: React.FC = () => {
   // 신고 보내기
   const sendReportHandler = (): void => {
     // 유효성 검사
-    if ((state as validationStateType).validation.reportErr) return;
-    if (!(state as PostStateType).post.reportOption) return;
+    if ('validation' in state && state.validation.reportErr) return;
+    if ('post' in state && !state.post.reportOption) return;
     if (reportTextRef.current?.value === '') return;
     // 게시물 신고
-    if ((state as PostStateType).post.reportType === 'post') {
-      const reportReason = (state as PostStateType).post.reportOption;
+    if ('post' in state && state.post.reportType === 'post') {
       sendReport({
         reportReason: reportReason,
         description: reportTextRef.current?.value,
@@ -168,15 +171,14 @@ const PostDetail: React.FC = () => {
         replyId: null,
         reporterName: '유저이름',
       });
-      dispatch(setIsOpenReport((state as PostStateType).post.isOpenReport));
+      dispatch(setIsOpenReport('post' in state && state.post.isOpenReport));
       dispatch(setReportErr(''));
       setCheckedElement(-1);
       alert('신고가 접수 되었습니다.');
     }
+
     // 댓글 신고
-    if ((state as PostStateType).post.reportType === 'comment') {
-      const reportReason = (state as PostStateType).post.reportOption;
-      const commentId = (state as CommentStateType).comment.commentId;
+    if ('post' in state && state.post.reportType === 'comment') {
       sendReport({
         reportReason: reportReason,
         description: reportTextRef.current?.value,
@@ -186,15 +188,14 @@ const PostDetail: React.FC = () => {
         replyId: null,
         reporterName: '유저이름',
       });
-      dispatch(setIsOpenReport((state as PostStateType).post.isOpenReport));
+      dispatch(setIsOpenReport('post' in state && state.post.isOpenReport));
       dispatch(setReportErr(''));
       setCheckedElement(-1);
       alert('신고가 접수 되었습니다.');
     }
+
     // 답글 신고
-    if ((state as PostStateType).post.reportType === 'reply') {
-      const reportReason = (state as PostStateType).post.reportOption;
-      const replyId = (state as ReplyStateType).reply.replyId;
+    if ('post' in state && state.post.reportType === 'reply') {
       sendReport({
         reportReason: reportReason,
         description: reportTextRef.current?.value,
@@ -204,7 +205,7 @@ const PostDetail: React.FC = () => {
         replyId: replyId,
         reporterName: '유저이름',
       });
-      dispatch(setIsOpenReport((state as PostStateType).post.isOpenReport));
+      dispatch(setIsOpenReport('post' in state && state.post.isOpenReport));
       dispatch(setReportErr(''));
       setCheckedElement(-1);
       alert('신고가 접수 되었습니다.');
@@ -214,7 +215,7 @@ const PostDetail: React.FC = () => {
   //  신고 유효성 검사
   const validationTest = (): void => {
     const reportValue = reportTextRef.current?.value;
-    if (!(state as PostStateType).post.reportOption) {
+    if ('post' in state && !state.post.reportOption) {
       dispatch(setReportErr('신고 이유를 선택해 주세요'));
     }
     if (reportValue?.length === 0) {
@@ -231,12 +232,12 @@ const PostDetail: React.FC = () => {
 
   // 삭제 문구
   const deleteConfirm = `${
-    (state as PostStateType).post && (state as PostStateType).post.deleteType
+    'post' in state && state.post?.deleteType
   }을 정말 삭제하시겠습니까?`;
 
   return (
     <>
-      {commentQuery.data && (state as PostStateType).post.isOpenDelete ? (
+      {commentQuery.data && 'post' in state && state.post.isOpenDelete ? (
         <ModalContainer>
           <DeleteModal>
             <div onClick={confirmDeleteHandler}> </div>
@@ -249,7 +250,7 @@ const PostDetail: React.FC = () => {
           </DeleteModal>
         </ModalContainer>
       ) : null}
-      {commentQuery.data && (state as PostStateType).post.isOpenReport ? (
+      {commentQuery.data && 'post' in state && state.post.isOpenReport ? (
         <ModalContainer>
           <ReportModal>
             <div className="report">신고</div>
@@ -285,7 +286,7 @@ const PostDetail: React.FC = () => {
               placeholder="신고할 내용을 작성해주세요."
               onChange={validationTest}
             ></textarea>
-            <Error>{(state as validationStateType).validation.reportErr}</Error>
+            <Error>{reportErr}</Error>
             <BtnContainer>
               <CancelBtn
                 onClick={(): void => {
@@ -298,7 +299,7 @@ const PostDetail: React.FC = () => {
                 취소
               </CancelBtn>
               <SendReportBtn
-                onClick={() => {
+                onClick={(): void => {
                   sendReportHandler();
                 }}
               >
