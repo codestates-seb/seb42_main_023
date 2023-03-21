@@ -62,7 +62,7 @@ public class OAuth2MemberHandler extends SimpleUrlAuthenticationSuccessHandler {
             //UUID 생성
             String tempName = UUID.randomUUID().toString();
             //DB에 정보 저장
-            memberService.saveMember("google", picture, tempName, email);
+            memberService.saveMember("google", picture, tempName, email, authorities);
             //중복 검사 페이지로 리다이렉트
             redirectNameCheckPage(request, response, tempName);
         }
