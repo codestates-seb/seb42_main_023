@@ -140,7 +140,7 @@ public class MemberService {
         deletedMember.setState(Member.MemberState.DELETED);
 
         DeleteResult deleteResult = DeleteResult.builder()
-                .deleteReason("작성자에 의한 삭제 조치")
+                .deleteReason(DeleteResult.Reason.DELETED_BY_REPORT)
                 .build();
 
         deletedMember.setDeleteResult(deleteResult);

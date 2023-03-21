@@ -21,6 +21,6 @@ public class Reply  implements ThumbCountable {
 
     @Override
     public Thumb getThumbCount() {
-        return new Thumb(this.thumbupCount, thumbdownCount);
+        return new Thumb(this.thumbupCount, this.thumbdownCount);
     }
 }
