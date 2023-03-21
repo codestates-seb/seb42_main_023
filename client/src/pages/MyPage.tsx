@@ -1,7 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
 import Profile from '../components/myPageP/Profile';
-import Post from '../components/myPageP/MyPostList';
 import Comment from '../components/myPageP/Comment';
 import Sidebar from '../components/myPageP/Sidebar';
 //TODO: remove cookies when logging out.
@@ -14,7 +13,9 @@ function MyPage() {
       <Profile />
       <Content>
         <Sidebar />
-        <Post />
+        {/* 
+        //TODO:postlist css수정
+        <Post /> */}
       </Content>
     </MyPageWrap>
   );

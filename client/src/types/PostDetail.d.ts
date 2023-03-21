@@ -1,3 +1,6 @@
+import { validationStateType } from './PostDetail.d';
+import { type } from '@testing-library/user-event/dist/type';
+
 export interface PostStateType {
   post: {
     isLike: boolean;
@@ -5,8 +8,12 @@ export interface PostStateType {
     isBookmark: boolean;
     reommendPosts: unknown;
     postDetail: unknown;
-    type: unknown;
+    deleteType: unknown;
     isOpenDelete: boolean;
+    isOpenFilter: boolean;
+    isOpenReport: boolean;
+    reportOption: unknown;
+    reportType: unknown;
   };
 }
 
@@ -16,7 +23,7 @@ export interface CommentStateType {
     isCommentDislike: boolean;
     commentValue: string;
     commentId: unknown;
-    isEdit: unknown;
+    isEdit: Array<boolean>;
   };
 }
 
@@ -26,9 +33,19 @@ export interface ReplyStateType {
     isReplyDislike: boolean;
     replyValue: string;
     replyId: number;
-    isEdit: unknown;
-    isOpened: unknown;
+    isEdit: Array<boolean>;
+    isOpened: Array<boolean>;
     totalReplies: Array;
+    replyCont: number;
+  };
+}
+
+export interface ValidationStateType {
+  validation: {
+    titleErr: string;
+    bodyErr: string;
+    tagErr: string;
+    reportErr: string;
   };
 }
 
@@ -87,4 +104,8 @@ export interface CommentProps {
 export interface ReplyProps {
   replyInfo: ReplyType;
   idx: number;
+}
+
+export interface OnClick {
+  onClick(): void;
 }

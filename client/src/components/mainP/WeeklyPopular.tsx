@@ -1,48 +1,27 @@
-import React from 'react';
-import styled from 'styled-components';
-import WeeklyPopular from './WeeklyPopular';
-import { useAppSelector } from '../../hooks';
+import React, { useState, useEffect } from 'react';
 import LikeIcon from '../../assets/common/LikeIcon';
 import TimeIcon from '../../assets/common/TimeIcon';
 import ViewIcon from '../../assets/common/ViewIcon';
 import Thumnail from './Thumnail';
-import Pagenation from './Pagenation';
-import { TagItem } from '../common/Tag';
+import { BsTrophy } from 'react-icons/bs';
 import { Link } from 'react-router-dom';
-import { postListApi } from '../../api/postListapi';
+import styled from 'styled-components';
+import { weeklyPopularApi } from '../../api/postListapi';
 import { timeSince } from '../mainP/Timecalculator';
+import { PostItem, Itemside, Info, Tag } from './PostList';
 
-export interface Tags {
-  id: number;
-  tagName: string;
-}
-
-export interface PostItem {
-  postId: number;
-  imgUrl: string;
-  title: string;
-  tags: Tags[];
-  memberName: string;
-  createdAt: string;
-  modified_at: string;
-  viewCount: number;
-  thumbupCount: number;
-}
-
-function PostList() {
-  const { community, filter, page } = useAppSelector(({ main }) => main);
-  const postListquery = postListApi.useGetPostListQuery({
-    endpoint: community,
+function WeeklyPopular() {
+  const weeklyPopularquery = weeklyPopularApi.useGetPostListQuery({
+    endpoint: 'weekly-popular',
   });
-  const { data, isSuccess } = postListquery;
+  const { data, isSuccess } = weeklyPopularquery;
 
   return (
-    <List>
-      {community === '' && page === 1 && <WeeklyPopular />}
+    <>
       {isSuccess &&
-        data.posts.map((post: PostItem) => {
+        data.posts.map((post: PostItem, index: number) => {
           return (
-            <Item key={post.postId}>
+            <WeeklyBestItem key={post.postId}>
               <div>
                 <Link to={`/posts/${post.postId}`}>
                   <Thumnail content={post.imgUrl} />
@@ -50,7 +29,13 @@ function PostList() {
               </div>
               <div>
                 <Link to={`/posts/${post.postId}`}>
-                  <h1>{post.title}</h1>
+                  <h1>
+                    {post.title}
+                    <div>
+                      <BsTrophy size={20} />
+                      <span>{index + 1}</span>
+                    </div>
+                  </h1>
                 </Link>
                 <Itemside>
                   <div>
@@ -75,24 +60,15 @@ function PostList() {
                   </Info>
                 </Itemside>
               </div>
-            </Item>
+            </WeeklyBestItem>
           );
         })}
-      {isSuccess && (
-        <Pagenation
-          page={data.pageInfo.page}
-          size={data.pageInfo.size}
-          totalPage={data.pageInfo.totalPage}
-        />
-      )}
-    </List>
+    </>
   );
 }
 
-export default PostList;
-
-const List = styled.ul``;
-export const Item = styled.li`
+export default WeeklyPopular;
+const Item = styled.li`
   height: 100px;
   border-bottom: 1px solid var(--border-color);
   box-sizing: border-box;
@@ -108,24 +84,24 @@ export const Item = styled.li`
     flex-grow: 1;
   }
 `;
-export const Itemside = styled.div`
-  display: flex;
-  flex-direction: row;
-  justify-content: space-between;
-  > div {
-    display: flex;
+const WeeklyBestItem = styled(Item)`
+  background-color: var(--background-blue-color);
+  h1 {
+    div {
+      position: relative;
+      display: inline-block;
+      svg {
+        color: var(--point-blue-color);
+        margin-left: 10px;
+        transform: translateY(2px);
+      }
+      span {
+        position: absolute;
+        font-size: 10px;
+        right: 7px;
+        top: 3px;
+        color: var(--point-blue-color);
+      }
+    }
   }
-`;
-export const Info = styled.div`
-  span {
-    color: var(--sub-font-color);
-    font-size: var(--sub-font-size);
-    margin-left: 20px;
-    flex-direction: row;
-    display: flex;
-    align-items: center;
-  }
-`;
-export const Tag = styled(TagItem)`
-  padding: 4px 10px;
 `;

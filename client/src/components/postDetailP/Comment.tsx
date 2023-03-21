@@ -1,4 +1,6 @@
 import React, { useEffect, useRef } from 'react';
+import { useParams } from 'react-router';
+import { useAppDispatch, useAppSelector } from '../../hooks';
 import styled from 'styled-components';
 import _ from 'lodash';
 import ReplyInput from './ReplyInput';
@@ -6,10 +8,14 @@ import DislikeIcon from '../../assets/common/DislikeIcon';
 import LikeIcon from '../../assets/common/LikeIcon';
 import TimeIcon from '../../assets/common/TimeIcon';
 import Reply from './Reply';
-import { useAppDispatch, useAppSelector } from '../../hooks';
-import { commentsApi, repliesApi } from '../../api/api';
-import { useParams } from 'react-router';
-import { isOpenDelete, setType } from '../../slices/postSlice';
+import { repliesApi } from '../../api/replyApi';
+import { commentsApi } from '../../api/commentApi';
+import {
+  setIsOpenDelete,
+  setIsOpenReport,
+  setReportType,
+  setDeleteType,
+} from '../../slices/postSlice';
 import {
   PostStateType,
   CommentStateType,
@@ -17,7 +23,6 @@ import {
   CommentType,
   ReplyType,
 } from '../../types/PostDetail';
-
 import {
   setCommentDislike,
   setCommentLike,
@@ -25,12 +30,12 @@ import {
   isEdit,
   setIsEdit,
 } from '../../slices/commentSlice';
-
 import {
   isOpened,
   setIsOpened,
   setTotalReplies,
 } from '../../slices/replySlice';
+import { timeSince } from '../mainP/Timecalculator';
 
 const Comment: React.FC = () => {
   const dispatch = useAppDispatch();
@@ -43,19 +48,16 @@ const Comment: React.FC = () => {
   );
   const params = useParams();
   const postId = params.postId;
+  const commentId = 'comment' in state && state.comment?.commentId;
   // 댓글 조회
   const commentQuery = commentsApi.useGetCommentQuery({ postId });
   const comentSucccess = commentQuery.isSuccess;
 
   // 댓글 업데이트
   const commentMutation = commentsApi.useUpdateCommentMutation();
-  const updateMutation = commentMutation[0];
+  const [updateMutation] = commentMutation;
 
-  const commentId =
-    (state as CommentStateType).comment &&
-    (state as CommentStateType).comment.commentId;
-
-  // 댓글 답글 조회
+  // 답글 조회
   const replyQuery = repliesApi.useGetReplyQuery({ commentId });
   const { isSuccess, data } = replyQuery;
   const contentEditInput = useRef<HTMLInputElement>(null);
@@ -63,13 +65,14 @@ const Comment: React.FC = () => {
   // 답글 Open 여부 확인을 위한 배열 생성
   if (
     commentQuery.isSuccess &&
-    (state as ReplyStateType).reply.isOpened === undefined
+    'reply' in state &&
+    state.reply.isOpened === undefined
   ) {
     const open = Array.from(
       { length: commentQuery.data.comment.length },
       (el) => (el = false),
     );
-    dispatch(isOpened(open as Array<boolean>));
+    dispatch(isOpened(open));
   }
 
   // 댓글 Edit 여부 확인을 위한 배열 생성
@@ -98,12 +101,22 @@ const Comment: React.FC = () => {
 
   // 삭제 확인 모달창
   const confirmDeleteHandler = (): void => {
-    dispatch(isOpenDelete((state as PostStateType).post.isOpenDelete));
+    dispatch(setIsOpenDelete((state as PostStateType).post.isOpenDelete));
   };
 
-  // 특정 댓글의 답글 조회
-  const confirmRepliesHandler = (commentId: number): void => {
-    dispatch(setCommentId(commentId));
+  // 삭제 타입 확인
+  const deleteTypeChecker = (event: React.MouseEvent<HTMLElement>): void => {
+    if (event.target instanceof HTMLElement) {
+      dispatch(setDeleteType(event.target.id));
+    }
+  };
+
+  // 신고 카테고리 확인
+  const reportTypeChecker = (event: React.MouseEvent<HTMLElement>): void => {
+    if (event.target instanceof HTMLElement) {
+      dispatch(setCommentId(Number(event.target.dataset.commentid)));
+      dispatch(setReportType(event.target.dataset.category!));
+    }
   };
 
   useEffect(() => {
@@ -112,27 +125,25 @@ const Comment: React.FC = () => {
       dispatch(setTotalReplies(replyQuery.data && replyQuery.data.comment));
     }
   }, [data]);
-
-  const typeChecker = (event: React.MouseEvent<HTMLElement>): void => {
-    if (event.target instanceof HTMLElement) {
-      dispatch(setType(event.target.id));
-    }
-  };
-
   return (
     <CommentContainer>
       {commentQuery.data &&
         commentQuery.data.comment.map((comment: CommentType, idx: number) => {
-          const filtered =
-            (state as ReplyStateType).reply.totalReplies &&
+          const filtered: Array<ReplyType> =
+            'reply' in state &&
+            state.reply.totalReplies &&
             (
               _.uniqBy(
-                (state as ReplyStateType).reply.totalReplies,
+                'reply' in state && state.reply.totalReplies,
                 'replyId',
               ) as Array<object>
-            ).filter((reply) => {
-              return (reply as ReplyType).commentId === comment.commentId;
+            ).filter((reply: Partial<ReplyType>) => {
+              return reply.commentId === comment.commentId;
             });
+          // 시간 계산
+          const time = timeSince(comment.createdAt);
+          // 답글 수정 여부
+          const commentIsEdit = comment.modifiedAt !== '';
 
           return (
             <>
@@ -144,13 +155,12 @@ const Comment: React.FC = () => {
                   <li className="nickname">{comment.memberName}</li>
                   <TimeIcon />
 
-                  <li className="created-time">12시간 전</li>
+                  <li className="created-time">{time} 전</li>
 
-                  {comentSucccess &&
-                  (state as CommentStateType).comment.isEdit !== undefined &&
-                  (
-                    (state as CommentStateType).comment.isEdit as Array<boolean>
-                  )[idx] ? (
+                  {'comment' in state &&
+                  ((comentSucccess && state.comment.isEdit !== undefined) ||
+                    null) &&
+                  state.comment.isEdit[idx] ? (
                     <li
                       className="comment-update"
                       id="edit"
@@ -185,11 +195,26 @@ const Comment: React.FC = () => {
                     id="댓글"
                     onClick={(event: React.MouseEvent<HTMLElement>): void => {
                       dispatch(setCommentId(comment.commentId));
-                      typeChecker(event);
+                      deleteTypeChecker(event);
                       confirmDeleteHandler();
                     }}
                   >
                     삭제
+                  </li>
+                  <li
+                    className="comment-report"
+                    data-category="comment"
+                    data-commentId={String(comment.commentId)}
+                    onClick={(event): void => {
+                      dispatch(
+                        setIsOpenReport(
+                          'post' in state && state.post.isOpenReport,
+                        ),
+                      );
+                      reportTypeChecker(event);
+                    }}
+                  >
+                    신고
                   </li>
                   <button onClick={commentLiikeHandler}>
                     <LikeIcon checked={comment.isThumbup} />
@@ -202,10 +227,9 @@ const Comment: React.FC = () => {
                 </ul>
               </CommentInfo>
               <CommentContent>
-                {(state as CommentStateType).comment.isEdit !== undefined &&
-                ((state as CommentStateType).comment.isEdit as Array<boolean>)[
-                  idx
-                ] ? (
+                {'comment' in state &&
+                state.comment.isEdit !== undefined &&
+                state.comment.isEdit[idx] ? (
                   // 댓글 수정 시 생기는 INPUT
                   <input
                     className="edit-content"
@@ -213,39 +237,37 @@ const Comment: React.FC = () => {
                     ref={contentEditInput}
                   ></input>
                 ) : (
-                  <div className="content">{comment.content}</div>
+                  <div className="content">
+                    {comment.content} {commentIsEdit ? '(수정됨)' : null}
+                  </div>
                 )}
                 <ReplyBtn
                   onClick={(): void => {
-                    confirmRepliesHandler(comment.commentId as number);
+                    // confirmRepliesHandler(comment.commentId);
+                    dispatch(setCommentId(comment.commentId));
                     dispatch(setIsOpened(idx));
                   }}
                 >
                   답글 {comment.replyCount}
                 </ReplyBtn>
               </CommentContent>
-              {isSuccess &&
-              (state as ReplyStateType).reply.isOpened &&
-              ((state as ReplyStateType).reply.isOpened as Array<boolean>)[
-                idx
-              ] ? (
+              {'reply' in state &&
+              ((isSuccess && state.reply.isOpened !== undefined) || null) &&
+              state.reply.isOpened[idx] ? (
                 <ReplyContainer data-opened="false">
                   <ReplyInput commentInfo={comment}></ReplyInput>
-
                   {filtered &&
-                    (filtered as Array<ReplyType>).map(
-                      (reply: ReplyType, idx: number) => {
-                        return (
-                          <>
-                            <Reply
-                              key={reply.replyId}
-                              replyInfo={reply}
-                              idx={idx}
-                            ></Reply>
-                          </>
-                        );
-                      },
-                    )}
+                    filtered.map((reply: ReplyType, idx: number) => {
+                      return (
+                        <>
+                          <Reply
+                            key={reply.replyId}
+                            replyInfo={reply}
+                            idx={idx}
+                          ></Reply>
+                        </>
+                      );
+                    })}
                 </ReplyContainer>
               ) : null}
             </>
@@ -286,23 +308,32 @@ const CommentContainer = styled.div`
     width: auto;
   }
   .nickname {
+    width: 130px;
     font-size: 16px;
     margin: 2px 15px 0 5px;
   }
   .created-time {
+    width: 65px;
     font-size: 16px;
     margin: 3px 15px 0 5px;
   }
   .comment-update {
+    width: 40px;
     font-size: 16px;
     margin: 3px 15px 0 35px;
-    color: gray;
     cursor: pointer;
   }
   .comment-delete {
+    width: 40px;
     font-size: 16px;
-    margin: 3px 200px 0 5px;
-    color: gray;
+    margin: 3px 15px 0 5px;
+    cursor: pointer;
+  }
+  .comment-report {
+    width: 40px;
+    font-size: 16px;
+    margin: 3px 120px 0 5px;
+    color: #ca0000;
     cursor: pointer;
   }
   .comment-likes {
@@ -350,7 +381,6 @@ const ReplyContainer = styled.div`
   width: 100%;
   height: 100%;
   background-color: #ffffff;
-  color: #5c5c5c;
   cursor: pointer;
 `;
 

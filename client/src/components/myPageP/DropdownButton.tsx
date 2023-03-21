@@ -1,8 +1,10 @@
-import React, { useState, useRef } from 'react';
+import React, { useRef } from 'react';
 import styled from 'styled-components';
 import { useAppDispatch, useAppSelector } from '../../hooks';
 import { setFilter, setFilterOpen } from '../../slices/mypageSlice';
 import { FiMoreHorizontal } from 'react-icons/fi';
+import Cookies from 'js-cookie';
+import axios from 'axios';
 
 const DropdownButton = () => {
   const dispatch = useAppDispatch();
@@ -15,6 +17,19 @@ const DropdownButton = () => {
     //query login
     // onSelect(option);
     dispatch(setFilterOpen(false));
+
+    // 로그아웃 또는 회원탈퇴 시 저장되어 있던 쿠키와, 로컬스토리지에 있던 유저 정보를 제거한다.
+    Cookies.remove('Authorization');
+    Cookies.remove('Refresh');
+    localStorage.clear();
+
+    // 회원탈퇴 시 서버에 회원 delete 요청을 보낸다.
+    if (option === '회원탈퇴') {
+      const nickname = localStorage.getItem('nickname');
+      axios.delete(`https://thedragonmoney.com/members/${nickname}`);
+    }
+
+    window.location.href = '/';
   };
 
   const handleToggle = () => {

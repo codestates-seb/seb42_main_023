@@ -9,16 +9,19 @@ import headerSlice from '../slices/headerSlice';
 import mainSlice from '../slices/mainSlice';
 import mypageSlice from '../slices/mypageSlice';
 import nicknameSlice from '../slices/nicknameSlice';
-import {
-  postsApi,
-  commentsApi,
-  repliesApi,
-  recomendedPostsApi,
-} from '../api/api';
+import { repliesApi } from '../api/replyApi';
+import { postListApi, weeklyPopularApi } from '../api/postListapi';
 import surveySlice from '../slices/surveySlice';
+import { postsApi, recomendedPostsApi } from '../api/postApi';
+import { commentsApi } from '../api/commentApi';
+import { reportApi } from '../api/reportApi';
+// import { apiSlice } from '../api/apiSlice';
+import { nicknameApi } from '../api/nicknameApi';
+import { tempTokenApi } from '../api/tempTokenAPi';
 
 const store = configureStore({
   reducer: {
+    // general Reducer
     postInput: postInputSlice.reducer,
     post: postSlice.reducer,
     comment: commentSlice.reducer,
@@ -29,10 +32,18 @@ const store = configureStore({
     mypage: mypageSlice.reducer,
     survey: surveySlice.reducer,
     nickname: nicknameSlice.reducer,
+
+    // api Reducer
     [postsApi.reducerPath]: postsApi.reducer,
     [commentsApi.reducerPath]: commentsApi.reducer,
     [repliesApi.reducerPath]: repliesApi.reducer,
     [recomendedPostsApi.reducerPath]: recomendedPostsApi.reducer,
+    [reportApi.reducerPath]: reportApi.reducer,
+    [postListApi.reducerPath]: postListApi.reducer,
+    [weeklyPopularApi.reducerPath]: weeklyPopularApi.reducer,
+    [nicknameApi.reducerPath]: nicknameApi.reducer,
+    [tempTokenApi.reducerPath]: tempTokenApi.reducer,
+    // [apiSlice.reducerPath]: apiSlice.reducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware()
@@ -40,6 +51,13 @@ const store = configureStore({
       .concat(commentsApi.middleware)
       .concat(repliesApi.middleware)
       .concat(recomendedPostsApi.middleware)
+      .concat(reportApi.middleware)
+      .concat(postListApi.middleware)
+      .concat(weeklyPopularApi.middleware)
+      .concat(nicknameApi.middleware)
+      .concat(tempTokenApi.middleware)
+      // .concat(apiSlice.middleware)
+
       .concat(logger),
 });
 
