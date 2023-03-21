@@ -33,13 +33,14 @@ const TempToken: React.FC = () => {
 
         // header에 담겨온 accessToken을 쿠키에 저장한다. Refresh token은 쿠키에 담겨서 온다.
         const accessToken = headers.Authorization;
+        console.log('accessToken', accessToken);
         if (accessToken) {
           Cookies.set('Authorization', accessToken);
-          console.log('accessToken', accessToken);
         }
 
         // 쿠키에 담겨온 refreshToken을 찾고, 쿠키에 저장한다.
         const refreshToken = Cookies.get('Refresh');
+        console.log('refreshToken', refreshToken);
         if (refreshToken) {
           Cookies.set('Refresh', refreshToken);
         }
@@ -51,7 +52,7 @@ const TempToken: React.FC = () => {
         localStorage.setItem('profilePic', profilePic);
 
         // 로그인이 완료된 유저를 메인페이지로 리디렉팅한다.
-        window.location.href = '/';
+        // window.location.href = '/';
       });
   }, []);
 
