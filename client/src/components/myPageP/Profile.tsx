@@ -6,13 +6,25 @@ import DropdownButton from './DropdownButton';
 import ProfileEdit from './ProfileEdit';
 import { IconBtn } from '../common/Btn';
 import { useAppDispatch, useAppSelector } from '../../hooks';
-import { setEditOpen, setEditWidth } from '../../slices/mypageSlice';
+import {
+  setEditOpen,
+  setEditWidth,
+  setContent,
+} from '../../slices/mypageSlice';
+import { membersApi } from '../../api/memberapi';
+
 function Profile() {
   const dispatch = useAppDispatch();
-  const { EditOpen, content } = useAppSelector(({ mypage }) => mypage);
+  const { EditOpen } = useAppSelector(({ mypage }) => mypage);
   const divRef = useRef<HTMLDivElement>(null);
+  const membersQuery = membersApi.useGetPostListQuery({
+    endpoint: 'bunny',
+  });
+  const { data, isSuccess } = membersQuery;
+
   //자기소개 input토글
   const EditOpenHandler = () => {
+    dispatch(setContent(data.member.intro));
     dispatch(setEditWidth(divRef.current?.offsetWidth as number));
     dispatch(setEditOpen(!EditOpen));
   };
@@ -20,14 +32,14 @@ function Profile() {
   return (
     <ProfileWrap>
       <div>
-        <LargeProfileImg />
+        {isSuccess && <LargeProfileImg url={data.member.memberImage} />}
         <article>
-          <h1>Bunny</h1>
+          {isSuccess && <h1>{data.member.memberName}</h1>}
           {EditOpen ? (
             <ProfileEdit />
           ) : (
             <div ref={divRef}>
-              {content}
+              {isSuccess && data.member.intro}
               <EditBtn onClick={EditOpenHandler}>
                 <BsPencil />
               </EditBtn>
@@ -39,9 +51,7 @@ function Profile() {
     </ProfileWrap>
   );
 }
-
 export default Profile;
-
 const ProfileWrap = styled.div`
   margin-bottom: 40px;
   margin-left: 10px;

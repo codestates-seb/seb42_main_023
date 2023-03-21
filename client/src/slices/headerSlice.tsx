@@ -8,12 +8,16 @@ interface Tag {
   type: string;
   payload: string;
 }
+interface User {
+  type: string;
+  payload: '' | 'login' | 'admin';
+}
 
 const headerSlice = createSlice({
   name: 'headerstate',
   initialState: {
     search: false,
-    login: true,
+    login: 'login',
     input: '',
     tag: [],
   },
@@ -23,7 +27,7 @@ const headerSlice = createSlice({
       state.search = action.payload;
     },
     // 로그인시 유저이미지와 글쓰기버튼 출력
-    setLogin: (state, action: Header): void => {
+    setLogin: (state, action: User): void => {
       state.login = action.payload;
     },
     // 검색창 상태

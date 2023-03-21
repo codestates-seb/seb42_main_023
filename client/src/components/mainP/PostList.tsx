@@ -30,15 +30,19 @@ export interface PostItem {
 }
 
 function PostList() {
-  const { community, filter, page } = useAppSelector(({ main }) => main);
+  const { community } = useAppSelector(({ main }) => main);
   const postListquery = postListApi.useGetPostListQuery({
     endpoint: community,
   });
   const { data, isSuccess } = postListquery;
 
+  if (!isSuccess) {
+    return <div>Loading...</div>;
+  }
+
   return (
     <List>
-      {community === '' && page === 1 && <WeeklyPopular />}
+      {community === '' && data.pageInfo.page === 1 && <WeeklyPopular />}
       {isSuccess &&
         data.posts.map((post: PostItem) => {
           return (
@@ -78,13 +82,7 @@ function PostList() {
             </Item>
           );
         })}
-      {isSuccess && (
-        <Pagenation
-          page={data.pageInfo.page}
-          size={data.pageInfo.size}
-          totalPage={data.pageInfo.totalPage}
-        />
-      )}
+      {isSuccess && <Pagenation />}
     </List>
   );
 }

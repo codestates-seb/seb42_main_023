@@ -2,46 +2,43 @@ import React, { useEffect } from 'react';
 import styled from 'styled-components';
 import NextPageIcon from '../../assets/common/NextPageIcon';
 import PrevPageIcon from '../../assets/common/PrevPageIcon';
+import { useAppSelector, useAppDispatch } from '../../hooks';
+import { setPageOffsetNext, setPageOffsetPrev } from '../../slices/mainSlice';
+import { postListApi } from '../../api/postListapi';
 
-interface Page {
-  page: number;
-  size: number;
-  totalPage: number;
-}
-
-const Pagination = ({ page, size, totalPage }: Page) => {
-  const limit = 5;
-
-  useEffect(() => {
-    // TODO:데이터를 불러오면 보여주는 페이지 개수에 따라서 자르기
-    // setTotalPage(data.pageInfo.totalPages);
-    // setOffset(num ? Math.floor((num - 1) / limit) * limit : 0);
-    // setPageNumbers(
-    // Array.from(Array(data.pageInfo.totalPages))
-    // .map((el, idx) => idx + 1)
-    // .slice(offset, offset + limit))
+const Pagination = () => {
+  const { community, pageOffset } = useAppSelector(({ main }) => main);
+  //TODO: API쿼리에 맞게 수정하기
+  const postListquery = postListApi.useGetPostListQuery({
+    endpoint: community,
   });
-  const pageNumbers = [1, 2, 3, 4, 5, 6, 7, 8];
+  const { data, isSuccess } = postListquery;
+  const dispatch = useAppDispatch();
+
+  const prevPageHandler = () => {
+    if (pageOffset > 0) {
+      dispatch(setPageOffsetPrev());
+    }
+  };
+  const nextPageHandler = () => {
+    if (pageOffset + 5 < data.pageInfo.totalPage) {
+      dispatch(setPageOffsetNext());
+    }
+  };
 
   return (
     <PaginationContainer>
-      <ul className="pagination">
-        <PrevPageIcon />
-        {pageNumbers.map((number) => (
-          <li
-            key={number}
-            // className={`page-item${number === activePage ? " active" : ""}`}
-          >
-            <Link
-              href="#"
-              className="page-link"
-              //   onClick={(event) => handleClick(event, number)}
-            >
-              {number}
-            </Link>
-          </li>
-        ))}
-        <NextPageIcon />
+      <ul>
+        <PrevPageIcon handler={prevPageHandler} />
+        {isSuccess &&
+          Array.from({ length: data.pageInfo.totalPage }, (v, i) => i + 1)
+            .filter((el) => el > 0 + pageOffset && el <= 5 + pageOffset)
+            .map((number) => (
+              <li key={number}>
+                <Link current={number === data.pageInfo.page}>{number}</Link>
+              </li>
+            ))}
+        <NextPageIcon handler={nextPageHandler} />
       </ul>
     </PaginationContainer>
   );
@@ -60,9 +57,9 @@ const PaginationContainer = styled.nav`
     justify-content: space-evenly;
   }
 `;
-const Link = styled.a`
-  color: #7b7b7b;
+const Link = styled.button<{ current: boolean }>`
+  color: ${({ current }) => (current ? '#0069CA' : '#94969b')};
   :hover {
-    color: #adb0b6;
+    color: ${({ current }) => (current ? '#0069CA' : '#5C5C5C')};
   }
 `;

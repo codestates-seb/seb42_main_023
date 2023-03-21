@@ -1,22 +1,54 @@
 import React from 'react';
 import styled from 'styled-components';
+import { useAppDispatch, useAppSelector } from '../../hooks';
+import { setFilter } from '../../slices/mypageSlice';
 import { SidebarBtn } from '../common/Btn';
+import {
+  membersApi,
+  membersPostListApi,
+  membersCommentsListApi,
+  membersBookmarkListApi,
+} from '../../api/memberapi';
+
+//TODO:필터별 get요청
 function Sidebar() {
-  const options = [
-    { option: '작성한 글', number: 4 },
-    { option: '작성한 댓글', number: 5 },
-    { option: '좋아요한 글', number: 2 },
-    { option: '좋아요한 댓글', number: 6 },
-    { option: '북마크', number: 4 },
-  ];
+  const dispatch = useAppDispatch();
+  const { filter } = useAppSelector(({ mypage }) => mypage);
+  const membersQuery = membersApi.useGetPostListQuery({
+    endpoint: 'bunny',
+  });
+  const { data, isSuccess } = membersQuery;
+
+  //요청핸들러
+  const getMemberPost = () => {
+    dispatch(setFilter('작성한 글'));
+    const membersQuery = membersApi.useGetPostListQuery({
+      endpoint: 'bunny',
+    });
+  };
+
   return (
     <Nav>
-      {options.map((option) => (
-        <SidebarBtn key={option.option}>
-          <span>{option.option}</span>
-          <div>{option.number}</div>
-        </SidebarBtn>
-      ))}
+      <FilterBtn current={filter === '작성한 글'}>
+        <span>작성한 글</span>
+        {isSuccess && <div>{data.membersCount.postCount}</div>}
+      </FilterBtn>
+      <FilterBtn current={filter === '작성한 댓글'}>
+        <span>작성한 댓글</span>
+        {isSuccess && <div>{data.membersCount.commentCount}</div>}
+      </FilterBtn>
+      <FilterBtn current={filter === '좋아요한 글'}>
+        <span>좋아요한 글</span>
+        {isSuccess && <div>{data.membersCount.thumbupPostCount}</div>}
+      </FilterBtn>
+      <FilterBtn current={filter === '좋아요한 댓글'}>
+        <span>좋아요한 댓글</span>
+        {isSuccess && <div>{data.membersCount.thumbupCommentCount}</div>}
+      </FilterBtn>
+      <FilterBtn current={filter === '북마크'}>
+        <span>북마크</span>
+        {isSuccess && <div>{data.membersCount.bookmarkCount}</div>}
+      </FilterBtn>
     </Nav>
   );
 }
@@ -29,4 +61,9 @@ const Nav = styled.nav`
   margin-right: 8px;
   border: 1px solid var(--border-color);
   display: inline;
+`;
+const FilterBtn = styled(SidebarBtn)<{ current: boolean }>`
+  span {
+    color: ${({ current }) => (current ? '#0069CA' : '#94969b')};
+  }
 `;
