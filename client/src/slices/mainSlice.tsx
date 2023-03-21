@@ -12,10 +12,6 @@ interface Open {
   type: string;
   payload: boolean;
 }
-interface Pagelist {
-  type: string;
-  payload: number[];
-}
 export interface Page {
   page: number;
   size: number;
@@ -27,7 +23,6 @@ const mainSlice = createSlice({
     community: '',
     filter: '최신순',
     filterOpen: false,
-    pagelist: [1],
     currentPage: 1,
     pageOffset: 0,
   },
@@ -43,10 +38,6 @@ const mainSlice = createSlice({
     // 정렬옵션 선택창
     setFilterOpen: (state, action: Open): void => {
       state.filterOpen = action.payload;
-    },
-    // 전체 페이지 리스트
-    setPageList: (state, action: Pagelist): void => {
-      state.pagelist = action.payload;
     },
     // 페이지 next버튼
     setPageOffsetNext: (state): void => {
@@ -64,7 +55,6 @@ export const {
   setCommunity,
   setFilter,
   setFilterOpen,
-  setPageList,
   setPageOffsetNext,
   setPageOffsetPrev,
 } = mainSlice.actions;

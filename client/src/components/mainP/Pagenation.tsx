@@ -3,50 +3,41 @@ import styled from 'styled-components';
 import NextPageIcon from '../../assets/common/NextPageIcon';
 import PrevPageIcon from '../../assets/common/PrevPageIcon';
 import { useAppSelector, useAppDispatch } from '../../hooks';
-import {
-  setPageList,
-  setPageOffsetNext,
-  setPageOffsetPrev,
-} from '../../slices/mainSlice';
+import { setPageOffsetNext, setPageOffsetPrev } from '../../slices/mainSlice';
 import { postListApi } from '../../api/postListapi';
 
 const Pagination = () => {
-  const { community } = useAppSelector(({ main }) => main);
+  const { community, pageOffset } = useAppSelector(({ main }) => main);
   //TODO: API쿼리에 맞게 수정하기
   const postListquery = postListApi.useGetPostListQuery({
     endpoint: community,
   });
-  const { data } = postListquery;
+  const { data, isSuccess } = postListquery;
   const dispatch = useAppDispatch();
-  const { pagelist, pageOffset } = useAppSelector(({ main }) => main);
 
   const prevPageHandler = () => {
-    dispatch(setPageOffsetPrev());
+    if (pageOffset > 0) {
+      dispatch(setPageOffsetPrev());
+    }
   };
   const nextPageHandler = () => {
-    dispatch(setPageOffsetNext());
+    if (pageOffset + 5 < data.pageInfo.totalPage) {
+      dispatch(setPageOffsetNext());
+    }
   };
-
-  //전체 페이지 리스트 생성
-  useEffect(() => {
-    dispatch(
-      setPageList(
-        Array.from({ length: data.pageInfo.totalPage }, (v, i) => i + 1),
-      ),
-    );
-  }, []);
 
   return (
     <PaginationContainer>
       <ul>
         <PrevPageIcon handler={prevPageHandler} />
-        {pagelist
-          .filter((el) => el > 0 + pageOffset && el <= 5 + pageOffset)
-          .map((number) => (
-            <li key={number}>
-              <Link current={number === data.pageInfo.page}>{number}</Link>
-            </li>
-          ))}
+        {isSuccess &&
+          Array.from({ length: data.pageInfo.totalPage }, (v, i) => i + 1)
+            .filter((el) => el > 0 + pageOffset && el <= 5 + pageOffset)
+            .map((number) => (
+              <li key={number}>
+                <Link current={number === data.pageInfo.page}>{number}</Link>
+              </li>
+            ))}
         <NextPageIcon handler={nextPageHandler} />
       </ul>
     </PaginationContainer>
