@@ -21,6 +21,6 @@ public class Comment implements ThumbCountable {
 
     @Override
     public Thumb getThumbCount() {
-        return new Thumb(this.thumbupCount, this.thumbdownCount);
+        return new Thumb(this.thumbupCount, thumbdownCount);
     }
 }

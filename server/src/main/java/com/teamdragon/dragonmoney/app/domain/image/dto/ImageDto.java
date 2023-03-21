@@ -1,12 +1,19 @@
 package com.teamdragon.dragonmoney.app.domain.image.dto;
 
-import lombok.*;
+import lombok.Getter;
+import lombok.Setter;
 
 public class ImageDto {
-    @Data
+
     @Getter
     @Setter
-    @AllArgsConstructor
+    public static class DeleteImage {
+        private Long id;
+        private String fileName;
+    }
+
+    @Getter
+    @Setter
     public static class ImageResponse {
         private Long id;
         private String fileName;

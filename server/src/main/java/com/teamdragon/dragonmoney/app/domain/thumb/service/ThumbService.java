@@ -39,7 +39,7 @@ public class ThumbService {
         builder.member(loginMember);
         switch (targetType) {
             case POSTS:
-                Posts findPosts = postsService.findOne(targetId);
+                Posts findPosts = postsService.findOnePost(targetId);
                 builder.parentPosts(findPosts);
                 break;
             case COMMENT:
@@ -95,7 +95,7 @@ public class ThumbService {
         builder.member(loginMember);
         switch (targetType) {
             case POSTS:
-                Posts findPosts = postsService.findOne(targetId);
+                Posts findPosts = postsService.findOnePost(targetId);
                 builder.parentPosts(findPosts);
                 break;
             case COMMENT:
