@@ -1,6 +1,6 @@
 import { createSlice } from '@reduxjs/toolkit';
 
-interface PostFilter {
+interface MemberPost {
   type: string;
   payload:
     | '작성한 글'
@@ -32,7 +32,7 @@ const mypageSlice = createSlice({
   },
   reducers: {
     // 정렬필터
-    setFilter: (state, action: PostFilter): void => {
+    setFilter: (state, action: MemberPost): void => {
       state.filter = action.payload;
     },
     // 정렬옵션 선택창
