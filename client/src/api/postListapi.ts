@@ -9,7 +9,6 @@ export const postListApi = createApi({
       //TODO: API쿼리에 맞게 수정하기
       query: ({ endpoint }) => `posts/${endpoint}`,
       providesTags: (result, error, arg) => {
-        console.log(result, error, arg);
         return [{ type: 'PostList', id: arg.recommend }];
       },
     }),

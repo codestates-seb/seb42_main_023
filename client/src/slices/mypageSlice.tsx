@@ -1,8 +1,13 @@
 import { createSlice } from '@reduxjs/toolkit';
 
-interface Filter {
+interface PostFilter {
   type: string;
-  payload: string;
+  payload:
+    | '작성한 글'
+    | '작성한 댓글'
+    | '좋아요한 글'
+    | '좋아요한 댓글'
+    | '북마크';
 }
 interface Open {
   type: string;
@@ -12,6 +17,10 @@ interface Width {
   type: string;
   payload: number;
 }
+interface Intro {
+  type: string;
+  payload: string;
+}
 const mypageSlice = createSlice({
   name: 'mypagestates',
   initialState: {
@@ -19,11 +28,11 @@ const mypageSlice = createSlice({
     dropOpen: false,
     EditOpen: false,
     EditWidth: 1,
-    content: '안녕하세요.저는 돈버는 토끼입니다.모두 부자되세요.',
+    content: '',
   },
   reducers: {
     // 정렬필터
-    setFilter: (state, action: Filter): void => {
+    setFilter: (state, action: PostFilter): void => {
       state.filter = action.payload;
     },
     // 정렬옵션 선택창
@@ -39,7 +48,7 @@ const mypageSlice = createSlice({
       state.EditWidth = action.payload;
     },
     // 자기소개
-    setContent: (state, action: Filter): void => {
+    setContent: (state, action: Intro): void => {
       state.content = action.payload;
     },
   },
