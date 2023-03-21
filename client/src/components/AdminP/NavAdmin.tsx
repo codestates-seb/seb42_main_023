@@ -2,7 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-
+import { RxDotFilled } from 'react-icons/rx';
 const NavAdmin: React.FC = () => {
   const navigate = useNavigate();
 
@@ -10,14 +10,11 @@ const NavAdmin: React.FC = () => {
 
   useEffect(() => {
     switch (window.location.pathname) {
-      case '/':
+      case '/reportsstandby':
         setCurrentTab(0);
         break;
-      case '/':
+      case '/reportsdeleted':
         setCurrentTab(1);
-        break;
-      case '/happyhouse':
-        setCurrentTab(2);
         break;
       default:
         setCurrentTab(1);
@@ -27,32 +24,48 @@ const NavAdmin: React.FC = () => {
 
   return (
     <NavContainer>
-      <ul>
-        <li
-          className={currentTab === 0 ? 'current' : ''}
-          onClick={(): void => {
-            navigate('/');
-          }}
-        >
-          서울전월세평균
-        </li>
-        <li
-          className={currentTab === 1 ? 'current' : ''}
-          onClick={(): void => {
-            navigate('/recommendedloan');
-          }}
-        >
-          공공대출추천
-        </li>
-        <li
-          className={currentTab === 2 ? 'current' : ''}
-          onClick={(): void => {
-            navigate('/happyhouse');
-          }}
-        >
-          행복주택공고
-        </li>
-      </ul>
+      <div>
+        <span>
+          <RxDotFilled /> 게시판 관리
+        </span>
+        <ul>
+          <li
+            className={currentTab === 0 ? 'current' : ''}
+            onClick={(): void => {
+              navigate('/reportsstandby');
+            }}
+          >
+            미처리 신고글
+          </li>
+          <li
+            className={currentTab === 1 ? 'current' : ''}
+            onClick={(): void => {
+              navigate('/reportsdeleted');
+            }}
+          >
+            처리된 신고글
+          </li>
+        </ul>
+      </div>
+      <div>
+        <span>
+          <RxDotFilled />
+          고객 관리
+        </span>
+        <ul>
+          <li>회원 조회</li>
+          <li>회원 차단</li>
+        </ul>
+      </div>
+      <div>
+        <span>
+          <RxDotFilled />
+          운영자 설정
+        </span>
+        <ul>
+          <li>운영자 등록</li>
+        </ul>
+      </div>
     </NavContainer>
   );
 };
@@ -62,27 +75,29 @@ export default NavAdmin;
 // nav 컨테이너
 const NavContainer = styled.nav`
   width: 140px;
-  height: 100%;
-  background-color: #fff;
-  /* border: 2px solid var(--border-color); */
-  > ul {
-    height: 200px;
-    width: 100%;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    > li {
-      width: 120px;
-      height: 50px;
-      text-align: center;
-      padding-top: 16px;
-      margin-top: 18px;
-      cursor: pointer;
-    }
-    > .current {
-      background-color: var(--background-dark-color);
-      border: 1px solid var(--border-color);
-      font-weight: 700;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  border-right: 1px solid var(--border-color);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  > div {
+    width: 110px;
+    margin-bottom: 20px;
+    border-bottom: 1px solid var(--border-color);
+    > ul {
+      margin-top: 10px;
+      margin-bottom: 20px;
+      > li {
+        font-size: 14px;
+        margin-left: 15px;
+        margin-bottom: 10px;
+        cursor: pointer;
+      }
+      > .current {
+        color: var(--point-blue-color);
+      }
     }
   }
 `;

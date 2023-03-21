@@ -1,7 +1,12 @@
 import React from 'react';
+import NavAdmin from '../components/AdminP/NavAdmin';
 
 function ReportsDeleted() {
-  return <div>NotHandledPost</div>;
+  return (
+    <div>
+      <NavAdmin />
+    </div>
+  );
 }
 
 export default ReportsDeleted;

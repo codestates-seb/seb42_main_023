@@ -4,16 +4,10 @@ import styled from 'styled-components';
 
 function ReportsStandBy() {
   return (
-    <HandledPostMain>
+    <div>
       <NavAdmin />
-    </HandledPostMain>
+    </div>
   );
 }
 
 export default ReportsStandBy;
-
-const HandledPostMain = styled.div`
-  background-color: red;
-  width: 100%;
-  height: 100vh;
-`;
