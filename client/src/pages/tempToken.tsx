@@ -32,15 +32,14 @@ const TempToken: React.FC = () => {
         const { headers, data } = res;
 
         // header에 담겨온 accessToken을 쿠키에 저장한다. Refresh token은 쿠키에 담겨서 온다.
-        const accessToken = headers.Authorization;
+        // 쿠키에 담겨온 refreshToken을 찾고, 쿠키에 저장한다.
+        const accessToken = headers.authorization;
+        const refreshToken = headers.refresh;
         console.log('accessToken', accessToken);
+        console.log('refreshToken', refreshToken);
         if (accessToken) {
           Cookies.set('Authorization', accessToken);
         }
-
-        // 쿠키에 담겨온 refreshToken을 찾고, 쿠키에 저장한다.
-        const refreshToken = Cookies.get('Refresh');
-        console.log('refreshToken', refreshToken);
         if (refreshToken) {
           Cookies.set('Refresh', refreshToken);
         }
