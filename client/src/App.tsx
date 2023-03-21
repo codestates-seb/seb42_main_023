@@ -38,7 +38,7 @@ const App: React.FC = () => {
               <Route path="/temptoken" element={<TempToken />} />
               <Route path="/post/" element={<CreatePost />} />
               <Route path="/mypage" element={<MyPage />} />
-              <Route path="/reportstandby" element={<ReportsStandBy />} />
+              <Route path="/reportsstandby" element={<ReportsStandBy />} />
               <Route path="/reportsdeleted" element={<ReportsDeleted />} />
             </Routes>
           </main>
