@@ -3,13 +3,11 @@ package com.teamdragon.dragonmoney.app.domain.image.entity;
 import com.teamdragon.dragonmoney.app.domain.member.entity.Member;
 import com.teamdragon.dragonmoney.app.domain.posts.entity.Posts;
 import lombok.Builder;
-import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 
-@Data
 @Getter
 @NoArgsConstructor
 @Entity
