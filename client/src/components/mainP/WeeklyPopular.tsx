@@ -39,8 +39,8 @@ function WeeklyPopular() {
                 </Link>
                 <Itemside>
                   <div>
-                    {post.tags.map((tag) => (
-                      <Tag key={tag.id}>{tag.tagName}</Tag>
+                    {post.tags.map((tag, index) => (
+                      <Tag key={index}>{tag.tagName}</Tag>
                     ))}
                   </div>
                   <Info>

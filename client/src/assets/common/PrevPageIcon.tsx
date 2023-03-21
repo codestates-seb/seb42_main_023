@@ -5,9 +5,9 @@ const Button = styled.button`
   background-color: #fff;
   cursor: pointer;
 `;
-function PrevPageIcon() {
+function PrevPageIcon({ handler }: { handler: () => void }) {
   return (
-    <Button>
+    <Button onClick={handler}>
       <IoIosArrowBack color="#94969b" />
     </Button>
   );

@@ -8,22 +8,28 @@ interface Filter {
   type: string;
   payload: '최신순' | '좋아요순' | '조회순';
 }
-interface Page {
-  type: string;
-  payload: number;
-}
 interface Open {
   type: string;
   payload: boolean;
 }
-
+interface Pagelist {
+  type: string;
+  payload: number[];
+}
+export interface Page {
+  page: number;
+  size: number;
+  totalPage: number;
+}
 const mainSlice = createSlice({
   name: 'mainstates',
   initialState: {
     community: '',
     filter: '최신순',
     filterOpen: false,
-    page: 1,
+    pagelist: [1],
+    currentPage: 1,
+    pageOffset: 0,
   },
   reducers: {
     // 커뮤니티 명예의 전당 토글
@@ -38,13 +44,27 @@ const mainSlice = createSlice({
     setFilterOpen: (state, action: Open): void => {
       state.filterOpen = action.payload;
     },
-    // 페이지네이션
-    setPage: (state, action: Page): void => {
-      state.page = action.payload;
+    // 전체 페이지 리스트
+    setPageList: (state, action: Pagelist): void => {
+      state.pagelist = action.payload;
+    },
+    // 페이지 next버튼
+    setPageOffsetNext: (state): void => {
+      state.pageOffset = state.pageOffset + 5;
+    },
+    // 페이지 prev버튼
+    setPageOffsetPrev: (state): void => {
+      state.pageOffset = state.pageOffset - 5;
     },
   },
 });
 
 export default mainSlice;
-export const { setCommunity, setFilter, setFilterOpen, setPage } =
-  mainSlice.actions;
+export const {
+  setCommunity,
+  setFilter,
+  setFilterOpen,
+  setPageList,
+  setPageOffsetNext,
+  setPageOffsetPrev,
+} = mainSlice.actions;
