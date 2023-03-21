@@ -12,6 +12,10 @@ interface Open {
   type: string;
   payload: boolean;
 }
+interface Orderby {
+  type: string;
+  payload: 'latest' | 'thumbup' | 'view-count';
+}
 export interface Page {
   page: number;
   size: number;
@@ -23,6 +27,7 @@ const mainSlice = createSlice({
     community: '',
     filter: '최신순',
     filterOpen: false,
+    orderby: 'latest',
     currentPage: 1,
     pageOffset: 0,
   },
@@ -38,6 +43,10 @@ const mainSlice = createSlice({
     // 정렬옵션 선택창
     setFilterOpen: (state, action: Open): void => {
       state.filterOpen = action.payload;
+    },
+    // 정렬옵션 선택창
+    setOrderby: (state, action: Orderby): void => {
+      state.orderby = action.payload;
     },
     // 페이지 next버튼
     setPageOffsetNext: (state): void => {
@@ -55,6 +64,7 @@ export const {
   setCommunity,
   setFilter,
   setFilterOpen,
+  setOrderby,
   setPageOffsetNext,
   setPageOffsetPrev,
 } = mainSlice.actions;

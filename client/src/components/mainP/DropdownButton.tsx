@@ -2,7 +2,7 @@ import React, { useState, useRef } from 'react';
 import styled from 'styled-components';
 import { BsFillCaretDownFill } from 'react-icons/bs';
 import { useAppDispatch, useAppSelector } from '../../hooks';
-import { setFilter, setFilterOpen } from '../../slices/mainSlice';
+import { setFilter, setFilterOpen, setOrderby } from '../../slices/mainSlice';
 
 const DropdownButton = () => {
   const dispatch = useAppDispatch();
@@ -16,9 +16,16 @@ const DropdownButton = () => {
 
   const handleSelect = (option: '최신순' | '좋아요순' | '조회순') => {
     dispatch(setFilter(option));
-    //query login
-    // onSelect(option);
     dispatch(setFilterOpen(false));
+    if (option === '최신순') {
+      dispatch(setOrderby('latest'));
+    }
+    if (option === '좋아요순') {
+      dispatch(setOrderby('thumbup'));
+    }
+    if (option === '조회순') {
+      dispatch(setOrderby('view-count'));
+    }
   };
 
   const handleToggle = () => {
