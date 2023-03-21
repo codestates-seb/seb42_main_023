@@ -35,7 +35,7 @@ public class OAuth2Controller {
 
         Cookie cookie = new Cookie("Refresh", refreshToken);
         cookie.setMaxAge(refreshTokenExpirationMinutes);
-//        cookie.setSecure(true);
+        cookie.setSecure(true);
         cookie.setHttpOnly(true);
         cookie.setPath("/");
 //        cookie.isHttpOnly();
