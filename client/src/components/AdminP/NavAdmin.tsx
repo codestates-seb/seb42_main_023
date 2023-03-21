@@ -75,7 +75,8 @@ export default NavAdmin;
 // nav 컨테이너
 const NavContainer = styled.nav`
   width: 140px;
-  height: 100vh;
+  /* height: 100vh; */
+  min-height: 600px;
   display: flex;
   flex-direction: column;
   border-right: 1px solid var(--border-color);
