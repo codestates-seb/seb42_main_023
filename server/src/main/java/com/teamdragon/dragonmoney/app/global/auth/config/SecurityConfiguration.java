@@ -80,7 +80,7 @@ public class SecurityConfiguration {
         configuration.addAllowedOriginPattern("http://hp5234-dragonmoney-front.s3-website.ap-northeast-2.amazonaws.com");
         configuration.addAllowedHeader("*");
         configuration.addExposedHeader("Authorization");
-        configuration.addExposedHeader("Set-Cookie");
+        configuration.addExposedHeader("Refresh");
         configuration.addExposedHeader("Access-Control-Allow-Credentials");
         configuration.setAllowedMethods(Arrays.asList("GET","POST", "PATCH", "DELETE"));
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
