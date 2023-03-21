@@ -23,7 +23,7 @@ export interface CommentStateType {
     isCommentDislike: boolean;
     commentValue: string;
     commentId: unknown;
-    isEdit: unknown;
+    isEdit: Array<boolean>;
   };
 }
 
@@ -33,13 +33,13 @@ export interface ReplyStateType {
     isReplyDislike: boolean;
     replyValue: string;
     replyId: number;
-    isEdit: unknown;
-    isOpened: unknown;
+    isEdit: Array<boolean>;
+    isOpened: Array<boolean>;
     totalReplies: Array;
   };
 }
 
-export interface validationStateType {
+export interface ValidationStateType {
   validation: {
     titleErr: string;
     bodyErr: string;

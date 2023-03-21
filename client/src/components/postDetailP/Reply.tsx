@@ -1,4 +1,5 @@
 import React, { useRef } from 'react';
+import { useAppDispatch, useAppSelector } from '../../hooks';
 import styled from 'styled-components';
 import DislikeIcon from '../../assets/common/DislikeIcon';
 import LikeIcon from '../../assets/common/LikeIcon';
@@ -9,14 +10,14 @@ import {
   setReplyLike,
   setReplyId,
 } from '../../slices/replySlice';
-import { useAppDispatch, useAppSelector } from '../../hooks';
+
 import {
   PostStateType,
   ReplyStateType,
   CommentStateType,
   ReplyProps,
 } from '../../types/PostDetail';
-import { repliesApi } from '../../api/api';
+import { repliesApi } from '../../api/replyApi';
 import {
   setIsOpenDelete,
   setIsOpenReport,
@@ -34,10 +35,7 @@ const Reply: React.FC<ReplyProps> = ({ replyInfo, idx }: ReplyProps) => {
       return state;
     },
   );
-
-  const commentId =
-    (state as CommentStateType).comment &&
-    (state as CommentStateType).comment.commentId;
+  const commentId = 'comment' in state && state.comment?.commentId;
   // 답글
   const replyQuery = repliesApi.useGetReplyQuery({ commentId });
   console.log('reply', replyQuery.data);
@@ -95,10 +93,9 @@ const Reply: React.FC<ReplyProps> = ({ replyInfo, idx }: ReplyProps) => {
           </li>
           <li className="nickname">{replyInfo && replyInfo.memberName}</li>
           <li className="reply-created-time">12시간 전</li>
-
-          {replySucccess &&
-          (state as ReplyStateType).reply.isEdit !== undefined &&
-          ((state as ReplyStateType).reply.isEdit as Array<boolean>)[idx] ? (
+          {'reply' in state &&
+          ((replySucccess && state.reply.isEdit !== undefined) || null) &&
+          state.reply.isEdit[idx] ? (
             <li
               className="reply-update"
               id="edit"
@@ -126,7 +123,6 @@ const Reply: React.FC<ReplyProps> = ({ replyInfo, idx }: ReplyProps) => {
               수정
             </li>
           )}
-
           <li
             className="reply-delete"
             id="답글"
@@ -144,7 +140,7 @@ const Reply: React.FC<ReplyProps> = ({ replyInfo, idx }: ReplyProps) => {
             data-replyId={String(replyInfo.replyId)}
             onClick={(event): void => {
               dispatch(
-                setIsOpenReport((state as PostStateType).post.isOpenReport),
+                setIsOpenReport('post' in state && state.post.isOpenReport),
               );
               reportTypeChecker(event);
             }}
@@ -165,8 +161,10 @@ const Reply: React.FC<ReplyProps> = ({ replyInfo, idx }: ReplyProps) => {
       </ReplyInfo>
 
       <ReplyContent>
-        {(state as ReplyStateType).reply.isEdit !== undefined &&
-        ((state as ReplyStateType).reply.isEdit as Array<boolean>)[idx] ? (
+        {/* TODO  답글 수정 모드 버그 수정 필요 => dataSet 활용하기!! edit 기본 값을 false로 하고 클릭 시 event.target의 dataSet을 변경 */}
+        {'reply' in state &&
+        state.reply.isEdit !== undefined &&
+        (state.reply.isEdit as Array<boolean>)[idx] ? (
           // 댓글 수정 시 생기는 INPUT
           <input
             className="edit-reply"

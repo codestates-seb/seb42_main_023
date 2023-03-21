@@ -1,9 +1,9 @@
 import React, { useRef } from 'react';
 import styled from 'styled-components';
-import { repliesApi } from '../../api/api';
-import { useAppDispatch, useAppSelector } from '../../hooks';
-import { addReplyEdit, isEdit, setReply } from '../../slices/replySlice';
-import { ReplyStateType, CommentProps } from '../../types/PostDetail';
+import { repliesApi } from '../../api/replyApi';
+import { useAppDispatch } from '../../hooks';
+import { addReplyEdit, setReply } from '../../slices/replySlice';
+import { CommentProps } from '../../types/PostDetail';
 
 const ReplyInput: React.FC<CommentProps> = ({ commentInfo }: CommentProps) => {
   const replyRef = useRef<HTMLInputElement>(null);
