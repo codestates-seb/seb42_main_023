@@ -63,7 +63,7 @@ export default NavAdmin;
 const NavContainer = styled.nav`
   width: 140px;
   height: 100%;
-  background-color: #102940;
+  background-color: #fff;
   /* border: 2px solid var(--border-color); */
   > ul {
     height: 200px;
