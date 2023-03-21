@@ -40,7 +40,6 @@ public class PostsService implements ThumbCountService {
 
     private final PostsRepository postsRepository;
     private final PostsTagRepository postsTagRepository;
-    private final CommentService commentService;
     private final CategoryService categoryService;
     private final TagService tagService;
     private final ImageService imageService;
