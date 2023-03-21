@@ -11,6 +11,7 @@ import { AiOutlineSearch } from 'react-icons/ai';
 import * as Styled from '../common/Tag';
 import { MdCancel } from 'react-icons/md';
 import SearchBtn from './SearchToggle';
+import { postListApi } from '../../api/postListapi';
 
 interface Input {
   className: string;
@@ -19,10 +20,10 @@ interface Input {
   value: string;
 }
 
-// 공통 컴포넌트
 const SearchBar: React.FC = () => {
   const dispatch = useAppDispatch();
-  const state = useAppSelector((state) => state);
+  const header = useAppSelector(({ header }) => header);
+  const valid = useAppSelector(({ validation }) => validation);
 
   //검색 인풋창 데이터 입력
   const valueCheck = (event: React.ChangeEvent<HTMLInputElement>): void => {
@@ -34,8 +35,8 @@ const SearchBar: React.FC = () => {
 
   //유효성 검사 로직
   const validation = () => {
-    const tag: Array<string> = state.header.tag;
-    const input = state.header.input;
+    const tag: Array<string> = header.tag;
+    const input = header.input;
     // 태그 글자수 제한
     if (input.length > 10) {
       dispatch(setTagErr('태그는 10자 이내로 입력해주세요.'));
@@ -69,8 +70,8 @@ const SearchBar: React.FC = () => {
 
   //검색 방식 분기
   const searchHandler = (event: KeyboardEvent<HTMLInputElement>): void => {
-    const tag: Array<string> = state.header.tag;
-    const input = state.header.input;
+    const tag: Array<string> = header.tag;
+    const input = header.input;
     if (event.key === 'Enter' && event.nativeEvent.isComposing === false) {
       if (tag.length === 0 && input === '') {
         return;
@@ -78,8 +79,13 @@ const SearchBar: React.FC = () => {
       if (input !== '') {
         if (input[0] === '#') {
           validation();
-        } else {
+        } else if (tag.length === 0) {
+          //TODO:keyword 와 tags전송하기
           //검색실행
+          // const postListquery = postListApi.useGetPostListQuery({
+          //   keyword: input,
+          //   tags: tag,
+          // });
         }
       }
       if (tag.length !== 0 && input === '') {
@@ -90,7 +96,7 @@ const SearchBar: React.FC = () => {
 
   return (
     <>
-      {state.validation.tagErr === '' ? (
+      {valid.tagErr === '' ? (
         <TagInputContainer>
           <InputWraper>
             <Input
@@ -98,14 +104,14 @@ const SearchBar: React.FC = () => {
               placeholder="관심있는 내용을 검색해보세요."
               onChange={valueCheck}
               onKeyDown={searchHandler}
-              value={state.header.input}
+              value={header.input}
             ></Input>
             <Icon>
               <AiOutlineSearch size={26} />
             </Icon>
-            {state.header.tag.length === 0 && <Span>#태그를 검색하세요</Span>}
+            {header.tag.length === 0 && <Span>#태그를 검색하세요</Span>}
             <TagConatiner>
-              {state.header.tag.map((tag, idx) => {
+              {header.tag.map((tag, idx) => {
                 return (
                   <Styled.TagItemWidthDelete key={idx}>
                     <span>{tag}</span>
@@ -127,14 +133,14 @@ const SearchBar: React.FC = () => {
               placeholder="관심있는 내용을 검색해보세요."
               onChange={valueCheck}
               onKeyDown={searchHandler}
-              value={state.header.input}
+              value={header.input}
             ></Input>
             <Icon>
               <AiOutlineSearch size={26} />
             </Icon>
-            <Error>{state.validation.tagErr}</Error>
+            <Error>{valid.tagErr}</Error>
             <TagConatiner>
-              {state.header.tag.map((tag, idx) => {
+              {header.tag.map((tag, idx) => {
                 return (
                   <Styled.TagItemWidthDelete key={idx}>
                     <span>{tag}</span>

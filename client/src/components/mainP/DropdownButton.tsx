@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useRef, useEffect } from 'react';
 import styled from 'styled-components';
 import { BsFillCaretDownFill } from 'react-icons/bs';
 import { useAppDispatch, useAppSelector } from '../../hooks';
@@ -42,7 +42,7 @@ const DropdownButton = () => {
     }
   };
 
-  React.useEffect(() => {
+  useEffect(() => {
     document.addEventListener('mousedown', handleClickOutside);
     return () => {
       document.removeEventListener('mousedown', handleClickOutside);

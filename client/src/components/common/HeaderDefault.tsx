@@ -8,13 +8,14 @@ import SearchBar from './SearchBar';
 import SearchBtn from './SearchToggle';
 import PostBtn from './PostBtn';
 import MediumProfileImg from './MediumProfileImg';
-import { NavBtn, NavBtnClicked } from '../common/Btn';
+import HeaderNav from './HeaderNav';
+import { MdManageAccounts } from 'react-icons/md';
 
 function HeaderDefault() {
   const navigate = useNavigate();
-  const state = useAppSelector((state) => state);
+  const header = useAppSelector(({ header }) => header);
   const { pathname } = useLocation();
-  return state.header.search ? (
+  return header.search ? (
     <SearchHead>
       <SearchBar />
     </SearchHead>
@@ -24,40 +25,21 @@ function HeaderDefault() {
         <Main onClick={() => navigate('/')}>
           <img src={Logo} height={30}></img>
         </Main>
-        <nav>
-          {['/seoulrent', '/recommendloan', '/happyhouse'].includes(
-            pathname,
-          ) ? (
-            <NavBtnClicked onClick={() => navigate('/happyhouse')}>
-              집구하기
-            </NavBtnClicked>
-          ) : (
-            <NavBtn onClick={() => navigate('/happyhouse')}>집구하기</NavBtn>
-          )}
-          {['/stock'].includes(pathname) ? (
-            <NavBtnClicked onClick={() => navigate('/')}>
-              뜨는주식
-            </NavBtnClicked>
-          ) : (
-            <NavBtn onClick={() => navigate('/')}>뜨는주식</NavBtn>
-          )}
-          {['/calculator'].includes(pathname) ? (
-            <NavBtnClicked onClick={() => navigate('/')}>
-              세금계산기
-            </NavBtnClicked>
-          ) : (
-            <NavBtn onClick={() => navigate('/')}>세금계산기</NavBtn>
-          )}
-        </nav>
+        <HeaderNav />
         <Btns>
           {pathname === '/' && <SearchBtn />}
-          {state.header.login ? (
+          {header.login === '' && <LoginBtn />}
+          {header.login === 'login' && (
             <>
               <PostBtn /> <MediumProfileImg />
             </>
-          ) : (
+          )}
+          {header.login === 'admin' && (
             <>
-              <LoginBtn />
+              <PostBtn />
+              <button onClick={() => navigate('/adminreport')}>
+                <MdManageAccounts size={30} />
+              </button>
             </>
           )}
         </Btns>
@@ -108,4 +90,14 @@ const SearchHead = styled.header`
 `;
 const Btns = styled.div`
   display: flex;
+  button {
+    margin-left: 10px;
+    svg {
+      width: 30px;
+      :hover {
+        transition: 0.3s;
+        color: var(--hover-font-gray-color);
+      }
+    }
+  }
 `;
