@@ -7,10 +7,10 @@ export const nicknameApi = createApi({
   tagTypes: ['nickname'],
   endpoints: (builder) => ({
     postNickname: builder.mutation({
-      query: ({ name, email }) => ({
+      query: ({ name, tempName }) => ({
         url: '/members/duplicated-name',
         method: 'POST',
-        body: { name, email },
+        body: { name, tempName },
       }),
     }),
   }),
