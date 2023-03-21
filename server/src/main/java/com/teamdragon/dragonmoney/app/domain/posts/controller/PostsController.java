@@ -59,7 +59,7 @@ public class PostsController {
     // 삭제 :   주의 : RequestParam post-id <<< posts-id 가 아님
     @DeleteMapping("/{post-id}")
     public ResponseEntity<Void> deletePosts(@AuthenticationPrincipal Principal principal,
-                                            @Valid @Positive @RequestParam("post-id") Long postsId) {
+                                            @Valid @Positive @PathVariable("post-id") Long postsId) {
         Member loginMember = memberService.findMember(principal.getName());
         postsService.removePosts(loginMember, postsId);
         return new ResponseEntity<>(HttpStatus.OK);
@@ -69,7 +69,7 @@ public class PostsController {
     @PatchMapping("/{post-id}")
     public ResponseEntity<Map<String, Long>> patchPosts(@AuthenticationPrincipal Principal principal,
                                                         @Valid @RequestBody PostsDto.Patch patchDto,
-                                                        @Valid @Positive @RequestParam("post-id") Long postsId) {
+                                                        @Valid @Positive @PathVariable("post-id") Long postsId) {
         Member loginMember = memberService.findMember(principal.getName());
         // 이미지 처리
         PostsDto.PatchImagesDto saveImages = patchDto.getSaveImages();
@@ -87,9 +87,9 @@ public class PostsController {
     }
 
     // 상세 조회
-    @GetMapping("/post-id")
+    @GetMapping("/{post-id}")
     public ResponseEntity<PostsDto.PostsDetail> getPostsDetail(@AuthenticationPrincipal Principal principal,
-                                                               @Valid @Positive @RequestParam("post-id") Long postsId) {
+                                                               @Valid @Positive @PathVariable("post-id") Long postsId) {
         Long loginMemberId = null;
         if (principal != null) {
             Member loginMember = memberService.findMember(principal.getName());

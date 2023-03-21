@@ -17,6 +17,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static com.teamdragon.dragonmoney.app.domain.image.dto.ImageDto.*;
+
 public class PostsDto {
 
     @Getter
@@ -67,7 +69,7 @@ public class PostsDto {
 
     @Getter
     public static class PostsList {
-        private final PageInfo pageInfo;
+        private PageInfo pageInfo;
         private List<PostsListElement> posts;
 
         public PostsList(Page<Posts> postsPage, String orderBy) {
@@ -127,7 +129,7 @@ public class PostsDto {
         private Long thumbDownCount;
         private String title;
         private String content;
-        private List<com.teamdragon.dragonmoney.app.domain.image.dto.ImageDto.ImageResponse> images;
+        private List<ImageResponse> images;
         private List<String> tags;
         private Boolean isBookmarked;
         private Boolean isThumbup;
@@ -148,7 +150,7 @@ public class PostsDto {
             this.content = posts.getContent();
             this.images = new ArrayList<>();
             for (Image image : posts.getImages()) {
-                this.images.add(new com.teamdragon.dragonmoney.app.domain.image.dto.ImageDto.ImageResponse(image.getId(), image.getFileName()));
+                this.images.add(new ImageResponse(image.getId(), image.getFileName()));
             }
             this.tags = new ArrayList<>();
             for (PostsTag postsTag : posts.getPostsTags()) {
@@ -171,7 +173,7 @@ public class PostsDto {
             this.content = posts.getContent();
             this.images = new ArrayList<>();
             for (Image image : posts.getImages()) {
-                this.images.add(new com.teamdragon.dragonmoney.app.domain.image.dto.ImageDto.ImageResponse(image.getId(), image.getFileName()));
+                this.images.add(new ImageResponse(image.getId(), image.getFileName()));
             }
             this.tags = new ArrayList<>();
             for (PostsTag postsTag : posts.getPostsTags()) {

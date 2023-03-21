@@ -1,17 +1,49 @@
 package com.teamdragon.dragonmoney.app.domain.comment.entity;
 
+import com.teamdragon.dragonmoney.app.domain.member.entity.Member;
+import com.teamdragon.dragonmoney.app.domain.posts.entity.Posts;
+import com.teamdragon.dragonmoney.app.domain.reply.entity.Reply;
 import com.teamdragon.dragonmoney.app.domain.thumb.Thumb;
 import com.teamdragon.dragonmoney.app.domain.thumb.ThumbCountable;
+import com.teamdragon.dragonmoney.app.global.audit.BaseTimeEntity;
+import com.teamdragon.dragonmoney.app.global.entity.DeleteResult;
+import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @Getter
+@NoArgsConstructor
 @Entity
-public class Comment implements ThumbCountable {
+public class Comment extends BaseTimeEntity implements ThumbCountable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @Column(length = 3200)
+    private String content;
+
+    @JoinColumn(name = "PARENT_POSTS_ID")
+    @ManyToOne(fetch = FetchType.LAZY)
+    private Posts posts;
+
+    @JoinColumn(name = "WRITER_ID")
+    @ManyToOne(fetch = FetchType.LAZY)
+    private Member writer;
+
+    @OneToMany(mappedBy = "comment", cascade = CascadeType.PERSIST)
+    private List<Reply> replies = new ArrayList<>();
+
+    @Column(length = 20)
+    @Enumerated(value = EnumType.STRING)
+    private Comment.State state;
+
+    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
+    @JoinColumn(name = "DELETE_RESULT_ID")
+    private DeleteResult deleteResult;
 
     @Column
     private Long thumbupCount;
@@ -19,8 +51,77 @@ public class Comment implements ThumbCountable {
     @Column
     private Long thumbdownCount;
 
+    @Column
+    private Long replyCount;
+
+    public enum State {
+        ACTIVE("활성"),
+        DELETED("삭제");
+
+        @Getter
+        private final String state;
+
+        State(String state) {
+            this.state = state;
+        }
+    }
+
+    // 댓글 정렬 기준
+    public enum OrderBy {
+        LATEST("latest", "createdAt"),
+        THUMBUP("thumbup", "thumbupCount");
+
+        @Getter
+        private final String orderBy;
+        @Getter
+        private final String targetProperty;
+
+        OrderBy(String orderBy, String targetProperty) {
+            this.orderBy = orderBy;
+            this.targetProperty = targetProperty;
+        }
+    }
+
+    @Builder
+    public Comment(Long id, String content, Posts posts, Member writer) {
+        this.id = id;
+        this.content = content;
+        this.posts = posts;
+        if (posts != null) {
+            this.includedThisPosts(posts);
+        }
+        this.writer = writer;
+        this.state = State.ACTIVE;
+        this.thumbupCount = 0L;
+        this.thumbdownCount = 0L;
+        this.replyCount = 0L;
+    }
+
+    public void includedThisPosts(Posts posts){
+        this.posts = posts;
+        if (!this.posts.getComments().contains(this)) {
+            this.posts.getComments().add(this);
+        }
+    }
+
+    public void addReply(Reply reply) {
+        this.replies.add(reply);
+        if (reply.getComment() != this) {
+            reply.includedThisComment(this);
+        }
+    }
+
     @Override
     public Thumb getThumbCount() {
         return new Thumb(this.thumbupCount, this.thumbdownCount);
+    }
+
+    public void changeStateToDeleted(DeleteResult deleteResult){
+        this.state = State.DELETED;
+        this.deleteResult = deleteResult;
+    }
+
+    public void updateContent(String content) {
+        this.content = content;
     }
 }
