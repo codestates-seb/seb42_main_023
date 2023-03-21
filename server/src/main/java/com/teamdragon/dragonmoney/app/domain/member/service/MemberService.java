@@ -9,7 +9,10 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.Optional;
+
+import static com.teamdragon.dragonmoney.app.global.entity.DeleteResult.Reason.SELF_DELETED;
 
 @Service
 @Transactional
@@ -57,14 +60,17 @@ public class MemberService {
     }
 
     //OAuth2 신규 회원 정보 저장
-    public Member saveMember(String oauthKind, String picture, String tempName, String email) {
+    public Member saveMember(String oauthKind, String picture, String tempName, String email, List<String> authorities) {
         Member member = Member.builder()
                 .oauthkind(oauthKind)
                 .nameDuplicateCheck(false)
                 .profileImage(picture)
+                .state(Member.MemberState.ACTIVE)
+                .memberRoles(authorities)
                 .tempName(tempName)
                 .email(email)
                 .build();
+//        customAuthorityUtils.createAuthorities(email);
         return memberRepository.save(member);
     }
 
@@ -103,44 +109,15 @@ public class MemberService {
         return findVerifiedMemberName(name);
     }
 
-//    //특정 회원의 글 개수
-//    public Member findCount() {
-//
-//    }
-//
-//    //특정 회원이 작성한 게시글 목록
-//    public Member findMemberPosts() {
-//
-//    }
-//
-//    //특정 회원이 작성한 댓글 목록
-//    public Member findMemberComments() {
-//
-//    }
-//
-//    //특정 회원이 좋아요를 누른 게시글 목록
-//    public Member findMemberThumbUpPosts() {
-//
-//    }
-//
-//    //특정 회원이 좋아요를 누른 댓글 목록
-//    public Member findMemberThumbUpComments() {
-//
-//    }
-//
-//    //특정 회원이 북마크를 누른 게시글 목록
-//    public Member findMemberBookmarks() {
-//
-//    }
-
     //회원 탈퇴
     public Member deleteMember(String name) {
         Member deletedMember = findVerifiedMemberName(name);
 
         deletedMember.setState(Member.MemberState.DELETED);
+        deletedMember.setNameDuplicateCheck(false);
 
         DeleteResult deleteResult = DeleteResult.builder()
-                .deleteReason(DeleteResult.Reason.DELETED_BY_REPORT)
+                .deleteReason(SELF_DELETED)
                 .build();
 
         deletedMember.setDeleteResult(deleteResult);

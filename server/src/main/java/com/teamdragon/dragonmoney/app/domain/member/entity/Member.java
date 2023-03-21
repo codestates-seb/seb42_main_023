@@ -11,7 +11,7 @@ import java.util.List;
 
 @Getter
 @Setter
-@Builder
+//@Builder
 @NoArgsConstructor
 //@AllArgsConstructor
 @Entity
@@ -57,27 +57,31 @@ public class Member extends BaseTimeEntity {
     @JoinColumn(name = "DELETE_RESULT_ID")
     private DeleteResult deleteResult;
 
-//    @ElementCollection(fetch = FetchType.EAGER)
-//    private List<String> memberRoles = new ArrayList<>();
+    @ElementCollection(fetch = FetchType.EAGER)
+    private List<String> memberRoles = new ArrayList<>();
 
 //    @Builder
-//    public Member(Long id, Boolean nameDuplicateCheck, String profileImage, String intro, String email,
-//                  String name, String oauthkind, MemberState state) {
+//    public Member(Long id, Boolean nameDuplicateCheck, String profileImage,
+//                  String intro, String tempName, String tempAccessToken,
+//                  String email, String name, String oauthkind,
+//                  MemberState state, DeleteResult deleteResult) {
 //        this.id = id;
 //        this.nameDuplicateCheck = nameDuplicateCheck;
 //        this.profileImage = profileImage;
 //        this.intro = intro;
+//        this.tempName = tempName;
+//        this.tempAccessToken = tempAccessToken;
 //        this.email = email;
 //        this.name = name;
 //        this.oauthkind = oauthkind;
 //        this.state = state;
+//        this.deleteResult = deleteResult;
 //    }
-
     @Builder
     public Member(Long id, Boolean nameDuplicateCheck, String profileImage,
                   String intro, String tempName, String tempAccessToken,
-                  String email, String name, String oauthkind,
-                  MemberState state, DeleteResult deleteResult) {
+                  String email, String name, String oauthkind, MemberState state,
+                  DeleteResult deleteResult, List<String> memberRoles) {
         this.id = id;
         this.nameDuplicateCheck = nameDuplicateCheck;
         this.profileImage = profileImage;
@@ -89,14 +93,8 @@ public class Member extends BaseTimeEntity {
         this.oauthkind = oauthkind;
         this.state = state;
         this.deleteResult = deleteResult;
+        this.memberRoles = memberRoles;
     }
-
-    //    public Member(String oauthkind, String profileImage, String tempName, String email) {
-//        this.oauthkind = oauthkind;
-//        this.profileImage=profileImage;
-//        this.tempName=tempName;
-//        this.email=email;
-//    }
 
     public static enum MemberState {
         ACTIVE("활성"),

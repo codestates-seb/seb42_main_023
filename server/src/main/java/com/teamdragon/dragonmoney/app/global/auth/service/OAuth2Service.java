@@ -12,10 +12,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 @RequiredArgsConstructor
 @Transactional
@@ -44,10 +41,11 @@ public class OAuth2Service {
     public String delegateAccessToken(String tempAccessToken) {
         Member member = findMemberByTempAccessToken(tempAccessToken);
         String name = member.getName();
+        List<String> roles = member.getMemberRoles();
 
         Map<String, Object> claims = new HashMap<>();
         claims.put("name", name);
-//        claims.put("roles", authorities);
+        claims.put("roles", roles);
 
         String subject = name;
         Date expiration = jwtTokenizer.getTokenExpiration(jwtTokenizer.getAccessTokenExpirationMinutes());
@@ -127,10 +125,13 @@ public class OAuth2Service {
         Member member = findMemberByTempAccessToken(tempAccessToken);
         String name = member.getName();
         String picture = member.getProfileImage();
+        List<String> roles = member.getMemberRoles();
+        String role = roles.get(0);
 
         LoginResponseDto loginResponseDto = new LoginResponseDto();
         loginResponseDto.setName(name);
         loginResponseDto.setPicture(picture);
+        loginResponseDto.setRole(role);
         return loginResponseDto;
     }
 

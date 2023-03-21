@@ -77,10 +77,10 @@ public class JwtVerificationFilter extends OncePerRequestFilter {
     //토큰을 파싱해서 SecurityContext 에 담는다.
     private void setAuthenticationToContext(Map<String, Object> claims) {
         String name = (String) claims.get("name");
-//        List<GrantedAuthority> authorities = authorityUtils.createAuthorities((List)claims.get("roles"));
+        List<GrantedAuthority> authorities = authorityUtils.createAuthorities((List)claims.get("roles"));
 
-        PrincipalDto principal = new PrincipalDto(name);
-        Authentication authentication = new UsernamePasswordAuthenticationToken(principal, null, null);
+        PrincipalDto principal = new PrincipalDto(name, authorities);
+        Authentication authentication = new UsernamePasswordAuthenticationToken(principal, null, authorities);
 
         //SecurityContext에 Authentication 객체를 저장
         SecurityContextHolder.getContext().setAuthentication(authentication);
