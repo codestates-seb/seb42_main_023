@@ -31,6 +31,11 @@ const TagInput: React.FC = () => {
         dispatch(setTagErr(''));
         return;
       }
+      // 태그 길이
+      if (tagContent.length > 10) {
+        dispatch(setTagErr('태그 길이는 최대 10 글자 입니다.'));
+        return;
+      }
       // 띄어쓰기 방지
       if (tagContent.includes(' ')) {
         dispatch(setTagErr('태그에 띄어쓰기를 포함할 수 없습니다.'));

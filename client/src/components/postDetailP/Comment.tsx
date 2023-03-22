@@ -29,6 +29,7 @@ import {
   setCommentId,
   isEdit,
   setIsEdit,
+  setIsOpenIntro,
 } from '../../slices/commentSlice';
 import {
   isOpened,
@@ -62,6 +63,11 @@ const Comment: React.FC = () => {
   const { isSuccess, data } = replyQuery;
   const contentEditInput = useRef<HTMLInputElement>(null);
 
+  // 답글 작성자 소개페이지 오픈 여부
+  const isOpeReplyIntro = 'reply' in state && state?.reply.isOpeneIntro;
+
+  // 유저 정보 조회
+  //TODO 유저 정보 조회 API 참조
   // 답글 Open 여부 확인을 위한 배열 생성
   if (
     commentQuery.isSuccess &&
@@ -118,6 +124,19 @@ const Comment: React.FC = () => {
       dispatch(setReportType(event.target.dataset.category!));
     }
   };
+  //TODO
+  // 소개 페이지 오픈
+  const IntroHandler = (event: React.MouseEvent<HTMLElement>) => {
+    if (
+      'comment' in state &&
+      !isOpeReplyIntro &&
+      event.target instanceof HTMLElement
+    ) {
+      dispatch(setIsOpenIntro(state.comment.isOpeneIntro));
+      dispatch(setCommentId(Number(event.target.dataset.commentid)));
+      console.log('userName', event.target.id);
+    }
+  };
 
   useEffect(() => {
     // 답글 데이터가 변경될 때마다 총 답글 데이터 반영
@@ -149,8 +168,38 @@ const Comment: React.FC = () => {
             <>
               <CommentInfo key={comment.commentId}>
                 <ul className="content-info">
-                  <li className="image">
-                    <img src={comment.memberImage}></img>
+                  <li className="image" onClick={IntroHandler}>
+                    <img
+                      src={comment.memberImage}
+                      id={comment.memberName}
+                      data-img={comment.memberImage}
+                      data-commentId={comment.commentId}
+                    ></img>
+
+                    {/* TODO */}
+
+                    {'comment' in state &&
+                    state.comment.isOpeneIntro &&
+                    comment?.commentId === state.comment?.commentId ? (
+                      <IntorductionContainer>
+                        <IntroInfo>
+                          <ul className="intro-content-info">
+                            <li className="image">
+                              <img src={comment.memberImage} id=""></img>
+                            </li>
+                            <li className="intro-nickname">
+                              {comment.memberName}
+                            </li>
+                          </ul>
+                        </IntroInfo>
+                        <label className="introduction">
+                          {/* TODO 수정 필요*/}
+                          {comment.content}
+                        </label>
+                        <div className="intro-moreInfo">더보기 》</div>
+                      </IntorductionContainer>
+                    ) : null}
+                    {/* TODO */}
                   </li>
                   <li className="nickname">{comment.memberName}</li>
                   <TimeIcon />
@@ -332,7 +381,7 @@ const CommentContainer = styled.div`
   .comment-report {
     width: 40px;
     font-size: 16px;
-    margin: 3px 120px 0 5px;
+    margin: 3px 148px 0 5px;
     color: #ca0000;
     cursor: pointer;
   }
@@ -344,10 +393,63 @@ const CommentContainer = styled.div`
     font-size: 16px;
     margin: 3px 15px 0 15px;
   }
+
   #edit {
     color: #0069ca;
   }
+  .image {
+    position: relative;
+    z-index: 1;
+  }
 `;
+
+//TODO Into
+const IntorductionContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  position: absolute;
+  width: 240px;
+  height: 140px;
+  border: 1px solid #d4d4d4;
+  z-index: 2;
+  top: 20px;
+  left: 30px;
+  background-color: white;
+  .introduction {
+    font-size: 17x;
+    color: gray;
+    width: 175px;
+    margin: 10px 0 0 35px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .intro-moreInfo {
+    font-size: 17x;
+    color: gray;
+    width: 150px;
+    margin: 5px 0 0 165px;
+    cursor: pointer;
+  }
+`;
+const IntroInfo = styled.div`
+  z-index: 5;
+  .intro-content-info {
+    width: 100%;
+    height: 50px;
+    display: flex;
+    align-items: center;
+    font-size: 12px;
+    padding: 10px 0 0 10px;
+  }
+  .intro-nickname {
+    width: 150px;
+    height: 30px;
+    font-size: 16px;
+    margin: 8px 0 0 10px;
+  }
+`;
+
 const CommentInfo = styled.div`
   display: flex;
   flex-direction: column;

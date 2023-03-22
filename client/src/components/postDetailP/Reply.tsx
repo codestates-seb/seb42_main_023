@@ -9,6 +9,7 @@ import {
   setReplyDislike,
   setReplyLike,
   setReplyId,
+  setIsOpenIntro,
 } from '../../slices/replySlice';
 
 import {
@@ -44,7 +45,8 @@ const Reply: React.FC<ReplyProps> = ({ replyInfo, idx }: ReplyProps) => {
   const replySucccess = replyQuery.isSuccess;
   const replyMutation = repliesApi.useUpdataReplyMutation();
   const updateMutation = replyMutation[0];
-
+  // 댓글 작성자 소개페이지 오픈 여부
+  const isOpenCommentIntro = 'comment' in state && state?.comment.isOpeneIntro;
   // 답글 좋아요 클릭 함수
   const ReplyLiikeHandler = (): void => {
     dispatch(setReplyLike((state as ReplyStateType).reply.isReplyLike));
@@ -78,6 +80,20 @@ const Reply: React.FC<ReplyProps> = ({ replyInfo, idx }: ReplyProps) => {
     }
   };
 
+  //TODO
+  // 소개 페이지 오픈
+  const IntroHandler = (event: React.MouseEvent<HTMLElement>) => {
+    if (
+      'reply' in state &&
+      !isOpenCommentIntro &&
+      event.target instanceof HTMLElement
+    ) {
+      dispatch(setIsOpenIntro(state.reply.isOpeneIntro));
+      dispatch(setReplyId(Number(event.target.dataset.replyid)));
+      console.log('userName', event.target.id);
+    }
+  };
+
   // 신고 카테고리 확인
   const reportTypeChecker = (event: React.MouseEvent<HTMLElement>): void => {
     if (event.target instanceof HTMLElement) {
@@ -93,9 +109,34 @@ const Reply: React.FC<ReplyProps> = ({ replyInfo, idx }: ReplyProps) => {
     <ReplyContainer>
       <ReplyInfo key={replyInfo.replyId}>
         <ul className="reply-info">
-          <li className="image">
-            <img src={replyInfo && replyInfo.memberImage}></img>
+          <li className="image" onClick={IntroHandler}>
+            <img
+              src={replyInfo && replyInfo.memberImage}
+              id={replyInfo.memberName}
+              data-img={replyInfo.memberImage}
+              data-replyId={replyInfo.replyId}
+            ></img>
           </li>
+          {'reply' in state &&
+          state.reply.isOpeneIntro &&
+          replyInfo?.replyId === state.reply?.replyId ? (
+            <IntorductionContainer onClick={IntroHandler}>
+              <IntroInfo>
+                <ul className="intro-content-info">
+                  <li className="image">
+                    <img src={replyInfo.memberImage} id=""></img>
+                  </li>
+                  <li className="intro-nickname">{replyInfo.memberName}</li>
+                </ul>
+              </IntroInfo>
+              <label className="introduction">
+                {/* TODO 수정 필요*/}
+                {replyInfo.content}
+              </label>
+              <div className="intro-moreInfo">더보기 》</div>
+            </IntorductionContainer>
+          ) : null}
+
           <li className="nickname">{replyInfo && replyInfo.memberName}</li>
           <li className="reply-created-time">{time} 전</li>
           {'reply' in state &&
@@ -212,6 +253,7 @@ const ReplyContainer = styled.div`
     align-items: center;
     font-size: 12px;
     padding: 30px 0 30px 0;
+    position: relative;
   }
   .content {
     display: flex;
@@ -262,6 +304,54 @@ const ReplyContainer = styled.div`
     margin: 3px 15px 0 15px;
   }
 `;
+// TODO Intro
+const IntorductionContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  position: absolute;
+  width: 240px;
+  height: 140px;
+  border: 1px solid #d4d4d4;
+  z-index: 5;
+  top: 45px;
+  left: 45px;
+  background-color: white;
+
+  .introduction {
+    font-size: 17x;
+    color: gray;
+    width: 175px;
+    margin: 10px 0 0 35px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .intro-moreInfo {
+    font-size: 17x;
+    color: gray;
+    width: 150px;
+    margin: 5px 0 0 165px;
+    cursor: pointer;
+  }
+`;
+const IntroInfo = styled.div`
+  z-index: 5;
+  .intro-content-info {
+    width: 100%;
+    height: 50px;
+    display: flex;
+    align-items: center;
+    font-size: 12px;
+    padding: 10px 0 0 10px;
+  }
+  .intro-nickname {
+    width: 150px;
+    height: 30px;
+    font-size: 16px;
+    margin: 8px 0 0 10px;
+  }
+`;
+
 const ReplyInfo = styled.div`
   display: flex;
   flex-direction: column;

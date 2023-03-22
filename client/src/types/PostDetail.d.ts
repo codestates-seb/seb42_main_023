@@ -14,6 +14,10 @@ export interface PostStateType {
     isOpenReport: boolean;
     reportOption: unknown;
     reportType: unknown;
+    currentImg: unknown;
+    removedImg: unknown;
+    totalImg: unknown;
+    addedImg: unknown;
   };
 }
 
@@ -24,6 +28,7 @@ export interface CommentStateType {
     commentValue: string;
     commentId: unknown;
     isEdit: Array<boolean>;
+    isOpeneIntro: boolean;
   };
 }
 
@@ -37,6 +42,7 @@ export interface ReplyStateType {
     isOpened: Array<boolean>;
     totalReplies: Array;
     replyCont: number;
+    isOpeneIntro: boolean;
   };
 }
 
@@ -46,6 +52,15 @@ export interface ValidationStateType {
     bodyErr: string;
     tagErr: string;
     reportErr: string;
+  };
+}
+
+export interface PostInputStateType {
+  postInput: {
+    body: string;
+    tag: Array<object>;
+    tagContent: string;
+    title: string;
   };
 }
 

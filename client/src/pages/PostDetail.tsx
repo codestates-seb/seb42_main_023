@@ -36,6 +36,7 @@ import { postsApi } from '../api/postApi';
 import { reportApi } from '../api/reportApi';
 import { commentsApi } from '../api/commentApi';
 import { timeSince } from '../components/mainP/Timecalculator';
+import { setIsOpenIntro } from '../slices/commentSlice';
 
 const reportOption = [
   '영리목적/홍보성',
@@ -46,6 +47,8 @@ const reportOption = [
   '도배',
   '기타',
 ];
+
+window.addEventListener('hashchange', () => console.log('test'));
 
 const PostDetail: React.FC = () => {
   const [checkedElement, setCheckedElement] = useState(-1);
@@ -81,6 +84,7 @@ const PostDetail: React.FC = () => {
   const reportErr = 'validation' in state ? state.validation.reportErr : null;
   // 게시글 조회 및 추가
   const postDetailQuery = postsApi.useGetPostQuery({ postId });
+  console.log(postDetailQuery);
   const { data, isSuccess } = postDetailQuery;
   const postMutation = postsApi.useDeletePostMutation();
   const [deletePost] = postMutation;
@@ -228,8 +232,8 @@ const PostDetail: React.FC = () => {
       dispatch(setReportErr('신고 내용을 작성해 주세요.'));
     }
     if (reportValue) {
-      if (reportValue.length < 10 || reportValue.length > 300) {
-        dispatch(setReportErr('제목은 10자 이상 300자 이하로 작성해주세요.'));
+      if (reportValue.length < 10 || reportValue.length > 40) {
+        dispatch(setReportErr('제목은 10자 이상 40자 이하로 작성해주세요.'));
       } else {
         dispatch(setReportErr(''));
       }

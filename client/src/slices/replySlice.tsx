@@ -11,6 +11,7 @@ const replySlice = createSlice({
     isOpened: undefined,
     totalReplies: [],
     replyCnt: undefined,
+    isOpeneIntro: false,
   },
   reducers: {
     // 답글 좋아요
@@ -61,6 +62,10 @@ const replySlice = createSlice({
     setReplyCnt: (state, action: PayloadAction<object>): void => {
       (state.replyCnt as unknown) = action.payload;
     },
+    // 소개 페이지 오픈
+    setIsOpenIntro: (state, action: PayloadAction<boolean>): void => {
+      state.isOpeneIntro = !state.isOpeneIntro;
+    },
   },
 });
 
@@ -77,4 +82,5 @@ export const {
   isOpened,
   setIsOpened,
   setReplyCnt,
+  setIsOpenIntro,
 } = replySlice.actions;
