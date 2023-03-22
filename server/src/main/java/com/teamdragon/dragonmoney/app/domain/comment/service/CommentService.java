@@ -18,7 +18,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
-import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -56,6 +55,10 @@ public class CommentService implements ThumbCountService {
         DeleteResult deleteResult
                 = DeleteResult.builder().deleteReason(DeleteResult.Reason.SELF_DELETED).build();
         findComment.changeStateToDeleted(deleteResult);
+        // 좋아요 싫어요 삭제
+
+        // 대댓글 삭제
+
         commentRepository.save(findComment);
         return commentId;
     }
@@ -118,7 +121,7 @@ public class CommentService implements ThumbCountService {
         return findComment;
     }
 
-    // 유효한 Posts 조회
+    // 유효한 Comment 조회
     private Comment findVerifyCommentById(Long commentId) {
         Optional<Comment> findComment = commentRepository.findById(commentId);
         if (findComment.isEmpty()) {

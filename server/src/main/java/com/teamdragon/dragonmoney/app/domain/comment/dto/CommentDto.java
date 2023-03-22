@@ -9,8 +9,8 @@ import org.springframework.data.domain.Page;
 import javax.validation.constraints.NotBlank;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Objects;
 
-@Getter
 public class CommentDto {
     @Getter
     public static class CreateReq {
@@ -71,11 +71,34 @@ public class CommentDto {
         private Boolean isThumbup;
         private Boolean isThumbdown;
 
-        // 댓글 목록 항목 : 로그인 유저용
-        public CommentListElement(Long postsId, Comment comment, String memberName, String memberImage, Long isThumbup, Long isThumbdown) {
+        // 댓글 목록 항목 : 미로그인용
+        public CommentListElement(Long postsId, Comment comment, String memberName, String memberImage, String commentState) {
             this.postId = postsId;
             this.commentId = comment.getId();
-            this.content = comment.getContent();
+            if (!Objects.equals(commentState, Comment.State.ACTIVE.toString())) {
+                this.content = comment.getContent();
+            } else {
+                this.content = Comment.State.valueOf(commentState).getMessage();
+            }
+            this.memberName = memberName;
+            this.memberImage = memberImage;
+            this.createdAt = comment.getCreatedAt();
+            this.modifiedAt = comment.getModifiedAt();
+            this.isModified = this.createdAt != this.modifiedAt;
+            this.replyCount = comment.getReplyCount();
+            this.thumbupCount = comment.getThumbupCount();
+            this.thumbDownCount = comment.getThumbdownCount();
+        }
+
+        // 댓글 목록 항목 : 로그인 유저용
+        public CommentListElement(Long postsId, Comment comment, String memberName, String memberImage, String commentState, Long isThumbup, Long isThumbdown) {
+            this.postId = postsId;
+            this.commentId = comment.getId();
+            if (!Objects.equals(commentState, Comment.State.ACTIVE.toString())) {
+                this.content = comment.getContent();
+            } else {
+                this.content = Comment.State.valueOf(commentState).getMessage();
+            }
             this.memberName = memberName;
             this.memberImage = memberImage;
             this.createdAt = comment.getCreatedAt();
@@ -86,21 +109,6 @@ public class CommentDto {
             this.thumbDownCount = comment.getThumbdownCount();
             this.isThumbup = isThumbup != null;
             this.isThumbdown = isThumbdown != null;
-        }
-
-        // 댓글 목록 항목 : 미로그인용
-        public CommentListElement(Long postsId, Comment comment, String memberName, String memberImage) {
-            this.postId = postsId;
-            this.commentId = comment.getId();
-            this.content = comment.getContent();
-            this.memberName = memberName;
-            this.memberImage = memberImage;
-            this.createdAt = comment.getCreatedAt();
-            this.modifiedAt = comment.getModifiedAt();
-            this.isModified = this.createdAt != this.modifiedAt;
-            this.replyCount = comment.getReplyCount();
-            this.thumbupCount = comment.getThumbupCount();
-            this.thumbDownCount = comment.getThumbdownCount();
         }
     }
 }

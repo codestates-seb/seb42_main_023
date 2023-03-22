@@ -51,8 +51,10 @@ public class CommentController {
                                                                      @RequestParam String orderby) {
         Comment.OrderBy orderBy = checkOrderBy(orderby);
         Member loginMember = memberService.findMember(principal.getName());
+
         Page<CommentDto.CommentListElement> commentList = commentService.findCommentList(page, postsId, orderBy, loginMember.getId());
-        CommentDto.CommentListRes response = new CommentDto.CommentListRes(commentList, orderBy.getOrderBy());
+        CommentDto.CommentListRes response = new CommentDto.CommentListRes(commentList, orderby);
+
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 

@@ -78,14 +78,17 @@ public class Posts extends BaseTimeEntity implements ThumbCountable {
 
     // 게시글 상태
     public enum State {
-        ACTIVE("활성"),
-        DELETED("삭제");
+        ACTIVE("활성", "활성상태 입니다."),
+        DELETED("삭제", "삭제된 댓글입니다.");
 
         @Getter
         private final String state;
+        @Getter
+        private final String message;
 
-        State(String state) {
+        State(String state, String message) {
             this.state = state;
+            this.message = message;
         }
     }
 
