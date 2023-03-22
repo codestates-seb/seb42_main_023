@@ -95,30 +95,31 @@ export const handlers = [
   //--------------------------- POST --------------------------------
 
   // 댓글 추가
-  rest.post('/posts/:postId/comments', async (req, res, ctx) => {
-    const data = comments;
-    const params = req.params;
-    const id = params.postId;
-    const newData = await req.json();
+  rest.post('/posts', async (req, res, ctx) => {
+    console.log('server req', req);
+    // const data = comments;
+    // const params = req.params;
+    // const id = params.postId;
+    // const newData = await req.json();
 
-    data.push({
-      postId: Number(id),
-      commentId: 123,
-      memberName: 'newMember',
-      memberImage:
-        'https://image.edaily.co.kr/images/Photo/files/NP/S/2021/06/PS21060200161.jpg',
-      createdAt: String(new Date()),
-      modifiedAt: '',
-      isModified: false,
-      replyCount: 0,
-      thumbupCount: 0,
-      thumbDownCount: 0,
-      isThumbup: false,
-      isThumbDown: false,
-      content: newData.content,
-    });
+    // data.push({
+    //   postId: Number(id),
+    //   commentId: 123,
+    //   memberName: 'newMember',
+    //   memberImage:
+    //     'https://image.edaily.co.kr/images/Photo/files/NP/S/2021/06/PS21060200161.jpg',
+    //   createdAt: String(new Date()),
+    //   modifiedAt: '',
+    //   isModified: false,
+    //   replyCount: 0,
+    //   thumbupCount: 0,
+    //   thumbDownCount: 0,
+    //   isThumbup: false,
+    //   isThumbDown: false,
+    //   content: newData.content,
+    // });
 
-    return res(ctx.status(201), ctx.json({ data }));
+    return res(ctx.status(201), ctx.json({ res: 'created!!' }));
   }),
 
   // 답글 추가

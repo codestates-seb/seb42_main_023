@@ -3,11 +3,20 @@ import styled from 'styled-components';
 import { useAppDispatch, useAppSelector } from '../../hooks';
 import { setTitle } from '../../slices/postInputSlice';
 import { setTitleErr } from '../../slices/validationSlice';
+import { postsApi } from '../../api/postApi';
+import { useParams } from 'react-router-dom';
 
 const TitleInput: React.FC = () => {
   const dispatch = useAppDispatch();
   const state = useAppSelector((state) => state);
   const title = useRef<HTMLInputElement>(null);
+  const params = useParams();
+  const postId = Number(params.postId);
+  console.log('postId', postId);
+
+  const postQuery = postsApi.useGetPostQuery({ postId });
+  const { data } = postQuery;
+  console.log('data', data);
 
   // 제목 value 확인
   const valueCheck = (event: React.ChangeEvent<HTMLInputElement>): void => {
@@ -39,6 +48,7 @@ const TitleInput: React.FC = () => {
             className="title-input"
             placeholder="제목을 입력해주세요."
             onChange={valueCheck}
+            value={data?.posts[0].title || ''}
           ></Input>
         </TitleInputContainer>
       ) : (
@@ -49,6 +59,7 @@ const TitleInput: React.FC = () => {
             className="title-input"
             placeholder="제목을 입력해주세요."
             onChange={valueCheck}
+            value={data?.posts[0].title || ''}
           ></Input>
           <Error>{state.validation.titleErr}</Error>
         </TitleInputContainer>

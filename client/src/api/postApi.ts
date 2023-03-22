@@ -26,24 +26,34 @@ export const postsApi = createApi({
   endpoints: (builder) => ({
     getPost: builder.query({
       query: ({ postId }) => `posts/${postId}`,
+
       providesTags: (result, error, arg) => {
         console.log(result, error, arg);
-        return [{ type: 'Post', id: arg.postId }];
+
+        return [{ type: 'Post', id: 'post' }];
       },
+      //TODO 응답 및 응답 에러 관리
+      transformResponse: (response, meta, arg) => {
+        console.log('mteaInfo', meta?.response?.headers);
+        return response;
+      },
+      transformErrorResponse: (
+        response: { status: string | number },
+        meta,
+        arg,
+      ) => response.status,
     }),
-    //TODO 정적 URI 한번 더 확인하기('posts')
+
     // 게시글 추가
     setPost: builder.mutation({
-      query: ({ title, content, tag }) => {
+      query: ({ saveIages, title, content, tagNames }) => {
         return {
           url: `posts`,
           method: 'POST',
-          body: { title, content, tag },
+          body: { saveIages, title, content, tagNames },
         };
       },
-      invalidatesTags: (result, error, arg) => [
-        { type: 'Post', id: arg.postId },
-      ],
+      invalidatesTags: (result, error, arg) => [{ type: 'Post', id: 'post' }],
     }),
     // 게시글 수정
     updatePost: builder.mutation({
@@ -54,9 +64,7 @@ export const postsApi = createApi({
           body: { title, content },
         };
       },
-      invalidatesTags: (result, error, arg) => [
-        { type: 'Post', id: arg.postId },
-      ],
+      invalidatesTags: (result, error, arg) => [{ type: 'Post', id: 'post' }],
     }),
     // 게시글 삭제
     deletePost: builder.mutation({
@@ -66,9 +74,7 @@ export const postsApi = createApi({
           method: 'DELETE',
         };
       },
-      invalidatesTags: (result, error, arg) => [
-        { type: 'Post', id: arg.postId },
-      ],
+      invalidatesTags: (result, error, arg) => [{ type: 'Post', id: 'post' }],
     }),
   }),
 });

@@ -33,7 +33,6 @@ export const repliesApi = createApi({
           body: { replyId, content },
         };
       },
-
       invalidatesTags: (result, error, arg) => [{ type: 'Reply', id: 'reply' }],
     }),
     // 답글 삭제

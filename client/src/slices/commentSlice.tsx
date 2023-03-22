@@ -8,6 +8,7 @@ const commentSlice = createSlice({
     commentValue: '',
     commentId: undefined,
     isEdit: undefined,
+    isOpeneIntro: false,
   },
   reducers: {
     // 댓글 좋아요
@@ -40,7 +41,10 @@ const commentSlice = createSlice({
     addCommentEdit: (state, action: PayloadAction<boolean>): void => {
       (state.isEdit! as Array<boolean>).push(action.payload);
     },
-    // 댓글 삭제창 오픈
+    // 소개 페이지 오픈
+    setIsOpenIntro: (state, action: PayloadAction<boolean>): void => {
+      state.isOpeneIntro = !state.isOpeneIntro;
+    },
   },
 });
 
@@ -53,4 +57,5 @@ export const {
   isEdit,
   setIsEdit,
   addCommentEdit,
+  setIsOpenIntro,
 } = commentSlice.actions;

@@ -14,6 +14,10 @@ const postSlice = createSlice({
     isOpenReport: false,
     reportOption: undefined,
     reportType: undefined,
+    currentImg: undefined,
+    removedImg: undefined,
+    totalImg: undefined,
+    addedImg: [],
   },
   reducers: {
     // 게시물 좋아요
@@ -63,6 +67,22 @@ const postSlice = createSlice({
     setReportType: (state, action: PayloadAction<string>): void => {
       (state.reportType as unknown) = action.payload;
     },
+    // 게시물에 포함된 이미지
+    setCurrentImg: (state, action: PayloadAction<Array<string>>): void => {
+      (state.currentImg as unknown) = action.payload;
+    },
+    // 삭제된 이미지
+    setRemovedImg: (state, action: PayloadAction<Array<string>>): void => {
+      (state.removedImg as unknown) = action.payload;
+    },
+    // 전체 이미지
+    setTotalmg: (state, action: PayloadAction<Array<string>>): void => {
+      (state.removedImg as unknown) = action.payload;
+    },
+    //추가된 게시물 이미지(삭제된 이미지 포함)
+    setAddedImg: (state, action: PayloadAction<string>): void => {
+      (state.addedImg! as Array<string>).push(action.payload);
+    },
   },
 });
 
@@ -79,4 +99,8 @@ export const {
   setIsOpenReport,
   setReportOption,
   setReportType,
+  setCurrentImg,
+  setRemovedImg,
+  setTotalmg,
+  setAddedImg,
 } = postSlice.actions;
