@@ -13,11 +13,9 @@ export const posts = {
       imgUrl: 'https://t1.daumcdn.net/cfile/tistory/22488F46581C01011D',
       tags: [
         {
-          id: 1,
           tagName: 'Java',
         },
         {
-          id: 2,
           tagName: 'Python',
         },
       ],
@@ -31,10 +29,7 @@ export const posts = {
       title: '게시글제목',
       imgUrl:
         'https://jmagazine.joins.com/_data/photo/2020/07/3698936108_rU5XvNEa_1.jpg',
-      tags: [
-        { id: 1, tagName: 'Java' },
-        { id: 2, tagName: 'Python' },
-      ],
+      tags: [{ tagName: 'Java' }, { tagName: 'Python' }],
       memberName: 'bunny',
       createdAt: '2019-11-12T16:34:30.388',
       viewCount: 12,
@@ -45,10 +40,7 @@ export const posts = {
       title: '게시글제목',
       imgUrl:
         'https://jmagazine.joins.com/_data/photo/2020/07/3698936108_rU5XvNEa_1.jpg',
-      tags: [
-        { id: 1, tagName: 'Java' },
-        { id: 2, tagName: 'Python' },
-      ],
+      tags: [{ tagName: 'Java' }, { tagName: 'Python' }],
       memberName: 'bunny',
       createdAt: '2019-11-12T16:34:30.388',
       viewCount: 12,
@@ -59,10 +51,7 @@ export const posts = {
       title: '게시글제목',
       imgUrl:
         'https://jmagazine.joins.com/_data/photo/2020/07/3698936108_rU5XvNEa_1.jpg',
-      tags: [
-        { id: 1, tagName: 'Java' },
-        { id: 2, tagName: 'Python' },
-      ],
+      tags: [{ tagName: 'Java' }, { tagName: 'Python' }],
       memberName: 'bunny',
       createdAt: '2019-11-12T16:34:30.388',
       viewCount: 12,
@@ -73,10 +62,7 @@ export const posts = {
       title: '게시글제목',
       imgUrl:
         'https://jmagazine.joins.com/_data/photo/2020/07/3698936108_rU5XvNEa_1.jpg',
-      tags: [
-        { id: 1, tagName: 'Java' },
-        { id: 2, tagName: 'Python' },
-      ],
+      tags: [{ tagName: 'Java' }, { tagName: 'Python' }],
       memberName: 'bunny',
       createdAt: '2019-11-12T16:34:30.388',
       viewCount: 12,
@@ -87,10 +73,7 @@ export const posts = {
       title: '게시글제목',
       imgUrl:
         'https://jmagazine.joins.com/_data/photo/2020/07/3698936108_rU5XvNEa_1.jpg',
-      tags: [
-        { id: 1, tagName: 'Java' },
-        { id: 2, tagName: 'Python' },
-      ],
+      tags: [{ tagName: 'Java' }, { tagName: 'Python' }],
       memberName: 'bunny',
       createdAt: '2019-11-12T16:34:30.388',
       viewCount: 12,
@@ -101,10 +84,7 @@ export const posts = {
       title: '게시글제목',
       imgUrl:
         'https://jmagazine.joins.com/_data/photo/2020/07/3698936108_rU5XvNEa_1.jpg',
-      tags: [
-        { id: 1, tagName: 'Java' },
-        { id: 2, tagName: 'Python' },
-      ],
+      tags: [{ tagName: 'Java' }, { tagName: 'Python' }],
       memberName: 'bunny',
       createdAt: '2019-11-12T16:34:30.388',
       viewCount: 12,
@@ -128,11 +108,9 @@ export const weeklyPopular = {
         'https://jmagazine.joins.com/_data/photo/2020/07/3698936108_rU5XvNEa_1.jpg',
       tags: [
         {
-          id: 1,
           tagName: 'Java',
         },
         {
-          id: 2,
           tagName: 'Python',
         },
       ],
@@ -146,10 +124,7 @@ export const weeklyPopular = {
       title: '게시글제목',
       imgUrl:
         'https://jmagazine.joins.com/_data/photo/2020/07/3698936108_rU5XvNEa_1.jpg',
-      tags: [
-        { id: 1, tagName: 'Java' },
-        { id: 2, tagName: 'Python' },
-      ],
+      tags: [{ tagName: 'Java' }, { tagName: 'Python' }],
       memberName: 'bunny',
       createdAt: '2019-11-12T16:34:30.388',
       viewCount: 12,
@@ -160,10 +135,7 @@ export const weeklyPopular = {
       title: '게시글제목',
       imgUrl:
         'https://jmagazine.joins.com/_data/photo/2020/07/3698936108_rU5XvNEa_1.jpg',
-      tags: [
-        { id: 1, tagName: 'Java' },
-        { id: 2, tagName: 'Python' },
-      ],
+      tags: [{ tagName: 'Java' }, { tagName: 'Python' }],
       memberName: 'bunny',
       createdAt: '2019-11-12T16:34:30.388',
       viewCount: 12,
@@ -187,11 +159,9 @@ export const bestAwards = {
         'http://image.ajunews.com//content/image/2021/05/13/20210513175012532486.jpg',
       tags: [
         {
-          id: 1,
           tagName: 'Java',
         },
         {
-          id: 2,
           tagName: 'Python',
         },
       ],
@@ -205,10 +175,7 @@ export const bestAwards = {
       title: 'bestAwards',
       imgUrl:
         'http://image.ajunews.com//content/image/2021/05/13/20210513175012532486.jpg',
-      tags: [
-        { id: 1, tagName: 'Java' },
-        { id: 2, tagName: 'Python' },
-      ],
+      tags: [{ tagName: 'Java' }, { tagName: 'Python' }],
       memberName: 'bunny',
       createdAt: '2019-11-12T16:34:30.388',
       viewCount: 12,
@@ -219,10 +186,7 @@ export const bestAwards = {
       title: 'bestAwards',
       imgUrl:
         'https://jmagazine.joins.com/_data/photo/2020/07/3698936108_rU5XvNEa_1.jpg',
-      tags: [
-        { id: 1, tagName: 'Java' },
-        { id: 2, tagName: 'Python' },
-      ],
+      tags: [{ tagName: 'Java' }, { tagName: 'Python' }],
       memberName: 'bunny',
       createdAt: '2019-11-12T16:34:30.388',
       viewCount: 12,
@@ -233,10 +197,7 @@ export const bestAwards = {
       title: 'bestAwards',
       imgUrl:
         'https://jmagazine.joins.com/_data/photo/2020/07/3698936108_rU5XvNEa_1.jpg',
-      tags: [
-        { id: 1, tagName: 'Java' },
-        { id: 2, tagName: 'Python' },
-      ],
+      tags: [{ tagName: 'Java' }, { tagName: 'Python' }],
       memberName: 'bunny',
       createdAt: '2019-11-12T16:34:30.388',
       viewCount: 12,
@@ -247,10 +208,7 @@ export const bestAwards = {
       title: 'bestAwards',
       imgUrl:
         'https://jmagazine.joins.com/_data/photo/2020/07/3698936108_rU5XvNEa_1.jpg',
-      tags: [
-        { id: 1, tagName: 'Java' },
-        { id: 2, tagName: 'Python' },
-      ],
+      tags: [{ tagName: 'Java' }, { tagName: 'Python' }],
       memberName: 'bunny',
       createdAt: '2019-11-12T16:34:30.388',
       viewCount: 12,
@@ -261,10 +219,7 @@ export const bestAwards = {
       title: 'bestAwards',
       imgUrl:
         'https://jmagazine.joins.com/_data/photo/2020/07/3698936108_rU5XvNEa_1.jpg',
-      tags: [
-        { id: 1, tagName: 'Java' },
-        { id: 2, tagName: 'Python' },
-      ],
+      tags: [{ tagName: 'Java' }, { tagName: 'Python' }],
       memberName: 'bunny',
       createdAt: '2019-11-12T16:34:30.388',
       viewCount: 12,
@@ -275,10 +230,7 @@ export const bestAwards = {
       title: 'bestAwards',
       imgUrl:
         'https://jmagazine.joins.com/_data/photo/2020/07/3698936108_rU5XvNEa_1.jpg',
-      tags: [
-        { id: 1, tagName: 'Java' },
-        { id: 2, tagName: 'Python' },
-      ],
+      tags: [{ tagName: 'Java' }, { tagName: 'Python' }],
       memberName: 'bunny',
       createdAt: '2019-11-12T16:34:30.388',
       viewCount: 12,

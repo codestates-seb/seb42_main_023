@@ -5,6 +5,11 @@ import replySlice from '../slices/replySlice';
 import logger from 'redux-logger';
 import postInputSlice from '../slices/postInputSlice';
 import validationSlice from '../slices/validationSlice';
+import {
+  membersApi,
+  membersPostListApi,
+  membersCommentsListApi,
+} from '../api/memberapi';
 import headerSlice from '../slices/headerSlice';
 import mainSlice from '../slices/mainSlice';
 import mypageSlice from '../slices/mypageSlice';
@@ -41,6 +46,9 @@ const store = configureStore({
     [reportApi.reducerPath]: reportApi.reducer,
     [postListApi.reducerPath]: postListApi.reducer,
     [weeklyPopularApi.reducerPath]: weeklyPopularApi.reducer,
+    [membersApi.reducerPath]: membersApi.reducer,
+    [membersPostListApi.reducerPath]: membersPostListApi.reducer,
+    [membersCommentsListApi.reducerPath]: membersCommentsListApi.reducer,
     [nicknameApi.reducerPath]: nicknameApi.reducer,
     [tempTokenApi.reducerPath]: tempTokenApi.reducer,
     // [apiSlice.reducerPath]: apiSlice.reducer,
@@ -54,6 +62,9 @@ const store = configureStore({
       .concat(reportApi.middleware)
       .concat(postListApi.middleware)
       .concat(weeklyPopularApi.middleware)
+      .concat(membersApi.middleware)
+      .concat(membersPostListApi.middleware)
+      .concat(membersCommentsListApi.middleware)
       .concat(nicknameApi.middleware)
       .concat(tempTokenApi.middleware)
       // .concat(apiSlice.middleware)

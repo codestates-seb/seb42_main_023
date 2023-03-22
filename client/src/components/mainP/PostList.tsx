@@ -5,8 +5,7 @@ import { useAppSelector } from '../../hooks';
 import LikeIcon from '../../assets/common/LikeIcon';
 import TimeIcon from '../../assets/common/TimeIcon';
 import ViewIcon from '../../assets/common/ViewIcon';
-import Thumnail from './Thumnail';
-import Pagenation from './Pagenation';
+import Thumnail from '../common/Thumnail';
 import { TagItem } from '../common/Tag';
 import { Link } from 'react-router-dom';
 import { postListApi } from '../../api/postListapi';
@@ -30,15 +29,19 @@ export interface PostItem {
 }
 
 function PostList() {
-  const { community, filter, page } = useAppSelector(({ main }) => main);
+  const { community } = useAppSelector(({ main }) => main);
   const postListquery = postListApi.useGetPostListQuery({
     endpoint: community,
   });
   const { data, isSuccess } = postListquery;
 
+  if (!isSuccess) {
+    return <div>Loading...</div>;
+  }
+
   return (
     <List>
-      {community === '' && page === 1 && <WeeklyPopular />}
+      {community === '' && data.pageInfo.page === 1 && <WeeklyPopular />}
       {isSuccess &&
         data.posts.map((post: PostItem) => {
           return (
@@ -78,13 +81,6 @@ function PostList() {
             </Item>
           );
         })}
-      {isSuccess && (
-        <Pagenation
-          page={data.pageInfo.page}
-          size={data.pageInfo.size}
-          totalPage={data.pageInfo.totalPage}
-        />
-      )}
     </List>
   );
 }

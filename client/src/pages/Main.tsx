@@ -4,14 +4,18 @@ import PostList from '../components/mainP/PostList';
 import DropdownButton from '../components/mainP/DropdownButton';
 import { AiOutlineTrophy } from 'react-icons/ai';
 import { NavBtn } from '../components/common/Btn';
-import { useLocation } from 'react-router-dom';
 import { useAppDispatch, useAppSelector } from '../hooks';
+import { postListApi } from '../api/postListapi';
 import { setCommunity } from '../slices/mainSlice';
+import Pagenation from '../components/mainP/Pagenation';
 
 const Main = () => {
-  const { pathname } = useLocation();
   const dispatch = useAppDispatch();
-  const { community, filter, page } = useAppSelector(({ main }) => main);
+  const { community, filter } = useAppSelector(({ main }) => main);
+  const postListquery = postListApi.useGetPostListQuery({
+    endpoint: community,
+  });
+  const { isSuccess } = postListquery;
   return (
     <>
       <FilterWrap>
@@ -38,6 +42,7 @@ const Main = () => {
         <DropdownButton />
       </FilterWrap>
       <PostList />
+      {isSuccess && <Pagenation />}
     </>
   );
 };

@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import LikeIcon from '../../assets/common/LikeIcon';
 import TimeIcon from '../../assets/common/TimeIcon';
 import ViewIcon from '../../assets/common/ViewIcon';
-import Thumnail from './Thumnail';
+import Thumnail from '../common/Thumnail';
 import { BsTrophy } from 'react-icons/bs';
 import { Link } from 'react-router-dom';
 import styled from 'styled-components';
@@ -39,8 +39,8 @@ function WeeklyPopular() {
                 </Link>
                 <Itemside>
                   <div>
-                    {post.tags.map((tag) => (
-                      <Tag key={tag.id}>{tag.tagName}</Tag>
+                    {post.tags.map((tag, index) => (
+                      <Tag key={index}>{tag.tagName}</Tag>
                     ))}
                   </div>
                   <Info>
