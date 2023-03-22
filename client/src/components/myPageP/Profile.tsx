@@ -16,9 +16,10 @@ import { membersApi } from '../../api/memberapi';
 function Profile() {
   const dispatch = useAppDispatch();
   const { EditOpen } = useAppSelector(({ mypage }) => mypage);
+  const { memberName } = useAppSelector(({ header }) => header);
   const divRef = useRef<HTMLDivElement>(null);
   const membersQuery = membersApi.useGetPostListQuery({
-    endpoint: 'bunny',
+    name: memberName,
   });
   const { data, isSuccess } = membersQuery;
 

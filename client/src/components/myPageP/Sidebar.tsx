@@ -14,16 +14,45 @@ import {
 function Sidebar() {
   const dispatch = useAppDispatch();
   const { filter } = useAppSelector(({ mypage }) => mypage);
+  const { memberName } = useAppSelector(({ header }) => header);
   const membersQuery = membersApi.useGetPostListQuery({
-    endpoint: 'bunny',
+    name: memberName,
   });
   const { data, isSuccess } = membersQuery;
 
   //요청핸들러
   const getMemberPost = () => {
     dispatch(setFilter('작성한 글'));
-    const membersQuery = membersApi.useGetPostListQuery({
-      endpoint: 'bunny',
+    const membersPostQuery = membersPostListApi.useGetPostListQuery({
+      name: `${'bunny'}`,
+    });
+  };
+  //작성한 댓글 요청핸들러
+  const getMemberComments = () => {
+    dispatch(setFilter('작성한 댓글'));
+    const membersCommentsQuery = membersCommentsListApi.useGetPostListQuery({
+      name: `${'bunny'}`,
+    });
+  };
+  //작성한 좋아요한 글 요청핸들러
+  const getMemberLikePost = () => {
+    dispatch(setFilter('좋아요한 글'));
+    const membersPostLikeQuery = membersPostListApi.useGetPostListQuery({
+      name: `${'bunny'}/like`,
+    });
+  };
+  //좋아요한 댓글 요청핸들러
+  const getMemberLikeComments = () => {
+    dispatch(setFilter('좋아요한 댓글'));
+    const membersCommentsQuery = membersCommentsListApi.useGetPostListQuery({
+      name: `${'bunny'}/like`,
+    });
+  };
+  //북마크 요청핸들러
+  const getMemberBookmark = () => {
+    dispatch(setFilter('북마크'));
+    const membersCommentsQuery = membersBookmarkListApi.useGetPostListQuery({
+      name: `${'bunny'}`,
     });
   };
 
@@ -37,15 +66,18 @@ function Sidebar() {
         <span>작성한 댓글</span>
         {isSuccess && <div>{data.membersCount.commentCount}</div>}
       </FilterBtn>
-      <FilterBtn current={filter === '좋아요한 글'}>
+      <FilterBtn current={filter === '좋아요한 글'} onClick={getMemberLikePost}>
         <span>좋아요한 글</span>
         {isSuccess && <div>{data.membersCount.thumbupPostCount}</div>}
       </FilterBtn>
-      <FilterBtn current={filter === '좋아요한 댓글'}>
+      <FilterBtn
+        current={filter === '좋아요한 댓글'}
+        onClick={getMemberLikeComments}
+      >
         <span>좋아요한 댓글</span>
         {isSuccess && <div>{data.membersCount.thumbupCommentCount}</div>}
       </FilterBtn>
-      <FilterBtn current={filter === '북마크'}>
+      <FilterBtn current={filter === '북마크'} onClick={getMemberBookmark}>
         <span>북마크</span>
         {isSuccess && <div>{data.membersCount.bookmarkCount}</div>}
       </FilterBtn>
