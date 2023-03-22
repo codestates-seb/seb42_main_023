@@ -21,9 +21,4 @@ public interface PostsRepositoryCustom {
     Page<Posts> findPostsListByMemberName(String memberName, Pageable pageable);
     // 조회수 증가
     void plusViewCountById(Long postsId);
-
-    Long updateThumbupCountPlus(Long postId);
-    Long updateThumbupCountMinus(Long postId);
-    Long updateThumbdownCountPlus(Long postId);
-    Long updateThumbdownCountMinus(Long postId);
 }

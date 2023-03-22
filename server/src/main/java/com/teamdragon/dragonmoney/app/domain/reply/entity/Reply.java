@@ -2,7 +2,7 @@ package com.teamdragon.dragonmoney.app.domain.reply.entity;
 
 import com.teamdragon.dragonmoney.app.domain.comment.entity.Comment;
 import com.teamdragon.dragonmoney.app.domain.member.entity.Member;
-import com.teamdragon.dragonmoney.app.domain.thumb.Thumb;
+import com.teamdragon.dragonmoney.app.domain.thumb.ThumbDto;
 import com.teamdragon.dragonmoney.app.domain.thumb.ThumbCountable;
 import com.teamdragon.dragonmoney.app.domain.thumb.entity.Thumbdown;
 import com.teamdragon.dragonmoney.app.domain.thumb.entity.Thumbup;
@@ -103,7 +103,6 @@ public class Reply extends BaseTimeEntity implements ThumbCountable {
     public void changeStateToDeleted(DeleteResult deleteResult){
         this.state = State.DELETED;
         this.deleteResult = deleteResult;
-        clearThumb();
     }
 
     public void includedThisComment(Comment comment){
@@ -113,17 +112,28 @@ public class Reply extends BaseTimeEntity implements ThumbCountable {
         }
     }
 
-    private void clearThumb() {
-        this.thumbups.clear();
-        this.thumbdowns.clear();
-    }
-
     public void updateContent(String content) {
         this.content = content;
     }
 
     @Override
-    public Thumb getThumbCount() {
-        return new Thumb(this.thumbupCount, this.thumbdownCount);
+    public ThumbDto getThumbCount() {
+        return new ThumbDto(this.thumbupCount, this.thumbdownCount);
+    }
+
+    public void plusThumbupCount() {
+        this.thumbupCount += 1;
+    }
+
+    public void minusThumbupCount() {
+        this.thumbupCount -= 1;
+    }
+
+    public void plusThumbdownCount() {
+        this.thumbupCount += 1;
+    }
+
+    public void minusThumbdownCount() {
+        this.thumbupCount -= 1;
     }
 }

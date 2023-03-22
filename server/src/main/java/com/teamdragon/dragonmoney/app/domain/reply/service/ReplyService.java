@@ -1,13 +1,13 @@
 package com.teamdragon.dragonmoney.app.domain.reply.service;
 
 import com.teamdragon.dragonmoney.app.domain.comment.entity.Comment;
-import com.teamdragon.dragonmoney.app.domain.comment.service.CommentService;
 import com.teamdragon.dragonmoney.app.domain.common.service.FinderService;
 import com.teamdragon.dragonmoney.app.domain.member.entity.Member;
+import com.teamdragon.dragonmoney.app.domain.posts.entity.Posts;
 import com.teamdragon.dragonmoney.app.domain.reply.dto.ReplyDto;
 import com.teamdragon.dragonmoney.app.domain.reply.entity.Reply;
 import com.teamdragon.dragonmoney.app.domain.reply.repository.ReplyRepository;
-import com.teamdragon.dragonmoney.app.domain.thumb.Thumb;
+import com.teamdragon.dragonmoney.app.domain.thumb.ThumbDto;
 import com.teamdragon.dragonmoney.app.domain.thumb.ThumbCountService;
 import com.teamdragon.dragonmoney.app.domain.delete.entity.DeleteResult;
 import com.teamdragon.dragonmoney.app.global.exception.AuthExceptionCode;
@@ -87,30 +87,37 @@ public class ReplyService implements ThumbCountService {
     }
 
     @Override
-    public Thumb thumbupPlusUpdate(Long replyId, boolean needInquiry) {
-        replyRepository.updateThumbupCountPlus(replyId);
-        return getThumbByNeedInquiry(needInquiry, replyId);
-    }
-    @Override
-    public Thumb thumbupMinusUpdate(Long replyId, boolean needInquiry) {
-        replyRepository.updateThumbupCountMinus(replyId);
-        return getThumbByNeedInquiry(needInquiry, replyId);
-    }
-
-    @Override
-    public Thumb thumbdownPlusUpdate(Long replyId, boolean needInquiry) {
-        replyRepository.updateThumbdownCountPlus(replyId);
-        return getThumbByNeedInquiry(needInquiry, replyId);
+    public ThumbDto thumbupStateUpdate(Long replyId, boolean needInquiry, ThumbDto.ACTION action) {
+        Reply findReply = findVerifyReplyById(replyId);
+        if (action == ThumbDto.ACTION.PLUS) {
+            findReply.plusThumbupCount();
+        } else if ( action == ThumbDto.ACTION.MINUS) {
+            findReply.minusThumbupCount();
+        }
+        Reply updateReply = replyRepository.save(findReply);
+        if (needInquiry) {
+            return updateReply.getThumbCount();
+        }
+        return null;
     }
 
     @Override
-    public Thumb thumbdownMinusUpdate(Long replyId, boolean needInquiry) {
-        replyRepository.updateThumbdownCountMinus(replyId);
-        return getThumbByNeedInquiry(needInquiry, replyId);
+    public ThumbDto thumbdownStateUpdate(Long replyId, boolean needInquiry, ThumbDto.ACTION action) {
+        Reply findReply = findVerifyReplyById(replyId);
+        if (action == ThumbDto.ACTION.PLUS) {
+            findReply.plusThumbdownCount();
+        } else if ( action == ThumbDto.ACTION.MINUS) {
+            findReply.minusThumbdownCount();
+        }
+        Reply updateReply = replyRepository.save(findReply);
+        if (needInquiry) {
+            return updateReply.getThumbCount();
+        }
+        return null;
     }
 
     // 조회 필요 여부에 따른 좋아요,싫어요 정보 반환
-    private Thumb getThumbByNeedInquiry(boolean needInquiry, Long replyId) {
+    private ThumbDto getThumbByNeedInquiry(boolean needInquiry, Long replyId) {
         if (needInquiry) {
             return findVerifyReplyById(replyId).getThumbCount();
         }

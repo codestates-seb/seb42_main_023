@@ -100,46 +100,7 @@ public class ReplyRepositoryImpl implements ReplyRepositoryCustom{
                 .from(reply)
                 .where(reply.comment.id.eq(commentId));
 
-        return PageableExecutionUtils.getPage(content, pageable, countQuery::fetchOne);    }
-
-    @Override
-    public Long updateThumbupCountPlus(Long replyId) {
-        long result = queryFactory
-                .update(reply)
-                .set(reply.thumbupCount, reply.thumbupCount.add(1))
-                .where(reply.id.eq(replyId))
-                .execute();
-        return result;
-    }
-
-    @Override
-    public Long updateThumbupCountMinus(Long replyId) {
-        long result = queryFactory
-                .update(reply)
-                .set(reply.thumbupCount, reply.thumbupCount.add(-1))
-                .where(reply.id.eq(replyId))
-                .execute();
-        return result;
-    }
-
-    @Override
-    public Long updateThumbdownCountPlus(Long replyId) {
-        long result = queryFactory
-                .update(reply)
-                .set(reply.thumbdownCount, reply.thumbdownCount.add(1))
-                .where(reply.id.eq(replyId))
-                .execute();
-        return result;
-    }
-
-    @Override
-    public Long updateThumbdownCountMinus(Long replyId) {
-        long result = queryFactory
-                .update(reply)
-                .set(reply.thumbdownCount, reply.thumbdownCount.add(-1))
-                .where(reply.id.eq(replyId))
-                .execute();
-        return result;
+        return PageableExecutionUtils.getPage(content, pageable, countQuery::fetchOne);
     }
 
     private OrderSpecifier[] getAllOrderSpecifiers(Pageable pageable, Path path) {

@@ -7,7 +7,7 @@ import com.teamdragon.dragonmoney.app.domain.posts.entity.Posts;
 import com.teamdragon.dragonmoney.app.domain.posts.service.PostsService;
 import com.teamdragon.dragonmoney.app.domain.reply.entity.Reply;
 import com.teamdragon.dragonmoney.app.domain.reply.service.ReplyService;
-import com.teamdragon.dragonmoney.app.domain.thumb.Thumb;
+import com.teamdragon.dragonmoney.app.domain.thumb.ThumbDto;
 import com.teamdragon.dragonmoney.app.domain.thumb.entity.Thumbdown;
 import com.teamdragon.dragonmoney.app.domain.thumb.respository.ThumbdownRepository;
 import com.teamdragon.dragonmoney.app.domain.thumb.entity.Thumbup;
@@ -32,7 +32,7 @@ public class ThumbService {
     private final ReplyService replyService;
 
     // 좋아요 등록
-    public Thumb saveThumbup(Thumb.Target targetType, Member loginMember, Long targetId) {
+    public ThumbDto saveThumbup(ThumbDto.Target targetType, Member loginMember, Long targetId) {
         Thumbup.ThumbupBuilder builder = Thumbup.builder();
         // 좋아요 등록 전 싫어요 취소
         beforeThumbup(targetType, loginMember, targetId);
@@ -55,40 +55,18 @@ public class ThumbService {
         }
         Thumbup thumbup = builder.build();
         thumbupRepository.save(thumbup);
-        return updateThumbupCount(targetType, targetId, Thumb.ACTION.PLUS, true);
+        return updateThumbupCount(targetType, targetId, ThumbDto.ACTION.PLUS, true);
     }
 
     // 좋아요 취소
-    public Thumb removeThumbup(Thumb.Target targetType, Member loginMember, Long targetId) {
+    public ThumbDto removeThumbup(ThumbDto.Target targetType, Member loginMember, Long targetId) {
         Thumbup verifyThumbup = findVerifyThumbup(targetType, loginMember, targetId);
         thumbupRepository.delete(verifyThumbup);
-        return updateThumbupCount(targetType, targetId, Thumb.ACTION.MINUS, true);
-    }
-
-    // 싫어요 전 좋아요 취소
-    public void beforeThumbdown(Thumb.Target targetType, Member loginMember, Long targetId) {
-        Optional<Thumbup> findThumbup = findThumbup(targetType, loginMember, targetId);
-        if (findThumbup.isEmpty()) {
-            return;
-        }
-        switch (targetType) {
-            case POSTS:
-                thumbupRepository.deleteByMember_IdAndParentPosts_Id(loginMember.getId(), targetId);
-                break;
-            case COMMENT:
-                thumbupRepository.deleteByMember_IdAndParentComment_Id(loginMember.getId(), targetId);
-                break;
-            case REPLY:
-                thumbupRepository.deleteByMember_IdAndParentReply_Id(loginMember.getId(), targetId);
-                break;
-            default:
-                throw new RuntimeException("Invalid Thumb TargetType");
-        }
-        updateThumbupCount(targetType, targetId, Thumb.ACTION.MINUS, false);
+        return updateThumbupCount(targetType, targetId, ThumbDto.ACTION.MINUS, true);
     }
 
     // 싫어요 등록
-    public Thumb saveThumbdown(Thumb.Target targetType, Member loginMember, Long targetId) {
+    public ThumbDto saveThumbdown(ThumbDto.Target targetType, Member loginMember, Long targetId) {
         Thumbdown.ThumbdownBuilder builder = Thumbdown.builder();
         // 싫어요 등록 전 좋아요 취소
         beforeThumbdown(targetType, loginMember, targetId);
@@ -109,18 +87,18 @@ public class ThumbService {
         }
         Thumbdown thumbdown = builder.build();
         thumbdownRepository.save(thumbdown);
-        return updateThumbdownCount(targetType, targetId, Thumb.ACTION.PLUS, true);
+        return updateThumbdownCount(targetType, targetId, ThumbDto.ACTION.PLUS, true);
     }
 
     // 싫어요 취소
-    public Thumb removeThumbdown(Thumb.Target targetType, Member loginMember, Long targetId) {
+    public ThumbDto removeThumbdown(ThumbDto.Target targetType, Member loginMember, Long targetId) {
         Thumbdown verifyThumbdown = findVerifyThumbdown(targetType, loginMember, targetId);
         thumbdownRepository.delete(verifyThumbdown);
-        return updateThumbdownCount(targetType, targetId, Thumb.ACTION.MINUS, true);
+        return updateThumbdownCount(targetType, targetId, ThumbDto.ACTION.MINUS, true);
     }
 
     // 좋아요 전 싫어요 취소
-    public void beforeThumbup(Thumb.Target targetType, Member loginMember, Long targetId) {
+    private void beforeThumbup(ThumbDto.Target targetType, Member loginMember, Long targetId) {
         Optional<Thumbdown> findThumbdown = findThumbdown(targetType, loginMember, targetId);
         if (findThumbdown.isEmpty()) {
             return;
@@ -138,11 +116,11 @@ public class ThumbService {
             default:
                 throw new RuntimeException("Invalid Thumb TargetType");
         }
-        updateThumbdownCount(targetType, targetId, Thumb.ACTION.MINUS, false);
+        updateThumbdownCount(targetType, targetId, ThumbDto.ACTION.MINUS, false);
     }
 
     // 유효한 좋아요 찾기
-    private Thumbup findVerifyThumbup(Thumb.Target targetType, Member loginMember, Long targetId) {
+    private Thumbup findVerifyThumbup(ThumbDto.Target targetType, Member loginMember, Long targetId) {
         Optional<Thumbup> findThumbup = findThumbup(targetType, loginMember, targetId);
         if (findThumbup.isEmpty()) {
             throw new BusinessLogicException(BusinessExceptionCode.THUMBUP_NOT_FOUND);
@@ -151,7 +129,7 @@ public class ThumbService {
     }
 
     // 좋아요 찾기
-    private Optional<Thumbup> findThumbup(Thumb.Target targetType, Member loginMember, Long targetId) {
+    private Optional<Thumbup> findThumbup(ThumbDto.Target targetType, Member loginMember, Long targetId) {
         Optional<Thumbup> findThumbup;
         switch (targetType) {
             case POSTS:
@@ -173,63 +151,55 @@ public class ThumbService {
     }
 
     // 좋아요 count 반영
-    private Thumb updateThumbupCount(Thumb.Target targetType, Long targetId, Thumb.ACTION thumbType, boolean needInquiry) {
+    private ThumbDto updateThumbupCount(ThumbDto.Target targetType, Long targetId, ThumbDto.ACTION action, boolean needInquiry) {
         switch (targetType) {
             case POSTS:
-                if (thumbType == Thumb.ACTION.PLUS){
-                    return postsService.thumbupPlusUpdate(targetId, needInquiry);
-                } else if (thumbType.equals(Thumb.ACTION.MINUS)){
-                    return postsService.thumbupMinusUpdate(targetId, needInquiry);
-                }
-                break;
+                return postsService.thumbupStateUpdate(targetId, needInquiry, action);
             case COMMENT:
-                if (thumbType == Thumb.ACTION.PLUS){
-                    return commentService.thumbupPlusUpdate(targetId, needInquiry);
-                } else if (thumbType.equals(Thumb.ACTION.MINUS)){
-                    return commentService.thumbupMinusUpdate(targetId, needInquiry);
-                }
-                break;
+                return commentService.thumbupStateUpdate(targetId, needInquiry, action);
             case REPLY:
-                if (thumbType == Thumb.ACTION.PLUS){
-                    return replyService.thumbupPlusUpdate(targetId, needInquiry);
-                } else if (thumbType.equals(Thumb.ACTION.MINUS)){
-                    return replyService.thumbupMinusUpdate(targetId, needInquiry);
-                }
-                break;
+                return replyService.thumbupStateUpdate(targetId, needInquiry, action);
         }
         throw new RuntimeException("Invalid Thumb TargetType");
     }
 
     // 싫어요 count 반영
-    private Thumb updateThumbdownCount(Thumb.Target targetType, Long targetId, Thumb.ACTION thumbType, boolean needInquiry) {
+    private ThumbDto updateThumbdownCount(ThumbDto.Target targetType, Long targetId, ThumbDto.ACTION action, boolean needInquiry) {
         switch (targetType) {
             case POSTS:
-                if (thumbType == Thumb.ACTION.PLUS){
-                    return postsService.thumbdownPlusUpdate(targetId, needInquiry);
-                } else if (thumbType.equals(Thumb.ACTION.MINUS)) {
-                    return postsService.thumbdownMinusUpdate(targetId, needInquiry);
-                }
-                break;
+                return postsService.thumbdownStateUpdate(targetId, needInquiry, action);
             case COMMENT:
-                if (thumbType == Thumb.ACTION.PLUS){
-                    return commentService.thumbdownPlusUpdate(targetId, needInquiry);
-                } else if (thumbType.equals(Thumb.ACTION.MINUS)) {
-                    return commentService.thumbdownMinusUpdate(targetId, needInquiry);
-                }
-                break;
+                return commentService.thumbdownStateUpdate(targetId, needInquiry, action);
             case REPLY:
-                if (thumbType == Thumb.ACTION.PLUS){
-                    return replyService.thumbdownPlusUpdate(targetId, needInquiry);
-                } else if (thumbType.equals(Thumb.ACTION.MINUS)) {
-                    return replyService.thumbdownMinusUpdate(targetId, needInquiry);
-                }
-                break;
+                return replyService.thumbdownStateUpdate(targetId, needInquiry, action);
         }
         throw new RuntimeException("Invalid Thumb TargetType");
     }
 
+    // 싫어요 전 좋아요 취소
+    private void beforeThumbdown(ThumbDto.Target targetType, Member loginMember, Long targetId) {
+        Optional<Thumbup> findThumbup = findThumbup(targetType, loginMember, targetId);
+        if (findThumbup.isEmpty()) {
+            return;
+        }
+        switch (targetType) {
+            case POSTS:
+                thumbupRepository.deleteByMember_IdAndParentPosts_Id(loginMember.getId(), targetId);
+                break;
+            case COMMENT:
+                thumbupRepository.deleteByMember_IdAndParentComment_Id(loginMember.getId(), targetId);
+                break;
+            case REPLY:
+                thumbupRepository.deleteByMember_IdAndParentReply_Id(loginMember.getId(), targetId);
+                break;
+            default:
+                throw new RuntimeException("Invalid Thumb TargetType");
+        }
+        updateThumbupCount(targetType, targetId, ThumbDto.ACTION.MINUS, false);
+    }
+
     // 유효한 싫어요 찾기
-    private Thumbdown findVerifyThumbdown(Thumb.Target targetType, Member loginMember, Long targetId) {
+    private Thumbdown findVerifyThumbdown(ThumbDto.Target targetType, Member loginMember, Long targetId) {
         Optional<Thumbdown> findThumbdown = findThumbdown(targetType, loginMember, targetId);
         if (findThumbdown.isPresent()) {
             return findThumbdown.get();
@@ -239,7 +209,7 @@ public class ThumbService {
     }
 
     // 싫어요 찾기
-    private Optional<Thumbdown> findThumbdown(Thumb.Target targetType, Member loginMember, Long targetId) {
+    private Optional<Thumbdown> findThumbdown(ThumbDto.Target targetType, Member loginMember, Long targetId) {
         Optional<Thumbdown> findThumbdown;
         switch (targetType) {
             case POSTS:
