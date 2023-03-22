@@ -158,6 +158,18 @@ public class PostsService implements ThumbCountService {
         return postsRepository.findPostsListByMemberName(memberName, pageable);
     }
 
+    // 게시물 목록 조회 : 회원이 좋아요 한 글 (마이 페이지)
+    public Page<Posts> findPostsListByThumbUpPost(String memberName, int page, Posts.OrderBy orderBy){
+        Pageable pageable = PageRequest.of(page - 1 , PAGE_ELEMENT_SIZE, Sort.by(orderBy.getTargetProperty()).descending());
+        return postsRepository.findThumbUpPostsListByMemberName(memberName, pageable);
+    }
+
+    // 게시물 목록 조회 : 회원이 북마크 한 글 (마이 페이지)
+    public Page<Posts> findPostsListByBookmarkPost(String memberName, int page, Posts.OrderBy orderBy){
+        Pageable pageable = PageRequest.of(page - 1 , PAGE_ELEMENT_SIZE, Sort.by(orderBy.getTargetProperty()).descending());
+        return postsRepository.findBookmarkPostsListByMemberName(memberName, pageable);
+    }
+
     // update 로 인한 태그 삭제 및 추가 처리
     private List<PostsTag> updateTags(Posts updatePosts, Posts originalPosts) {
         List<String> updateTagNames = updatePosts.getTagNames();

@@ -17,6 +17,7 @@ import org.springframework.data.support.PageableExecutionUtils;
 import java.util.List;
 
 import static com.teamdragon.dragonmoney.app.domain.bookmark.entity.QBookmark.*;
+import static com.teamdragon.dragonmoney.app.domain.member.entity.QMember.member;
 import static com.teamdragon.dragonmoney.app.domain.posts.entity.QPosts.*;
 import static com.teamdragon.dragonmoney.app.domain.posts.entity.QPostsTag.*;
 import static com.teamdragon.dragonmoney.app.domain.tag.entity.QTag.*;
@@ -162,6 +163,52 @@ public class PostsRepositoryImpl implements PostsRepositoryCustom {
         return PageableExecutionUtils.getPage(content, pageable, countQuery::fetchOne);
     }
 
+    // Posts 목록 조회 : 마이 페이지 좋아요 한 글 + 페이징
+    @Override
+    public Page<Posts> findThumbUpPostsListByMemberName(String memberName, Pageable pageable) {
+        OrderSpecifier[] orders = getAllOrderSpecifiers(pageable, posts);
+
+        List<Posts> content = queryFactory
+                .select(posts)
+                .from(thumbup)
+                .join(thumbup.parentPosts, posts)
+                .join(thumbup.member, member)
+                .where(posts.writer.name.eq(memberName))
+                .orderBy(orders)
+                .offset(pageable.getOffset())
+                .limit(pageable.getPageSize())
+                .fetch();
+        JPAQuery<Long> countQuery = queryFactory
+                .select(posts.count())
+                .from(posts)
+                .where(posts.writer.name.eq(memberName));
+
+        return PageableExecutionUtils.getPage(content, pageable, countQuery::fetchOne);
+    }
+
+    // Posts 목록 조회 : 마이 페이지 북마크 한 글 + 페이징
+    @Override
+    public Page<Posts> findBookmarkPostsListByMemberName(String memberName, Pageable pageable) {
+        OrderSpecifier[] orders = getAllOrderSpecifiers(pageable, posts);
+
+        List<Posts> content = queryFactory
+                .select(posts)
+                .from(bookmark)
+                .join(bookmark.posts, posts)
+                .join(bookmark.member, member)
+                .where(posts.writer.name.eq(memberName))
+                .orderBy(orders)
+                .offset(pageable.getOffset())
+                .limit(pageable.getPageSize())
+                .fetch();
+        JPAQuery<Long> countQuery = queryFactory
+                .select(posts.count())
+                .from(posts)
+                .where(posts.writer.name.eq(memberName));
+
+        return PageableExecutionUtils.getPage(content, pageable, countQuery::fetchOne);
+    }
+
     // 조회수 증가
     @Override
     public void plusViewCountById(Long postsId) {
@@ -169,6 +216,40 @@ public class PostsRepositoryImpl implements PostsRepositoryCustom {
                 .set(posts.viewCount, posts.viewCount.add(1))
                 .where(posts.id.eq(postsId))
                 .execute();
+    }
+
+    // 특정 회원이 쓴 글 개수 조회
+    @Override
+    public Long findMemberPostsCount(String memberName) {
+        Long memberPostsCount = queryFactory
+                .select(posts.count())
+                .from(posts)
+                .where(posts.writer.name.eq(memberName))
+                .fetchOne();
+        return memberPostsCount;
+    }
+
+    // 특정 회원이 좋아요 한 글 개수 조회
+    @Override
+    public Long findMemberThumbUpPostsCount(String memberName) {
+        Long memberPostsCount = queryFactory
+                .select(thumbup.count())
+                .from(thumbup)
+                .where(thumbup.member.name.eq(memberName))
+                .where(thumbup.parentPosts.id.isNotNull())
+                .fetchOne();
+        return memberPostsCount;
+    }
+
+    // 특정 회원이 북마크 한 글 개수 조회
+    @Override
+    public Long findMemberBookmarkPostsCount(String memberName) {
+        Long memberBookmarkPostsCount = queryFactory
+                .select(posts.count())
+                .from(bookmark)
+                .where(bookmark.member.name.eq(memberName))
+                .fetchOne();
+        return memberBookmarkPostsCount;
     }
 
     private OrderSpecifier[] getAllOrderSpecifiers(Pageable pageable, Path path) {

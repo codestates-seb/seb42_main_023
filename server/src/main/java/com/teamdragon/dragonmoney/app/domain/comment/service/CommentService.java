@@ -93,6 +93,18 @@ public class CommentService implements ThumbCountService {
         }
     }
 
+    // 마이 페이지 특정 회원이 쓴 댓글 조회
+    public Page<Comment> findCommentListByWriterComment(String memberName, int page, Comment.OrderBy orderBy) {
+        Pageable pageable = PageRequest.of(page - 1 , PAGE_ELEMENT_SIZE, Sort.by(orderBy.getTargetProperty()).descending());
+        return commentRepository.findCommentListByMemberName(pageable, memberName);
+    }
+
+    // 마이 페이지 특정 회원이 좋아요 한 댓글 조회
+    public Page<Comment> findPostsListByThumbUpComment(String memberName, int page, Comment.OrderBy orderBy){
+        Pageable pageable = PageRequest.of(page - 1 , PAGE_ELEMENT_SIZE, Sort.by(orderBy.getTargetProperty()).descending());
+        return commentRepository.findThumbUpCommentListByMemberName(pageable, memberName);
+    }
+
     @Override
     public ThumbDto thumbupStateUpdate(Long commentId, boolean needInquiry, ThumbDto.ACTION action) {
         Comment findComment = findVerifyCommentById(commentId);
