@@ -21,6 +21,10 @@ interface Intro {
   type: string;
   payload: string;
 }
+interface Query {
+  type: string;
+  payload: string;
+}
 const mypageSlice = createSlice({
   name: 'mypagestates',
   initialState: {
@@ -29,6 +33,7 @@ const mypageSlice = createSlice({
     EditOpen: false,
     EditWidth: 1,
     content: '',
+    query: '',
   },
   reducers: {
     // 정렬필터
@@ -51,6 +56,10 @@ const mypageSlice = createSlice({
     setContent: (state, action: Intro): void => {
       state.content = action.payload;
     },
+    // api쿼리 지정
+    setQuery: (state, action: Intro): void => {
+      state.content = action.payload;
+    },
   },
 });
 
@@ -61,4 +70,5 @@ export const {
   setEditOpen,
   setEditWidth,
   setContent,
+  setQuery,
 } = mypageSlice.actions;

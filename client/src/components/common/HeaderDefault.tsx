@@ -1,7 +1,7 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import styled from 'styled-components';
 import { useNavigate, useLocation } from 'react-router-dom';
-import { useAppSelector } from '../../hooks';
+import { useAppSelector, useAppDispatch } from '../../hooks';
 import Logo from '../../assets/Logo.png';
 import LoginBtn from './LoginBtn';
 import SearchBar from './SearchBar';
@@ -10,11 +10,17 @@ import PostBtn from './PostBtn';
 import MediumProfileImg from './MediumProfileImg';
 import HeaderNav from './HeaderNav';
 import { MdManageAccounts } from 'react-icons/md';
+import { setMember } from '../../slices/headerSlice';
 
 function HeaderDefault() {
   const navigate = useNavigate();
   const header = useAppSelector(({ header }) => header);
   const { pathname } = useLocation();
+  const dispatch = useAppDispatch();
+  //TODO: header에서 멤버명 지정
+  useEffect(() => {
+    dispatch(setMember('bunny'));
+  }, []);
   return header.search ? (
     <SearchHead>
       <SearchBar />
