@@ -7,7 +7,7 @@ export const membersApi = createApi({
   tagTypes: ['members'],
   endpoints: (builder) => ({
     getPostList: builder.query({
-      query: ({ endpoint }) => `members/${endpoint}`,
+      query: ({ name }) => `members/${name}`,
       providesTags: (result, error, arg) => {
         console.log(result, error, arg);
         return [{ type: 'members', id: arg.recommend }];
@@ -23,7 +23,7 @@ export const membersPostListApi = createApi({
   tagTypes: ['membersPostList'],
   endpoints: (builder) => ({
     getPostList: builder.query({
-      query: ({ endpoint }) => `members/${endpoint}/posts`,
+      query: ({ name }) => `members/${name}/posts`,
       providesTags: (result, error, arg) => {
         return [{ type: 'membersPostList', id: arg.recommend }];
       },
@@ -37,7 +37,7 @@ export const membersCommentsListApi = createApi({
   tagTypes: ['membersCommentsList'],
   endpoints: (builder) => ({
     getPostList: builder.query({
-      query: ({ endpoint }) => `members/${endpoint}/comments`,
+      query: ({ name }) => `members/${name}/comments`,
       providesTags: (result, error, arg) => {
         return [{ type: 'membersCommentsList', id: arg.recommend }];
       },
@@ -51,7 +51,7 @@ export const membersBookmarkListApi = createApi({
   tagTypes: ['membersBookmarkList'],
   endpoints: (builder) => ({
     getPostList: builder.query({
-      query: ({ endpoint }) => `members/${endpoint}/bookmark`,
+      query: ({ name }) => `members/${name}/bookmark`,
       providesTags: (result, error, arg) => {
         return [{ type: 'membersBookmarkList', id: arg.recommend }];
       },

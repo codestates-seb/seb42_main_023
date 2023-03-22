@@ -18,7 +18,7 @@ function Profile() {
   const { EditOpen } = useAppSelector(({ mypage }) => mypage);
   const divRef = useRef<HTMLDivElement>(null);
   const membersQuery = membersApi.useGetPostListQuery({
-    endpoint: 'bunny',
+    name: 'bunny',
   });
   const { data, isSuccess } = membersQuery;
 

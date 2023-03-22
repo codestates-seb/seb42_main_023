@@ -7,6 +7,7 @@ import { NavBtn } from '../components/common/Btn';
 import { useAppDispatch, useAppSelector } from '../hooks';
 import { postListApi } from '../api/postListapi';
 import { setCommunity } from '../slices/mainSlice';
+import Pagenation from '../components/mainP/Pagenation';
 
 const Main = () => {
   const dispatch = useAppDispatch();
@@ -14,6 +15,7 @@ const Main = () => {
   const postListquery = postListApi.useGetPostListQuery({
     endpoint: community,
   });
+  const { isSuccess } = postListquery;
   return (
     <>
       <FilterWrap>
@@ -40,6 +42,7 @@ const Main = () => {
         <DropdownButton />
       </FilterWrap>
       <PostList />
+      {isSuccess && <Pagenation />}
     </>
   );
 };
