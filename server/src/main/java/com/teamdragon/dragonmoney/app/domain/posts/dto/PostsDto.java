@@ -22,8 +22,8 @@ import static com.teamdragon.dragonmoney.app.domain.image.dto.ImageDto.*;
 public class PostsDto {
 
     @Getter
-    public static class Post {
-        private PostImagesDto saveImages;
+    public static class CreateReq {
+        private CreatePostsImagesReq saveImages;
         @NotBlank
         @Length(min=5, max=20)
         private String title;
@@ -34,8 +34,8 @@ public class PostsDto {
     }
 
     @Getter
-    public static class Patch {
-        private PatchImagesDto saveImages;
+    public static class UpdateReq {
+        private UpdatePostsImagesReq saveImages;
         @NotBlank
         @Length(min=5, max=20)
         private String title;
@@ -46,13 +46,13 @@ public class PostsDto {
     }
 
     @Getter
-    public static class PostImagesDto {
+    public static class CreatePostsImagesReq {
         private List<ImageDto> addedImages;
         private List<ImageDto> removedImages;
     }
 
     @Getter
-    public static class PatchImagesDto {
+    public static class UpdatePostsImagesReq {
         private List<ImageDto> remainImages;
         private List<ImageDto> addedImages;
         private List<ImageDto> removedImages;
@@ -68,11 +68,30 @@ public class PostsDto {
     }
 
     @Getter
-    public static class PostsList {
+    public static class CreateRes{
+        private Long postsId;
+
+        public CreateRes(Long postsId) {
+            this.postsId = postsId;
+        }
+    }
+
+    @Getter
+    public static class UpdateRes{
+        private Long postsId;
+
+        public UpdateRes(Long postsId) {
+            this.postsId = postsId;
+        }
+    }
+
+
+    @Getter
+    public static class PostsListRes {
         private PageInfo pageInfo;
         private List<PostsListElement> posts;
 
-        public PostsList(Page<Posts> postsPage, String orderBy) {
+        public PostsListRes(Page<Posts> postsPage, String orderBy) {
             this.pageInfo = PageInfo.of(postsPage, orderBy);
 
             List<Posts> postsList = postsPage.getContent();
@@ -117,7 +136,7 @@ public class PostsDto {
     }
 
     @Getter
-    public static class PostsDetail {
+    public static class PostsDetailRes {
         private Long postId;
         private String memberName;
         private String memberImage;
@@ -136,7 +155,7 @@ public class PostsDto {
         private Boolean isThumbdown;
 
         // 미 로그인 유저용
-        public PostsDetail(Posts posts) {
+        public PostsDetailRes(Posts posts) {
             this.postId = posts.getId();
             this.memberName = posts.getWriter().getName();
             this.memberImage = posts.getWriter().getProfileImage();
@@ -159,7 +178,7 @@ public class PostsDto {
         }
 
         // 로그인 유저용
-        public PostsDetail(Posts posts, Long isBookmarked, Long isThumbup, Long isThumbdown) {
+        public PostsDetailRes(Posts posts, Long isBookmarked, Long isThumbup, Long isThumbdown) {
             this.postId = posts.getId();
             this.memberName = posts.getWriter().getName();
             this.memberImage = posts.getWriter().getProfileImage();

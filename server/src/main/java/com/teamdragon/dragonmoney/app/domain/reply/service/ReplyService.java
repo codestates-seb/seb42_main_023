@@ -1,15 +1,15 @@
 package com.teamdragon.dragonmoney.app.domain.reply.service;
 
-import com.teamdragon.dragonmoney.app.domain.comment.dto.CommentDto;
 import com.teamdragon.dragonmoney.app.domain.comment.entity.Comment;
 import com.teamdragon.dragonmoney.app.domain.comment.service.CommentService;
+import com.teamdragon.dragonmoney.app.domain.common.service.FinderService;
 import com.teamdragon.dragonmoney.app.domain.member.entity.Member;
 import com.teamdragon.dragonmoney.app.domain.reply.dto.ReplyDto;
 import com.teamdragon.dragonmoney.app.domain.reply.entity.Reply;
 import com.teamdragon.dragonmoney.app.domain.reply.repository.ReplyRepository;
 import com.teamdragon.dragonmoney.app.domain.thumb.Thumb;
 import com.teamdragon.dragonmoney.app.domain.thumb.ThumbCountService;
-import com.teamdragon.dragonmoney.app.global.entity.DeleteResult;
+import com.teamdragon.dragonmoney.app.domain.delete.entity.DeleteResult;
 import com.teamdragon.dragonmoney.app.global.exception.AuthExceptionCode;
 import com.teamdragon.dragonmoney.app.global.exception.AuthLogicException;
 import com.teamdragon.dragonmoney.app.global.exception.BusinessExceptionCode;
@@ -22,6 +22,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.Optional;
 
 @RequiredArgsConstructor
@@ -30,7 +31,7 @@ import java.util.Optional;
 public class ReplyService implements ThumbCountService {
 
     private final ReplyRepository replyRepository;
-    private final CommentService commentService;
+    private final FinderService finderService;
 
     private final int PAGE_ELEMENT_SIZE = 10;
 
@@ -41,7 +42,7 @@ public class ReplyService implements ThumbCountService {
 
     // 추가
     public Reply createReply(Long commentId, Member loginMember, Reply newReply) {
-        Comment findComment = commentService.findOne(commentId);
+        Comment findComment = finderService.findVerifyCommentById(commentId);
         Reply reply = Reply.builder()
                 .content(newReply.getContent())
                 .writer(loginMember)
@@ -56,10 +57,16 @@ public class ReplyService implements ThumbCountService {
         DeleteResult deleteResult
                 = DeleteResult.builder().deleteReason(DeleteResult.Reason.SELF_DELETED).build();
         findReply.changeStateToDeleted(deleteResult);
-        // 좋아요 싫어요 삭제
-
         replyRepository.save(findReply);
         return replyId;
+    }
+
+    // 여러 답글 삭제 : 부모 삭제로 인한 삭제
+    public void removeCommentsByParent(List<Reply> replies) {
+        for (Reply reply : replies) {
+            reply.changeStateToDeleted(new DeleteResult(DeleteResult.Reason.DELETED_BY_PARENT));
+        }
+        replyRepository.saveAll(replies);
     }
 
     // 수정

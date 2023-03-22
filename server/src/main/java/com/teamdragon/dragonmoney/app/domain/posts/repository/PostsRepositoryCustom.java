@@ -10,9 +10,9 @@ public interface PostsRepositoryCustom {
     // 게시글 최신 상태 조회
     Posts findLatestPosts(Posts posts);
     // 단일 조회
-    PostsDto.PostsDetail findPostsDetailById(Long postsId);
+    PostsDto.PostsDetailRes findPostsDetailById(Long postsId);
     // 단일 조회 : 로그인 유저 : 북마크 여부, 좋아요 여부, 싫어요 여부 추가
-    PostsDto.PostsDetail findPostsDetailByMemberId(Long postsId, Long loginMemberId);
+    PostsDto.PostsDetailRes findPostsDetailByMemberId(Long postsId, Long loginMemberId);
     // 목록 조회
     Page<Posts> findPostsListByPage(Pageable pageable);
     // 목록 조회 : 검색

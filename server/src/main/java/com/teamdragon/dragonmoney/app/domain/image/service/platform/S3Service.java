@@ -56,8 +56,10 @@ public class S3Service {
             );
         } catch (AmazonServiceException e) {
             e.printStackTrace();
+            throw new BusinessLogicException(BusinessExceptionCode.IMAGE_REMOVE_FAIL);
         } catch (SdkClientException e) {
             e.printStackTrace();
+            throw new BusinessLogicException(BusinessExceptionCode.IMAGE_REMOVE_FAIL);
         }
     }
 
@@ -68,8 +70,10 @@ public class S3Service {
             amazonS3.deleteObject(new DeleteObjectRequest(bucket, storeFileNameKey));
         } catch (AmazonServiceException e) {
             e.printStackTrace();
+            throw new BusinessLogicException(BusinessExceptionCode.IMAGE_REMOVE_FAIL);
         } catch (SdkClientException e) {
             e.printStackTrace();
+            throw new BusinessLogicException(BusinessExceptionCode.IMAGE_REMOVE_FAIL);
         }
     }
 

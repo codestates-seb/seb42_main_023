@@ -1,4 +1,4 @@
-package com.teamdragon.dragonmoney.app.global.entity;
+package com.teamdragon.dragonmoney.app.domain.delete.entity;
 
 import lombok.Builder;
 import lombok.Getter;

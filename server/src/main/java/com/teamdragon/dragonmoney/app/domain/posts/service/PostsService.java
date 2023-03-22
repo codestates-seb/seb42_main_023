@@ -1,8 +1,8 @@
 package com.teamdragon.dragonmoney.app.domain.posts.service;
 
 import com.teamdragon.dragonmoney.app.domain.category.entity.Category;
-import com.teamdragon.dragonmoney.app.domain.category.service.CategoryService;
 import com.teamdragon.dragonmoney.app.domain.comment.service.CommentService;
+import com.teamdragon.dragonmoney.app.domain.common.service.FinderService;
 import com.teamdragon.dragonmoney.app.domain.image.entity.Image;
 import com.teamdragon.dragonmoney.app.domain.image.service.ImageService;
 import com.teamdragon.dragonmoney.app.domain.member.entity.Member;
@@ -15,7 +15,7 @@ import com.teamdragon.dragonmoney.app.domain.tag.entity.Tag;
 import com.teamdragon.dragonmoney.app.domain.tag.service.TagService;
 import com.teamdragon.dragonmoney.app.domain.thumb.Thumb;
 import com.teamdragon.dragonmoney.app.domain.thumb.ThumbCountService;
-import com.teamdragon.dragonmoney.app.global.entity.DeleteResult;
+import com.teamdragon.dragonmoney.app.domain.delete.entity.DeleteResult;
 import com.teamdragon.dragonmoney.app.global.exception.AuthExceptionCode;
 import com.teamdragon.dragonmoney.app.global.exception.AuthLogicException;
 import com.teamdragon.dragonmoney.app.global.exception.BusinessExceptionCode;
@@ -40,7 +40,8 @@ public class PostsService implements ThumbCountService {
 
     private final PostsRepository postsRepository;
     private final PostsTagRepository postsTagRepository;
-    private final CategoryService categoryService;
+    private final FinderService finderService;
+    private final CommentService commentService;
     private final TagService tagService;
     private final ImageService imageService;
 
@@ -49,9 +50,11 @@ public class PostsService implements ThumbCountService {
     private final Long CURRENT_CATEGORY_ID = 1L;
 
     // 게시글 생성
-    public Posts savePosts(Member loginMember, Posts newPosts){
+    public Posts savePosts(Member loginMember, Posts newPosts, List<Image> removedImages){
         // 카테고리 조회
-        Category findCategory = categoryService.findCategoryById(CURRENT_CATEGORY_ID);
+        Category findCategory = finderService.findCategoryById(CURRENT_CATEGORY_ID);
+        // 이미지 삭제
+        imageService.removeImages(loginMember, removedImages);
         // 업로드 이미지 조회
         List<Image> findImages = imageService.findImages(newPosts.getImages());
         // 태그 조회 및 저장
@@ -95,16 +98,17 @@ public class PostsService implements ThumbCountService {
         // 이미지 삭제
         imageService.removeImages(loginMember, findPosts.getImages());
         // 댓글 삭제 처리
-
-        // 답글 삭제 처리
+        commentService.removeCommentsByParent(findPosts.getComments());
 
         postsRepository.save(findPosts);
         return postsId;
     }
 
     // 게시글 수정
-    public Posts updatePosts(Member loginMember, Long postsId, Posts updatePosts){
+    public Posts updatePosts(Member loginMember, Long postsId, Posts updatePosts, List<Image> removedImages){
         Posts originalPosts = checkOwner(loginMember, postsId);
+        // 이미지 처리
+        imageService.removeImages(loginMember, removedImages);
         // 태그 처리
         List<PostsTag> newPostsTags = updateTags(updatePosts, originalPosts);
         for (PostsTag newPostsTag : newPostsTags) {
@@ -127,7 +131,7 @@ public class PostsService implements ThumbCountService {
     }
 
     // 게시글 상세 조회 : 게시글 id
-    public PostsDto.PostsDetail findPostsDetail(Long postsId, Long loginMemberId){
+    public PostsDto.PostsDetailRes findPostsDetail(Long postsId, Long loginMemberId){
         plusViewCount(postsId);
         if (loginMemberId == null) {
             return postsRepository.findPostsDetailById(postsId);
@@ -235,23 +239,4 @@ public class PostsService implements ThumbCountService {
         }
         return findPosts.get();
     }
-
-    //    // 이미지 추가 저장 : 게시글 수정 시
-//    private Posts checkAdditionalImage(Posts original, Posts update) {
-//        Map<String, Long> originalImages = original.getImages().stream()
-//                .collect(Collectors.toMap(
-//                        image -> image.getFileName(),
-//                        image -> image.getId()
-//                ));
-//        List<Image> updateImages = update.getImages();
-//        List<Image> newImage = new ArrayList<>();
-//        for (Image updateImage : updateImages) {
-//            if (!originalImages.containsKey(updateImage.getFileName())){
-//                newImage.add(updateImage);
-//            }
-//        }
-//        imageService.postImages(newImage, original);
-//        return postsRepository.findLatestPosts(original);
-//    }
-
 }

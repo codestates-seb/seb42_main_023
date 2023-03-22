@@ -1,7 +1,7 @@
 package com.teamdragon.dragonmoney.app.domain.member.entity;
 
 import com.teamdragon.dragonmoney.app.global.audit.BaseTimeEntity;
-import com.teamdragon.dragonmoney.app.global.entity.DeleteResult;
+import com.teamdragon.dragonmoney.app.domain.delete.entity.DeleteResult;
 import lombok.*;
 
 import javax.persistence.*;

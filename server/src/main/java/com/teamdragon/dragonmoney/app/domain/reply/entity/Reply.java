@@ -7,7 +7,7 @@ import com.teamdragon.dragonmoney.app.domain.thumb.ThumbCountable;
 import com.teamdragon.dragonmoney.app.domain.thumb.entity.Thumbdown;
 import com.teamdragon.dragonmoney.app.domain.thumb.entity.Thumbup;
 import com.teamdragon.dragonmoney.app.global.audit.BaseTimeEntity;
-import com.teamdragon.dragonmoney.app.global.entity.DeleteResult;
+import com.teamdragon.dragonmoney.app.domain.delete.entity.DeleteResult;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -37,7 +37,7 @@ public class Reply extends BaseTimeEntity implements ThumbCountable {
 
     @Column(length = 20)
     @Enumerated(value = EnumType.STRING)
-    private Comment.State state;
+    private State state;
 
     @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
     @JoinColumn(name = "DELETE_RESULT_ID")
@@ -49,10 +49,10 @@ public class Reply extends BaseTimeEntity implements ThumbCountable {
     @Column
     private Long thumbdownCount;
 
-    @OneToMany(mappedBy = "parentReply")
+    @OneToMany(mappedBy = "parentReply", orphanRemoval = true)
     private List<Thumbup> thumbups = new ArrayList<>();
 
-    @OneToMany(mappedBy = "parentReply")
+    @OneToMany(mappedBy = "parentReply", orphanRemoval = true)
     private List<Thumbdown> thumbdowns = new ArrayList<>();
 
     public enum State {
@@ -95,14 +95,15 @@ public class Reply extends BaseTimeEntity implements ThumbCountable {
             this.includedThisComment(comment);
         }
         this.writer = writer;
-        this.state = Comment.State.ACTIVE;
+        this.state = State.ACTIVE;
         this.thumbupCount = 0L;
         this.thumbdownCount = 0L;
     }
 
     public void changeStateToDeleted(DeleteResult deleteResult){
-        this.state = Comment.State.DELETED;
+        this.state = State.DELETED;
         this.deleteResult = deleteResult;
+        clearThumb();
     }
 
     public void includedThisComment(Comment comment){
@@ -110,6 +111,11 @@ public class Reply extends BaseTimeEntity implements ThumbCountable {
         if (!this.comment.getReplies().contains(this)) {
             this.comment.getReplies().add(this);
         }
+    }
+
+    private void clearThumb() {
+        this.thumbups.clear();
+        this.thumbdowns.clear();
     }
 
     public void updateContent(String content) {

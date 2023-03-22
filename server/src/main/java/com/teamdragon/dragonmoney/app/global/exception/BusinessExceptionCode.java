@@ -17,7 +17,8 @@ public enum BusinessExceptionCode {
     IMAGE_SIZE_ZERO(400, null, "Image size is zero"),
     IMAGE_SIZE_EXCEED(400, null, "Image size exceed"),
     IMAGE_EXTENSION_NOT_VALID(400, null, "Image extension is not valid"),
-    IMAGE_UPLOAD_FAIL(500, null, "Image upload fail");
+    IMAGE_UPLOAD_FAIL(500, null, "Image upload fail"),
+    IMAGE_REMOVE_FAIL(500, null, "Image remove fail");
 
     private final int status;
     private final Integer detailedCode;

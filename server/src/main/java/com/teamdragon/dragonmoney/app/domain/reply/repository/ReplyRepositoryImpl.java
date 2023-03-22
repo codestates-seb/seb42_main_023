@@ -35,7 +35,7 @@ public class ReplyRepositoryImpl implements ReplyRepositoryCustom{
 
     @Override
     public Page<ReplyDto.ReplyListElement> findReplyListByPage(Pageable pageable, Long commentId) {
-        OrderSpecifier[] orders = getAllOrderSpecifiers(pageable, posts);
+        OrderSpecifier[] orders = getAllOrderSpecifiers(pageable, reply);
         List<ReplyDto.ReplyListElement> content = queryFactory
                 .select(Projections.constructor(ReplyDto.ReplyListElement.class,
                         comment.id.as("commentId"),
@@ -65,7 +65,7 @@ public class ReplyRepositoryImpl implements ReplyRepositoryCustom{
 
     @Override
     public Page<ReplyDto.ReplyListElement> findReplyListByPageAndMemberId(Pageable pageable, Long commentId, Long loginMemberId) {
-        OrderSpecifier[] orders = getAllOrderSpecifiers(pageable, posts);
+        OrderSpecifier[] orders = getAllOrderSpecifiers(pageable, reply);
         List<ReplyDto.ReplyListElement> content = queryFactory
                 .select(Projections.constructor(ReplyDto.ReplyListElement.class,
                         comment.id.as("commentId"),
