@@ -2,7 +2,6 @@ package com.teamdragon.dragonmoney.app.domain.posts.service;
 
 import com.teamdragon.dragonmoney.app.domain.category.entity.Category;
 import com.teamdragon.dragonmoney.app.domain.category.service.CategoryService;
-import com.teamdragon.dragonmoney.app.domain.comment.service.CommentService;
 import com.teamdragon.dragonmoney.app.domain.image.entity.Image;
 import com.teamdragon.dragonmoney.app.domain.image.service.ImageService;
 import com.teamdragon.dragonmoney.app.domain.member.entity.Member;
@@ -15,7 +14,7 @@ import com.teamdragon.dragonmoney.app.domain.tag.entity.Tag;
 import com.teamdragon.dragonmoney.app.domain.tag.service.TagService;
 import com.teamdragon.dragonmoney.app.domain.thumb.Thumb;
 import com.teamdragon.dragonmoney.app.domain.thumb.ThumbCountService;
-import com.teamdragon.dragonmoney.app.global.entity.DeleteResult;
+import com.teamdragon.dragonmoney.app.domain.delete.entity.DeleteResult;
 import com.teamdragon.dragonmoney.app.global.exception.AuthExceptionCode;
 import com.teamdragon.dragonmoney.app.global.exception.AuthLogicException;
 import com.teamdragon.dragonmoney.app.global.exception.BusinessExceptionCode;

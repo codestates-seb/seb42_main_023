@@ -2,7 +2,7 @@ package com.teamdragon.dragonmoney.app.domain.member.service;
 
 import com.teamdragon.dragonmoney.app.domain.member.entity.Member;
 import com.teamdragon.dragonmoney.app.domain.member.repository.MemberRepository;
-import com.teamdragon.dragonmoney.app.global.entity.DeleteResult;
+import com.teamdragon.dragonmoney.app.domain.delete.entity.DeleteResult;
 import com.teamdragon.dragonmoney.app.global.exception.BusinessExceptionCode;
 import com.teamdragon.dragonmoney.app.global.exception.BusinessLogicException;
 import lombok.RequiredArgsConstructor;
@@ -12,7 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.Optional;
 
-import static com.teamdragon.dragonmoney.app.global.entity.DeleteResult.Reason.SELF_DELETED;
+import static com.teamdragon.dragonmoney.app.domain.delete.entity.DeleteResult.Reason.SELF_DELETED;
 
 @Service
 @Transactional
