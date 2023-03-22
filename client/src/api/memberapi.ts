@@ -24,7 +24,6 @@ export const membersPostListApi = createApi({
     getPostList: builder.query({
       query: ({ query }) => `members/${query}/posts`,
       providesTags: (result, error, arg) => {
-        console.log(result, error, arg);
         return [{ type: 'membersPostList', id: arg.recommend }];
       },
     }),
@@ -37,8 +36,9 @@ export const membersCommentsListApi = createApi({
   tagTypes: ['membersCommentsList'],
   endpoints: (builder) => ({
     getPostList: builder.query({
-      query: ({ name }) => `members/${name}/comments`,
+      query: ({ commentQuery }) => `members/${commentQuery}/comments`,
       providesTags: (result, error, arg) => {
+        console.log(result, error, arg);
         return [{ type: 'membersCommentsList', id: arg.recommend }];
       },
     }),

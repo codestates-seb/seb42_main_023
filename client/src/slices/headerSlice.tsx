@@ -21,6 +21,7 @@ const headerSlice = createSlice({
     input: '',
     tag: [],
     query: '',
+    commentQuery: '',
     memberName: '',
   },
   reducers: {
@@ -50,9 +51,9 @@ const headerSlice = createSlice({
     setPostQuery: (state, action: Tag): void => {
       state.query = action.payload;
     },
-    // 게시글 요청 핸들러
+    // 댓글 요청 핸들러
     setCommentQuery: (state, action: Tag): void => {
-      state.query = action.payload;
+      state.commentQuery = action.payload;
     },
     // 회원명 지정
     setMemberName: (state, action: Tag): void => {
