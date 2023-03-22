@@ -33,4 +33,12 @@ export const memberHandlers = [
     const data = posts;
     return res(ctx.status(200), ctx.json(data));
   }),
+  //자기소개 수정
+  rest.patch('/members/bunny', async (req, res, ctx) => {
+    const newData = await req.json();
+    const data = members;
+    const result = { ...data, ...newData };
+
+    return res(ctx.status(200), ctx.json(result));
+  }),
 ];

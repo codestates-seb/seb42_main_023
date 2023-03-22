@@ -28,7 +28,7 @@ interface Query {
 const mypageSlice = createSlice({
   name: 'mypagestates',
   initialState: {
-    filter: '작성한 댓글',
+    filter: '작성한 글',
     dropOpen: false,
     EditOpen: false,
     EditWidth: 1,

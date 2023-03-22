@@ -11,9 +11,10 @@ import { CommentType } from '../../types/PostDetail';
 
 const MyCommentList = () => {
   const { commentQuery } = useAppSelector(({ header }) => header);
-  const membersCommentsListquery = membersCommentsListApi.useGetPostListQuery({
-    commentQuery: commentQuery,
-  });
+  const membersCommentsListquery =
+    membersCommentsListApi.useGetCommentsListQuery({
+      commentQuery: commentQuery,
+    });
   const { data, isSuccess } = membersCommentsListquery;
 
   if (!isSuccess) {
@@ -50,7 +51,6 @@ export default MyCommentList;
 const List = styled.ul`
   width: 100%;
   overflow: scroll;
-  border: 1px solid var(--border-color);
   display: flex;
   flex-direction: column;
   li {
@@ -58,7 +58,7 @@ const List = styled.ul`
     display: flex;
     justify-content: space-between;
     border-bottom: 1px solid var(--border-color);
-    padding: 20px 10px;
+    padding: 20px 20px;
     div {
       :first-child {
         max-width: 70%;

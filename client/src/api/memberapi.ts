@@ -1,16 +1,33 @@
 //TODO: API쿼리에 맞게 수정하기
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
+
+interface Intro {
+  intro: string;
+}
 // 회원정보 불러오기
 export const membersApi = createApi({
   reducerPath: 'membersApi',
   baseQuery: fetchBaseQuery({ baseUrl: 'http://localhost:3000' }),
   tagTypes: ['members'],
   endpoints: (builder) => ({
-    getPostList: builder.query({
+    getMember: builder.query({
       query: ({ name }) => `members/${name}`,
       providesTags: (result, error, arg) => {
-        return [{ type: 'members', id: arg.recommend }];
+        return [{ type: 'members', id: arg.name }];
       },
+    }),
+    //자기소개 수정
+    updateMember: builder.mutation<Intro, { name: string; intro: string }>({
+      query: ({ name, intro }) => {
+        return {
+          url: `members/${name}`,
+          method: 'PATCH',
+          body: { intro },
+        };
+      },
+      invalidatesTags: (result, error, arg) => [
+        { type: 'members', id: arg.name },
+      ],
     }),
   }),
 });
@@ -24,7 +41,7 @@ export const membersPostListApi = createApi({
     getPostList: builder.query({
       query: ({ query }) => `members/${query}/posts`,
       providesTags: (result, error, arg) => {
-        return [{ type: 'membersPostList', id: arg.recommend }];
+        return [{ type: 'membersPostList', id: arg.query }];
       },
     }),
   }),
@@ -35,11 +52,10 @@ export const membersCommentsListApi = createApi({
   baseQuery: fetchBaseQuery({ baseUrl: 'http://localhost:3000' }),
   tagTypes: ['membersCommentsList'],
   endpoints: (builder) => ({
-    getPostList: builder.query({
+    getCommentsList: builder.query({
       query: ({ commentQuery }) => `members/${commentQuery}/comments`,
       providesTags: (result, error, arg) => {
-        console.log(result, error, arg);
-        return [{ type: 'membersCommentsList', id: arg.recommend }];
+        return [{ type: 'membersCommentsList', id: arg.commentQuery }];
       },
     }),
   }),

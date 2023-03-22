@@ -18,8 +18,9 @@ function Profile() {
   const { EditOpen } = useAppSelector(({ mypage }) => mypage);
   const { memberName } = useAppSelector(({ header }) => header);
   const divRef = useRef<HTMLDivElement>(null);
-  const membersQuery = membersApi.useGetPostListQuery({
+  const membersQuery = membersApi.useGetMemberQuery({
     name: memberName,
+    some: '',
   });
   const { data, isSuccess } = membersQuery;
 
@@ -54,11 +55,12 @@ function Profile() {
 }
 export default Profile;
 const ProfileWrap = styled.div`
-  margin-bottom: 40px;
-  margin-left: 10px;
+  padding-bottom: 40px;
+  padding-left: 10px;
   display: flex;
   justify-content: space-between;
   position: relative;
+  border-bottom: 1px solid var(--border-color);
   article {
     display: flex;
     flex-direction: column;

@@ -11,7 +11,7 @@ function Sidebar() {
   const dispatch = useAppDispatch();
   const { filter } = useAppSelector(({ mypage }) => mypage);
   const { query, memberName } = useAppSelector(({ header }) => header);
-  const membersQuery = membersApi.useGetPostListQuery({
+  const membersQuery = membersApi.useGetMemberQuery({
     name: memberName,
   });
   const { data, isSuccess } = membersQuery;
@@ -75,8 +75,9 @@ export default Sidebar;
 const Nav = styled.nav`
   box-sizing: border-box;
   width: 200px;
+  height: 100%;
   padding: 8px;
-  margin-right: 8px;
+  margin-top: -1px;
   border: 1px solid var(--border-color);
   display: inline;
 `;

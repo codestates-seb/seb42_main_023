@@ -9,7 +9,7 @@ export const postListApi = createApi({
       //TODO: API쿼리에 맞게 수정하기
       query: ({ endpoint }) => `posts/${endpoint}`,
       providesTags: (result, error, arg) => {
-        return [{ type: 'PostList', id: arg.recommend }];
+        return [{ type: 'PostList', id: arg.endpoint }];
       },
     }),
   }),
@@ -23,7 +23,7 @@ export const weeklyPopularApi = createApi({
     getPostList: builder.query({
       query: ({ endpoint }) => `posts/${endpoint}`,
       providesTags: (result, error, arg) => {
-        return [{ type: 'weeklyPopular', id: arg.recommend }];
+        return [{ type: 'weeklyPopular', id: arg.endpoint }];
       },
     }),
   }),

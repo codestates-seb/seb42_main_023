@@ -88,7 +88,6 @@ export default MyPostList;
 const List = styled.ul`
   width: 100%;
   overflow: scroll;
-  border: 1px solid var(--border-color);
 `;
 export const Item = styled.li`
   height: 100px;
@@ -97,7 +96,7 @@ export const Item = styled.li`
   display: flex;
   justify-content: center;
   align-items: center;
-  padding: 0 10px;
+  padding: 0 20px;
   h1 {
     font-size: 20px;
     margin-bottom: 4px;
