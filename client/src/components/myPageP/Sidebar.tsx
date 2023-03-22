@@ -29,9 +29,7 @@ function Sidebar() {
   //작성한 댓글 요청핸들러
   const getMemberComments = () => {
     dispatch(setFilter('작성한 댓글'));
-    const membersCommentsQuery = membersCommentsListApi.useGetPostListQuery({
-      name: query,
-    });
+    dispatch(setCommentQuery(memberName));
   };
   //작성한 좋아요한 글 요청핸들러
   const getMemberLikePost = () => {
@@ -41,9 +39,7 @@ function Sidebar() {
   //좋아요한 댓글 요청핸들러
   const getMemberLikeComments = () => {
     dispatch(setFilter('좋아요한 댓글'));
-    const membersCommentsQuery = membersCommentsListApi.useGetPostListQuery({
-      name: query,
-    });
+    dispatch(setCommentQuery(`${memberName}/thumbup`));
   };
   //북마크 요청핸들러
   const getMemberBookmark = () => {

@@ -29,14 +29,14 @@ const MyCommentList = () => {
               <CommentInfo>
                 <span>
                   <TimeIcon />
-                  {comment.createdAt}
+                  {timeSince(comment.createdAt)}
                 </span>
                 <span>
-                  <FaRegThumbsUp color={'#94969b'} />
+                  <FaRegThumbsUp size={13} />
                   {comment.thumbupCount}
                 </span>
                 <span>
-                  <FaRegThumbsDown color={'#94969b'} />
+                  <FaRegThumbsDown size={13} />
                   {comment.thumbDownCount}
                 </span>
               </CommentInfo>
@@ -59,12 +59,21 @@ const List = styled.ul`
     justify-content: space-between;
     border-bottom: 1px solid var(--border-color);
     padding: 20px 10px;
+    div {
+      :first-child {
+        max-width: 70%;
+      }
+    }
   }
 `;
 const CommentInfo = styled.div`
   color: var(--sub-font-color);
+
   span {
     font-size: 12px;
     margin-right: 10px;
+    svg {
+      transform: translateY(2px);
+    }
   }
 `;
