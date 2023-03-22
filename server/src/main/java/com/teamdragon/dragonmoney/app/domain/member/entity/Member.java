@@ -11,9 +11,7 @@ import java.util.List;
 
 @Getter
 @Setter
-//@Builder
 @NoArgsConstructor
-//@AllArgsConstructor
 @Entity
 public class Member extends BaseTimeEntity {
     @Id
@@ -53,30 +51,13 @@ public class Member extends BaseTimeEntity {
     @Enumerated(value = EnumType.STRING)
     private MemberState state;
 
-    @ManyToOne(cascade = CascadeType.PERSIST)
+    @ManyToOne(cascade = CascadeType.PERSIST, fetch = FetchType.LAZY)
     @JoinColumn(name = "DELETE_RESULT_ID")
     private DeleteResult deleteResult;
 
     @ElementCollection(fetch = FetchType.EAGER)
     private List<String> memberRoles = new ArrayList<>();
 
-//    @Builder
-//    public Member(Long id, Boolean nameDuplicateCheck, String profileImage,
-//                  String intro, String tempName, String tempAccessToken,
-//                  String email, String name, String oauthkind,
-//                  MemberState state, DeleteResult deleteResult) {
-//        this.id = id;
-//        this.nameDuplicateCheck = nameDuplicateCheck;
-//        this.profileImage = profileImage;
-//        this.intro = intro;
-//        this.tempName = tempName;
-//        this.tempAccessToken = tempAccessToken;
-//        this.email = email;
-//        this.name = name;
-//        this.oauthkind = oauthkind;
-//        this.state = state;
-//        this.deleteResult = deleteResult;
-//    }
     @Builder
     public Member(Long id, Boolean nameDuplicateCheck, String profileImage,
                   String intro, String tempName, String tempAccessToken,

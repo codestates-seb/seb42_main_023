@@ -13,6 +13,7 @@ public enum BusinessExceptionCode {
     REPLY_NOT_FOUND(404, null, "Reply not found"),
     THUMBUP_NOT_FOUND(404, null, "Thumbup not found"),
     THUMBDOWN_NOT_FOUND(404, null, "Thumbdown not found"),
+    BOOKMARK_NOT_FOUND(404, null, "Bookmark not found"),
     IMAGE_SIZE_ZERO(400, null, "Image size is zero"),
     IMAGE_SIZE_EXCEED(400, null, "Image size exceed"),
     IMAGE_EXTENSION_NOT_VALID(400, null, "Image extension is not valid"),
