@@ -15,8 +15,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.support.PageableExecutionUtils;
 
-import javax.persistence.EntityManager;
-
 import java.util.List;
 
 import static com.teamdragon.dragonmoney.app.domain.comment.entity.QComment.*;
@@ -29,7 +27,6 @@ import static com.teamdragon.dragonmoney.app.domain.thumb.entity.QThumbup.thumbu
 public class CommentRepositoryImpl implements CommentRepositoryCustom {
 
     private final JPAQueryFactory queryFactory;
-    private final EntityManager em;
 
     @Override
     public Page<CommentDto.CommentListElement> findCommentListByPage(Pageable pageable, Long postsId) {
@@ -37,15 +34,16 @@ public class CommentRepositoryImpl implements CommentRepositoryCustom {
         List<CommentDto.CommentListElement> content = queryFactory
                 .select(Projections.constructor(CommentDto.CommentListElement.class,
                         posts.id.as("postsId"),
-                        QComment.comment.as("comment"),
-                        QComment.comment.writer.name.as("memberName"),
-                        QComment.comment.writer.name.as("memberImage"))
+                        comment.as("comment"),
+                        comment.writer.name.as("memberName"),
+                        comment.writer.profileImage.as("memberImage"),
+                        comment.state.as("commentState"))
                 )
                 .distinct()
-                .from(QComment.comment)
-                .leftJoin(QComment.comment.writer, member).fetchJoin()
-                .leftJoin(QComment.comment.posts, posts).fetchJoin()
-                .where(QComment.comment.posts.id.eq(postsId))
+                .from(comment)
+                .leftJoin(comment.writer, member).fetchJoin()
+                .leftJoin(comment.posts, posts).fetchJoin()
+                .where(comment.posts.id.eq(postsId))
                 .orderBy(orders)
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
@@ -66,26 +64,27 @@ public class CommentRepositoryImpl implements CommentRepositoryCustom {
         List<CommentDto.CommentListElement> content = queryFactory
                 .select(Projections.constructor(CommentDto.CommentListElement.class,
                         posts.id.as("postsId"),
-                        QComment.comment.as("comment"),
-                        QComment.comment.writer.name.as("memberName"),
-                        QComment.comment.writer.name.as("memberImage"),
+                        comment.as("comment"),
+                        comment.writer.name.as("memberName"),
+                        comment.writer.profileImage.as("memberImage"),
+                        comment.state.as("commentState"),
                         ExpressionUtils.as(JPAExpressions.select(thumbup.id)
                                 .from(thumbup)
-                                .where(thumbup.parentComment.id.eq(QComment.comment.id),
+                                .where(thumbup.parentComment.id.eq(comment.id),
                                         thumbup.member.id.eq(loginMemberId))
                                 .limit(1), "isThumbup"),
                         ExpressionUtils.as(JPAExpressions.select(thumbdown.id)
                                 .from(thumbdown)
-                                .where(thumbdown.parentComment.id.eq(QComment.comment.id),
+                                .where(thumbdown.parentComment.id.eq(comment.id),
                                         thumbdown.member.id.eq(loginMemberId))
                                 .limit(1), "isThumbdown")
                         )
                 )
                 .distinct()
-                .from(QComment.comment)
-                .leftJoin(QComment.comment.writer, member).fetchJoin()
-                .leftJoin(QComment.comment.posts, posts).fetchJoin()
-                .where(QComment.comment.posts.id.eq(postsId))
+                .from(comment)
+                .leftJoin(comment.writer, member).fetchJoin()
+                .leftJoin(comment.posts, posts).fetchJoin()
+                .where(comment.posts.id.eq(postsId))
                 .orderBy(orders)
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
@@ -107,7 +106,6 @@ public class CommentRepositoryImpl implements CommentRepositoryCustom {
                 .set(comment.thumbupCount, comment.thumbupCount.add(1))
                 .where(comment.id.eq(commentId))
                 .execute();
-        em.clear();
         return result;
     }
 
@@ -118,7 +116,6 @@ public class CommentRepositoryImpl implements CommentRepositoryCustom {
                 .set(comment.thumbupCount, comment.thumbupCount.add(-1))
                 .where(comment.id.eq(commentId))
                 .execute();
-        em.clear();
         return result;
     }
 
@@ -129,7 +126,6 @@ public class CommentRepositoryImpl implements CommentRepositoryCustom {
                 .set(comment.thumbdownCount, comment.thumbdownCount.add(1))
                 .where(comment.id.eq(commentId))
                 .execute();
-        em.clear();
         return result;
     }
 
@@ -140,7 +136,6 @@ public class CommentRepositoryImpl implements CommentRepositoryCustom {
                 .set(comment.thumbdownCount, comment.thumbdownCount.add(-1))
                 .where(comment.id.eq(commentId))
                 .execute();
-        em.clear();
         return result;
     }
 

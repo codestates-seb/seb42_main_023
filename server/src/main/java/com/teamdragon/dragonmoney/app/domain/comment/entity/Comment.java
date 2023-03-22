@@ -5,6 +5,8 @@ import com.teamdragon.dragonmoney.app.domain.posts.entity.Posts;
 import com.teamdragon.dragonmoney.app.domain.reply.entity.Reply;
 import com.teamdragon.dragonmoney.app.domain.thumb.Thumb;
 import com.teamdragon.dragonmoney.app.domain.thumb.ThumbCountable;
+import com.teamdragon.dragonmoney.app.domain.thumb.entity.Thumbdown;
+import com.teamdragon.dragonmoney.app.domain.thumb.entity.Thumbup;
 import com.teamdragon.dragonmoney.app.global.audit.BaseTimeEntity;
 import com.teamdragon.dragonmoney.app.global.entity.DeleteResult;
 import lombok.Builder;
@@ -54,15 +56,24 @@ public class Comment extends BaseTimeEntity implements ThumbCountable {
     @Column
     private Long replyCount;
 
+    @OneToMany(mappedBy = "parentComment")
+    private List<Thumbup> thumbups = new ArrayList<>();
+
+    @OneToMany(mappedBy = "parentComment")
+    private List<Thumbdown> thumbdowns = new ArrayList<>();
+
     public enum State {
-        ACTIVE("활성"),
-        DELETED("삭제");
+        ACTIVE("활성", "활성상태 입니다."),
+        DELETED("삭제", "삭제된 댓글입니다.");
 
         @Getter
         private final String state;
+        @Getter
+        private final String message;
 
-        State(String state) {
+        State(String state, String message) {
             this.state = state;
+            this.message = message;
         }
     }
 
