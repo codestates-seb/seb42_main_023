@@ -5,6 +5,7 @@ import LikeIcon from '../../assets/common/LikeIcon';
 import TimeIcon from '../../assets/common/TimeIcon';
 import ViewIcon from '../../assets/common/ViewIcon';
 import Thumnail from '../common/Thumnail';
+import { FaBookmark } from 'react-icons/fa';
 import { TagItem } from '../common/Tag';
 import { Link } from 'react-router-dom';
 import { membersPostListApi } from '../../api/memberapi';
@@ -28,9 +29,9 @@ export interface PostItem {
 }
 
 function MyBookmark() {
-  const { memberName } = useAppSelector(({ header }) => header);
+  const { query } = useAppSelector(({ header }) => header);
   const postListquery = membersPostListApi.useGetPostListQuery({
-    name: memberName,
+    query: query,
   });
   const { data, isSuccess } = postListquery;
 
@@ -76,6 +77,9 @@ function MyBookmark() {
                   </Info>
                 </Itemside>
               </div>
+              <Bookmark>
+                <FaBookmark />
+              </Bookmark>
             </Item>
           );
         })}
@@ -126,4 +130,13 @@ export const Info = styled.div`
 `;
 export const Tag = styled(TagItem)`
   padding: 4px 10px;
+`;
+const Bookmark = styled.button`
+  margin-left: 40px;
+  svg {
+    color: var(--sub-font-color);
+    :hover {
+      color: var(--hover-font-gray-color);
+    }
+  }
 `;

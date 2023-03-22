@@ -3,12 +3,7 @@ import styled from 'styled-components';
 import { useAppDispatch, useAppSelector } from '../../hooks';
 import { setFilter } from '../../slices/mypageSlice';
 import { SidebarBtn } from '../common/Btn';
-import {
-  membersApi,
-  membersPostListApi,
-  membersCommentsListApi,
-  membersBookmarkListApi,
-} from '../../api/memberapi';
+import { membersApi } from '../../api/memberapi';
 import { setPostQuery, setCommentQuery } from '../../slices/headerSlice';
 
 //TODO:필터별 get요청
@@ -44,9 +39,7 @@ function Sidebar() {
   //북마크 요청핸들러
   const getMemberBookmark = () => {
     dispatch(setFilter('북마크'));
-    const membersCommentsQuery = membersBookmarkListApi.useGetPostListQuery({
-      name: query,
-    });
+    dispatch(setPostQuery(memberName));
   };
 
   return (

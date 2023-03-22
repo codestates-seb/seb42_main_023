@@ -44,17 +44,3 @@ export const membersCommentsListApi = createApi({
     }),
   }),
 });
-// 북마크한 글 불러오기
-export const membersBookmarkListApi = createApi({
-  reducerPath: 'membersBookmarkListApi',
-  baseQuery: fetchBaseQuery({ baseUrl: 'http://localhost:3000' }),
-  tagTypes: ['membersBookmarkList'],
-  endpoints: (builder) => ({
-    getPostList: builder.query({
-      query: ({ name }) => `members/${name}/bookmark`,
-      providesTags: (result, error, arg) => {
-        return [{ type: 'membersBookmarkList', id: arg.recommend }];
-      },
-    }),
-  }),
-});
