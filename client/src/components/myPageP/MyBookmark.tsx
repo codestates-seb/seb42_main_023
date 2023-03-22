@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import styled from 'styled-components';
 import { useAppSelector } from '../../hooks';
 import LikeIcon from '../../assets/common/LikeIcon';
@@ -27,13 +27,13 @@ export interface PostItem {
   thumbupCount: number;
 }
 
-function MyPostList() {
-  const { query } = useAppSelector(({ header }) => header);
-  const membersPostListquery = membersPostListApi.useGetPostListQuery({
-    query: query,
+function MyBookmark() {
+  const { memberName } = useAppSelector(({ header }) => header);
+  const postListquery = membersPostListApi.useGetPostListQuery({
+    name: memberName,
   });
-  const { data, isSuccess } = membersPostListquery;
-  useEffect(() => console.log(query), []);
+  const { data, isSuccess } = postListquery;
+
   if (!isSuccess) {
     return <div>Loading...</div>;
   }
@@ -83,7 +83,7 @@ function MyPostList() {
   );
 }
 
-export default MyPostList;
+export default MyBookmark;
 
 const List = styled.ul`
   width: 100%;

@@ -10,16 +10,22 @@ import PostBtn from './PostBtn';
 import MediumProfileImg from './MediumProfileImg';
 import HeaderNav from './HeaderNav';
 import { MdManageAccounts } from 'react-icons/md';
-import { setMember } from '../../slices/headerSlice';
+import {
+  setPostQuery,
+  setCommentQuery,
+  setMemberName,
+} from '../../slices/headerSlice';
 
 function HeaderDefault() {
   const navigate = useNavigate();
   const header = useAppSelector(({ header }) => header);
   const { pathname } = useLocation();
   const dispatch = useAppDispatch();
-  //TODO: header에서 멤버명 지정
+  //TODO: header에서 요청쿼리 지정
   useEffect(() => {
-    dispatch(setMember('bunny'));
+    dispatch(setPostQuery('bunny'));
+    dispatch(setCommentQuery('bunny'));
+    dispatch(setMemberName('bunny'));
   }, []);
   return header.search ? (
     <SearchHead>

@@ -9,12 +9,13 @@ import {
   membersCommentsListApi,
   membersBookmarkListApi,
 } from '../../api/memberapi';
+import { setPostQuery, setCommentQuery } from '../../slices/headerSlice';
 
 //TODO:필터별 get요청
 function Sidebar() {
   const dispatch = useAppDispatch();
   const { filter } = useAppSelector(({ mypage }) => mypage);
-  const { memberName } = useAppSelector(({ header }) => header);
+  const { query, memberName } = useAppSelector(({ header }) => header);
   const membersQuery = membersApi.useGetPostListQuery({
     name: memberName,
   });
@@ -23,36 +24,32 @@ function Sidebar() {
   //작성한 글 요청핸들러
   const getMemberPost = () => {
     dispatch(setFilter('작성한 글'));
-    const membersPostQuery = membersPostListApi.useGetPostListQuery({
-      name: `${'bunny'}`,
-    });
+    dispatch(setPostQuery(memberName));
   };
   //작성한 댓글 요청핸들러
   const getMemberComments = () => {
     dispatch(setFilter('작성한 댓글'));
     const membersCommentsQuery = membersCommentsListApi.useGetPostListQuery({
-      name: `${'bunny'}`,
+      name: query,
     });
   };
   //작성한 좋아요한 글 요청핸들러
   const getMemberLikePost = () => {
     dispatch(setFilter('좋아요한 글'));
-    const membersPostLikeQuery = membersPostListApi.useGetPostListQuery({
-      name: `${'bunny'}/like`,
-    });
+    dispatch(setPostQuery(`${memberName}/thumbup`));
   };
   //좋아요한 댓글 요청핸들러
   const getMemberLikeComments = () => {
     dispatch(setFilter('좋아요한 댓글'));
     const membersCommentsQuery = membersCommentsListApi.useGetPostListQuery({
-      name: `${'bunny'}/like`,
+      name: query,
     });
   };
   //북마크 요청핸들러
   const getMemberBookmark = () => {
     dispatch(setFilter('북마크'));
     const membersCommentsQuery = membersBookmarkListApi.useGetPostListQuery({
-      name: `${'bunny'}`,
+      name: query,
     });
   };
 

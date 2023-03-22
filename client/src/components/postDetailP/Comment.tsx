@@ -348,7 +348,7 @@ const CommentContainer = styled.div`
     color: #0069ca;
   }
 `;
-const CommentInfo = styled.div`
+export const CommentInfo = styled.div`
   display: flex;
   flex-direction: column;
   align-items: flex-start;
