@@ -1,6 +1,5 @@
 package com.teamdragon.dragonmoney.app.domain.reply.dto;
 
-import com.teamdragon.dragonmoney.app.domain.comment.entity.Comment;
 import com.teamdragon.dragonmoney.app.domain.reply.entity.Reply;
 import com.teamdragon.dragonmoney.app.global.pagenation.PageInfo;
 import lombok.Getter;
@@ -10,7 +9,6 @@ import org.springframework.data.domain.Page;
 import javax.validation.constraints.NotBlank;
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Objects;
 
 public class ReplyDto {
     @Getter
@@ -72,13 +70,13 @@ public class ReplyDto {
         private Boolean isThumbdown;
 
         // 답글 목록 항목 : 미로그인용
-        public ReplyListElement(Long commentId, Reply reply, String memberName, String memberImage, String replyState) {
+        public ReplyListElement(Long commentId, Reply reply, String memberName, String memberImage, Reply.State replyState) {
             this.commentId = commentId;
             this.replyId = reply.getId();
-            if (!Objects.equals(replyState, Reply.State.ACTIVE.toString())) {
+            if (replyState == Reply.State.ACTIVE) {
                 this.content = reply.getContent();
             } else {
-                this.content = Reply.State.valueOf(replyState).getMessage();
+                this.content = replyState.getMessage();
             }
             this.memberName = memberName;
             this.memberImage = memberImage;
@@ -90,13 +88,13 @@ public class ReplyDto {
         }
 
         // 답글 목록 항목 : 로그인 유저용
-        public ReplyListElement(Long commentId, Reply reply, String memberName, String memberImage, String replyState, Long isThumbup, Long isThumbdown) {
+        public ReplyListElement(Long commentId, Reply reply, String memberName, String memberImage, Reply.State replyState, Long isThumbup, Long isThumbdown) {
             this.commentId = commentId;
             this.replyId = reply.getId();
-            if (!Objects.equals(replyState, Reply.State.ACTIVE.toString())) {
+            if (replyState == Reply.State.ACTIVE) {
                 this.content = reply.getContent();
             } else {
-                this.content = Reply.State.valueOf(replyState).getMessage();
+                this.content = replyState.getMessage();
             }
             this.memberName = memberName;
             this.memberImage = memberImage;

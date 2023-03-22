@@ -9,7 +9,6 @@ import org.springframework.data.domain.Page;
 import javax.validation.constraints.NotBlank;
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Objects;
 
 public class CommentDto {
     @Getter
@@ -70,15 +69,18 @@ public class CommentDto {
         private Long thumbDownCount;
         private Boolean isThumbup;
         private Boolean isThumbdown;
+        private Boolean isDeleted;
 
         // 댓글 목록 항목 : 미로그인용
-        public CommentListElement(Long postsId, Comment comment, String memberName, String memberImage, String commentState) {
+        public CommentListElement(Long postsId, Comment comment, String memberName, String memberImage, Comment.State commentState) {
             this.postId = postsId;
             this.commentId = comment.getId();
-            if (!Objects.equals(commentState, Comment.State.ACTIVE.toString())) {
+            if (commentState == Comment.State.ACTIVE) {
                 this.content = comment.getContent();
+                this.isDeleted = false;
             } else {
-                this.content = Comment.State.valueOf(commentState).getMessage();
+                this.content = commentState.getMessage();
+                this.isDeleted = true;
             }
             this.memberName = memberName;
             this.memberImage = memberImage;
@@ -91,13 +93,15 @@ public class CommentDto {
         }
 
         // 댓글 목록 항목 : 로그인 유저용
-        public CommentListElement(Long postsId, Comment comment, String memberName, String memberImage, String commentState, Long isThumbup, Long isThumbdown) {
+        public CommentListElement(Long postsId, Comment comment, String memberName, String memberImage, Comment.State commentState, Long isThumbup, Long isThumbdown) {
             this.postId = postsId;
             this.commentId = comment.getId();
-            if (!Objects.equals(commentState, Comment.State.ACTIVE.toString())) {
+            if (commentState == Comment.State.ACTIVE) {
                 this.content = comment.getContent();
+                this.isDeleted = false;
             } else {
-                this.content = Comment.State.valueOf(commentState).getMessage();
+                this.content = commentState.getMessage();
+                this.isDeleted = true;
             }
             this.memberName = memberName;
             this.memberImage = memberImage;

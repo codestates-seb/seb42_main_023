@@ -17,11 +17,11 @@ public interface PostsMapper {
 
     @Mapping(source = "saveImages.addedImages", target = "images")
     @Mapping(source = "tagNames", target = "postsTags")
-    Posts postDtoToPosts(PostsDto.Post postDto);
+    Posts postDtoToPosts(PostsDto.CreateReq createReqDto);
 
     @Mapping(source = "saveImages.addedImages", target = "images")
     @Mapping(source = "tagNames", target = "postsTags")
-    Posts patchDtoToPosts(PostsDto.Patch patchDto);
+    Posts patchDtoToPosts(PostsDto.UpdateReq updateReqDto);
 
     // 태그 매핑
     PostsTag tagToPostsTag(Tag tag);

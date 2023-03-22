@@ -30,7 +30,7 @@ public class CommentRepositoryImpl implements CommentRepositoryCustom {
 
     @Override
     public Page<CommentDto.CommentListElement> findCommentListByPage(Pageable pageable, Long postsId) {
-        OrderSpecifier[] orders = getAllOrderSpecifiers(pageable, posts);
+        OrderSpecifier[] orders = getAllOrderSpecifiers(pageable, comment);
         List<CommentDto.CommentListElement> content = queryFactory
                 .select(Projections.constructor(CommentDto.CommentListElement.class,
                         posts.id.as("postsId"),
@@ -60,7 +60,7 @@ public class CommentRepositoryImpl implements CommentRepositoryCustom {
 
     @Override
     public Page<CommentDto.CommentListElement> findCommentListByPageAndMemberId(Pageable pageable, Long postsId, Long loginMemberId) {
-        OrderSpecifier[] orders = getAllOrderSpecifiers(pageable, posts);
+        OrderSpecifier[] orders = getAllOrderSpecifiers(pageable, comment);
         List<CommentDto.CommentListElement> content = queryFactory
                 .select(Projections.constructor(CommentDto.CommentListElement.class,
                         posts.id.as("postsId"),

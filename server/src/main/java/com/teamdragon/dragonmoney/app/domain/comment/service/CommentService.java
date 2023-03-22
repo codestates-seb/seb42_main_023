@@ -3,9 +3,10 @@ package com.teamdragon.dragonmoney.app.domain.comment.service;
 import com.teamdragon.dragonmoney.app.domain.comment.dto.CommentDto;
 import com.teamdragon.dragonmoney.app.domain.comment.entity.Comment;
 import com.teamdragon.dragonmoney.app.domain.comment.repository.CommentRepository;
+import com.teamdragon.dragonmoney.app.domain.common.service.FinderService;
 import com.teamdragon.dragonmoney.app.domain.member.entity.Member;
 import com.teamdragon.dragonmoney.app.domain.posts.entity.Posts;
-import com.teamdragon.dragonmoney.app.domain.posts.service.PostsService;
+import com.teamdragon.dragonmoney.app.domain.reply.service.ReplyService;
 import com.teamdragon.dragonmoney.app.domain.thumb.Thumb;
 import com.teamdragon.dragonmoney.app.domain.thumb.ThumbCountService;
 import com.teamdragon.dragonmoney.app.domain.delete.entity.DeleteResult;
@@ -21,6 +22,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.Optional;
 
 @RequiredArgsConstructor
@@ -29,7 +31,8 @@ import java.util.Optional;
 public class CommentService implements ThumbCountService {
 
     private final CommentRepository commentRepository;
-    private final PostsService postsService;
+    private final FinderService finderService;
+    private final ReplyService replyService;
 
     private final int PAGE_ELEMENT_SIZE = 10;
 
@@ -40,7 +43,7 @@ public class CommentService implements ThumbCountService {
 
     // 추가
     public Comment createComment(Long postsId, Member loginMember, Comment newComment) {
-        Posts parentPosts = postsService.findOne(postsId);
+        Posts parentPosts = finderService.findVerifyPostsById(postsId);
         Comment comment = Comment.builder()
                 .content(newComment.getContent())
                 .writer(loginMember)
@@ -55,12 +58,19 @@ public class CommentService implements ThumbCountService {
         DeleteResult deleteResult
                 = DeleteResult.builder().deleteReason(DeleteResult.Reason.SELF_DELETED).build();
         findComment.changeStateToDeleted(deleteResult);
-        // 좋아요 싫어요 삭제
-
-        // 대댓글 삭제
-
+        // 답글 삭제
+        replyService.removeCommentsByParent(findComment.getReplies());
         commentRepository.save(findComment);
         return commentId;
+    }
+
+    // 여러 댓글 삭제 : 부모 삭제로 인한 삭제
+    public void removeCommentsByParent(List<Comment> comments) {
+        for (Comment comment : comments) {
+            comment.changeStateToDeleted(new DeleteResult(DeleteResult.Reason.DELETED_BY_PARENT));
+            replyService.removeCommentsByParent(comment.getReplies());
+        }
+        commentRepository.saveAll(comments);
     }
 
     // 수정

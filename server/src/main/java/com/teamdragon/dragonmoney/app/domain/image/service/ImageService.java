@@ -46,18 +46,6 @@ public class ImageService {
         return saveImageToDB(loginMember, url, ext, storeFileName);
     }
 
-//    // 게시글 등록 이미지 확정
-//    public void postImages(List<Image> images, Posts savePosts){
-//        List<Long> imageIds = images.stream()
-//                .map(Image::getId)
-//                .collect(Collectors.toList());
-//        List<Image> findImages = imageRepository.findImagesByIds(imageIds);
-//        for (Image findImage : findImages) {
-//            findImage.includedThisPosts(savePosts);
-//        }
-//        imageRepository.saveAll(findImages);
-//    }
-
     // 이미지들 검색
     public List<Image> findImages(List<Image> images) {
         List<Long> imageIds = images.stream()

@@ -2,7 +2,6 @@ package com.teamdragon.dragonmoney.app.domain.posts.controller;
 
 import com.teamdragon.dragonmoney.app.domain.image.entity.Image;
 import com.teamdragon.dragonmoney.app.domain.image.mapper.ImageMapper;
-import com.teamdragon.dragonmoney.app.domain.image.service.ImageService;
 import com.teamdragon.dragonmoney.app.domain.member.entity.Member;
 import com.teamdragon.dragonmoney.app.domain.member.service.MemberService;
 import com.teamdragon.dragonmoney.app.domain.posts.dto.PostsDto;
@@ -32,26 +31,22 @@ public class PostsController {
 
     private final PostsService postsService;
     private final PostsMapper postsMapper;
-    private final ImageService imageService;
     private final ImageMapper imageMapper;
     private final MemberService memberService;
 
     // 추가
     @PostMapping
-    public ResponseEntity<Map<String, Long>> postPosts(@AuthenticationPrincipal Principal principal,
-                                                       @Valid @RequestBody PostsDto.Post postsDto) {
+    public ResponseEntity<PostsDto.CreateRes> postPosts(@AuthenticationPrincipal Principal principal,
+                                                       @Valid @RequestBody PostsDto.CreateReq postsDto) {
         Member loginMember = memberService.findMember(principal.getName());
         // 이미지 처리
-        PostsDto.PostImagesDto saveImages = postsDto.getSaveImages();
+        PostsDto.CreatePostsImagesReq saveImages = postsDto.getSaveImages();
         List<Image> removedImages
                 = imageMapper.imageDtoListToImageList(saveImages.getRemovedImages());
-        imageService.removeImages(loginMember, removedImages);
         // Posts 처리
         Posts posts = postsMapper.postDtoToPosts(postsDto);
-        Posts savePosts = postsService.savePosts(loginMember, posts);
-        Map<String, Long> response = new HashMap<>();
-        // 주의 : postId <<< postsId 가 아님
-        response.put("postId", savePosts.getId());
+        Posts savePosts = postsService.savePosts(loginMember, posts, removedImages);
+        PostsDto.CreateRes response = new PostsDto.CreateRes(savePosts.getId());
 
         return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
@@ -67,57 +62,54 @@ public class PostsController {
 
     // 수정
     @PatchMapping("/{post-id}")
-    public ResponseEntity<Map<String, Long>> patchPosts(@AuthenticationPrincipal Principal principal,
-                                                        @Valid @RequestBody PostsDto.Patch patchDto,
+    public ResponseEntity<PostsDto.UpdateRes> patchPosts(@AuthenticationPrincipal Principal principal,
+                                                        @Valid @RequestBody PostsDto.UpdateReq updateReqDto,
                                                         @Valid @Positive @PathVariable("post-id") Long postsId) {
         Member loginMember = memberService.findMember(principal.getName());
         // 이미지 처리
-        PostsDto.PatchImagesDto saveImages = patchDto.getSaveImages();
+        PostsDto.UpdatePostsImagesReq saveImages = updateReqDto.getSaveImages();
         List<Image> removedImages
                 = imageMapper.imageDtoListToImageList(saveImages.getRemovedImages());
-        imageService.removeImages(loginMember, removedImages);
         // Posts 처리
-        Posts posts = postsMapper.patchDtoToPosts(patchDto);
-        Posts updatePosts = postsService.updatePosts(loginMember, postsId, posts);
-        Map<String, Long> response = new HashMap<>();
-        // 주의 : postId <<< postsId 가 아님
-        response.put("postId", updatePosts.getId());
+        Posts posts = postsMapper.patchDtoToPosts(updateReqDto);
+        Posts updatePosts = postsService.updatePosts(loginMember, postsId, posts, removedImages);
+        PostsDto.UpdateRes response = new PostsDto.UpdateRes(updatePosts.getId());
 
         return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
 
     // 상세 조회
     @GetMapping("/{post-id}")
-    public ResponseEntity<PostsDto.PostsDetail> getPostsDetail(@AuthenticationPrincipal Principal principal,
-                                                               @Valid @Positive @PathVariable("post-id") Long postsId) {
+    public ResponseEntity<PostsDto.PostsDetailRes> getPostsDetail(@AuthenticationPrincipal Principal principal,
+                                                                  @Valid @Positive @PathVariable("post-id") Long postsId) {
         Long loginMemberId = null;
         if (principal != null) {
             Member loginMember = memberService.findMember(principal.getName());
             loginMemberId = loginMember.getId();
         }
-        PostsDto.PostsDetail postsDetail = postsService.findPostsDetail(postsId, loginMemberId);
+        PostsDto.PostsDetailRes postsDetail = postsService.findPostsDetail(postsId, loginMemberId);
         return new ResponseEntity<>(postsDetail, HttpStatus.OK);
     }
 
     // 목록 조회
     @GetMapping
-    public ResponseEntity<PostsDto.PostsList> getPostsList(@Valid @Positive @RequestParam int page,
-                                                           @RequestParam String orderby) {
+    public ResponseEntity<PostsDto.PostsListRes> getPostsList(@Valid @Positive @RequestParam int page,
+                                                              @RequestParam String orderby) {
         Posts.OrderBy orderBy = checkOrderBy(orderby);
         Page<Posts> postsList = postsService.findPostsList(page, orderBy);
-        PostsDto.PostsList response = new PostsDto.PostsList(postsList, orderBy.getOrderBy());
+        PostsDto.PostsListRes response = new PostsDto.PostsListRes(postsList, orderBy.getOrderBy());
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
     // 검색
     @GetMapping("/search")
-    public ResponseEntity<PostsDto.PostsList> getSearchPostsList(@RequestParam String keyword,
-                                                                 @RequestParam String[] tags,
-                                                                 @Valid @Positive @RequestParam int page,
-                                                                 @RequestParam String orderby) {
+    public ResponseEntity<PostsDto.PostsListRes> getSearchPostsList(@RequestParam String keyword,
+                                                                    @RequestParam String[] tags,
+                                                                    @Valid @Positive @RequestParam int page,
+                                                                    @RequestParam String orderby) {
         Posts.OrderBy orderBy = checkOrderBy(orderby);
         Page<Posts> postsList = postsService.findPostsListByTagsAndTitle(keyword, tags, page, orderBy);
-        PostsDto.PostsList response = new PostsDto.PostsList(postsList, orderBy.getOrderBy());
+        PostsDto.PostsListRes response = new PostsDto.PostsListRes(postsList, orderBy.getOrderBy());
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 

@@ -43,9 +43,9 @@ public class PostsRepositoryImpl implements PostsRepositoryCustom {
 
     // 단일 조회 : 미로그인 시
     @Override
-    public PostsDto.PostsDetail findPostsDetailById(Long postsId) {
+    public PostsDto.PostsDetailRes findPostsDetailById(Long postsId) {
         return queryFactory
-                .select(Projections.constructor(PostsDto.PostsDetail.class,posts))
+                .select(Projections.constructor(PostsDto.PostsDetailRes.class, posts))
                 .from(posts)
                 .where(posts.id.eq(postsId))
                 .fetchOne();
@@ -53,10 +53,10 @@ public class PostsRepositoryImpl implements PostsRepositoryCustom {
 
     // 단일 조회 : 로그인 시 : 북마크 여부, 좋아요 여부, 싫어요 여부 추가
     @Override
-    public PostsDto.PostsDetail findPostsDetailByMemberId(Long postsId, Long loginMemberId) {
+    public PostsDto.PostsDetailRes findPostsDetailByMemberId(Long postsId, Long loginMemberId) {
         em.clear();
         return queryFactory
-                .select(Projections.constructor(PostsDto.PostsDetail.class,
+                .select(Projections.constructor(PostsDto.PostsDetailRes.class,
                         posts.as("posts"),
                         ExpressionUtils.as(JPAExpressions.select(bookmark.id)
                                 .from(bookmark)
