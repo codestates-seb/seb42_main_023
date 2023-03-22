@@ -43,6 +43,7 @@ public class ReplyService implements ThumbCountService {
     // 추가
     public Reply createReply(Long commentId, Member loginMember, Reply newReply) {
         Comment findComment = finderService.findVerifyCommentById(commentId);
+        findComment.plusReplyCount();
         Reply reply = Reply.builder()
                 .content(newReply.getContent())
                 .writer(loginMember)
@@ -54,6 +55,7 @@ public class ReplyService implements ThumbCountService {
     // 삭제
     public Long removeReply(Member loginMember, Long replyId) {
         Reply findReply = checkOwner(loginMember, replyId);
+        findReply.getComment().minusReplyCount();
         DeleteResult deleteResult
                 = DeleteResult.builder().deleteReason(DeleteResult.Reason.SELF_DELETED).build();
         findReply.changeStateToDeleted(deleteResult);

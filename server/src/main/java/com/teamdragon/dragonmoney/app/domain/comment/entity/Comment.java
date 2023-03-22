@@ -29,7 +29,7 @@ public class Comment extends BaseTimeEntity implements ThumbCountable {
     private String content;
 
     @JoinColumn(name = "PARENT_POSTS_ID")
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
     private Posts posts;
 
     @JoinColumn(name = "WRITER_ID")
@@ -48,13 +48,13 @@ public class Comment extends BaseTimeEntity implements ThumbCountable {
     private DeleteResult deleteResult;
 
     @Column
+    private Long replyCount;
+
+    @Column
     private Long thumbupCount;
 
     @Column
     private Long thumbdownCount;
-
-    @Column
-    private Long replyCount;
 
     @OneToMany(mappedBy = "parentComment")
     private List<Thumbup> thumbups = new ArrayList<>();
@@ -134,6 +134,14 @@ public class Comment extends BaseTimeEntity implements ThumbCountable {
 
     public void updateContent(String content) {
         this.content = content;
+    }
+
+    public void plusReplyCount() {
+        this.replyCount += 1;
+    }
+
+    public void minusReplyCount() {
+        this.replyCount -= 1;
     }
 
     public void plusThumbupCount() {

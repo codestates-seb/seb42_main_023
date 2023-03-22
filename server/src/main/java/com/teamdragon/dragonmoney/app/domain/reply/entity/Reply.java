@@ -28,7 +28,7 @@ public class Reply extends BaseTimeEntity implements ThumbCountable {
     private String content;
 
     @JoinColumn(name = "PARENT_COMMENT_ID")
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
     private Comment comment;
 
     @JoinColumn(name = "WRITER_ID")

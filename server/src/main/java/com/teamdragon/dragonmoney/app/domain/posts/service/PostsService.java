@@ -182,7 +182,9 @@ public class PostsService implements ThumbCountService {
 
     // 조회수 증가
     private void plusViewCount(Long postsId) {
-        postsRepository.plusViewCountById(postsId);
+        Posts findPosts = findVerifyPostsById(postsId);
+        findPosts.plusViewCount();
+        postsRepository.save(findPosts);
     }
 
     @Override
