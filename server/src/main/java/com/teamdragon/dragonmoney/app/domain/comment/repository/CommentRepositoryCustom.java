@@ -10,9 +10,4 @@ public interface CommentRepositoryCustom {
     Page<CommentDto.CommentListElement> findCommentListByPage(Pageable pageable, Long postsId);
     // 목록 조회 : 로그인
     Page<CommentDto.CommentListElement> findCommentListByPageAndMemberId(Pageable pageable, Long postsId, Long loginMemberId);
-
-    Long updateThumbupCountPlus(Long commentId);
-    Long updateThumbupCountMinus(Long commentId);
-    Long updateThumbdownCountPlus(Long commentId);
-    Long updateThumbdownCountMinus(Long commentId);
 }

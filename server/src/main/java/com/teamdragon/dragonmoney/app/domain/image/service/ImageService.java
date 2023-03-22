@@ -38,11 +38,17 @@ public class ImageService {
 
     // 이미지 업로드
     public Image saveImage(Member loginMember, MultipartFile multipartFile) {
+        // 파일 크기 검사
+        checkFileSize(multipartFile);
+        // 확장자 검사
+        String ext = isVerifyExt(multipartFile);
+
         String originalFilename = multipartFile.getOriginalFilename();
-        String ext = extractExt(originalFilename);
         String storeFileName = createStoreFileName(originalFilename);
 
+        // 클라우드 업로드
         String url = uploadImageToCloud(multipartFile, ext, storeFileName);
+        // DB 업로드
         return saveImageToDB(loginMember, url, ext, storeFileName);
     }
 
@@ -78,11 +84,6 @@ public class ImageService {
                 .map(Image::getFileName)
                 .collect(Collectors.toList());
         s3Service.removeFiles(deleteFileNames);
-    }
-
-    // 이미지 단일 조회 : fileName
-    private Optional<Image> findVerifyImageById(Long imageId) {
-        return imageRepository.findById(imageId);
     }
 
     // 이미지 업로드 : 클라우드
@@ -126,13 +127,13 @@ public class ImageService {
     }
 
     // 이미지 확장자 검증
-    private boolean isVerifyExt(MultipartFile multipartFile ) {
+    private String isVerifyExt(MultipartFile multipartFile ) {
         String ext = extractExt(multipartFile.getOriginalFilename());
         String upperExt = ext.toUpperCase();
 
         for (String permissionExt : PERMISSION_FILE_EXT_ARR) {
             if (permissionExt.equals(upperExt)) {
-                return true;
+                return ext.toLowerCase();
             }
         }
         throw new BusinessLogicException(BusinessExceptionCode.IMAGE_EXTENSION_NOT_VALID);

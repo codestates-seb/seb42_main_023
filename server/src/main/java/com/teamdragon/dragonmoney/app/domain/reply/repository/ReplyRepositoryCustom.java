@@ -11,9 +11,4 @@ public interface ReplyRepositoryCustom {
     Page<ReplyDto.ReplyListElement> findReplyListByPage(Pageable pageable, Long commentId);
     // 목록 조회 : 로그인
     Page<ReplyDto.ReplyListElement> findReplyListByPageAndMemberId(Pageable pageable, Long commentId, Long loginMemberId);
-
-    Long updateThumbupCountPlus(Long replyId);
-    Long updateThumbupCountMinus(Long replyId);
-    Long updateThumbdownCountPlus(Long replyId);
-    Long updateThumbdownCountMinus(Long replyId);
 }

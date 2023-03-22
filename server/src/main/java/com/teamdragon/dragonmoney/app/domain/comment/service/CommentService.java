@@ -7,7 +7,7 @@ import com.teamdragon.dragonmoney.app.domain.common.service.FinderService;
 import com.teamdragon.dragonmoney.app.domain.member.entity.Member;
 import com.teamdragon.dragonmoney.app.domain.posts.entity.Posts;
 import com.teamdragon.dragonmoney.app.domain.reply.service.ReplyService;
-import com.teamdragon.dragonmoney.app.domain.thumb.Thumb;
+import com.teamdragon.dragonmoney.app.domain.thumb.ThumbDto;
 import com.teamdragon.dragonmoney.app.domain.thumb.ThumbCountService;
 import com.teamdragon.dragonmoney.app.domain.delete.entity.DeleteResult;
 import com.teamdragon.dragonmoney.app.global.exception.AuthExceptionCode;
@@ -91,33 +91,31 @@ public class CommentService implements ThumbCountService {
     }
 
     @Override
-    public Thumb thumbupPlusUpdate(Long commentId, boolean needInquiry) {
-        commentRepository.updateThumbupCountPlus(commentId);
-        return getThumbByNeedInquiry(needInquiry, commentId);
-    }
-
-    @Override
-    public Thumb thumbupMinusUpdate(Long commentId, boolean needInquiry) {
-        commentRepository.updateThumbupCountMinus(commentId);
-        return getThumbByNeedInquiry(needInquiry, commentId);
-    }
-
-    @Override
-    public Thumb thumbdownPlusUpdate(Long commentId, boolean needInquiry) {
-        commentRepository.updateThumbdownCountPlus(commentId);
-        return getThumbByNeedInquiry(needInquiry, commentId);
-    }
-
-    @Override
-    public Thumb thumbdownMinusUpdate(Long commentId, boolean needInquiry) {
-        commentRepository.updateThumbdownCountMinus(commentId);
-        return getThumbByNeedInquiry(needInquiry, commentId);
-    }
-
-    // 조회 필요 여부에 따른 좋아요,싫어요 정보 반환
-    private Thumb getThumbByNeedInquiry(boolean needInquiry, Long commentId) {
+    public ThumbDto thumbupStateUpdate(Long commentId, boolean needInquiry, ThumbDto.ACTION action) {
+        Comment findComment = findVerifyCommentById(commentId);
+        if (action == ThumbDto.ACTION.PLUS) {
+            findComment.plusThumbupCount();
+        } else if ( action == ThumbDto.ACTION.MINUS) {
+            findComment.minusThumbupCount();
+        }
+        Comment updateComment = commentRepository.save(findComment);
         if (needInquiry) {
-            return findVerifyCommentById(commentId).getThumbCount();
+            return updateComment.getThumbCount();
+        }
+        return null;
+    }
+
+    @Override
+    public ThumbDto thumbdownStateUpdate(Long commentId, boolean needInquiry, ThumbDto.ACTION action) {
+        Comment findComment = findVerifyCommentById(commentId);
+        if (action == ThumbDto.ACTION.PLUS) {
+            findComment.plusThumbdownCount();
+        } else if ( action == ThumbDto.ACTION.MINUS) {
+            findComment.minusThumbdownCount();
+        }
+        Comment updateComment = commentRepository.save(findComment);
+        if (needInquiry) {
+            return updateComment.getThumbCount();
         }
         return null;
     }

@@ -4,7 +4,7 @@ import com.teamdragon.dragonmoney.app.domain.category.entity.Category;
 import com.teamdragon.dragonmoney.app.domain.comment.entity.Comment;
 import com.teamdragon.dragonmoney.app.domain.image.entity.Image;
 import com.teamdragon.dragonmoney.app.domain.member.entity.Member;
-import com.teamdragon.dragonmoney.app.domain.thumb.Thumb;
+import com.teamdragon.dragonmoney.app.domain.thumb.ThumbDto;
 import com.teamdragon.dragonmoney.app.domain.thumb.ThumbCountable;
 import com.teamdragon.dragonmoney.app.domain.thumb.entity.Thumbdown;
 import com.teamdragon.dragonmoney.app.domain.thumb.entity.Thumbup;
@@ -135,8 +135,8 @@ public class Posts extends BaseTimeEntity implements ThumbCountable {
     }
 
     @Override
-    public Thumb getThumbCount() {
-        return new Thumb(this.thumbupCount, this.thumbdownCount);
+    public ThumbDto getThumbCount() {
+        return new ThumbDto(this.thumbupCount, this.thumbdownCount);
     }
 
     public void addComment(Comment comment) {
@@ -180,5 +180,25 @@ public class Posts extends BaseTimeEntity implements ThumbCountable {
     public List<String> getTagNames() {
         return this.postsTags.stream()
                 .map(pt -> pt.getTag().getName()).collect(Collectors.toList());
+    }
+
+    public void plusViewCount(){
+        this.viewCount += 1;
+    }
+
+    public void plusThumbupCount() {
+        this.thumbupCount += 1;
+    }
+
+    public void minusThumbupCount() {
+        this.thumbupCount -= 1;
+    }
+
+    public void plusThumbdownCount() {
+        this.thumbupCount += 1;
+    }
+
+    public void minusThumbdownCount() {
+        this.thumbupCount -= 1;
     }
 }

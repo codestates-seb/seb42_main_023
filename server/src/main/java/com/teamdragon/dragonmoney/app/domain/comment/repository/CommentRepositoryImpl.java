@@ -8,7 +8,6 @@ import com.querydsl.jpa.JPAExpressions;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.teamdragon.dragonmoney.app.domain.comment.dto.CommentDto;
-import com.teamdragon.dragonmoney.app.domain.comment.entity.QComment;
 import com.teamdragon.dragonmoney.app.global.pagenation.QueryDslUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -97,46 +96,6 @@ public class CommentRepositoryImpl implements CommentRepositoryCustom {
                 .where(comment.posts.id.eq(postsId));
 
         return PageableExecutionUtils.getPage(content, pageable, countQuery::fetchOne);
-    }
-
-    @Override
-    public Long updateThumbupCountPlus(Long commentId) {
-        long result = queryFactory
-                .update(comment)
-                .set(comment.thumbupCount, comment.thumbupCount.add(1))
-                .where(comment.id.eq(commentId))
-                .execute();
-        return result;
-    }
-
-    @Override
-    public Long updateThumbupCountMinus(Long commentId) {
-        long result = queryFactory
-                .update(comment)
-                .set(comment.thumbupCount, comment.thumbupCount.add(-1))
-                .where(comment.id.eq(commentId))
-                .execute();
-        return result;
-    }
-
-    @Override
-    public Long updateThumbdownCountPlus(Long commentId) {
-        long result = queryFactory
-                .update(comment)
-                .set(comment.thumbdownCount, comment.thumbdownCount.add(1))
-                .where(comment.id.eq(commentId))
-                .execute();
-        return result;
-    }
-
-    @Override
-    public Long updateThumbdownCountMinus(Long commentId) {
-        long result = queryFactory
-                .update(comment)
-                .set(comment.thumbdownCount, comment.thumbdownCount.add(-1))
-                .where(comment.id.eq(commentId))
-                .execute();
-        return result;
     }
 
     private OrderSpecifier[] getAllOrderSpecifiers(Pageable pageable, Path path) {

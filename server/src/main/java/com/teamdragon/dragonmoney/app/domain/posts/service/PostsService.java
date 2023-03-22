@@ -13,7 +13,7 @@ import com.teamdragon.dragonmoney.app.domain.posts.repository.PostsRepository;
 import com.teamdragon.dragonmoney.app.domain.posts.repository.PostsTagRepository;
 import com.teamdragon.dragonmoney.app.domain.tag.entity.Tag;
 import com.teamdragon.dragonmoney.app.domain.tag.service.TagService;
-import com.teamdragon.dragonmoney.app.domain.thumb.Thumb;
+import com.teamdragon.dragonmoney.app.domain.thumb.ThumbDto;
 import com.teamdragon.dragonmoney.app.domain.thumb.ThumbCountService;
 import com.teamdragon.dragonmoney.app.domain.delete.entity.DeleteResult;
 import com.teamdragon.dragonmoney.app.global.exception.AuthExceptionCode;
@@ -186,27 +186,33 @@ public class PostsService implements ThumbCountService {
     }
 
     @Override
-    public Thumb thumbupPlusUpdate(Long postsId, boolean needInquiry) {
-        postsRepository.updateThumbupCountPlus(postsId);
-        return getThumbByNeedInquiry(needInquiry, postsId);
+    public ThumbDto thumbupStateUpdate(Long postsId, boolean needInquiry, ThumbDto.ACTION action) {
+        Posts findPosts = findVerifyPostsById(postsId);
+        if (action == ThumbDto.ACTION.PLUS) {
+            findPosts.plusThumbupCount();
+        } else if ( action == ThumbDto.ACTION.MINUS) {
+            findPosts.minusThumbupCount();
+        }
+        Posts updatePosts = postsRepository.save(findPosts);
+        if (needInquiry) {
+            return updatePosts.getThumbCount();
+        }
+        return null;
     }
 
     @Override
-    public Thumb thumbupMinusUpdate(Long postsId, boolean needInquiry) {
-        postsRepository.updateThumbupCountMinus(postsId);
-        return getThumbByNeedInquiry(needInquiry, postsId);
-    }
-
-    @Override
-    public Thumb thumbdownPlusUpdate(Long postsId, boolean needInquiry) {
-        postsRepository.updateThumbdownCountPlus(postsId);
-        return getThumbByNeedInquiry(needInquiry, postsId);
-    }
-
-    @Override
-    public Thumb thumbdownMinusUpdate(Long postsId, boolean needInquiry) {
-        postsRepository.updateThumbdownCountMinus(postsId);
-        return getThumbByNeedInquiry(needInquiry, postsId);
+    public ThumbDto thumbdownStateUpdate(Long postsId, boolean needInquiry, ThumbDto.ACTION action) {
+        Posts findPosts = findVerifyPostsById(postsId);
+        if (action == ThumbDto.ACTION.PLUS) {
+            findPosts.plusThumbdownCount();
+        } else if ( action == ThumbDto.ACTION.MINUS) {
+            findPosts.minusThumbdownCount();
+        }
+        Posts updatePosts = postsRepository.save(findPosts);
+        if (needInquiry) {
+            return updatePosts.getThumbCount();
+        }
+        return null;
     }
 
     // 작성자 확인
@@ -221,14 +227,6 @@ public class PostsService implements ThumbCountService {
     // Tags 조회 및 저장
     private List<Tag> saveTags(List<String> tagNames) {
         return tagService.saveListTag(tagNames);
-    }
-
-    // 조회 필요 여부에 따른 좋아요,싫어요 정보 반환
-    private Thumb getThumbByNeedInquiry(boolean needInquiry, Long postsId) {
-        if (needInquiry) {
-            return findVerifyPostsById(postsId).getThumbCount();
-        }
-        return null;
     }
 
     // 유효한 Posts 조회

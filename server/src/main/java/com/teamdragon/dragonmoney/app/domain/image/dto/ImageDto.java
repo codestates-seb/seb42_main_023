@@ -7,7 +7,7 @@ public class ImageDto {
     @Setter
     @AllArgsConstructor
     public static class ImageResponse {
-        private Long id;
-        private String fileName;
+        private Long imageId;
+        private String imageName;
     }
 }

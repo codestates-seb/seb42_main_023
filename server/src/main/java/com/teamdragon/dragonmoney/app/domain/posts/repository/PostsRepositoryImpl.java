@@ -29,12 +29,10 @@ import static com.teamdragon.dragonmoney.app.domain.thumb.entity.QThumbup.*;
 public class PostsRepositoryImpl implements PostsRepositoryCustom {
 
     private final JPAQueryFactory queryFactory;
-    private final EntityManager em;
 
     // 최신 반영 Posts 조회
     @Override
     public Posts findLatestPosts(Posts targetPosts) {
-        em.clear();
         return queryFactory
                 .select(posts)
                 .where(posts.id.eq(targetPosts.getId()))
@@ -54,7 +52,6 @@ public class PostsRepositoryImpl implements PostsRepositoryCustom {
     // 단일 조회 : 로그인 시 : 북마크 여부, 좋아요 여부, 싫어요 여부 추가
     @Override
     public PostsDto.PostsDetailRes findPostsDetailByMemberId(Long postsId, Long loginMemberId) {
-        em.clear();
         return queryFactory
                 .select(Projections.constructor(PostsDto.PostsDetailRes.class,
                         posts.as("posts"),
@@ -174,51 +171,6 @@ public class PostsRepositoryImpl implements PostsRepositoryCustom {
                 .set(posts.viewCount, posts.viewCount.add(1))
                 .where(posts.id.eq(postsId))
                 .execute();
-    }
-
-    // 이하 좋아요 싫어요 관련
-    @Override
-    public Long updateThumbupCountPlus(Long postsId) {
-        long result = queryFactory
-                .update(posts)
-                .set(posts.thumbupCount, posts.thumbupCount.add(1))
-                .where(posts.id.eq(postsId))
-                .execute();
-        em.clear();
-        return result;
-    }
-
-    @Override
-    public Long updateThumbupCountMinus(Long postsId) {
-        long result = queryFactory
-                .update(posts)
-                .set(posts.thumbupCount, posts.thumbupCount.add(-1))
-                .where(posts.id.eq(postsId))
-                .execute();
-        em.clear();
-        return result;
-    }
-
-    @Override
-    public Long updateThumbdownCountPlus(Long postsId) {
-        long result = queryFactory
-                .update(posts)
-                .set(posts.thumbdownCount, posts.thumbdownCount.add(1))
-                .where(posts.id.eq(postsId))
-                .execute();
-        em.clear();
-        return result;
-    }
-
-    @Override
-    public Long updateThumbdownCountMinus(Long postsId) {
-        long result = queryFactory
-                .update(posts)
-                .set(posts.thumbdownCount, posts.thumbdownCount.add(-1))
-                .where(posts.id.eq(postsId))
-                .execute();
-        em.clear();
-        return result;
     }
 
     private OrderSpecifier[] getAllOrderSpecifiers(Pageable pageable, Path path) {
