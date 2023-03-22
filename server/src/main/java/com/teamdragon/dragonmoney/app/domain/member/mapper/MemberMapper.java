@@ -1,6 +1,7 @@
 package com.teamdragon.dragonmoney.app.domain.member.mapper;
 
 import com.teamdragon.dragonmoney.app.domain.member.dto.MemberDto;
+import com.teamdragon.dragonmoney.app.domain.member.dto.MyPageDto;
 import com.teamdragon.dragonmoney.app.domain.member.entity.Member;
 import org.mapstruct.Mapper;
 import org.mapstruct.ReportingPolicy;
@@ -11,5 +12,5 @@ public interface MemberMapper {
     Member postDtoToMemberTemp(MemberDto.PostTemp post);
     Member pathDtoToMember(MemberDto.Patch patch);
     MemberDto.IntroResponse introResponseDtoToMember(Member member);
-    MemberDto.MyPageResponse myPageResponseDtoToMember(Member member);
+    MyPageDto.MyPageMemberInfo myPageResponseDtoToMember(Member member);
 }

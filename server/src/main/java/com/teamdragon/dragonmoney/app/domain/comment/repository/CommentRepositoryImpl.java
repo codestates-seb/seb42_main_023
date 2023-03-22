@@ -8,6 +8,7 @@ import com.querydsl.jpa.JPAExpressions;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.teamdragon.dragonmoney.app.domain.comment.dto.CommentDto;
+import com.teamdragon.dragonmoney.app.domain.comment.entity.Comment;
 import com.teamdragon.dragonmoney.app.global.pagenation.QueryDslUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -96,6 +97,73 @@ public class CommentRepositoryImpl implements CommentRepositoryCustom {
                 .where(comment.posts.id.eq(postsId));
 
         return PageableExecutionUtils.getPage(content, pageable, countQuery::fetchOne);
+    }
+
+    // 특정 회원이 쓴 댓글 목록 조회
+    @Override
+    public Page<Comment> findCommentListByMemberName (Pageable pageable, String memberName) {
+        OrderSpecifier[] orders = getAllOrderSpecifiers(pageable, comment);
+
+        List<Comment> content = queryFactory
+                .selectFrom(comment)
+                .distinct()
+                .where(comment.writer.name.eq(memberName))
+                .orderBy(orders)
+                .offset(pageable.getOffset())
+                .limit(pageable.getPageSize())
+                .fetch();
+        JPAQuery<Long> countQuery = queryFactory
+                .select(comment.count())
+                .from(comment)
+                .where(comment.writer.name.eq(memberName));
+
+        return PageableExecutionUtils.getPage(content, pageable, countQuery::fetchOne);
+    }
+
+    // Comment 목록 조회 : 마이 페이지 좋아요 한 댓글 + 페이징
+    @Override
+    public Page<Comment> findThumbUpCommentListByMemberName(Pageable pageable, String memberName) {
+        OrderSpecifier[] orders = getAllOrderSpecifiers(pageable, comment);
+
+        List<Comment> content = queryFactory
+                .select(comment)
+                .from(thumbup)
+                .join(thumbup.parentComment, comment)
+                .join(thumbup.member, member)
+                .where(comment.writer.name.eq(memberName))
+                .orderBy(orders)
+                .offset(pageable.getOffset())
+                .limit(pageable.getPageSize())
+                .fetch();
+        JPAQuery<Long> countQuery = queryFactory
+                .select(comment.count())
+                .from(comment)
+                .where(comment.writer.name.eq(memberName));
+
+        return PageableExecutionUtils.getPage(content, pageable, countQuery::fetchOne);
+    }
+
+    // 특정 회원이 쓴 댓글 개수 조회
+    @Override
+    public Long findMemberCommentCount(String memberName) {
+        Long memberCommentCount = queryFactory
+                .select(comment.count())
+                .from(comment)
+                .where(comment.writer.name.eq(memberName))
+                .fetchOne();
+        return memberCommentCount;
+    }
+
+    // 특정 회원이 좋아요 한 댓글 개수 조회
+    @Override
+    public Long findMemberThumbUpCommentCount(String memberName) {
+        Long memberPostsCount = queryFactory
+                .select(thumbup.count())
+                .from(thumbup)
+                .where(thumbup.member.name.eq(memberName))
+                .where(thumbup.parentComment.id.isNotNull())
+                .fetchOne();
+        return memberPostsCount;
     }
 
     private OrderSpecifier[] getAllOrderSpecifiers(Pageable pageable, Path path) {
