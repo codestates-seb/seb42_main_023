@@ -37,13 +37,13 @@ public class Posts extends BaseTimeEntity implements ThumbCountable {
     private String content;
 
     @Column
+    private Long commentCount;
+
+    @Column
     private Long thumbupCount;
 
     @Column
     private Long thumbdownCount;
-
-    @Column
-    private Long commentCount;
 
     @Column(length = 20)
     @Enumerated(value = EnumType.STRING)
@@ -184,6 +184,14 @@ public class Posts extends BaseTimeEntity implements ThumbCountable {
 
     public void plusViewCount(){
         this.viewCount += 1;
+    }
+
+    public void plusCommentCount() {
+        this.commentCount += 1;
+    }
+
+    public void minusCommentCount() {
+        this.commentCount -= 1;
     }
 
     public void plusThumbupCount() {

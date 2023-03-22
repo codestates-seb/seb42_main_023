@@ -44,6 +44,7 @@ public class CommentService implements ThumbCountService {
     // 추가
     public Comment createComment(Long postsId, Member loginMember, Comment newComment) {
         Posts parentPosts = finderService.findVerifyPostsById(postsId);
+        parentPosts.plusCommentCount();
         Comment comment = Comment.builder()
                 .content(newComment.getContent())
                 .writer(loginMember)
@@ -55,6 +56,8 @@ public class CommentService implements ThumbCountService {
     // 삭제
     public Long removeComment(Member loginMember, Long commentId) {
         Comment findComment = checkOwner(loginMember, commentId);
+        Posts parentPosts = findComment.getPosts();
+        parentPosts.minusCommentCount();
         DeleteResult deleteResult
                 = DeleteResult.builder().deleteReason(DeleteResult.Reason.SELF_DELETED).build();
         findComment.changeStateToDeleted(deleteResult);
