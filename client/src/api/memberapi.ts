@@ -1,5 +1,6 @@
 //TODO: API쿼리에 맞게 수정하기
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
+import Cookies from 'js-cookie';
 
 interface Intro {
   intro: string;
@@ -7,7 +8,16 @@ interface Intro {
 // 회원정보 불러오기
 export const membersApi = createApi({
   reducerPath: 'membersApi',
-  baseQuery: fetchBaseQuery({ baseUrl: 'http://localhost:3000' }),
+  baseQuery: fetchBaseQuery({
+    baseUrl: 'http://localhost:3000',
+    credentials: 'include',
+    prepareHeaders: (headers) => {
+      const accsessToken = Cookies.get('Authorization');
+      headers.set('Content-Type', 'application/json');
+      headers.set('Authorization', String(accsessToken));
+      return headers;
+    },
+  }),
   tagTypes: ['members'],
   endpoints: (builder) => ({
     getMember: builder.query({

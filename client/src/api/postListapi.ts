@@ -16,13 +16,9 @@ export const postListApi = apiSlice.injectEndpoints({
 export const weeklyPopularApi = createApi({
   reducerPath: 'weeklyPopularApi',
   baseQuery: fetchBaseQuery({ baseUrl: process.env.REACT_APP_SERVER_ADDRESS }),
-  tagTypes: ['weeklyPopular'],
   endpoints: (builder) => ({
     getPostList: builder.query({
       query: ({ endpoint }) => `posts/${endpoint}`,
-      providesTags: (result, error, arg) => {
-        return [{ type: 'weeklyPopular', id: arg.endpoint }];
-      },
     }),
   }),
 });
