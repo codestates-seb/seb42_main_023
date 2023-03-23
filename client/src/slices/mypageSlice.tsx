@@ -31,6 +31,7 @@ const mypageSlice = createSlice({
     filter: '작성한 글',
     dropOpen: false,
     EditOpen: false,
+    deleteAccountOpen: false,
     EditWidth: 1,
     content: '',
     query: '',
@@ -56,6 +57,10 @@ const mypageSlice = createSlice({
     setContent: (state, action: Intro): void => {
       state.content = action.payload;
     },
+    // 회원탈퇴 확인창
+    setDeleteAccountOpen: (state, action: Open): void => {
+      state.deleteAccountOpen = action.payload;
+    },
   },
 });
 
@@ -66,4 +71,5 @@ export const {
   setEditOpen,
   setEditWidth,
   setContent,
+  setDeleteAccountOpen,
 } = mypageSlice.actions;
