@@ -55,6 +55,7 @@ const GlobalStyles = createGlobalStyle`
     main {
     max-width: 1100px;
     min-height: calc(100vh - 60px - 154px);
+    min-width: 1100px;
     height: 100%;
     border: 1px solid black;
     margin:0 auto;  
