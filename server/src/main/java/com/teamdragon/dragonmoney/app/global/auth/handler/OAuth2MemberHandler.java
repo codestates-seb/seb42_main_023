@@ -21,7 +21,6 @@ import java.io.IOException;
 import java.net.URI;
 import java.util.*;
 
-//OAuth 2 인증 후, Frontend 쪽으로 JWT 를 전송!
 @Slf4j
 @Component
 public class OAuth2MemberHandler extends SimpleUrlAuthenticationSuccessHandler {
@@ -44,7 +43,6 @@ public class OAuth2MemberHandler extends SimpleUrlAuthenticationSuccessHandler {
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
         var oAuth2User = (OAuth2User)authentication.getPrincipal();
 
-//        String name = String.valueOf(oAuth2User.getAttributes().get("name"));
         String picture = String.valueOf(oAuth2User.getAttributes().get("picture"));
         String email = String.valueOf(oAuth2User.getAttributes().get("email"));
         List<String> authorities = authorityUtils.createRoles(email);
@@ -90,7 +88,6 @@ public class OAuth2MemberHandler extends SimpleUrlAuthenticationSuccessHandler {
                 .newInstance()
                 .scheme("http")
                 .host("hp5234-dragonmoney-front.s3-website.ap-northeast-2.amazonaws.com")
-//                .host("thedragonmoney.com")
                 .path("/setnickname")
                 .queryParams(queryParams)
                 .build()
@@ -105,7 +102,6 @@ public class OAuth2MemberHandler extends SimpleUrlAuthenticationSuccessHandler {
                 .newInstance()
                 .scheme("http")
                 .host("hp5234-dragonmoney-front.s3-website.ap-northeast-2.amazonaws.com")
-//                .host("thedragonmoney.com")
                 .path("/temptoken")
                 .queryParams(queryParams)
                 .build()

@@ -48,12 +48,12 @@ public class JwtTokenizer {
         Key key = getKeyFromBase64EncodedKey(base64EncodedSecretKey);
 
         return Jwts.builder()
-                .setClaims(claims)          // Claims에는 주로 인증된 사용자와 관련된 정보를 추가
-                .setSubject(subject)        //  JWT에 대한 제목을 추가
-                .setIssuedAt(Calendar.getInstance().getTime())   // JWT 발행 일자를 설정하는데 파라미터 타입은 java.util.Date 타입
-                .setExpiration(expiration)  // JWT의 만료일시를 지정합니다. 파라미터 타입은 역시 java.util.Date 타입
-                .signWith(key)              // 서명을 위한 Key(java.security.Key) 객체를 설정
-                .compact();                 //  JWT를 생성하고 직렬화
+                .setClaims(claims)
+                .setSubject(subject)
+                .setIssuedAt(Calendar.getInstance().getTime())
+                .setExpiration(expiration)
+                .signWith(key)
+                .compact();
     }
 
     // Access Token이 만료되었을 경우, Access Token을 새로 생성할 수 있게 해주는 Refresh Token을 생성하는 메서드
