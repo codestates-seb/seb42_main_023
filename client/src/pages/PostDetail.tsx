@@ -100,7 +100,7 @@ const PostDetail: React.FC = () => {
   const [sendReport] = reportMutation;
 
   // 시간 계산
-  const time = timeSince(isSuccess && data.posts[0].createdAt);
+  const time = timeSince(isSuccess && data?.posts?.createdAt);
   // 게시글 수정 여부
   const isEdit = isSuccess && data.posts[0].modifiedAt !== '';
   // 댓글, 답글 작성자 소개페이지 오픈 여부
@@ -343,13 +343,13 @@ const PostDetail: React.FC = () => {
       <Container onClick={handleClickOutside}>
         <PostContainer onClick={outClickIntroHandler}>
           <div className="post-title">
-            <h1>{isSuccess && data.posts[0].title}</h1>
+            <h1>{isSuccess && data.posts.title}</h1>
             {isEdit ? <p>(수정됨)</p> : null}
           </div>
           <PostInfo>
             <ul className="post-info">
               <li className="image" onClick={IntroHandler}>
-                <img src={isSuccess && data.posts[0].memberImage}></img>
+                <img src={isSuccess && data.posts.memberImage}></img>
               </li>
 
               {/* TODO */}
@@ -362,53 +362,45 @@ const PostDetail: React.FC = () => {
                   <IntroInfo>
                     <ul className="intro-content-info">
                       <li className="image">
-                        <img src={data.posts[0].memberImage} id=""></img>
+                        <img src={data.posts.memberImage} id=""></img>
                       </li>
-                      <li className="intro-nickname">
-                        {data.posts[0].memberName}
-                      </li>
+                      <li className="intro-nickname">{data.post.memberName}</li>
                     </ul>
                   </IntroInfo>
-                  <label className="introduction">{data.posts[0].title}</label>
+                  <label className="introduction">{data.posts.title}</label>
                   <div className="intro-moreInfo">더보기 》</div>
                 </IntorductionContainer>
               ) : null}
               {/* TODO */}
 
-              <li className="nickname">
-                {isSuccess && data.posts[0].memberName}
-              </li>
+              <li className="nickname">{isSuccess && data.posts.memberName}</li>
               <TimeIcon />
               <li className="created-time">{time} 전</li>
               <ViewIcon />
-              <li className="views">{isSuccess && data.posts[0].viewCount}</li>
+              <li className="views">{isSuccess && data.posts.viewCount}</li>
               <CommentIcon checked={true} />
               <li className="comments">
                 {commentQuery.data && commentQuery.data.comment.length}
               </li>
               <button className="bookmark" onClick={changeBookmarkHandler}>
-                <BookmarkIcon
-                  checked={isSuccess && data.posts[0].isBookmarked}
-                />
+                <BookmarkIcon checked={isSuccess && data.posts.isBookmarked} />
               </button>
               <DropdownButton></DropdownButton>
             </ul>
           </PostInfo>
           <PostContent>
-            <div>{isSuccess && data.posts[0].content}</div>
+            <div>{isSuccess && data.posts.content}</div>
 
             <ul className="post-info">
               <button onClick={changeLiikeHandler}>
-                <LikeIcon checked={isSuccess && data.posts[0].isThumbup} />
+                <LikeIcon checked={isSuccess && data.posts.isThumbup} />
               </button>
-              <li className="likes">
-                {isSuccess && data.posts[0].thumbupCount}
-              </li>
+              <li className="likes">{isSuccess && data.posthumbupCount}</li>
               <button onClick={changeDislikeHandler}>
-                <DislikeIcon checked={isSuccess && data.posts[0].isThumbDown} />
+                <DislikeIcon checked={isSuccess && data.posts.isThumbDown} />
               </button>
               <li className="dislikes">
-                {isSuccess && data.posts[0].thumbDownCount}
+                {isSuccess && data.posts.thumbDownCount}
               </li>
             </ul>
             <CommentInput></CommentInput>
