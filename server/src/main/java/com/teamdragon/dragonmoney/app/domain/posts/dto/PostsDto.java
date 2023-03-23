@@ -5,7 +5,9 @@ import com.teamdragon.dragonmoney.app.domain.posts.entity.Posts;
 import com.teamdragon.dragonmoney.app.domain.posts.entity.PostsTag;
 import com.teamdragon.dragonmoney.app.domain.tag.dto.TagDto;
 import com.teamdragon.dragonmoney.app.global.pagenation.PageInfo;
+import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import org.hibernate.validator.constraints.Length;
 import org.springframework.data.domain.Page;
 
@@ -97,6 +99,38 @@ public class PostsDto {
             List<Posts> postsList = postsPage.getContent();
             if (postsList != null) {
                 posts = postsList.stream()
+                        .map(PostsListElement::new)
+                        .collect(Collectors.toList());
+            }
+        }
+    }
+
+    @Getter
+    @NoArgsConstructor
+    public static class WeeklyPopularRes {
+        private List<PostsListElement> weeklyPopular;
+        private LocalDateTime start;
+        private LocalDateTime end;
+
+        @Builder
+        public WeeklyPopularRes(List<Posts> posts, LocalDateTime start, LocalDateTime end) {
+            if (posts != null) {
+                this.weeklyPopular = posts.stream()
+                        .map(PostsListElement::new)
+                        .collect(Collectors.toList());
+            }
+            this.start = start;
+            this.end = end;
+        }
+    }
+
+    @Getter
+    public static class RecommendPostsListRes {
+        private List<PostsListElement> recommends;
+
+        public RecommendPostsListRes(List<Posts> posts) {
+            if (posts != null) {
+                this.recommends = posts.stream()
                         .map(PostsListElement::new)
                         .collect(Collectors.toList());
             }

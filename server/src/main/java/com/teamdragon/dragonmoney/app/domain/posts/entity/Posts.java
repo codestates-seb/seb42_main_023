@@ -4,6 +4,7 @@ import com.teamdragon.dragonmoney.app.domain.category.entity.Category;
 import com.teamdragon.dragonmoney.app.domain.comment.entity.Comment;
 import com.teamdragon.dragonmoney.app.domain.image.entity.Image;
 import com.teamdragon.dragonmoney.app.domain.member.entity.Member;
+import com.teamdragon.dragonmoney.app.domain.popular.entity.BestAwards;
 import com.teamdragon.dragonmoney.app.domain.thumb.ThumbDto;
 import com.teamdragon.dragonmoney.app.domain.thumb.ThumbCountable;
 import com.teamdragon.dragonmoney.app.domain.thumb.entity.Thumbdown;
@@ -37,6 +38,9 @@ public class Posts extends BaseTimeEntity implements ThumbCountable {
     private String content;
 
     @Column
+    private Long bookmarkCount;
+
+    @Column
     private Long commentCount;
 
     @Column
@@ -63,6 +67,9 @@ public class Posts extends BaseTimeEntity implements ThumbCountable {
     @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
     @JoinColumn(name = "DELETE_RESULT_ID")
     private DeleteResult deleteResult;
+
+    @OneToOne(mappedBy = "posts", fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
+    private BestAwards bestAwards;
 
     @OneToMany(mappedBy = "posts", cascade = CascadeType.PERSIST)
     private List<Image> images = new ArrayList<>();
@@ -139,6 +146,10 @@ public class Posts extends BaseTimeEntity implements ThumbCountable {
         return new ThumbDto(this.thumbupCount, this.thumbdownCount);
     }
 
+    public void selectedBestAwards(BestAwards bestAwards) {
+        this.bestAwards = bestAwards;
+    }
+
     public void addComment(Comment comment) {
         this.comments.add(comment);
         if (comment.getPosts() != this) {
@@ -184,6 +195,14 @@ public class Posts extends BaseTimeEntity implements ThumbCountable {
 
     public void plusViewCount(){
         this.viewCount += 1;
+    }
+
+    public void plusBookmarkCount(){
+        this.bookmarkCount += 1;
+    }
+
+    public void minusBookmarkCount() {
+        this.bookmarkCount -= 1;
     }
 
     public void plusCommentCount() {
