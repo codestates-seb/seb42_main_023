@@ -268,7 +268,7 @@ const PostDetail: React.FC = () => {
 
   return (
     <>
-      {commentQuery.data && 'post' in state && state.post?.isOpenDelete ? (
+      {'post' in state && state.post?.isOpenDelete ? (
         <ModalContainer>
           <DeleteModal>
             <div onClick={confirmDeleteHandler}> </div>
@@ -281,7 +281,8 @@ const PostDetail: React.FC = () => {
           </DeleteModal>
         </ModalContainer>
       ) : null}
-      {commentQuery.data && 'post' in state && state.post?.isOpenReport ? (
+
+      {'post' in state && state.post?.isOpenReport ? (
         <ModalContainer>
           <ReportModal>
             <div className="report">신고</div>
@@ -608,6 +609,7 @@ const ReportModal = styled.div`
   border: solid 1px #d4d4d4;
   border-radius: 5px;
   color: #5c5c5c;
+  z-index: 10;
   cursor: pointer;
   padding: 25px 15px 0 15px;
 
