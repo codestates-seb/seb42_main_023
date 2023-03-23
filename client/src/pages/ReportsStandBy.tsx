@@ -1,27 +1,43 @@
 import React from 'react';
-import NavAdmin from '../components/AdminP/NavAdmin';
 import styled from 'styled-components';
-// import { useState } from 'react';
+import NavAdmin from '../components/AdminP/NavAdmin';
+import ReportReview from '../components/AdminP/ReportReview';
+import Pagination from '../components/AdminP/Pagination';
 import { WhiteBtn } from '../components/common/Btn';
-// import Pagination from '../components/AdminP/Pagination';
-import Report from '../components/AdminP/Report';
 import { useAppSelector, useAppDispatch } from '../hooks';
-import { setIsReviewOpen, setSelectedReport } from '../slices/reportSlice';
+import {
+  setIsReviewOpen,
+  setOrderby,
+  setSelectedReport,
+} from '../slices/reportSlice';
+import { useDeleteReportMutation } from '../api/reportApi';
+import { useGetReportsStandByQuery } from '../api/reportApi';
+import { Report } from '../types/Report';
 
 const ReportsStandBy = () => {
   // tools
   const dispatch = useAppDispatch();
-  const { isReviewOpen } = useAppSelector(({ report }) => report);
-  // 신고 대상 서치
-  // const [selectedOption, setSelectedOption] = useState('all');
-  // const changeSelectHandler = (
-  //   event: React.ChangeEvent<HTMLSelectElement>,
-  // ): void => {
-  //   setSelectedOption(event.target.value);
-  // };
+  const { page, orderby, isReviewOpen } = useAppSelector(
+    ({ report }) => report,
+  );
+  const [deleteReport] = useDeleteReportMutation();
+
+  // List report that qualifies 'orderby'
+  const {
+    data: reportData,
+    isLoading,
+    isSuccess,
+  } = useGetReportsStandByQuery({
+    page,
+    orderby,
+  });
+
+  // 신고 대상 필터링
+  const changeSelectHandler = (event: React.ChangeEvent<HTMLSelectElement>) => {
+    dispatch(setOrderby(event.target.value));
+  };
 
   const reviewReportHanlder = (reportId: number): void => {
-    console.log('reportId:', reportId);
     dispatch(setIsReviewOpen(true));
     dispatch(setSelectedReport(reportId));
   };
@@ -35,11 +51,7 @@ const ReportsStandBy = () => {
             <h1>미처리 신고글</h1>
             <TargetFilter>
               <label htmlFor="report-target">신고대상</label>
-              <select
-                id="report-target"
-                // defaultValue={selectedOption}
-                // onChange={changeSelectHandler}
-              >
+              <select id="report-target" onChange={changeSelectHandler}>
                 <option value="all">전체</option>
                 <option value="post">게시글</option>
                 <option value="comment">댓글</option>
@@ -60,36 +72,41 @@ const ReportsStandBy = () => {
               </tr>
             </thead>
             <tbody>
-              {reportData.reports.map((item, idx) => {
-                return (
-                  <tr
-                    key={item.reportId}
-                    className={idx % 2 === 0 ? 'row-even' : 'row-odd'}
-                  >
-                    <td>{item.targetType}</td>
-                    <td>{item.reportCategory}</td>
-                    <td>{item.title}</td>
-                    <td>{item.writer}</td>
-                    <td>{item.reportedAT.replace('T', ' ').slice(0, -7)}</td>
-                    <td>
-                      <HandleBtn
-                        onClick={() => reviewReportHanlder(item.reportId)}
-                      >
-                        검토하기
-                      </HandleBtn>
-                    </td>
-                    <td>
-                      <HandleBtn>삭제하기</HandleBtn>
-                    </td>
-                  </tr>
-                );
-              })}
+              {isLoading && <div>Loading...</div>}
+              {!reportData && <div>처리할 신고글이 없습니다.</div>}
+              {isSuccess &&
+                reportData.map((item: Report, idx: number) => {
+                  return (
+                    <tr
+                      key={item.reportId}
+                      className={idx % 2 === 0 ? 'row-even' : 'row-odd'}
+                    >
+                      <td>{item.targetType}</td>
+                      <td>{item.reportCategory}</td>
+                      <td>{item.content}</td>
+                      <td>{item.writer}</td>
+                      <td>{item.reportedAt.replace('T', ' ').slice(0, -7)}</td>
+                      <td>
+                        <HandleBtn
+                          onClick={() => reviewReportHanlder(item.reportId)}
+                        >
+                          검토하기
+                        </HandleBtn>
+                      </td>
+                      <td>
+                        <HandleBtn onClick={() => deleteReport(item.reportId)}>
+                          삭제하기
+                        </HandleBtn>
+                      </td>
+                    </tr>
+                  );
+                })}
             </tbody>
           </Table>
         </ReportMain>
       </div>
-      {isReviewOpen ? <Report /> : null}
-      {/* <Pagination /> */}
+      {isReviewOpen ? <ReportReview /> : null}
+      {isSuccess && <Pagination />}
     </AdminMain>
   );
 };
@@ -137,6 +154,9 @@ const TargetFilter = styled.div`
     border-radius: 3px;
     margin-top: 5px;
     font-size: 14px;
+    &:focus {
+      outline: none;
+    }
   }
 `;
 
@@ -165,195 +185,195 @@ const HandleBtn = styled(WhiteBtn)`
 `;
 
 // dummyData: 한페이지당 14개
-const reportData = {
-  pageInfo: {
-    page: 1,
-    size: 14,
-    totalElement: 123,
-    totalPage: 13,
-  },
-  reports: [
-    {
-      reportId: 1,
-      reportedAT: '2019-11-12T16:34:30.388',
-      reportCategory: '양리목적/홍보성',
-      targetType: '게시글',
-      title: '광고. 이 보험 사세요!',
-      writer: '작성자',
-      reporter: '신고자',
-      description: '보험 상품을 판매하는 글이여서 신고했습니다.',
-      postId: 2,
-      commentId: null,
-      replyId: null,
-    },
-    {
-      reportId: 2,
-      reportedAT: '2019-11-12T16:34:30.388',
-      reportCategory: '양리목적/홍보성',
-      targetType: '댓글',
-      title: '광고. 이 보험 사세요!',
-      writer: '작성자',
-      reporter: '신고자',
-      description: '보험 상품을 판매하는 글이여서 신고했습니다.',
-      postId: 2,
-      commentId: null,
-      replyId: null,
-    },
-    {
-      reportId: 3,
-      reportedAT: '2019-11-12T16:34:30.388',
-      reportCategory: '양리목적/홍보성',
-      targetType: '답글',
-      title: '광고. 이 보험 사세요!',
-      writer: '작성자',
-      reporter: '신고자',
-      description: '보험 상품을 판매하는 글이여서 신고했습니다.',
-      postId: 2,
-      commentId: null,
-      replyId: null,
-    },
-    {
-      reportId: 4,
-      reportedAT: '2019-11-12T16:34:30.388',
-      reportCategory: '양리목적/홍보성',
-      targetType: '게시글',
-      title: '광고. 이 보험 사세요!',
-      writer: '작성자',
-      reporter: '신고자',
-      description: '보험 상품을 판매하는 글이여서 신고했습니다.',
-      postId: 2,
-      commentId: null,
-      replyId: null,
-    },
-    {
-      reportId: 5,
-      reportedAT: '2019-11-12T16:34:30.388',
-      reportCategory: '양리목적/홍보성',
-      targetType: '게시글',
-      title: '광고. 이 보험 사세요!',
-      writer: '작성자',
-      reporter: '신고자',
-      description: '보험 상품을 판매하는 글이여서 신고했습니다.',
-      postId: 2,
-      commentId: null,
-      replyId: null,
-    },
-    {
-      reportId: 6,
-      reportedAT: '2019-11-12T16:34:30.388',
-      reportCategory: '양리목적/홍보성',
-      targetType: '게시글',
-      title: '광고. 이 보험 사세요!',
-      writer: '작성자',
-      reporter: '신고자',
-      description: '보험 상품을 판매하는 글이여서 신고했습니다.',
-      postId: 2,
-      commentId: null,
-      replyId: null,
-    },
-    {
-      reportId: 7,
-      reportedAT: '2019-11-12T16:34:30.388',
-      reportCategory: '양리목적/홍보성',
-      targetType: '게시글',
-      title: '광고. 이 보험 사세요!',
-      writer: '작성자',
-      reporter: '신고자',
-      description: '보험 상품을 판매하는 글이여서 신고했습니다.',
-      postId: 2,
-      commentId: null,
-      replyId: null,
-    },
-    {
-      reportId: 8,
-      reportedAT: '2019-11-12T16:34:30.388',
-      reportCategory: '양리목적/홍보성',
-      targetType: '게시글',
-      title: '광고. 이 보험 사세요!',
-      writer: '작성자',
-      reporter: '신고자',
-      description: '보험 상품을 판매하는 글이여서 신고했습니다.',
-      postId: 2,
-      commentId: null,
-      replyId: null,
-    },
-    {
-      reportId: 9,
-      reportedAT: '2019-11-12T16:34:30.388',
-      reportCategory: '양리목적/홍보성',
-      targetType: '게시글',
-      title: '광고. 이 보험 사세요!',
-      writer: '작성자',
-      reporter: '신고자',
-      description: '보험 상품을 판매하는 글이여서 신고했습니다.',
-      postId: 2,
-      commentId: null,
-      replyId: null,
-    },
-    {
-      reportId: 10,
-      reportedAT: '2019-11-12T16:34:30.388',
-      reportCategory: '양리목적/홍보성',
-      targetType: '게시글',
-      title: '광고. 이 보험 사세요!',
-      writer: '작성자',
-      reporter: '신고자',
-      description: '보험 상품을 판매하는 글이여서 신고했습니다.',
-      postId: 2,
-      commentId: null,
-      replyId: null,
-    },
-    {
-      reportId: 11,
-      reportedAT: '2019-11-12T16:34:30.388',
-      reportCategory: '양리목적/홍보성',
-      targetType: '게시글',
-      title: '광고. 이 보험 사세요!',
-      writer: '작성자',
-      reporter: '신고자',
-      description: '보험 상품을 판매하는 글이여서 신고했습니다.',
-      postId: 2,
-      commentId: null,
-      replyId: null,
-    },
-    {
-      reportId: 12,
-      reportedAT: '2019-11-12T16:34:30.388',
-      reportCategory: '양리목적/홍보성',
-      targetType: '게시글',
-      title: '광고. 이 보험 사세요!',
-      writer: '작성자',
-      reporter: '신고자',
-      description: '보험 상품을 판매하는 글이여서 신고했습니다.',
-      postId: 2,
-      commentId: null,
-      replyId: null,
-    },
-    {
-      reportId: 13,
-      reportedAT: '2019-11-12T16:34:30.388',
-      reportCategory: '양리목적/홍보성',
-      targetType: '게시글',
-      title: '광고. 이 보험 사세요!',
-      writer: '작성자',
-      reporter: '신고자',
-      description: '보험 상품을 판매하는 글이여서 신고했습니다.',
-      postId: 2,
-      commentId: null,
-      replyId: null,
-    },
-    {
-      reportId: 14,
-      reportedAT: '2019-11-12T16:34:30.388',
-      reportCategory: '양리목적/홍보성',
-      targetType: '게시글',
-      title: '광고. 이 보험 사세요!',
-      writer: '작성자',
-      reporter: '신고자',
-      description: '보험 상품을 판매하는 글이여서 신고했습니다.',
-      postId: 2,
-      commentId: null,
-      replyId: null,
-    },
-  ],
-};
+// const reportData = {
+//   pageInfo: {
+//     page: 1,
+//     size: 14,
+//     totalElement: 123,
+//     totalPage: 13,
+//   },
+//   reports: [
+//     {
+//       reportId: 1,
+//       reportedAT: '2019-11-12T16:34:30.388',
+//       reportCategory: '양리목적/홍보성',
+//       targetType: '게시글',
+//       content: '광고. 이 보험 사세요!',
+//       writer: '작성자',
+//       reporter: '신고자',
+//       description: '보험 상품을 판매하는 글이여서 신고했습니다.',
+//       postId: 2,
+//       commentId: null,
+//       replyId: null,
+//     },
+//     {
+//       reportId: 2,
+//       reportedAT: '2019-11-12T16:34:30.388',
+//       reportCategory: '양리목적/홍보성',
+//       targetType: '댓글',
+//       content: '광고. 이 보험 사세요!',
+//       writer: '작성자',
+//       reporter: '신고자',
+//       description: '보험 상품을 판매하는 글이여서 신고했습니다.',
+//       postId: 2,
+//       commentId: null,
+//       replyId: null,
+//     },
+//     {
+//       reportId: 3,
+//       reportedAT: '2019-11-12T16:34:30.388',
+//       reportCategory: '양리목적/홍보성',
+//       targetType: '답글',
+//       content: '광고. 이 보험 사세요!',
+//       writer: '작성자',
+//       reporter: '신고자',
+//       description: '보험 상품을 판매하는 글이여서 신고했습니다.',
+//       postId: 2,
+//       commentId: null,
+//       replyId: null,
+//     },
+//     {
+//       reportId: 4,
+//       reportedAT: '2019-11-12T16:34:30.388',
+//       reportCategory: '양리목적/홍보성',
+//       targetType: '게시글',
+//       content: '광고. 이 보험 사세요!',
+//       writer: '작성자',
+//       reporter: '신고자',
+//       description: '보험 상품을 판매하는 글이여서 신고했습니다.',
+//       postId: 2,
+//       commentId: null,
+//       replyId: null,
+//     },
+//     {
+//       reportId: 5,
+//       reportedAT: '2019-11-12T16:34:30.388',
+//       reportCategory: '양리목적/홍보성',
+//       targetType: '게시글',
+//       content: '광고. 이 보험 사세요!',
+//       writer: '작성자',
+//       reporter: '신고자',
+//       description: '보험 상품을 판매하는 글이여서 신고했습니다.',
+//       postId: 2,
+//       commentId: null,
+//       replyId: null,
+//     },
+//     {
+//       reportId: 6,
+//       reportedAT: '2019-11-12T16:34:30.388',
+//       reportCategory: '양리목적/홍보성',
+//       targetType: '게시글',
+//       content: '광고. 이 보험 사세요!',
+//       writer: '작성자',
+//       reporter: '신고자',
+//       description: '보험 상품을 판매하는 글이여서 신고했습니다.',
+//       postId: 2,
+//       commentId: null,
+//       replyId: null,
+//     },
+//     {
+//       reportId: 7,
+//       reportedAT: '2019-11-12T16:34:30.388',
+//       reportCategory: '양리목적/홍보성',
+//       targetType: '게시글',
+//       content: '광고. 이 보험 사세요!',
+//       writer: '작성자',
+//       reporter: '신고자',
+//       description: '보험 상품을 판매하는 글이여서 신고했습니다.',
+//       postId: 2,
+//       commentId: null,
+//       replyId: null,
+//     },
+//     {
+//       reportId: 8,
+//       reportedAT: '2019-11-12T16:34:30.388',
+//       reportCategory: '양리목적/홍보성',
+//       targetType: '게시글',
+//       content: '광고. 이 보험 사세요!',
+//       writer: '작성자',
+//       reporter: '신고자',
+//       description: '보험 상품을 판매하는 글이여서 신고했습니다.',
+//       postId: 2,
+//       commentId: null,
+//       replyId: null,
+//     },
+//     {
+//       reportId: 9,
+//       reportedAT: '2019-11-12T16:34:30.388',
+//       reportCategory: '양리목적/홍보성',
+//       targetType: '게시글',
+//       content: '광고. 이 보험 사세요!',
+//       writer: '작성자',
+//       reporter: '신고자',
+//       description: '보험 상품을 판매하는 글이여서 신고했습니다.',
+//       postId: 2,
+//       commentId: null,
+//       replyId: null,
+//     },
+//     {
+//       reportId: 10,
+//       reportedAT: '2019-11-12T16:34:30.388',
+//       reportCategory: '양리목적/홍보성',
+//       targetType: '게시글',
+//       content: '광고. 이 보험 사세요!',
+//       writer: '작성자',
+//       reporter: '신고자',
+//       description: '보험 상품을 판매하는 글이여서 신고했습니다.',
+//       postId: 2,
+//       commentId: null,
+//       replyId: null,
+//     },
+//     {
+//       reportId: 11,
+//       reportedAT: '2019-11-12T16:34:30.388',
+//       reportCategory: '양리목적/홍보성',
+//       targetType: '게시글',
+//       content: '광고. 이 보험 사세요!',
+//       writer: '작성자',
+//       reporter: '신고자',
+//       description: '보험 상품을 판매하는 글이여서 신고했습니다.',
+//       postId: 2,
+//       commentId: null,
+//       replyId: null,
+//     },
+//     {
+//       reportId: 12,
+//       reportedAT: '2019-11-12T16:34:30.388',
+//       reportCategory: '양리목적/홍보성',
+//       targetType: '게시글',
+//       content: '광고. 이 보험 사세요!',
+//       writer: '작성자',
+//       reporter: '신고자',
+//       description: '보험 상품을 판매하는 글이여서 신고했습니다.',
+//       postId: 2,
+//       commentId: null,
+//       replyId: null,
+//     },
+//     {
+//       reportId: 13,
+//       reportedAT: '2019-11-12T16:34:30.388',
+//       reportCategory: '양리목적/홍보성',
+//       targetType: '게시글',
+//       content: '광고. 이 보험 사세요!',
+//       writer: '작성자',
+//       reporter: '신고자',
+//       description: '보험 상품을 판매하는 글이여서 신고했습니다.',
+//       postId: 2,
+//       commentId: null,
+//       replyId: null,
+//     },
+//     {
+//       reportId: 14,
+//       reportedAT: '2019-11-12T16:34:30.388',
+//       reportCategory: '양리목적/홍보성',
+//       targetType: '게시글',
+//       content: '광고. 이 보험 사세요!',
+//       writer: '작성자',
+//       reporter: '신고자',
+//       description: '보험 상품을 판매하는 글이여서 신고했습니다.',
+//       postId: 2,
+//       commentId: null,
+//       replyId: null,
+//     },
+//   ],
+// };

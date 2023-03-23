@@ -1,6 +1,6 @@
 import React from 'react';
 // import NavAdmin from '../components/AdminP/NavAdmin';
-import Report from '../components/AdminP/Report';
+import Report from '../components/AdminP/ReportReview';
 
 function ReportsDeleted() {
   return (
