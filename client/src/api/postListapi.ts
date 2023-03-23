@@ -1,26 +1,17 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
-import { env } from 'process';
+import { apiSlice } from './apiSlice';
+import Cookies from 'js-cookie';
+
 // 커뮤니티 게시글 API
-export const postListApi = createApi({
-  reducerPath: 'postListApi',
-  baseQuery: fetchBaseQuery({ baseUrl: process.env.REACT_APP_SERVER_ADDRESS }),
-  tagTypes: ['PostList'],
+export const postListApi = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
     getPostList: builder.query({
-      //TODO: PostList API
-      //----커뮤니티----
-      //posts?page=1&orderby='latest'
-      //Content-Type:application/json
-      //----명예의전당---
-      //posts/best-awards?page=1&orderby='latest'
       query: ({ comunity = '', page, orderby }) =>
         `posts${comunity}?page=${page}&orderby=${orderby}`,
-      providesTags: (result, error, arg) => {
-        return [{ type: 'PostList', id: arg.endpoint }];
-      },
     }),
   }),
 });
+
 // 주간인기글 API
 export const weeklyPopularApi = createApi({
   reducerPath: 'weeklyPopularApi',

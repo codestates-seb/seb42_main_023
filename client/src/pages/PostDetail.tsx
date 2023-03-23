@@ -351,9 +351,6 @@ const PostDetail: React.FC = () => {
               <li className="image" onClick={IntroHandler}>
                 <img src={isSuccess && data?.memberImage}></img>
               </li>
-
-              {/* TODO */}
-
               {isSuccess &&
               'post' in state &&
               state?.post.isOpeneIntro &&
@@ -371,7 +368,6 @@ const PostDetail: React.FC = () => {
                   <div className="intro-moreInfo">더보기 》</div>
                 </IntorductionContainer>
               ) : null}
-              {/* TODO */}
 
               <li className="nickname">{isSuccess && data?.memberName}</li>
               <TimeIcon />
@@ -395,9 +391,9 @@ const PostDetail: React.FC = () => {
               <button onClick={changeLiikeHandler}>
                 <LikeIcon checked={isSuccess && data?.isThumbup} />
               </button>
-              <li className="likes">{isSuccess && data?.posthumbupCount}</li>
+              <li className="likes">{isSuccess && data?.thumbupCount}</li>
               <button onClick={changeDislikeHandler}>
-                <DislikeIcon checked={isSuccess && data?.thumbupCount} />
+                <DislikeIcon checked={isSuccess && data?.isThumbdown} />
               </button>
               <li className="dislikes">{isSuccess && data?.thumbDownCount}</li>
             </ul>
