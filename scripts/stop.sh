@@ -15,6 +15,7 @@ CURRENT_PID_BY_PORT=$(lsof -t -i:8080)
 
 # NginX 종료 
 systemctl stop nginx
+echo "$TIME_NOW > ===== NginX 종료 =====" >> $DEPLOY_LOG
 
 # 파일 명 기준 프로세스가 켜져 있으면 종료
 if [ -z $CURRENT_PID ]; then
