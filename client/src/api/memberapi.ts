@@ -10,7 +10,6 @@ export const membersApi = createApi({
   reducerPath: 'membersApi',
   baseQuery: fetchBaseQuery({
     baseUrl: 'http://localhost:3000',
-    credentials: 'include',
     prepareHeaders: (headers) => {
       const accsessToken = Cookies.get('Authorization');
       headers.set('Content-Type', 'application/json');
