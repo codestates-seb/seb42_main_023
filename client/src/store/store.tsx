@@ -63,7 +63,6 @@ const store = configureStore({
       .concat(repliesApi.middleware)
       .concat(recomendedPostsApi.middleware)
       .concat(reportApi.middleware)
-      .concat(postListApi.middleware)
       .concat(weeklyPopularApi.middleware)
       .concat(membersApi.middleware)
       .concat(membersPostListApi.middleware)
