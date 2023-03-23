@@ -32,7 +32,7 @@ const BodyInput: React.FC = () => {
   // 초기 이미지, 추가한 이미지, 제거한 이미지
   // 전체 이미지 = 초기 이미지 + 추가한 이미지
   // 제거한 이미지 = 전채 이미지에서 현재 이미지 제외
-  const body = data?.posts[0].content;
+  const body = data?.posts.content;
   const arr1 = [
     { imageId: 1, imageName: 'a' },
     { imageId: 2, imageName: 'b' },
