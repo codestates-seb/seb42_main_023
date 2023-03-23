@@ -12,6 +12,7 @@ import {
   setContent,
 } from '../../slices/mypageSlice';
 import { membersApi } from '../../api/memberapi';
+import Cookies from 'js-cookie';
 
 function Profile() {
   const dispatch = useAppDispatch();
@@ -20,9 +21,9 @@ function Profile() {
   const divRef = useRef<HTMLDivElement>(null);
   const membersQuery = membersApi.useGetMemberQuery({
     name: memberName,
-    some: '',
   });
   const { data, isSuccess } = membersQuery;
+  const auth = Cookies.get('Authorization');
 
   //자기소개 input토글
   const EditOpenHandler = () => {
@@ -42,14 +43,16 @@ function Profile() {
           ) : (
             <div ref={divRef}>
               {isSuccess && data.member.intro}
-              <EditBtn onClick={EditOpenHandler}>
-                <BsPencil />
-              </EditBtn>
+              {auth !== undefined && (
+                <EditBtn onClick={EditOpenHandler}>
+                  <BsPencil />
+                </EditBtn>
+              )}
             </div>
           )}
         </article>
       </div>
-      <DropdownButton />
+      {auth !== undefined && <DropdownButton />}
     </ProfileWrap>
   );
 }

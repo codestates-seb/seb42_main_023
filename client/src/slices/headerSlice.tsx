@@ -17,7 +17,7 @@ const headerSlice = createSlice({
   name: 'headerstate',
   initialState: {
     search: false,
-    login: 'login',
+    login: '',
     input: '',
     tag: [],
     query: '',

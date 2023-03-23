@@ -15,12 +15,15 @@ import {
   setCommentQuery,
   setMemberName,
 } from '../../slices/headerSlice';
+import Cookies from 'js-cookie';
 
 function HeaderDefault() {
   const navigate = useNavigate();
   const header = useAppSelector(({ header }) => header);
   const { pathname } = useLocation();
   const dispatch = useAppDispatch();
+  const auth = Cookies.get('Authorization');
+
   //TODO: header에서 요청쿼리 지정
   useEffect(() => {
     dispatch(setPostQuery('bunny'));
@@ -40,8 +43,8 @@ function HeaderDefault() {
         <HeaderNav />
         <Btns>
           {pathname === '/' && <SearchBtn />}
-          {header.login === '' && <LoginBtn />}
-          {header.login === 'login' && (
+          {auth === undefined && <LoginBtn />}
+          {auth !== undefined && (
             <>
               <PostBtn /> <MediumProfileImg />
             </>

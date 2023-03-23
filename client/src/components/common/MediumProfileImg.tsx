@@ -1,15 +1,19 @@
 import React from 'react';
 import styled from 'styled-components';
 import { useNavigate } from 'react-router-dom';
+import { membersApi } from '../../api/memberapi';
+import { useAppSelector } from '../../hooks';
+
 const MediumProfileImg = () => {
   const navigate = useNavigate();
+  const { memberName } = useAppSelector(({ header }) => header);
+  const membersQuery = membersApi.useGetMemberQuery({
+    name: memberName,
+  });
+  const { data, isSuccess } = membersQuery;
   return (
     <Btn onClick={() => navigate('/mypage')}>
-      <Item
-        src={
-          'https://preview.free3d.com/img/2018/03/2269226802687772611/8mk0tyu6.jpg'
-        }
-      />
+      {isSuccess && <Item src={data.member.memberImage} />}
     </Btn>
   );
 };
