@@ -21,7 +21,7 @@ export const repliesApi = createApi({
     // 답글 조회
     getReply: builder.query({
       query: ({ commentId, page }) =>
-        `comments/${commentId}/replies?page=${page}?orderby=thumbup`,
+        `comments/${commentId}/replies?page=${page}&orderby=thumbup`,
       providesTags: (result, error, arg) => {
         return [{ type: 'Reply', id: 'reply' }];
       },
