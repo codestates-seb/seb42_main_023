@@ -2,6 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 import PostList from '../components/mainP/PostList';
 import DropdownButton from '../components/mainP/DropdownButton';
+import SearchPostList from '../components/mainP/SearchPostList';
 import { AiOutlineTrophy } from 'react-icons/ai';
 import { NavBtn } from '../components/common/Btn';
 import { useAppDispatch, useAppSelector } from '../hooks';
@@ -11,9 +12,13 @@ import Pagenation from '../components/mainP/Pagenation';
 
 const Main = () => {
   const dispatch = useAppDispatch();
-  const { community, filter } = useAppSelector(({ main }) => main);
+  const { community, orderby, currentPage, searchOn } = useAppSelector(
+    ({ main }) => main,
+  );
   const postListquery = postListApi.useGetPostListQuery({
-    endpoint: community,
+    community: community,
+    page: currentPage,
+    orderby: orderby,
   });
   const { isSuccess } = postListquery;
   return (
@@ -28,7 +33,7 @@ const Main = () => {
             </ComuntyBtn>
           )}
           {community === '' ? (
-            <ComuntyBtn onClick={() => dispatch(setCommunity('best-awards'))}>
+            <ComuntyBtn onClick={() => dispatch(setCommunity('/best-awards'))}>
               <AiOutlineTrophy size={20} />
               명예의전당
             </ComuntyBtn>
@@ -41,7 +46,7 @@ const Main = () => {
         </div>
         <DropdownButton />
       </FilterWrap>
-      <PostList />
+      {searchOn ? <SearchPostList /> : <PostList />}
       {isSuccess && <Pagenation />}
     </>
   );

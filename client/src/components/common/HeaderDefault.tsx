@@ -10,16 +10,34 @@ import PostBtn from './PostBtn';
 import MediumProfileImg from './MediumProfileImg';
 import HeaderNav from './HeaderNav';
 import { MdManageAccounts } from 'react-icons/md';
-import { setMember } from '../../slices/headerSlice';
+import {
+  setPostQuery,
+  setCommentQuery,
+  setMemberName,
+  setMemberImg,
+} from '../../slices/headerSlice';
+import Cookies from 'js-cookie';
 
 function HeaderDefault() {
   const navigate = useNavigate();
   const header = useAppSelector(({ header }) => header);
   const { pathname } = useLocation();
   const dispatch = useAppDispatch();
-  //TODO: header에서 멤버명 지정
+  const auth = Cookies.get('Authorization');
+  const adim = localStorage.getItem('role');
+
+  //TODO: 로그인시 유저데이터 저장
   useEffect(() => {
-    dispatch(setMember('bunny'));
+    if (auth !== undefined) {
+      const loginUser = localStorage.getItem('name');
+      const memberImg = localStorage.getItem('picture');
+      if (loginUser && memberImg) {
+        dispatch(setPostQuery(loginUser));
+        dispatch(setCommentQuery(loginUser));
+        dispatch(setMemberName(loginUser));
+        dispatch(setMemberImg(memberImg));
+      }
+    }
   }, []);
   return header.search ? (
     <SearchHead>
@@ -34,13 +52,13 @@ function HeaderDefault() {
         <HeaderNav />
         <Btns>
           {pathname === '/' && <SearchBtn />}
-          {header.login === '' && <LoginBtn />}
-          {header.login === 'login' && (
+          {auth === undefined && <LoginBtn />}
+          {auth !== undefined && (
             <>
               <PostBtn /> <MediumProfileImg />
             </>
           )}
-          {header.login === 'admin' && (
+          {adim === 'ADMIN' && (
             <>
               <PostBtn />
               <button onClick={() => navigate('/adminreport')}>

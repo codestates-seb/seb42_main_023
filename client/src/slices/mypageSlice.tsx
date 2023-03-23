@@ -56,10 +56,6 @@ const mypageSlice = createSlice({
     setContent: (state, action: Intro): void => {
       state.content = action.payload;
     },
-    // api쿼리 지정
-    setQuery: (state, action: Intro): void => {
-      state.content = action.payload;
-    },
   },
 });
 
@@ -70,5 +66,4 @@ export const {
   setEditOpen,
   setEditWidth,
   setContent,
-  setQuery,
 } = mypageSlice.actions;

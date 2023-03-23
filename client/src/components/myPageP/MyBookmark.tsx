@@ -1,14 +1,14 @@
 import React from 'react';
 import styled from 'styled-components';
-import WeeklyPopular from './WeeklyPopular';
 import { useAppSelector } from '../../hooks';
 import LikeIcon from '../../assets/common/LikeIcon';
 import TimeIcon from '../../assets/common/TimeIcon';
 import ViewIcon from '../../assets/common/ViewIcon';
 import Thumnail from '../common/Thumnail';
+import { FaBookmark } from 'react-icons/fa';
 import { TagItem } from '../common/Tag';
 import { Link } from 'react-router-dom';
-import { postListApi } from '../../api/postListapi';
+import { membersPostListApi } from '../../api/memberapi';
 import { timeSince } from '../mainP/Timecalculator';
 
 export interface Tags {
@@ -28,14 +28,10 @@ export interface PostItem {
   thumbupCount: number;
 }
 
-function PostList() {
-  const { community, currentPage, orderby } = useAppSelector(
-    ({ main }) => main,
-  );
-  const postListquery = postListApi.useGetPostListQuery({
-    community: community,
-    page: currentPage,
-    orderby: orderby,
+function MyBookmark() {
+  const { query } = useAppSelector(({ header }) => header);
+  const postListquery = membersPostListApi.useGetPostListQuery({
+    query: query,
   });
   const { data, isSuccess } = postListquery;
 
@@ -45,8 +41,6 @@ function PostList() {
 
   return (
     <List>
-      {/* TODO: 서버 Weekly popular 기능 구현시 추가
-      {community === '' && data.pageInfo.page === 1 && <WeeklyPopular />} */}
       {isSuccess &&
         data.posts.map((post: PostItem) => {
           return (
@@ -83,6 +77,9 @@ function PostList() {
                   </Info>
                 </Itemside>
               </div>
+              <Bookmark>
+                <FaBookmark />
+              </Bookmark>
             </Item>
           );
         })}
@@ -90,9 +87,12 @@ function PostList() {
   );
 }
 
-export default PostList;
+export default MyBookmark;
 
-const List = styled.ul``;
+const List = styled.ul`
+  width: 100%;
+  overflow: scroll;
+`;
 export const Item = styled.li`
   height: 100px;
   border-bottom: 1px solid var(--border-color);
@@ -100,7 +100,7 @@ export const Item = styled.li`
   display: flex;
   justify-content: center;
   align-items: center;
-  padding: 0 10px;
+  padding: 0 20px;
   h1 {
     font-size: 20px;
     margin-bottom: 4px;
@@ -129,4 +129,13 @@ export const Info = styled.div`
 `;
 export const Tag = styled(TagItem)`
   padding: 4px 10px;
+`;
+const Bookmark = styled.button`
+  margin-left: 40px;
+  svg {
+    color: var(--sub-font-color);
+    :hover {
+      color: var(--hover-font-gray-color);
+    }
+  }
 `;

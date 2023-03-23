@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import styled from 'styled-components';
 import { useAppSelector } from '../../hooks';
 import LikeIcon from '../../assets/common/LikeIcon';
@@ -28,12 +28,12 @@ export interface PostItem {
 }
 
 function MyPostList() {
-  const { community } = useAppSelector(({ main }) => main);
-  const postListquery = membersPostListApi.useGetPostListQuery({
-    name: 'bunny',
+  const { query } = useAppSelector(({ header }) => header);
+  const membersPostListquery = membersPostListApi.useGetPostListQuery({
+    query: query,
   });
-  const { data, isSuccess } = postListquery;
-
+  const { data, isSuccess } = membersPostListquery;
+  useEffect(() => console.log(query), []);
   if (!isSuccess) {
     return <div>Loading...</div>;
   }
@@ -85,7 +85,10 @@ function MyPostList() {
 
 export default MyPostList;
 
-const List = styled.ul``;
+const List = styled.ul`
+  width: 100%;
+  overflow: scroll;
+`;
 export const Item = styled.li`
   height: 100px;
   border-bottom: 1px solid var(--border-color);
@@ -93,7 +96,7 @@ export const Item = styled.li`
   display: flex;
   justify-content: center;
   align-items: center;
-  padding: 0 10px;
+  padding: 0 20px;
   h1 {
     font-size: 20px;
     margin-bottom: 4px;

@@ -56,7 +56,7 @@ export const NavBtnClicked = styled(NavBtn)`
   border-bottom: 1px solid var(--point-blue-color);
   color: var(--point-blue-color);
 `;
-//Mypage 작성한글,작성댓글 ...
+//sidbarnav 버튼
 export const SidebarBtn = styled.button`
   width: 100%;
   padding: 10px;
@@ -71,7 +71,15 @@ export const SidebarBtn = styled.button`
     font-size: 12px;
   }
 `;
-//아이콘svg를 감싸고 있는 버튼 검포넌트
+//sidbarnav 버튼 클릭상태
+export const SidebarBtnClicked = styled(SidebarBtn)`
+  background-color: var(--hover-button-color);
+  color: var(--point-blue-color);
+  :hover {
+    color: var(--hover-point-blue-color);
+  }
+`;
+//아이콘svg를 감싸고 있는 버튼
 export const IconBtn = styled.button`
   svg {
     :hover {

@@ -8,7 +8,7 @@ import ViewIcon from '../../assets/common/ViewIcon';
 import Thumnail from '../common/Thumnail';
 import { TagItem } from '../common/Tag';
 import { Link } from 'react-router-dom';
-import { postListApi } from '../../api/postListapi';
+import { SearchApi } from '../../api/postListapi';
 import { timeSince } from '../mainP/Timecalculator';
 
 export interface Tags {
@@ -28,16 +28,16 @@ export interface PostItem {
   thumbupCount: number;
 }
 
-function PostList() {
-  const { community, currentPage, orderby } = useAppSelector(
-    ({ main }) => main,
-  );
-  const postListquery = postListApi.useGetPostListQuery({
-    community: community,
+function SearchPostList() {
+  const { currentPage, orderby } = useAppSelector(({ main }) => main);
+  const { input, tag } = useAppSelector(({ header }) => header);
+  const searchListquery = SearchApi.useGetPostListQuery({
     page: currentPage,
     orderby: orderby,
+    keyword: input,
+    tags: tag,
   });
-  const { data, isSuccess } = postListquery;
+  const { data, isSuccess } = searchListquery;
 
   if (!isSuccess) {
     return <div>Loading...</div>;
@@ -45,8 +45,7 @@ function PostList() {
 
   return (
     <List>
-      {/* TODO: 서버 Weekly popular 기능 구현시 추가
-      {community === '' && data.pageInfo.page === 1 && <WeeklyPopular />} */}
+      서치페이지
       {isSuccess &&
         data.posts.map((post: PostItem) => {
           return (
@@ -90,7 +89,7 @@ function PostList() {
   );
 }
 
-export default PostList;
+export default SearchPostList;
 
 const List = styled.ul``;
 export const Item = styled.li`
