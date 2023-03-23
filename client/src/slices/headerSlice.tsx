@@ -23,6 +23,7 @@ const headerSlice = createSlice({
     query: '',
     commentQuery: '',
     memberName: '',
+    memberImg: '',
   },
   reducers: {
     // 검색창 헤더 토글
@@ -59,6 +60,10 @@ const headerSlice = createSlice({
     setMemberName: (state, action: Tag): void => {
       state.memberName = action.payload;
     },
+    // 회원이미지 지정
+    setMemberImg: (state, action: Tag): void => {
+      state.memberImg = action.payload;
+    },
   },
 });
 
@@ -72,4 +77,5 @@ export const {
   setPostQuery,
   setCommentQuery,
   setMemberName,
+  setMemberImg,
 } = headerSlice.actions;

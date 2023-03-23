@@ -14,6 +14,7 @@ import {
   setPostQuery,
   setCommentQuery,
   setMemberName,
+  setMemberImg,
 } from '../../slices/headerSlice';
 import Cookies from 'js-cookie';
 
@@ -23,12 +24,20 @@ function HeaderDefault() {
   const { pathname } = useLocation();
   const dispatch = useAppDispatch();
   const auth = Cookies.get('Authorization');
+  const adim = localStorage.getItem('role');
 
-  //TODO: header에서 요청쿼리 지정
+  //TODO: 로그인시 유저데이터 저장
   useEffect(() => {
-    dispatch(setPostQuery('bunny'));
-    dispatch(setCommentQuery('bunny'));
-    dispatch(setMemberName('bunny'));
+    if (auth !== undefined) {
+      const loginUser = localStorage.getItem('name');
+      const memberImg = localStorage.getItem('picture');
+      if (loginUser && memberImg) {
+        dispatch(setPostQuery(loginUser));
+        dispatch(setCommentQuery(loginUser));
+        dispatch(setMemberName(loginUser));
+        dispatch(setMemberImg(memberImg));
+      }
+    }
   }, []);
   return header.search ? (
     <SearchHead>
@@ -49,7 +58,7 @@ function HeaderDefault() {
               <PostBtn /> <MediumProfileImg />
             </>
           )}
-          {header.login === 'admin' && (
+          {adim === 'ADMIN' && (
             <>
               <PostBtn />
               <button onClick={() => navigate('/adminreport')}>

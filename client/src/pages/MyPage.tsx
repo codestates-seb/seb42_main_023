@@ -1,15 +1,11 @@
 import React from 'react';
 import styled from 'styled-components';
 import Profile from '../components/myPageP/Profile';
-import Comment from '../components/myPageP/Comment';
 import MyPostList from '../components/myPageP/MyPostList';
 import MyCommentList from '../components/myPageP/MyCommentList';
 import MyBookmark from '../components/myPageP/MyBookmark';
 import Sidebar from '../components/myPageP/Sidebar';
 import { useAppSelector } from '../hooks';
-//TODO: remove cookies when logging out.
-// cookies.remove('accessToken')
-// cookies.remove('refreshToken')
 
 function MyPage() {
   const { filter } = useAppSelector(({ mypage }) => mypage);
