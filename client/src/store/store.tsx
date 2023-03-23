@@ -23,7 +23,7 @@ import { reportApi } from '../api/reportApi';
 import { nicknameApi } from '../api/nicknameApi';
 import { tempTokenApi } from '../api/tempTokenAPi';
 import reportSlice from '../slices/reportSlice';
-import authSlice from '../slices/authSlice';
+import { apiSlice } from '../api/apiSlice';
 
 const store = configureStore({
   reducer: {
@@ -39,7 +39,6 @@ const store = configureStore({
     survey: surveySlice.reducer,
     nickname: nicknameSlice.reducer,
     report: reportSlice.reducer,
-    auth: authSlice.reducer,
 
     // api Reducer
     [postsApi.reducerPath]: postsApi.reducer,
@@ -55,6 +54,7 @@ const store = configureStore({
     [nicknameApi.reducerPath]: nicknameApi.reducer,
     [tempTokenApi.reducerPath]: tempTokenApi.reducer,
     [SearchApi.reducerPath]: SearchApi.reducer,
+    [apiSlice.reducerPath]: apiSlice.reducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware()
@@ -71,6 +71,7 @@ const store = configureStore({
       .concat(nicknameApi.middleware)
       .concat(tempTokenApi.middleware)
       .concat(SearchApi.middleware)
+      .concat(apiSlice.middleware) // TODO: 이거빼고 위에 concat은 다 지워도됌.
 
       .concat(logger),
 });
