@@ -7,7 +7,13 @@ export const postListApi = createApi({
   endpoints: (builder) => ({
     getPostList: builder.query({
       //TODO: API쿼리에 맞게 수정하기
-      query: ({ endpoint }) => `posts/${endpoint}`,
+      //----커뮤니티----
+      //posts?page=1&orderby='latest'
+      //Content-Type:application/json
+      //----명예의전당---
+      //posts/best-awards?page=1&orderby='latest'
+      query: ({ comunity = '', page, orderby }) =>
+        `posts${comunity}?page=${page}&orderby=${orderby}`,
       providesTags: (result, error, arg) => {
         return [{ type: 'PostList', id: arg.endpoint }];
       },

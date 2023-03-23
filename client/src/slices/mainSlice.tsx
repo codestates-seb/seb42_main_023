@@ -2,7 +2,7 @@ import { createSlice } from '@reduxjs/toolkit';
 
 interface Comunity {
   type: string;
-  payload: '' | 'best-awards';
+  payload: '' | '/best-awards';
 }
 interface Filter {
   type: string;
@@ -16,11 +16,7 @@ interface Orderby {
   type: string;
   payload: 'latest' | 'thumbup' | 'view-count';
 }
-export interface Page {
-  page: number;
-  size: number;
-  totalPage: number;
-}
+
 const mainSlice = createSlice({
   name: 'mainstates',
   initialState: {
@@ -56,6 +52,10 @@ const mainSlice = createSlice({
     setPageOffsetPrev: (state): void => {
       state.pageOffset = state.pageOffset - 5;
     },
+    // 현재 페이지 선택
+    setCurrentPage: (state, action): void => {
+      state.currentPage = action.payload;
+    },
   },
 });
 
@@ -67,4 +67,5 @@ export const {
   setOrderby,
   setPageOffsetNext,
   setPageOffsetPrev,
+  setCurrentPage,
 } = mainSlice.actions;

@@ -29,9 +29,13 @@ export interface PostItem {
 }
 
 function PostList() {
-  const { community } = useAppSelector(({ main }) => main);
+  const { community, currentPage, orderby } = useAppSelector(
+    ({ main }) => main,
+  );
   const postListquery = postListApi.useGetPostListQuery({
-    endpoint: community,
+    community: community,
+    page: currentPage,
+    orderby: orderby,
   });
   const { data, isSuccess } = postListquery;
 

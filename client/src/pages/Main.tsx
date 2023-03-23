@@ -11,9 +11,13 @@ import Pagenation from '../components/mainP/Pagenation';
 
 const Main = () => {
   const dispatch = useAppDispatch();
-  const { community, filter } = useAppSelector(({ main }) => main);
+  const { community, orderby, currentPage } = useAppSelector(
+    ({ main }) => main,
+  );
   const postListquery = postListApi.useGetPostListQuery({
-    endpoint: community,
+    community: community,
+    page: currentPage,
+    orderby: orderby,
   });
   const { isSuccess } = postListquery;
   return (
@@ -28,7 +32,7 @@ const Main = () => {
             </ComuntyBtn>
           )}
           {community === '' ? (
-            <ComuntyBtn onClick={() => dispatch(setCommunity('best-awards'))}>
+            <ComuntyBtn onClick={() => dispatch(setCommunity('/best-awards'))}>
               <AiOutlineTrophy size={20} />
               명예의전당
             </ComuntyBtn>
