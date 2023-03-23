@@ -11,8 +11,8 @@ export const commentsApi = createApi({
     credentials: 'include',
     prepareHeaders: (headers) => {
       const accsessToken = Cookies.get('Authorization');
-      console.log(accsessToken);
       headers.set('Content-Type', 'application/json');
+      headers.set('Authorization', String(accsessToken));
       return headers;
     },
   }),

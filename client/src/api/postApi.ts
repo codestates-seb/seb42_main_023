@@ -11,8 +11,8 @@ export const recomendedPostsApi = createApi({
     credentials: 'include',
     prepareHeaders: (headers) => {
       const accsessToken = Cookies.get('Authorization');
-      console.log(accsessToken);
       headers.set('Content-Type', 'application/json');
+      headers.set('Authorization', String(accsessToken));
       return headers;
     },
   }),
@@ -37,9 +37,9 @@ export const postsApi = createApi({
     // 인증 정보 전송
     credentials: 'include',
     prepareHeaders: (headers) => {
-      const token = Cookies.get();
+      const accsessToken = Cookies.get('Authorization');
       headers.set('Content-Type', 'application/json');
-      // headers.set('Authorization', cookie);
+      headers.set('Authorization', String(accsessToken));
       return headers;
     },
   }),
