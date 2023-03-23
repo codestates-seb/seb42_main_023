@@ -1,59 +1,22 @@
-import React, { useRef } from 'react';
-import { useParams } from 'react-router-dom';
+import React from 'react';
 import styled from 'styled-components';
-import { commentsApi } from '../../api/commentApi';
-import { useAppDispatch } from '../../hooks';
-import { addCommentEdit, setComment } from '../../slices/commentSlice';
+import { useAppSelector } from '../../hooks';
+import { StateType, CommentType } from '../../types/PostDetail';
 
 const CommentInput: React.FC = () => {
-  const commentRef = useRef<HTMLInputElement>(null);
-  const dispatch = useAppDispatch();
-  const params = useParams();
-  const postId = params.postId;
-  const query = commentsApi.useGetCommentQuery({ postId });
-  // 댓글 추가 mutation
-  const commetMutation = commentsApi.useSetCommentMutation();
-  const [setComments] = commetMutation;
-
-  // 댓글 추가
-  const addCommentHandler = async () => {
-    await setComments({
-      postId: postId,
-      content: commentRef.current?.value,
-    });
-    dispatch(addCommentEdit(false));
-    commentRef.current!.value = '';
-  };
-
-  const valueCheck = (event: React.ChangeEvent<HTMLInputElement>): void => {
-    dispatch(setComment(event.target.value));
-  };
-
-  const enterHandler = (event: React.KeyboardEvent<HTMLInputElement>): void => {
-    if (!commentRef.current?.value) return;
-    if (event.key === 'Enter' && event.nativeEvent.isComposing === false) {
-      addCommentHandler();
-    }
-  };
-
+  const state = useAppSelector((state: StateType): StateType => {
+    return state;
+  });
   return (
     <CommentInputContainer>
-      <h1>댓글 {query.data && query.data.comments.length}개 </h1>
-      <Input
-        type="text"
-        placeholder="댓글을 남겨 주세요"
-        ref={commentRef}
-        onChange={valueCheck}
-        onKeyDown={enterHandler}
-      ></Input>
-      <AddCommentBtn
-        onClick={() => {
-          if (!commentRef.current?.value) return;
-          addCommentHandler();
-        }}
-      >
-        등록
-      </AddCommentBtn>
+      <h1>
+        댓글{' '}
+        {state.postSlice.comments! &&
+          (state.postSlice.comments as CommentType).length}
+        개{' '}
+      </h1>
+      <Input type="text" placeholder="댓글을 남겨 주세요"></Input>
+      <AddCommentBtn>등록</AddCommentBtn>
     </CommentInputContainer>
   );
 };
@@ -76,6 +39,7 @@ const Input = styled.input`
   border: 1px solid #d4d4d4;
   padding: 0 10px 0 10px;
 `;
+
 const AddCommentBtn = styled.button`
   width: 50px;
   height: 30px;
