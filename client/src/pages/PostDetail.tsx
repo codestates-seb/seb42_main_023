@@ -268,20 +268,21 @@ const PostDetail: React.FC = () => {
 
   return (
     <>
-      {commentQuery.data && 'post' in state && state.post?.isOpenDelete ? (
-        <ModalContainer>
-          <DeleteModal>
-            <div onClick={confirmDeleteHandler}> </div>
-            <div className="delete">삭제</div>
-            <div className="delete-content">{deleteConfirm}</div>
-            <BtnContainer>
-              <DeleteBtn onClick={deleteData}>삭제하기</DeleteBtn>
-              <CancelBtn onClick={confirmDeleteHandler}>취소</CancelBtn>
-            </BtnContainer>
-          </DeleteModal>
-        </ModalContainer>
-      ) : null}
-      {commentQuery.data && 'post' in state && state.post?.isOpenReport ? (
+      {/* {commentQuery.data && 'post' in state && state.post?.isOpenDelete ? ( */}
+      <ModalContainer>
+        <DeleteModal>
+          <div onClick={confirmDeleteHandler}> </div>
+          <div className="delete">삭제</div>
+          <div className="delete-content">{deleteConfirm}</div>
+          <BtnContainer>
+            <DeleteBtn onClick={deleteData}>삭제하기</DeleteBtn>
+            <CancelBtn onClick={confirmDeleteHandler}>취소</CancelBtn>
+          </BtnContainer>
+        </DeleteModal>
+      </ModalContainer>
+      {/* ) : null} */}
+
+      {'post' in state && state.post?.isOpenReport ? (
         <ModalContainer>
           <ReportModal>
             <div className="report">신고</div>
@@ -608,6 +609,7 @@ const ReportModal = styled.div`
   border: solid 1px #d4d4d4;
   border-radius: 5px;
   color: #5c5c5c;
+  z-index: 10;
   cursor: pointer;
   padding: 25px 15px 0 15px;
 
