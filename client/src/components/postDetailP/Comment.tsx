@@ -78,7 +78,7 @@ const Comment: React.FC = () => {
     state.reply.isOpened === undefined
   ) {
     const open = Array.from(
-      { length: commentQuery.data.comment.length },
+      { length: commentQuery.data?.comments?.length },
       (el) => (el = false),
     );
     dispatch(isOpened(open));
@@ -90,7 +90,7 @@ const Comment: React.FC = () => {
     (state as CommentStateType).comment.isEdit === undefined
   ) {
     const edit = Array.from(
-      { length: commentQuery.data.comment.length },
+      { length: commentQuery.data.comments?.length },
       (el) => (el = false),
     );
     dispatch(isEdit(edit as Array<boolean>));
@@ -154,13 +154,13 @@ const Comment: React.FC = () => {
   useEffect(() => {
     // 답글 데이터가 변경될 때마다 총 답글 데이터 반영
     if (replyQuery.data) {
-      dispatch(setTotalReplies(replyQuery.data && replyQuery.data.comment));
+      dispatch(setTotalReplies(replyQuery.data && replyQuery.data?.comments));
     }
   }, [data]);
   return (
     <CommentContainer>
       {commentQuery.data &&
-        commentQuery.data.comment.map((comment: CommentType, idx: number) => {
+        commentQuery.data.comments.map((comment: CommentType, idx: number) => {
           const filtered: Array<ReplyType> =
             'reply' in state &&
             state.reply.totalReplies &&
