@@ -268,19 +268,19 @@ const PostDetail: React.FC = () => {
 
   return (
     <>
-      {/* {commentQuery.data && 'post' in state && state.post?.isOpenDelete ? ( */}
-      <ModalContainer>
-        <DeleteModal>
-          <div onClick={confirmDeleteHandler}> </div>
-          <div className="delete">삭제</div>
-          <div className="delete-content">{deleteConfirm}</div>
-          <BtnContainer>
-            <DeleteBtn onClick={deleteData}>삭제하기</DeleteBtn>
-            <CancelBtn onClick={confirmDeleteHandler}>취소</CancelBtn>
-          </BtnContainer>
-        </DeleteModal>
-      </ModalContainer>
-      {/* ) : null} */}
+      {'post' in state && state.post?.isOpenDelete ? (
+        <ModalContainer>
+          <DeleteModal>
+            <div onClick={confirmDeleteHandler}> </div>
+            <div className="delete">삭제</div>
+            <div className="delete-content">{deleteConfirm}</div>
+            <BtnContainer>
+              <DeleteBtn onClick={deleteData}>삭제하기</DeleteBtn>
+              <CancelBtn onClick={confirmDeleteHandler}>취소</CancelBtn>
+            </BtnContainer>
+          </DeleteModal>
+        </ModalContainer>
+      ) : null}
 
       {'post' in state && state.post?.isOpenReport ? (
         <ModalContainer>
