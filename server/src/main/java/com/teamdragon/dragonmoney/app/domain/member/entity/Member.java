@@ -2,6 +2,7 @@ package com.teamdragon.dragonmoney.app.domain.member.entity;
 
 import com.teamdragon.dragonmoney.app.global.audit.BaseTimeEntity;
 import com.teamdragon.dragonmoney.app.domain.delete.entity.DeleteResult;
+import com.teamdragon.dragonmoney.app.global.auth.refresh.entity.RefreshToken;
 import lombok.*;
 
 import javax.persistence.*;
@@ -58,6 +59,9 @@ public class Member extends BaseTimeEntity {
     @ElementCollection(fetch = FetchType.EAGER)
     private List<String> memberRoles = new ArrayList<>();
 
+    @OneToOne(mappedBy = "member")
+    private RefreshToken refreshToken;
+
     @Builder
     public Member(Long id, Boolean nameDuplicateCheck, String profileImage,
                   String intro, String tempName, String tempAccessToken,
@@ -87,5 +91,9 @@ public class Member extends BaseTimeEntity {
         MemberState(String state) {
             this.state = state;
         }
+    }
+
+    public void saveRefreshToken(RefreshToken refreshToken) {
+        this.refreshToken = refreshToken;
     }
 }

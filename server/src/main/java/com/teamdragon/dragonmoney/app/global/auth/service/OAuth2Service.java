@@ -5,6 +5,8 @@ import com.teamdragon.dragonmoney.app.domain.member.repository.MemberRepository;
 import com.teamdragon.dragonmoney.app.domain.member.service.MemberService;
 import com.teamdragon.dragonmoney.app.global.auth.dto.LoginResponseDto;
 import com.teamdragon.dragonmoney.app.global.auth.jwt.JwtTokenizer;
+import com.teamdragon.dragonmoney.app.global.auth.refresh.entity.RefreshToken;
+import com.teamdragon.dragonmoney.app.global.auth.refresh.repository.RefreshTokenRepository;
 import com.teamdragon.dragonmoney.app.global.exception.BusinessExceptionCode;
 import com.teamdragon.dragonmoney.app.global.exception.BusinessLogicException;
 import lombok.RequiredArgsConstructor;
@@ -19,6 +21,7 @@ import java.util.*;
 @Service
 public class OAuth2Service {
     private final JwtTokenizer jwtTokenizer;
+    private final RefreshTokenRepository refreshTokenRepository;
     private final MemberRepository memberRepository;
     private final MemberService memberService;
 
@@ -67,12 +70,20 @@ public class OAuth2Service {
 
         String refreshToken = jwtTokenizer.generateRefreshToken(name, expiration, base64EncodedSecretKey);
 
+        RefreshToken refreshTokenEntity = RefreshToken.builder()
+                .member(member)
+                .refreshTokenValue(refreshToken)
+                .build();
+
+        refreshTokenRepository.save(refreshTokenEntity);
+
+        member.saveRefreshToken(refreshTokenEntity);
+
         return refreshToken;
     }
 
     //tempAccessToken 저장
     public Member updatedTempAccessToken(String name, String tempAccessToken) {
-//        Optional<Member> member = memberRepository.findByName(name);
         Member member = memberService.findVerifiedMemberName(name);
         member.setTempAccessToken(tempAccessToken);
 
@@ -105,11 +116,19 @@ public class OAuth2Service {
         return loginResponseDto;
     }
 
-    //해당 임시 토큰을 가진 회원이 있는지 조회
+    // 해당 임시 토큰을 가진 회원이 있는지 조회
     public Member findMemberByTempAccessToken(String tempAccessToken) {
         Optional<Member> optionalMember = memberRepository.findByTempAccessToken(tempAccessToken);
 
         return optionalMember
                 .orElseThrow( () -> new BusinessLogicException(BusinessExceptionCode.USER_NOT_FOUND));
+    }
+
+    // 회원 이름으로 refreshToken 조회
+    public String findRefreshTokenByMemberName(String memberName) {
+        Member member = memberService.findMember(memberName);
+        String refreshToken = member.getRefreshToken().getRefreshTokenValue();
+
+        return refreshToken;
     }
 }
