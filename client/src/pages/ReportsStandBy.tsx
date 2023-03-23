@@ -154,6 +154,9 @@ const TargetFilter = styled.div`
     border-radius: 3px;
     margin-top: 5px;
     font-size: 14px;
+    &:focus {
+      outline: none;
+    }
   }
 `;
 
