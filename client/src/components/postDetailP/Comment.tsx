@@ -318,9 +318,7 @@ const Comment: React.FC = () => {
                   답글 {comment.replyCount}
                 </ReplyBtn>
               </CommentContent>
-              {'reply' in state &&
-              ((isSuccess && state.reply.isOpened !== undefined) || null) &&
-              state.reply.isOpened[idx] ? (
+              {'reply' in state && isSuccess && state.reply?.isOpened[idx] ? (
                 <ReplyContainer>
                   <ReplyInput commentInfo={comment}></ReplyInput>
                   {filtered &&

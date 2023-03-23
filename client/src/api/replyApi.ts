@@ -59,5 +59,25 @@ export const repliesApi = createApi({
       },
       invalidatesTags: (result, error, arg) => [{ type: 'Reply', id: 'reply' }],
     }),
+    // 답글 좋아요 추가
+    addThumbUp: builder.mutation({
+      query: ({ replyId }) => {
+        return {
+          url: `posts/${replyId}/thumbup`,
+          method: 'POST',
+        };
+      },
+      invalidatesTags: (result, error, arg) => [{ type: 'Reply', id: 'reply' }],
+    }),
+    // 답글 좋아요 제거
+    removeThumbUp: builder.mutation({
+      query: ({ replyId }) => {
+        return {
+          url: `posts/${replyId}/thumbup`,
+          method: 'DELETE',
+        };
+      },
+      invalidatesTags: (result, error, arg) => [{ type: 'Reply', id: 'reply' }],
+    }),
   }),
 });

@@ -100,5 +100,45 @@ export const postsApi = createApi({
       },
       invalidatesTags: (result, error, arg) => [{ type: 'Post', id: 'post' }],
     }),
+    // 게시글 좋아요 추가
+    addThumbUp: builder.mutation({
+      query: ({ postId }) => {
+        return {
+          url: `posts/${postId}/thumbup`,
+          method: 'POST',
+        };
+      },
+      invalidatesTags: (result, error, arg) => [{ type: 'Post', id: 'post' }],
+    }),
+    // 게시글 좋아요 제거
+    removeThumbUp: builder.mutation({
+      query: ({ postId }) => {
+        return {
+          url: `posts/${postId}/thumbup`,
+          method: 'DELETE',
+        };
+      },
+      invalidatesTags: (result, error, arg) => [{ type: 'Post', id: 'post' }],
+    }),
+    // 북마크 추가
+    addBookmark: builder.mutation({
+      query: ({ memberName, postId }) => {
+        return {
+          url: `members/${memberName}/bookmark/posts/${postId}`,
+          method: 'POST',
+        };
+      },
+      invalidatesTags: (result, error, arg) => [{ type: 'Post', id: 'post' }],
+    }),
+    // 북마크 추가
+    removeBookmark: builder.mutation({
+      query: ({ memberName, postId }) => {
+        return {
+          url: `members/${memberName}/bookmark/posts/${postId}`,
+          method: 'DELETE',
+        };
+      },
+      invalidatesTags: (result, error, arg) => [{ type: 'Post', id: 'post' }],
+    }),
   }),
 });
