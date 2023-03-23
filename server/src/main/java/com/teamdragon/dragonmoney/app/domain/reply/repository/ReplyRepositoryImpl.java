@@ -11,6 +11,7 @@ import com.teamdragon.dragonmoney.app.domain.comment.dto.CommentDto;
 import com.teamdragon.dragonmoney.app.domain.comment.entity.QComment;
 import com.teamdragon.dragonmoney.app.domain.reply.dto.ReplyDto;
 import com.teamdragon.dragonmoney.app.domain.reply.entity.QReply;
+import com.teamdragon.dragonmoney.app.domain.reply.entity.Reply;
 import com.teamdragon.dragonmoney.app.global.pagenation.QueryDslUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -46,8 +47,9 @@ public class ReplyRepositoryImpl implements ReplyRepositoryCustom{
                 )
                 .distinct()
                 .from(reply)
-                .leftJoin(reply.writer, member).fetchJoin()
-                .leftJoin(reply.comment, comment).fetchJoin()
+                .leftJoin(reply.writer, member)
+                .leftJoin(reply.comment, comment)
+                .where(reply.state.eq(Reply.State.ACTIVE))
                 .where(reply.comment.id.eq(commentId))
                 .orderBy(orders)
                 .offset(pageable.getOffset())
@@ -58,6 +60,7 @@ public class ReplyRepositoryImpl implements ReplyRepositoryCustom{
                 .select(reply.count())
                 .distinct()
                 .from(reply)
+                .where(reply.state.eq(Reply.State.ACTIVE))
                 .where(reply.comment.id.eq(commentId));
 
         return PageableExecutionUtils.getPage(content, pageable, countQuery::fetchOne);
@@ -73,21 +76,22 @@ public class ReplyRepositoryImpl implements ReplyRepositoryCustom{
                         reply.writer.name.as("memberName"),
                         reply.writer.profileImage.as("memberImage"),
                         reply.state.as("replyState"),
-                        ExpressionUtils.as(JPAExpressions.select(thumbup.id)
+                        ExpressionUtils.as(JPAExpressions.select(thumbup.id.max())
                                 .from(thumbup)
                                 .where(thumbup.parentReply.id.eq(reply.id),
-                                        thumbup.member.id.eq(loginMemberId))
-                                .limit(1), "isThumbup"),
-                        ExpressionUtils.as(JPAExpressions.select(thumbdown.id)
+                                        thumbup.member.id.eq(loginMemberId),
+                                        thumbup.parentReply.state.eq(Reply.State.ACTIVE)),"isThumbup"),
+                        ExpressionUtils.as(JPAExpressions.select(thumbdown.id.max())
                                 .from(thumbdown)
                                 .where(thumbdown.parentReply.id.eq(reply.id),
-                                        thumbdown.member.id.eq(loginMemberId))
-                                .limit(1), "isThumbdown"))
+                                        thumbdown.member.id.eq(loginMemberId),
+                                        thumbdown.parentReply.state.eq(Reply.State.ACTIVE)),"isThumbdown"))
                 )
                 .distinct()
                 .from(reply)
-                .leftJoin(reply.writer, member).fetchJoin()
-                .leftJoin(reply.comment, comment).fetchJoin()
+                .leftJoin(reply.writer, member)
+                .leftJoin(reply.comment, comment)
+                .where(reply.state.eq(Reply.State.ACTIVE))
                 .where(reply.comment.id.eq(commentId))
                 .orderBy(orders)
                 .offset(pageable.getOffset())
@@ -98,6 +102,7 @@ public class ReplyRepositoryImpl implements ReplyRepositoryCustom{
                 .select(reply.count())
                 .distinct()
                 .from(reply)
+                .where(reply.state.eq(Reply.State.ACTIVE))
                 .where(reply.comment.id.eq(commentId));
 
         return PageableExecutionUtils.getPage(content, pageable, countQuery::fetchOne);

@@ -145,6 +145,7 @@ public class PostsDto {
         private List<TagDto.TagName> tags;
         private String memberName;
         private LocalDateTime createdAt;
+        private Long commentCount;
         private Long viewCount;
         private Long thumbupCount;
 
@@ -153,6 +154,7 @@ public class PostsDto {
             this.title = posts.getTitle();
             this.memberName = posts.getWriter().getName();
             this.createdAt = posts.getCreatedAt();
+            this.commentCount = posts.getCommentCount();
             this.viewCount = posts.getViewCount();
             this.thumbupCount = posts.getThumbupCount();
             List<Image> images = posts.getImages();
@@ -177,6 +179,7 @@ public class PostsDto {
         private LocalDateTime createdAt;
         private LocalDateTime modifiedAt;
         private Boolean isModified;
+        private Long commentCount;
         private Long viewCount;
         private Long thumbupCount;
         private Long thumbDownCount;
@@ -196,6 +199,7 @@ public class PostsDto {
             this.createdAt = posts.getCreatedAt();
             this.modifiedAt = posts.getModifiedAt();
             this.isModified = this.createdAt != modifiedAt;
+            this.commentCount = posts.getCommentCount();
             this.viewCount = posts.getViewCount();
             this.thumbupCount = posts.getThumbupCount();
             this.thumbDownCount = posts.getThumbdownCount();
@@ -219,6 +223,7 @@ public class PostsDto {
             this.createdAt = posts.getCreatedAt();
             this.modifiedAt = posts.getModifiedAt();
             this.isModified = this.createdAt != modifiedAt;
+            this.commentCount = posts.getCommentCount();
             this.viewCount = posts.getViewCount();
             this.thumbupCount = posts.getThumbupCount();
             this.thumbDownCount = posts.getThumbdownCount();
