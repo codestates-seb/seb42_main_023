@@ -20,6 +20,14 @@ const reportSlice = createSlice({
   name: 'report',
   initialState,
   reducers: {
+    // 현재 페이지
+    setPage: (state, action: PayloadAction<number>): void => {
+      state.page = action.payload;
+    },
+    // 신고대상 필터링
+    setOrderby: (state, action: PayloadAction<string>): void => {
+      state.orderby = action.payload;
+    },
     // 페이지 next버튼
     setPageOffsetNext: (state): void => {
       state.pageOffset = state.pageOffset + 5;
@@ -41,6 +49,8 @@ const reportSlice = createSlice({
 
 export default reportSlice;
 export const {
+  setPage,
+  setOrderby,
   setPageOffsetNext,
   setPageOffsetPrev,
   setIsReviewOpen,

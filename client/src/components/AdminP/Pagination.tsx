@@ -12,18 +12,10 @@ const Pagination = () => {
   const dispatch = useAppDispatch();
 
   // Get report list based on 'page' and 'orderby'
-  const { data, isLoading } = useGetReportsStandByQuery({
+  const { data } = useGetReportsStandByQuery({
     page,
     orderby,
   });
-
-  // Case handling
-  if (isLoading) {
-    return <div>Loading</div>;
-  }
-  if (!data?.reports) {
-    return <div>No post yet!</div>;
-  }
 
   // 뒤로가기 버튼(<)을 누르면 이전 페이지 5개가 보인다.
   const prevPageHandler = () => {
