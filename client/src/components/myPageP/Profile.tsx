@@ -12,16 +12,18 @@ import {
   setContent,
 } from '../../slices/mypageSlice';
 import { membersApi } from '../../api/memberapi';
+import Cookies from 'js-cookie';
 
 function Profile() {
   const dispatch = useAppDispatch();
   const { EditOpen } = useAppSelector(({ mypage }) => mypage);
   const { memberName } = useAppSelector(({ header }) => header);
   const divRef = useRef<HTMLDivElement>(null);
-  const membersQuery = membersApi.useGetPostListQuery({
+  const membersQuery = membersApi.useGetMemberQuery({
     name: memberName,
   });
   const { data, isSuccess } = membersQuery;
+  const auth = Cookies.get('Authorization');
 
   //자기소개 input토글
   const EditOpenHandler = () => {
@@ -41,24 +43,27 @@ function Profile() {
           ) : (
             <div ref={divRef}>
               {isSuccess && data.member.intro}
-              <EditBtn onClick={EditOpenHandler}>
-                <BsPencil />
-              </EditBtn>
+              {auth !== undefined && (
+                <EditBtn onClick={EditOpenHandler}>
+                  <BsPencil />
+                </EditBtn>
+              )}
             </div>
           )}
         </article>
       </div>
-      <DropdownButton />
+      {auth !== undefined && <DropdownButton />}
     </ProfileWrap>
   );
 }
 export default Profile;
 const ProfileWrap = styled.div`
-  margin-bottom: 40px;
-  margin-left: 10px;
+  padding-bottom: 40px;
+  padding-left: 10px;
   display: flex;
   justify-content: space-between;
   position: relative;
+  border-bottom: 1px solid var(--border-color);
   article {
     display: flex;
     flex-direction: column;

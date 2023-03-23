@@ -12,6 +12,7 @@ import {
   setAddedImg,
 } from '../../slices/postSlice';
 
+const url = process.env.REACT_APP_SERVER_ADDRESS + '/images';
 const BodyInput: React.FC = () => {
   const dispatch = useAppDispatch();
   const state = useAppSelector((state) => state);
@@ -80,8 +81,9 @@ const BodyInput: React.FC = () => {
       console.log('formData', formData);
       try {
         //TODO 서버 url로 변경해야함 그리고 이미지 id와 이름을 받아와야함 => 상태 관리 필요
-        const result = await axios.post('http://localhost:4100/img', formData);
+        const result = await axios.post(url, formData);
         const { data } = result;
+        console.log('resData', data);
         const IMG_URL = result.data.url;
         dispatch(setAddedImg(IMG_URL));
         const editor = quillRef.current!.getEditor();

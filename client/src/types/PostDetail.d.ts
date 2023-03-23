@@ -30,6 +30,7 @@ export interface CommentStateType {
     commentId: unknown;
     isEdit: Array<boolean>;
     isOpeneIntro: boolean;
+    page: number;
   };
 }
 
@@ -44,6 +45,7 @@ export interface ReplyStateType {
     totalReplies: Array;
     replyCont: number;
     isOpeneIntro: boolean;
+    page: number;
   };
 }
 

@@ -13,8 +13,6 @@ const DropdownButton = () => {
   const options: ['로그아웃', '회원탈퇴'] = ['로그아웃', '회원탈퇴'];
 
   const handleSelect = (option: '로그아웃' | '회원탈퇴') => {
-    //TODO:필터추가
-    // dispatch(setFilter(option));
     //query login
     // onSelect(option);
     dispatch(setFilterOpen(false));

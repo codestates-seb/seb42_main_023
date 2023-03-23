@@ -100,9 +100,9 @@ const PostDetail: React.FC = () => {
   const [sendReport] = reportMutation;
 
   // 시간 계산
-  const time = timeSince(isSuccess && data.posts[0].createdAt);
+  const time = timeSince(isSuccess && data?.createdAt);
   // 게시글 수정 여부
-  const isEdit = isSuccess && data.posts[0].modifiedAt !== '';
+  const isEdit = isSuccess && data.modifiedAt !== '';
   // 댓글, 답글 작성자 소개페이지 오픈 여부
   const isOpenCommentIntro = 'comment' in state && state?.comment.isOpeneIntro;
   const isOpenReplyIntro = 'reply' in state && state?.reply.isOpeneIntro;
@@ -110,31 +110,31 @@ const PostDetail: React.FC = () => {
   // 좋아요 클릭 함수
   const changeLiikeHandler = (): void => {
     if ('post' in state) {
-      dispatch(setLike(state.post.isLike));
+      dispatch(setLike(state.post?.isLike));
     }
   };
   // 싫어요 클릭 함수
   const changeDislikeHandler = (): void => {
     if ('post' in state) {
-      dispatch(setDislike(state.post.isDislike));
+      dispatch(setDislike(state.post?.isDislike));
     }
   };
   // 북마크 클릭 함수
   const changeBookmarkHandler = (): void => {
     if ('post' in state) {
-      dispatch(setBookmark(state.post.isBookmark));
+      dispatch(setBookmark(state.post?.isBookmark));
     }
   };
   // 삭제 확인 모달창 오픈
   const confirmDeleteHandler = (): void => {
     if ('post' in state) {
-      dispatch(setIsOpenDelete(state.post.isOpenDelete));
+      dispatch(setIsOpenDelete(state.post?.isOpenDelete));
     }
   };
   // 신고 모달창 오픈
   const reportHandler = (): void => {
     if ('post' in state) {
-      dispatch(setIsOpenReport(state.post.isOpenReport));
+      dispatch(setIsOpenReport(state.post?.isOpenReport));
     }
   };
   // 데이터 삭제(게시글, 댓글, 답글)
@@ -162,7 +162,7 @@ const PostDetail: React.FC = () => {
 
   // 드롭다운 클로즈
   const handleClickOutside = (event: MouseEvent) => {
-    if ('post' in state && state.post.isOpenFilter) {
+    if ('post' in state && state.post?.isOpenFilter) {
       dispatch(setIsOpenFilter(false));
     }
   };
@@ -170,7 +170,7 @@ const PostDetail: React.FC = () => {
   const outClickIntroHandler = (event: React.MouseEvent<HTMLElement>) => {
     if (
       'post' in state &&
-      state.post.isOpeneIntro &&
+      state.post?.isOpeneIntro &&
       !isOpenReplyIntro &&
       !isOpenCommentIntro &&
       event.target instanceof HTMLElement
@@ -182,11 +182,11 @@ const PostDetail: React.FC = () => {
   // 신고 보내기
   const sendReportHandler = (): void => {
     // 유효성 검사
-    if ('validation' in state && state.validation.reportErr) return;
-    if ('post' in state && !state.post.reportOption) return;
+    if ('validation' in state && state.validation?.reportErr) return;
+    if ('post' in state && !state.post?.reportOption) return;
     if (reportTextRef.current?.value === '') return;
     // 게시물 신고
-    if ('post' in state && state.post.reportType === 'post') {
+    if ('post' in state && state.post?.reportType === 'post') {
       sendReport({
         reportReason: reportReason,
         description: reportTextRef.current?.value,
@@ -196,14 +196,14 @@ const PostDetail: React.FC = () => {
         replyId: null,
         reporterName: '유저이름',
       });
-      dispatch(setIsOpenReport('post' in state && state.post.isOpenReport));
+      dispatch(setIsOpenReport('post' in state && state.post?.isOpenReport));
       dispatch(setReportErr(''));
       setCheckedElement(-1);
       alert('신고가 접수 되었습니다.');
     }
 
     // 댓글 신고
-    if ('post' in state && state.post.reportType === 'comment') {
+    if ('post' in state && state.post?.reportType === 'comment') {
       sendReport({
         reportReason: reportReason,
         description: reportTextRef.current?.value,
@@ -213,7 +213,7 @@ const PostDetail: React.FC = () => {
         replyId: null,
         reporterName: '유저이름',
       });
-      dispatch(setIsOpenReport('post' in state && state.post.isOpenReport));
+      dispatch(setIsOpenReport('post' in state && state.post?.isOpenReport));
       dispatch(setReportErr(''));
       setCheckedElement(-1);
       alert('신고가 접수 되었습니다.');
@@ -230,7 +230,7 @@ const PostDetail: React.FC = () => {
         replyId: replyId,
         reporterName: '유저이름',
       });
-      dispatch(setIsOpenReport('post' in state && state.post.isOpenReport));
+      dispatch(setIsOpenReport('post' in state && state.post?.isOpenReport));
       dispatch(setReportErr(''));
       setCheckedElement(-1);
       alert('신고가 접수 되었습니다.');
@@ -240,7 +240,7 @@ const PostDetail: React.FC = () => {
   //  신고 유효성 검사
   const validationTest = (): void => {
     const reportValue = reportTextRef.current?.value;
-    if ('post' in state && !state.post.reportOption) {
+    if ('post' in state && !state.post?.reportOption) {
       dispatch(setReportErr('신고 이유를 선택해 주세요'));
     }
     if (reportValue?.length === 0) {
@@ -262,13 +262,13 @@ const PostDetail: React.FC = () => {
 
   const IntroHandler = (event: React.MouseEvent<HTMLElement>) => {
     if ('post' in state && event.target instanceof HTMLElement) {
-      dispatch(setIsOpenIntro(state.post.isOpeneIntro));
+      dispatch(setIsOpenIntro(state.post?.isOpeneIntro));
     }
   };
 
   return (
     <>
-      {commentQuery.data && 'post' in state && state.post.isOpenDelete ? (
+      {commentQuery.data && 'post' in state && state.post?.isOpenDelete ? (
         <ModalContainer>
           <DeleteModal>
             <div onClick={confirmDeleteHandler}> </div>
@@ -281,7 +281,7 @@ const PostDetail: React.FC = () => {
           </DeleteModal>
         </ModalContainer>
       ) : null}
-      {commentQuery.data && 'post' in state && state.post.isOpenReport ? (
+      {commentQuery.data && 'post' in state && state.post?.isOpenReport ? (
         <ModalContainer>
           <ReportModal>
             <div className="report">신고</div>
@@ -343,13 +343,13 @@ const PostDetail: React.FC = () => {
       <Container onClick={handleClickOutside}>
         <PostContainer onClick={outClickIntroHandler}>
           <div className="post-title">
-            <h1>{isSuccess && data.posts[0].title}</h1>
+            <h1>{isSuccess && data?.title}</h1>
             {isEdit ? <p>(수정됨)</p> : null}
           </div>
           <PostInfo>
             <ul className="post-info">
               <li className="image" onClick={IntroHandler}>
-                <img src={isSuccess && data.posts[0].memberImage}></img>
+                <img src={isSuccess && data?.memberImage}></img>
               </li>
 
               {/* TODO */}
@@ -362,54 +362,44 @@ const PostDetail: React.FC = () => {
                   <IntroInfo>
                     <ul className="intro-content-info">
                       <li className="image">
-                        <img src={data.posts[0].memberImage} id=""></img>
+                        <img src={data?.memberImage} id=""></img>
                       </li>
-                      <li className="intro-nickname">
-                        {data.posts[0].memberName}
-                      </li>
+                      <li className="intro-nickname">{data?.memberName}</li>
                     </ul>
                   </IntroInfo>
-                  <label className="introduction">{data.posts[0].title}</label>
+                  <label className="introduction">{data?.title}</label>
                   <div className="intro-moreInfo">더보기 》</div>
                 </IntorductionContainer>
               ) : null}
               {/* TODO */}
 
-              <li className="nickname">
-                {isSuccess && data.posts[0].memberName}
-              </li>
+              <li className="nickname">{isSuccess && data?.memberName}</li>
               <TimeIcon />
               <li className="created-time">{time} 전</li>
               <ViewIcon />
-              <li className="views">{isSuccess && data.posts[0].viewCount}</li>
+              <li className="views">{isSuccess && data?.viewCount}</li>
               <CommentIcon checked={true} />
               <li className="comments">
                 {commentQuery.data && commentQuery.data.comment.length}
               </li>
               <button className="bookmark" onClick={changeBookmarkHandler}>
-                <BookmarkIcon
-                  checked={isSuccess && data.posts[0].isBookmarked}
-                />
+                <BookmarkIcon checked={isSuccess && data.isBookmarked} />
               </button>
               <DropdownButton></DropdownButton>
             </ul>
           </PostInfo>
           <PostContent>
-            <div>{isSuccess && data.posts[0].content}</div>
+            <div>{isSuccess && data.content}</div>
 
             <ul className="post-info">
               <button onClick={changeLiikeHandler}>
-                <LikeIcon checked={isSuccess && data.posts[0].isThumbup} />
+                <LikeIcon checked={isSuccess && data?.isThumbup} />
               </button>
-              <li className="likes">
-                {isSuccess && data.posts[0].thumbupCount}
-              </li>
+              <li className="likes">{isSuccess && data?.posthumbupCount}</li>
               <button onClick={changeDislikeHandler}>
-                <DislikeIcon checked={isSuccess && data.posts[0].isThumbDown} />
+                <DislikeIcon checked={isSuccess && data?.thumbupCount} />
               </button>
-              <li className="dislikes">
-                {isSuccess && data.posts[0].thumbDownCount}
-              </li>
+              <li className="dislikes">{isSuccess && data?.thumbDownCount}</li>
             </ul>
             <CommentInput></CommentInput>
             <Comment></Comment>

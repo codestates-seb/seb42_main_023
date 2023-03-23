@@ -15,6 +15,7 @@ import Footer from './components/common/Footer';
 import HeaderDefault from './components/common/HeaderDefault';
 import TempToken from './pages/tempToken';
 import MyPage from './pages/MyPage';
+import SeoulRent from './pages/SeoulRent';
 import ReportsStandBy from './pages/ReportsStandBy';
 import ReportsDeleted from './pages/ReportsDeleted';
 
@@ -38,6 +39,7 @@ const App: React.FC = () => {
               <Route path="/temptoken" element={<TempToken />} />
               <Route path="/post/" element={<CreatePost />} />
               <Route path="/mypage" element={<MyPage />} />
+              <Route path="/seoulrent" element={<SeoulRent />} />
               <Route path="/reportsstandby" element={<ReportsStandBy />} />
               <Route path="/reportsdeleted" element={<ReportsDeleted />} />
             </Routes>

@@ -1,15 +1,24 @@
 import React from 'react';
 import styled from 'styled-components';
 import { useNavigate } from 'react-router-dom';
+import { membersApi } from '../../api/memberapi';
+import { useAppSelector, useAppDispatch } from '../../hooks';
+import { setMemberName } from '../../slices/headerSlice';
+import Cookies from 'js-cookie';
+
 const MediumProfileImg = () => {
   const navigate = useNavigate();
+  const dispatch = useAppDispatch();
+  const { memberImg, memberName } = useAppSelector(({ header }) => header);
+  const auth = Cookies.get('Authorization');
+
+  const clickmemberHandler = () => {
+    dispatch(setMemberName(memberName));
+    navigate('/mypage');
+  };
   return (
-    <Btn onClick={() => navigate('/mypage')}>
-      <Item
-        src={
-          'https://preview.free3d.com/img/2018/03/2269226802687772611/8mk0tyu6.jpg'
-        }
-      />
+    <Btn onClick={clickmemberHandler}>
+      <Item src={memberImg} />
     </Btn>
   );
 };

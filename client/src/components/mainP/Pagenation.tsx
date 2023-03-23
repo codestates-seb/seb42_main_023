@@ -5,12 +5,16 @@ import PrevPageIcon from '../../assets/common/PrevPageIcon';
 import { useAppSelector, useAppDispatch } from '../../hooks';
 import { setPageOffsetNext, setPageOffsetPrev } from '../../slices/mainSlice';
 import { postListApi } from '../../api/postListapi';
+import { setCurrentPage } from '../../slices/mainSlice';
 
 const Pagination = () => {
-  const { community, pageOffset } = useAppSelector(({ main }) => main);
-  //TODO: API쿼리에 맞게 수정하기
+  const { community, pageOffset, currentPage, orderby } = useAppSelector(
+    ({ main }) => main,
+  );
   const postListquery = postListApi.useGetPostListQuery({
-    endpoint: community,
+    community: community,
+    page: currentPage,
+    orderby: orderby,
   });
   const { data, isSuccess } = postListquery;
   const dispatch = useAppDispatch();
@@ -25,6 +29,13 @@ const Pagination = () => {
       dispatch(setPageOffsetNext());
     }
   };
+  const pageButtonHandler = (e: React.MouseEvent<HTMLButtonElement>) => {
+    if (pageOffset + 5 < data.pageInfo.totalPage) {
+      if (e.target instanceof HTMLButtonElement) {
+        dispatch(setCurrentPage(e.target.value));
+      }
+    }
+  };
   return (
     <PaginationContainer>
       <ul>
@@ -34,7 +45,13 @@ const Pagination = () => {
             .filter((el) => el > 0 + pageOffset && el <= 5 + pageOffset)
             .map((number) => (
               <li key={number}>
-                <Link current={number === data.pageInfo.page}>{number}</Link>
+                <Link
+                  current={number === data.pageInfo.page}
+                  value={number}
+                  onClick={pageButtonHandler}
+                >
+                  {number}
+                </Link>
               </li>
             ))}
         <NextPageIcon handler={nextPageHandler} />

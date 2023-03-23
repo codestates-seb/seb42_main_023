@@ -29,7 +29,6 @@ const DropdownButton = () => {
   };
 
   const handleToggle = () => {
-    console.log(filterOpen);
     dispatch(setFilterOpen(!filterOpen));
   };
 

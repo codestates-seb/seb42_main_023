@@ -15,7 +15,7 @@ import mainSlice from '../slices/mainSlice';
 import mypageSlice from '../slices/mypageSlice';
 import nicknameSlice from '../slices/nicknameSlice';
 import { repliesApi } from '../api/replyApi';
-import { postListApi, weeklyPopularApi } from '../api/postListapi';
+import { postListApi, weeklyPopularApi, SearchApi } from '../api/postListapi';
 import surveySlice from '../slices/surveySlice';
 import { postsApi, recomendedPostsApi } from '../api/postApi';
 import { commentsApi } from '../api/commentApi';
@@ -53,6 +53,7 @@ const store = configureStore({
     [membersCommentsListApi.reducerPath]: membersCommentsListApi.reducer,
     [nicknameApi.reducerPath]: nicknameApi.reducer,
     [tempTokenApi.reducerPath]: tempTokenApi.reducer,
+    [SearchApi.reducerPath]: SearchApi.reducer,
     [apiSlice.reducerPath]: apiSlice.reducer,
   },
   middleware: (getDefaultMiddleware) =>
@@ -69,6 +70,7 @@ const store = configureStore({
       .concat(membersCommentsListApi.middleware)
       .concat(nicknameApi.middleware)
       .concat(tempTokenApi.middleware)
+      .concat(SearchApi.middleware)
       .concat(apiSlice.middleware) // TODO: 이거빼고 위에 concat은 다 지워도됌.
 
       .concat(logger),

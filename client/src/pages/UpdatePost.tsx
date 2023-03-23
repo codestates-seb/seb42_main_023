@@ -17,13 +17,14 @@ const UpdatePost: React.FC = () => {
   const postId = Number(params.postId);
   const postQuery = postsApi.useGetPostQuery({ postId });
   const { data } = postQuery;
-  const title = data?.posts[0].title;
-  const body = data?.posts[0].content;
+  const title = data?.title;
+  const body = data?.content;
+  const tag = data?.tags;
 
   useEffect(() => {
     dispatch(setTitle(title));
     dispatch(setBody(body));
-    // dispatch(setTitle(tag));
+    dispatch(setTag(tag));
   }, [body]);
 
   const addPostHandler = (): void => {

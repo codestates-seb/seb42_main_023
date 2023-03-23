@@ -47,11 +47,13 @@ const Comment: React.FC = () => {
       return state;
     },
   );
+
   const params = useParams();
   const postId = params.postId;
+  const page = 'comment' in state && state.comment?.page;
   const commentId = 'comment' in state && state.comment?.commentId;
   // 댓글 조회
-  const commentQuery = commentsApi.useGetCommentQuery({ postId });
+  const commentQuery = commentsApi.useGetCommentQuery({ postId, page });
   const comentSucccess = commentQuery.isSuccess;
 
   // 댓글 업데이트

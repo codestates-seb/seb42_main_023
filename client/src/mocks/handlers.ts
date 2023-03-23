@@ -8,7 +8,7 @@ import { posts, weeklyPopular, bestAwards } from './postListData';
 
 export const handlers = [
   //커뮤니티 게시글 불러오기
-  rest.get(`/posts`, (req, res, ctx) => {
+  rest.get(`posts?page=1&orderby=latest`, (req, res, ctx) => {
     const data = posts;
     return res(ctx.status(200), ctx.json(data));
   }),
