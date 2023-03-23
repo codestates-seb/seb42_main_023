@@ -63,8 +63,9 @@ const Comment: React.FC = () => {
   const { isSuccess, data } = replyQuery;
   const contentEditInput = useRef<HTMLInputElement>(null);
 
-  // 답글 작성자 소개페이지 오픈 여부
+  // 게시글, 답글 작성자 소개페이지 오픈 여부
   const isOpeReplyIntro = 'reply' in state && state?.reply.isOpeneIntro;
+  const isOpePostIntro = 'post' in state && state?.post.isOpeneIntro;
 
   // 유저 정보 조회
   //TODO 유저 정보 조회 API 참조
@@ -128,13 +129,23 @@ const Comment: React.FC = () => {
   // 소개 페이지 오픈
   const IntroHandler = (event: React.MouseEvent<HTMLElement>) => {
     if (
-      'comment' in state &&
+      !isOpePostIntro &&
       !isOpeReplyIntro &&
+      'comment' in state &&
       event.target instanceof HTMLElement
     ) {
       dispatch(setIsOpenIntro(state.comment.isOpeneIntro));
       dispatch(setCommentId(Number(event.target.dataset.commentid)));
       console.log('userName', event.target.id);
+    }
+  };
+  const outClickIntroHandler = (event: React.MouseEvent<HTMLElement>) => {
+    if (
+      'comment' in state &&
+      state.comment.isOpeneIntro &&
+      event.target instanceof HTMLElement
+    ) {
+      dispatch(setIsOpenIntro(false));
     }
   };
 
@@ -166,7 +177,10 @@ const Comment: React.FC = () => {
 
           return (
             <>
-              <CommentInfo key={comment.commentId}>
+              <CommentInfo
+                key={comment.commentId}
+                onClick={outClickIntroHandler}
+              >
                 <ul className="content-info">
                   <li className="image" onClick={IntroHandler}>
                     <img
@@ -175,32 +189,32 @@ const Comment: React.FC = () => {
                       data-img={comment.memberImage}
                       data-commentId={comment.commentId}
                     ></img>
-
-                    {/* TODO */}
-
-                    {'comment' in state &&
-                    state.comment.isOpeneIntro &&
-                    comment?.commentId === state.comment?.commentId ? (
-                      <IntorductionContainer>
-                        <IntroInfo>
-                          <ul className="intro-content-info">
-                            <li className="image">
-                              <img src={comment.memberImage} id=""></img>
-                            </li>
-                            <li className="intro-nickname">
-                              {comment.memberName}
-                            </li>
-                          </ul>
-                        </IntroInfo>
-                        <label className="introduction">
-                          {/* TODO 수정 필요*/}
-                          {comment.content}
-                        </label>
-                        <div className="intro-moreInfo">더보기 》</div>
-                      </IntorductionContainer>
-                    ) : null}
-                    {/* TODO */}
                   </li>
+                  {/* TODO */}
+
+                  {'comment' in state &&
+                  state.comment.isOpeneIntro &&
+                  comment?.commentId === state.comment?.commentId ? (
+                    <IntorductionContainer>
+                      <IntroInfo>
+                        <ul className="intro-content-info">
+                          <li className="image">
+                            <img src={comment.memberImage} id=""></img>
+                          </li>
+                          <li className="intro-nickname">
+                            {comment.memberName}
+                          </li>
+                        </ul>
+                      </IntroInfo>
+                      <label className="introduction">
+                        {/* TODO 수정 필요*/}
+                        {comment.content}
+                      </label>
+                      <div className="intro-moreInfo">더보기 》</div>
+                    </IntorductionContainer>
+                  ) : null}
+                  {/* TODO */}
+
                   <li className="nickname">{comment.memberName}</li>
                   <TimeIcon />
 
@@ -292,7 +306,9 @@ const Comment: React.FC = () => {
                 )}
                 <ReplyBtn
                   onClick={(): void => {
-                    // confirmRepliesHandler(comment.commentId);
+                    if ('comment' in state && state.comment.isOpeneIntro) {
+                      dispatch(setIsOpenIntro(false));
+                    }
                     dispatch(setCommentId(comment.commentId));
                     dispatch(setIsOpened(idx));
                   }}
@@ -303,7 +319,7 @@ const Comment: React.FC = () => {
               {'reply' in state &&
               ((isSuccess && state.reply.isOpened !== undefined) || null) &&
               state.reply.isOpened[idx] ? (
-                <ReplyContainer data-opened="false">
+                <ReplyContainer>
                   <ReplyInput commentInfo={comment}></ReplyInput>
                   {filtered &&
                     filtered.map((reply: ReplyType, idx: number) => {
@@ -345,6 +361,7 @@ const CommentContainer = styled.div`
     align-items: center;
     font-size: 12px;
     padding: 30px 0 30px 0;
+    position: relative;
   }
   .content {
     display: flex;
@@ -412,8 +429,8 @@ const IntorductionContainer = styled.div`
   height: 140px;
   border: 1px solid #d4d4d4;
   z-index: 2;
-  top: 20px;
-  left: 30px;
+  top: 50px;
+  left: 45px;
   background-color: white;
   .introduction {
     font-size: 17x;
@@ -483,7 +500,6 @@ const ReplyContainer = styled.div`
   width: 100%;
   height: 100%;
   background-color: #ffffff;
-  cursor: pointer;
 `;
 
 const ReplyBtn = styled.button`

@@ -18,6 +18,7 @@ const postSlice = createSlice({
     removedImg: undefined,
     totalImg: undefined,
     addedImg: [],
+    isOpeneIntro: false,
   },
   reducers: {
     // 게시물 좋아요
@@ -83,6 +84,10 @@ const postSlice = createSlice({
     setAddedImg: (state, action: PayloadAction<string>): void => {
       (state.addedImg! as Array<string>).push(action.payload);
     },
+    // 소개 페이지 오픈
+    setIsOpenIntro: (state, action: PayloadAction<boolean>): void => {
+      state.isOpeneIntro = !state.isOpeneIntro;
+    },
   },
 });
 
@@ -103,4 +108,5 @@ export const {
   setRemovedImg,
   setTotalmg,
   setAddedImg,
+  setIsOpenIntro,
 } = postSlice.actions;

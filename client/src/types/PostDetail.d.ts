@@ -17,6 +17,7 @@ export interface PostStateType {
     currentImg: unknown;
     removedImg: unknown;
     totalImg: unknown;
+    isOpeneIntro: boolean;
     addedImg: unknown;
   };
 }
