@@ -40,8 +40,10 @@ const Reply: React.FC<ReplyProps> = ({ replyInfo, idx }: ReplyProps) => {
   );
   const commentId = 'comment' in state && state.comment?.commentId;
   const replyId = 'reply' in state && state.reply?.replyId;
+  const page = 'comment' in state && state.comment?.page;
+
   // 답글
-  const replyQuery = repliesApi.useGetReplyQuery({ commentId });
+  const replyQuery = repliesApi.useGetReplyQuery({ commentId, page });
   const replySucccess = replyQuery.isSuccess;
   const replyMutation = repliesApi.useUpdataReplyMutation();
   const updateMutation = replyMutation[0];

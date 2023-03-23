@@ -12,6 +12,7 @@ const replySlice = createSlice({
     totalReplies: [],
     replyCnt: undefined,
     isOpeneIntro: false,
+    page: 1,
   },
   reducers: {
     // 답글 좋아요
@@ -66,6 +67,10 @@ const replySlice = createSlice({
     setIsOpenIntro: (state, action: PayloadAction<boolean>): void => {
       state.isOpeneIntro = !state.isOpeneIntro;
     },
+    // 댓글 페이지 번호 증가
+    setPage: (state): void => {
+      state.page = state.page + 1;
+    },
   },
 });
 
@@ -83,4 +88,5 @@ export const {
   setIsOpened,
   setReplyCnt,
   setIsOpenIntro,
+  setPage,
 } = replySlice.actions;

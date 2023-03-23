@@ -45,6 +45,7 @@ export interface ReplyStateType {
     totalReplies: Array;
     replyCont: number;
     isOpeneIntro: boolean;
+    page: number;
   };
 }
 
