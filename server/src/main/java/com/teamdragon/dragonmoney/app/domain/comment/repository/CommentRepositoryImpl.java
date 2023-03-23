@@ -41,8 +41,9 @@ public class CommentRepositoryImpl implements CommentRepositoryCustom {
                 )
                 .distinct()
                 .from(comment)
-                .leftJoin(comment.writer, member).fetchJoin()
-                .leftJoin(comment.posts, posts).fetchJoin()
+                .leftJoin(comment.writer, member)
+                .leftJoin(comment.posts, posts)
+                .where(comment.state.eq(Comment.State.ACTIVE))
                 .where(comment.posts.id.eq(postsId))
                 .orderBy(orders)
                 .offset(pageable.getOffset())
@@ -53,6 +54,7 @@ public class CommentRepositoryImpl implements CommentRepositoryCustom {
                 .select(comment.count())
                 .distinct()
                 .from(comment)
+                .where(comment.state.eq(Comment.State.ACTIVE))
                 .where(comment.posts.id.eq(postsId));
 
         return PageableExecutionUtils.getPage(content, pageable, countQuery::fetchOne);
@@ -68,22 +70,23 @@ public class CommentRepositoryImpl implements CommentRepositoryCustom {
                         comment.writer.name.as("memberName"),
                         comment.writer.profileImage.as("memberImage"),
                         comment.state.as("commentState"),
-                        ExpressionUtils.as(JPAExpressions.select(thumbup.id)
+                        ExpressionUtils.as(JPAExpressions.select(thumbup.id.max())
                                 .from(thumbup)
                                 .where(thumbup.parentComment.id.eq(comment.id),
-                                        thumbup.member.id.eq(loginMemberId))
-                                .limit(1), "isThumbup"),
-                        ExpressionUtils.as(JPAExpressions.select(thumbdown.id)
+                                        thumbup.member.id.eq(loginMemberId),
+                                        thumbup.parentComment.state.eq(Comment.State.ACTIVE)), "isThumbup"),
+                        ExpressionUtils.as(JPAExpressions.select(thumbdown.id.max())
                                 .from(thumbdown)
                                 .where(thumbdown.parentComment.id.eq(comment.id),
-                                        thumbdown.member.id.eq(loginMemberId))
-                                .limit(1), "isThumbdown")
+                                        thumbdown.member.id.eq(loginMemberId),
+                                        thumbdown.parentComment.state.eq(Comment.State.ACTIVE)), "isThumbdown")
                         )
                 )
                 .distinct()
                 .from(comment)
-                .leftJoin(comment.writer, member).fetchJoin()
-                .leftJoin(comment.posts, posts).fetchJoin()
+                .leftJoin(comment.writer, member)
+                .leftJoin(comment.posts, posts)
+                .where(comment.state.eq(Comment.State.ACTIVE))
                 .where(comment.posts.id.eq(postsId))
                 .orderBy(orders)
                 .offset(pageable.getOffset())
@@ -94,6 +97,7 @@ public class CommentRepositoryImpl implements CommentRepositoryCustom {
                 .select(comment.count())
                 .distinct()
                 .from(comment)
+                .where(comment.state.eq(Comment.State.ACTIVE))
                 .where(comment.posts.id.eq(postsId));
 
         return PageableExecutionUtils.getPage(content, pageable, countQuery::fetchOne);
@@ -105,8 +109,8 @@ public class CommentRepositoryImpl implements CommentRepositoryCustom {
         OrderSpecifier[] orders = getAllOrderSpecifiers(pageable, comment);
 
         List<Comment> content = queryFactory
-                .selectFrom(comment)
-                .distinct()
+                .selectFrom(comment).distinct()
+                .where(comment.state.eq(Comment.State.ACTIVE))
                 .where(comment.writer.name.eq(memberName))
                 .orderBy(orders)
                 .offset(pageable.getOffset())
@@ -115,6 +119,7 @@ public class CommentRepositoryImpl implements CommentRepositoryCustom {
         JPAQuery<Long> countQuery = queryFactory
                 .select(comment.count())
                 .from(comment)
+                .where(comment.state.eq(Comment.State.ACTIVE))
                 .where(comment.writer.name.eq(memberName));
 
         return PageableExecutionUtils.getPage(content, pageable, countQuery::fetchOne);
@@ -126,10 +131,11 @@ public class CommentRepositoryImpl implements CommentRepositoryCustom {
         OrderSpecifier[] orders = getAllOrderSpecifiers(pageable, comment);
 
         List<Comment> content = queryFactory
-                .select(comment)
+                .select(comment).distinct()
                 .from(thumbup)
-                .join(thumbup.parentComment, comment)
-                .join(thumbup.member, member)
+                .leftJoin(thumbup.parentComment, comment)
+                .leftJoin(thumbup.member, member)
+                .where(comment.state.eq(Comment.State.ACTIVE))
                 .where(comment.writer.name.eq(memberName))
                 .orderBy(orders)
                 .offset(pageable.getOffset())
@@ -138,6 +144,7 @@ public class CommentRepositoryImpl implements CommentRepositoryCustom {
         JPAQuery<Long> countQuery = queryFactory
                 .select(comment.count())
                 .from(comment)
+                .where(comment.state.eq(Comment.State.ACTIVE))
                 .where(comment.writer.name.eq(memberName));
 
         return PageableExecutionUtils.getPage(content, pageable, countQuery::fetchOne);
@@ -149,6 +156,7 @@ public class CommentRepositoryImpl implements CommentRepositoryCustom {
         Long memberCommentCount = queryFactory
                 .select(comment.count())
                 .from(comment)
+                .where(comment.state.eq(Comment.State.ACTIVE))
                 .where(comment.writer.name.eq(memberName))
                 .fetchOne();
         return memberCommentCount;
@@ -160,6 +168,7 @@ public class CommentRepositoryImpl implements CommentRepositoryCustom {
         Long memberPostsCount = queryFactory
                 .select(thumbup.count())
                 .from(thumbup)
+                .where(thumbup.parentComment.state.eq(Comment.State.ACTIVE))
                 .where(thumbup.member.name.eq(memberName))
                 .where(thumbup.parentComment.id.isNotNull())
                 .fetchOne();

@@ -115,15 +115,18 @@ public class PostsRepositoryImpl implements PostsRepositoryCustom {
                         ExpressionUtils.as(JPAExpressions.select(bookmark.id.max())
                                 .from(bookmark)
                                 .where(bookmark.member.id.eq(loginMemberId),
-                                        bookmark.posts.id.eq(postsId)), "isBookmarked"),
+                                        bookmark.posts.id.eq(postsId),
+                                        bookmark.posts.state.eq(Posts.State.ACTIVE)), "isBookmarked"),
                         ExpressionUtils.as(JPAExpressions.select(thumbup.id.max())
                                 .from(thumbup)
                                 .where(thumbup.parentPosts.id.eq(postsId),
-                                        thumbup.member.id.eq(loginMemberId)), "isThumbup"),
+                                        thumbup.member.id.eq(loginMemberId),
+                                        thumbup.parentPosts.state.eq(Posts.State.ACTIVE)), "isThumbup"),
                         ExpressionUtils.as(JPAExpressions.select(thumbdown.id.max())
                                 .from(thumbdown)
                                 .where(thumbdown.parentPosts.id.eq(postsId),
-                                        thumbdown.member.id.eq(loginMemberId)), "isThumbdown")))
+                                        thumbdown.member.id.eq(loginMemberId),
+                                        thumbdown.parentPosts.state.eq(Posts.State.ACTIVE)), "isThumbdown")))
                 .distinct()
                 .from(posts)
                 .leftJoin(posts.postsTags, postsTag)
