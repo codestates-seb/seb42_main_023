@@ -20,7 +20,8 @@ export const repliesApi = createApi({
   endpoints: (builder) => ({
     // 답글 조회
     getReply: builder.query({
-      query: ({ commentId }) => `comments/${commentId}/replies`,
+      query: ({ commentId, page }) =>
+        `comments/${commentId}/replies?page=${page}?orderby=thumbup`,
       providesTags: (result, error, arg) => {
         return [{ type: 'Reply', id: 'reply' }];
       },

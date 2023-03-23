@@ -20,7 +20,8 @@ export const commentsApi = createApi({
   endpoints: (builder) => ({
     // 댓글 조회
     getComment: builder.query({
-      query: ({ postId, page }) => `posts/${postId}/comments/?page=${page}`,
+      query: ({ postId, page }) =>
+        `posts/${postId}/comments/?page=${page}?orderby=thumbup`,
       providesTags: (result, error, arg) => {
         console.log(result, error, arg);
         return [{ type: 'Comment', id: arg.postId }];
