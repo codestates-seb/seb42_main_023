@@ -7,17 +7,19 @@ import com.teamdragon.dragonmoney.app.domain.image.repository.ImageRepository;
 import com.teamdragon.dragonmoney.app.domain.member.entity.Member;
 import com.teamdragon.dragonmoney.app.domain.member.repository.MemberRepository;
 import com.teamdragon.dragonmoney.app.domain.posts.entity.Posts;
+import com.teamdragon.dragonmoney.app.domain.posts.entity.PostsTag;
 import com.teamdragon.dragonmoney.app.domain.posts.repository.PostsRepository;
 import com.teamdragon.dragonmoney.app.domain.reply.entity.Reply;
 import com.teamdragon.dragonmoney.app.domain.reply.repository.ReplyRepository;
-import com.teamdragon.dragonmoney.app.domain.reply.service.ReplyService;
-import com.teamdragon.dragonmoney.app.domain.tag.repository.TagRepository;
+import com.teamdragon.dragonmoney.app.domain.tag.entity.Tag;
+import com.teamdragon.dragonmoney.app.domain.tag.service.TagService;
 import com.teamdragon.dragonmoney.app.domain.thumb.entity.Thumbdown;
 import com.teamdragon.dragonmoney.app.domain.thumb.entity.Thumbup;
 import com.teamdragon.dragonmoney.app.domain.thumb.respository.ThumbdownRepository;
 import com.teamdragon.dragonmoney.app.domain.thumb.respository.ThumbupRepository;
 import lombok.RequiredArgsConstructor;
 
+import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -31,10 +33,9 @@ public class StubService {
     private final PostsRepository postsRepository;
     private final ImageRepository imageRepository;
     private final MemberRepository memberRepository;
-    private final TagRepository tagRepository;
+    private final TagService tagService;
     private final ThumbupRepository thumbupRepository;
     private final ReplyRepository replyRepository;
-    private final ReplyService replyService;
     private final ThumbdownRepository thumbdownRepository;
 
     private final String MEMBER_IMAGE_URL = "https://preview.free3d.com/img/2018/03/2269226802687772611/8mk0tyu6.jpg";
@@ -60,6 +61,9 @@ public class StubService {
     }
 
     public List<Image> makeImages(List<Member> saveMembers){
+        if (saveMembers == null) {
+            saveMembers = memberRepository.findAll();
+        }
         ArrayList<Image> images = new ArrayList<>();
         for (int i = 0; i < POSTS_NUMBER * IMAGE_NUMBER_IN_POSTS; i++) {
             Image image = Image.builder()
@@ -74,7 +78,16 @@ public class StubService {
         return imageRepository.saveAll(images);
     }
 
-    public List<Posts> makePosts(List<Member> members, List<Image> saveImages) {
+    public List<Posts> makePosts(List<Member> saveMembers, List<Image> saveImages) {
+        if (saveMembers == null) {
+            saveMembers = memberRepository.findAll();
+        }
+        if (saveImages == null) {
+            saveImages = imageRepository.findAll();
+        }
+
+        ArrayList<String> tagNames = new ArrayList<>(Arrays.asList("머니", "부자", "투자", "주식", "부동산"));
+        List<Tag> saveTags = tagService.saveListTag(tagNames);
         Queue<Image> imageQueue = new LinkedList<>(saveImages);
         ArrayList<Posts> postsList = new ArrayList<>();
         for (int i = 0; i < POSTS_NUMBER; i++) {
@@ -85,8 +98,14 @@ public class StubService {
                     postImages.add(image);
                 }
             }
+            ArrayList<PostsTag> postsTags = new ArrayList<>();
+            for (Tag saveTag : saveTags) {
+                PostsTag postsTag = new PostsTag(null, saveTag);
+                postsTags.add(postsTag);
+            }
             Posts posts = Posts.builder()
-                    .writer(members.get(i % MEMBER_NUMBER))
+                    .postsTags(postsTags)
+                    .writer(saveMembers.get(i % MEMBER_NUMBER))
                     .title(("postTitle " + i).repeat(2))
                     .content(("postContent " + i).repeat(30))
                     .images(postImages)
@@ -96,13 +115,20 @@ public class StubService {
         return postsRepository.saveAll(postsList);
     }
 
-    public List<Comment> makeComments(List<Member> members, List<Posts> savePosts) {
+    public List<Comment> makeComments(List<Member> saveMembers, List<Posts> savePosts) {
+        if (saveMembers == null) {
+            saveMembers = memberRepository.findAll();
+        }
+        if (savePosts == null) {
+            savePosts = postsRepository.findAll();
+        }
+
         ArrayList<Comment> comments = new ArrayList<>();
         for (Posts savePost : savePosts) {
             for (int i = 0; i < COMMENT_NUMBER_IN_POSTS; i++) {
                 Comment comment = Comment.builder()
                         .posts(savePost)
-                        .writer(members.get(i % MEMBER_NUMBER))
+                        .writer(saveMembers.get(i % MEMBER_NUMBER))
                         .content(("테스트 댓글 " + i + " ").repeat(2))
                         .build();
                 comments.add(comment);
@@ -112,6 +138,13 @@ public class StubService {
     }
 
     public List<Reply> makeReplies(List<Member> saveMembers, List<Comment> saveComments) {
+        if (saveMembers == null) {
+            saveMembers = memberRepository.findAll();
+        }
+        if (saveComments == null) {
+            saveComments = commentRepository.findAll();
+        }
+
         ArrayList<Reply> replies = new ArrayList<>();
         for (Comment saveComment : saveComments) {
             for (int i = 0; i < REPLY_NUMBER_IN_COMMENT; i++) {
@@ -127,6 +160,13 @@ public class StubService {
     }
 
     public void makeThumbPosts(List<Member> saveMembers, List<Posts> savePosts) {
+        if (saveMembers == null) {
+            saveMembers = memberRepository.findAll();
+        }
+        if (savePosts == null) {
+            savePosts = postsRepository.findAll();
+        }
+
         ArrayList<Thumbup> thumbups = new ArrayList<>();
         ArrayList<Thumbdown> thumbdowns = new ArrayList<>();
         for (int i = 0; i < savePosts.size(); i++) {
@@ -146,6 +186,13 @@ public class StubService {
     }
 
     public void makeThumbComments(List<Member> saveMembers, List<Comment> saveComments) {
+        if (saveMembers == null) {
+            saveMembers = memberRepository.findAll();
+        }
+        if (saveComments == null) {
+            saveComments = commentRepository.findAll();
+        }
+
         ArrayList<Thumbup> thumbups = new ArrayList<>();
         ArrayList<Thumbdown> thumbdowns = new ArrayList<>();
         for (int i = 0; i < saveComments.size(); i++) {
@@ -165,16 +212,23 @@ public class StubService {
 
     }
 
-    public void makeThumbReplies(List<Member> saveMembers, List<Reply> replies) {
+    public void makeThumbReplies(List<Member> saveMembers, List<Reply> saveReplies) {
+        if (saveMembers == null) {
+            saveMembers = memberRepository.findAll();
+        }
+        if (saveReplies == null) {
+            saveReplies = replyRepository.findAll();
+        }
+
         ArrayList<Thumbup> thumbups = new ArrayList<>();
         ArrayList<Thumbdown> thumbdowns = new ArrayList<>();
-        for (int i = 0; i < replies.size(); i++) {
+        for (int i = 0; i < saveReplies.size(); i++) {
             Thumbup thumbup = Thumbup.builder()
-                    .parentReply(replies.get(i))
+                    .parentReply(saveReplies.get(i))
                     .member(saveMembers.get(i % MEMBER_NUMBER))
                     .build();
             Thumbdown thumbdown = Thumbdown.builder()
-                    .parentReply(replies.get(i))
+                    .parentReply(saveReplies.get(i))
                     .member(saveMembers.get(i % MEMBER_NUMBER))
                     .build();
             thumbups.add(thumbup);
