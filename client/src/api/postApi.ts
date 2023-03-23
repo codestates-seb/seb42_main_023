@@ -151,7 +151,7 @@ export const postsApi = createApi({
       invalidatesTags: (result, error, arg) => [{ type: 'Post', id: 'post' }],
     }),
 
-    // 북마크 제거
+    // 북마크 제거
     removeBookmark: builder.mutation({
       query: ({ memberName, postId }) => {
         return {
