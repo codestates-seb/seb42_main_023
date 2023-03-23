@@ -16,12 +16,12 @@ import { usePostTempTokenMutation } from '../api/tempTokenAPi';
 // axios.defaults.withCredentials = true;
 
 const TempToken: React.FC = () => {
+  const [postTempToken] = usePostTempTokenMutation();
+
   useEffect(() => {
     const url = new URL(window.location.href);
     const tempAccessToken = url.searchParams.get('tempAccessToken');
     console.log('tempAccessToken', tempAccessToken);
-
-    const [postTempToken] = usePostTempTokenMutation();
 
     postTempToken({ tempAccessToken })
       .unwrap()

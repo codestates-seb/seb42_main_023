@@ -1,15 +1,31 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import styled from 'styled-components';
 import TitleInput from '../components/updatePostP/TitleInput';
 import BodyInput from '../components/updatePostP/BodyInput';
 import TagInput from '../components/updatePostP/TagInput';
 import { BlueBtn, WhiteBtn } from '../components/common/Btn';
-import { useNavigate } from 'react-router-dom';
-import { useAppSelector } from '../hooks';
+import { useNavigate, useParams } from 'react-router-dom';
+import { useAppDispatch, useAppSelector } from '../hooks';
+import { postsApi } from '../api/postApi';
+import { setBody, setTag, setTitle } from '../slices/postInputSlice';
 
 const UpdatePost: React.FC = () => {
-  const navigate = useNavigate();
+  const dispatch = useAppDispatch();
   const state = useAppSelector((state) => state);
+  const navigate = useNavigate();
+  const params = useParams();
+  const postId = Number(params.postId);
+  const postQuery = postsApi.useGetPostQuery({ postId });
+  const { data } = postQuery;
+  const title = data?.posts[0].title;
+  const body = data?.posts[0].content;
+
+  useEffect(() => {
+    dispatch(setTitle(title));
+    dispatch(setBody(body));
+    // dispatch(setTitle(tag));
+  }, [body]);
+
   const addPostHandler = (): void => {
     if (
       state.postInput.title !== '' &&
@@ -20,7 +36,7 @@ const UpdatePost: React.FC = () => {
       state.validation.tagErr === ''
     ) {
       alert('게시글이 수정되었습니다.');
-      // navigate('수정된 게시글 페이지 경로');
+      navigate(`posts/${postId}`);
     } else {
       if (state.validation.titleErr !== '' || state.postInput.title === '') {
         alert('제목을 다시 확인해 주세요.');

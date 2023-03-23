@@ -2,7 +2,7 @@ name: React CI with npm
 
 on:
   push:
-    branches: ["fe-dev"]
+    branches: ["fe-dev, action-test"]
   pull_request:
     branches: ["fe-dev"]
 
@@ -31,6 +31,7 @@ jobs:
         run: |
           touch .env
           echo "REACT_APP_GOOGLE_CLIENT_ID=${{ secrets.REACT_APP_GOOGLE_CLIENT_ID }}" >> .env
+          echo "REACT_APP_SERVER_ADDRESS=${{ secrets.REACT_APP_SERVER_ADDRESS }}" >> .env
           cat .env
 
         working-directory: ./client

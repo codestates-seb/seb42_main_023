@@ -21,6 +21,7 @@ import {
   setIsOpenReport,
   setIsOpenFilter,
   setReportOption,
+  setIsOpenIntro,
 } from '../slices/postSlice';
 import { setReportErr } from '../slices/validationSlice';
 import { useAppDispatch, useAppSelector } from '../hooks';
@@ -46,6 +47,8 @@ const reportOption = [
   '도배',
   '기타',
 ];
+
+window.addEventListener('hashchange', () => console.log('test'));
 
 const PostDetail: React.FC = () => {
   const [checkedElement, setCheckedElement] = useState(-1);
@@ -81,6 +84,7 @@ const PostDetail: React.FC = () => {
   const reportErr = 'validation' in state ? state.validation.reportErr : null;
   // 게시글 조회 및 추가
   const postDetailQuery = postsApi.useGetPostQuery({ postId });
+  console.log(postDetailQuery);
   const { data, isSuccess } = postDetailQuery;
   const postMutation = postsApi.useDeletePostMutation();
   const [deletePost] = postMutation;
@@ -99,6 +103,9 @@ const PostDetail: React.FC = () => {
   const time = timeSince(isSuccess && data.posts[0].createdAt);
   // 게시글 수정 여부
   const isEdit = isSuccess && data.posts[0].modifiedAt !== '';
+  // 댓글, 답글 작성자 소개페이지 오픈 여부
+  const isOpenCommentIntro = 'comment' in state && state?.comment.isOpeneIntro;
+  const isOpenReplyIntro = 'reply' in state && state?.reply.isOpeneIntro;
 
   // 좋아요 클릭 함수
   const changeLiikeHandler = (): void => {
@@ -157,6 +164,18 @@ const PostDetail: React.FC = () => {
   const handleClickOutside = (event: MouseEvent) => {
     if ('post' in state && state.post.isOpenFilter) {
       dispatch(setIsOpenFilter(false));
+    }
+  };
+
+  const outClickIntroHandler = (event: React.MouseEvent<HTMLElement>) => {
+    if (
+      'post' in state &&
+      state.post.isOpeneIntro &&
+      !isOpenReplyIntro &&
+      !isOpenCommentIntro &&
+      event.target instanceof HTMLElement
+    ) {
+      dispatch(setIsOpenIntro(false));
     }
   };
 
@@ -228,8 +247,8 @@ const PostDetail: React.FC = () => {
       dispatch(setReportErr('신고 내용을 작성해 주세요.'));
     }
     if (reportValue) {
-      if (reportValue.length < 10 || reportValue.length > 300) {
-        dispatch(setReportErr('제목은 10자 이상 300자 이하로 작성해주세요.'));
+      if (reportValue.length < 10 || reportValue.length > 40) {
+        dispatch(setReportErr('제목은 10자 이상 40자 이하로 작성해주세요.'));
       } else {
         dispatch(setReportErr(''));
       }
@@ -240,6 +259,12 @@ const PostDetail: React.FC = () => {
   const deleteConfirm = `${
     'post' in state && state.post?.deleteType
   }을 정말 삭제하시겠습니까?`;
+
+  const IntroHandler = (event: React.MouseEvent<HTMLElement>) => {
+    if ('post' in state && event.target instanceof HTMLElement) {
+      dispatch(setIsOpenIntro(state.post.isOpeneIntro));
+    }
+  };
 
   return (
     <>
@@ -316,16 +341,40 @@ const PostDetail: React.FC = () => {
         </ModalContainer>
       ) : null}
       <Container onClick={handleClickOutside}>
-        <PostContainer>
+        <PostContainer onClick={outClickIntroHandler}>
           <div className="post-title">
             <h1>{isSuccess && data.posts[0].title}</h1>
             {isEdit ? <p>(수정됨)</p> : null}
           </div>
           <PostInfo>
             <ul className="post-info">
-              <li className="image">
+              <li className="image" onClick={IntroHandler}>
                 <img src={isSuccess && data.posts[0].memberImage}></img>
               </li>
+
+              {/* TODO */}
+
+              {isSuccess &&
+              'post' in state &&
+              state?.post.isOpeneIntro &&
+              state.post.isOpeneIntro ? (
+                <IntorductionContainer>
+                  <IntroInfo>
+                    <ul className="intro-content-info">
+                      <li className="image">
+                        <img src={data.posts[0].memberImage} id=""></img>
+                      </li>
+                      <li className="intro-nickname">
+                        {data.posts[0].memberName}
+                      </li>
+                    </ul>
+                  </IntroInfo>
+                  <label className="introduction">{data.posts[0].title}</label>
+                  <div className="intro-moreInfo">더보기 》</div>
+                </IntorductionContainer>
+              ) : null}
+              {/* TODO */}
+
               <li className="nickname">
                 {isSuccess && data.posts[0].memberName}
               </li>
@@ -422,6 +471,7 @@ const PostContainer = styled.div`
     font-size: 12px;
     padding: 30px 0 30px 0;
     border-bottom: 1px solid #d4d4d4;
+    position: relative;
   }
   .nickname {
     max-width: 130px;
@@ -622,6 +672,53 @@ const ReportModal = styled.div`
   }
   input {
     display: none;
+  }
+`;
+
+//TODO Intro
+const IntorductionContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  position: absolute;
+  width: 240px;
+  height: 140px;
+  border: 1px solid #d4d4d4;
+  z-index: 2;
+  top: 45px;
+  left: 48px;
+  background-color: white;
+  .introduction {
+    font-size: 17x;
+    color: gray;
+    width: 175px;
+    margin: 10px 0 0 35px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .intro-moreInfo {
+    font-size: 17x;
+    color: gray;
+    width: 150px;
+    margin: 5px 0 0 165px;
+    cursor: pointer;
+  }
+`;
+const IntroInfo = styled.div`
+  z-index: 5;
+  .intro-content-info {
+    width: 100%;
+    height: 50px;
+    display: flex;
+    align-items: center;
+    font-size: 12px;
+    padding: 10px 0 0 10px;
+  }
+  .intro-nickname {
+    width: 150px;
+    height: 30px;
+    font-size: 16px;
+    margin: 8px 0 0 10px;
   }
 `;
 

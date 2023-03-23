@@ -1,4 +1,4 @@
-import React, { useMemo, useRef } from 'react';
+import React, { useEffect, useMemo, useRef } from 'react';
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
 import axios from 'axios';
@@ -6,11 +6,53 @@ import styled from 'styled-components';
 import { useAppDispatch, useAppSelector } from '../../hooks';
 import { setBody } from '../../slices/postInputSlice';
 import { setBodyErr } from '../../slices/validationSlice';
+import { postsApi } from '../../api/postApi';
+import { useParams } from 'react-router-dom';
+import {
+  setCurrentImg,
+  setRemovedImg,
+  setAddedImg,
+} from '../../slices/postSlice';
+import _ from 'lodash';
 
 const BodyInput: React.FC = () => {
   const dispatch = useAppDispatch();
   const quillRef = useRef<ReactQuill>();
   const state = useAppSelector((state) => state);
+  const params = useParams();
+  const postId = Number(params.postId);
+  const bodyValue = state.postInput?.body;
+  const addedImg = state.post?.addedImg;
+  const postQuery = postsApi.useGetPostQuery({ postId });
+  const { data } = postQuery;
+  //TODO body 데이터는 태그 형태로 들어오고 => 태그를 제거한 상태로 각 요소에 배치해야함
+  // const pattern = /<[^>]*>?/g;
+  //TODO string.replace(/<[^>]*>?/g, '');
+  //TODO 받아온 body 데이터에서 이미지를 추출해서 remainImage, addedImages, removedImages를 요청 바디에 보내줘야함
+  // 초기 이미지, 추가한 이미지, 제거한 이미지
+  // 전체 이미지 = 초기 이미지 + 추가한 이미지
+  // 제거한 이미지 = 전채 이미지에서 현재 이미지 제외
+  const body = data?.posts[0].content;
+  const arr1 = [
+    { imageId: 1, imageName: 'a' },
+    { imageId: 2, imageName: 'b' },
+    { imageId: 3, imageName: 'c' },
+  ];
+  const arr2 = [
+    { imageId: 1, imageName: 'a' },
+    { imageId: 2, imageName: 'b' },
+  ];
+  // const arr3 = _.difference(arr2, arr1);
+  // console.log('new', arr3);
+  // const index = [1, 2];
+  // const result = [];
+  // for (const idx of index) {
+  //   const result = arr1.result.filter((el) => {
+  //     if (el.imageId === idx) false;
+  //   });
+  // }
+  // arr1.filter((el) => {});
+  // console.log('result', result);
 
   //  문자열을 HTML 요소로 변환
   const stringToHTML = function (str: string): HTMLElement {
@@ -19,10 +61,27 @@ const BodyInput: React.FC = () => {
     return dom;
   };
 
+  // 본문 내용이 바뀔 때 마다 이미지 체크
+  useEffect(() => {
+    if (bodyValue) imageCheck();
+  }, [bodyValue]);
+
   // 본문 value 확인
-  function valueCheck(content: string): void {
-    dispatch(setBody(content));
+  function valueCheck(): void {
+    dispatch(setBody(quillRef?.current?.value as string));
     validationTest();
+  }
+  // 본문 이미지 확인
+  function imageCheck(): void {
+    // 이미지 처리
+    const pattern = /((?<=<img......)(.*?)(?=.>))/gi;
+    console.log('bodyValue', bodyValue);
+    const currentImg = bodyValue!.match(pattern)!;
+    const removedImg = addedImg?.filter((img) => {
+      return !currentImg?.includes(img);
+    });
+    dispatch(setCurrentImg(currentImg));
+    dispatch(setRemovedImg(removedImg));
   }
 
   // 유효성 검사
@@ -48,28 +107,23 @@ const BodyInput: React.FC = () => {
     input.setAttribute('type', 'file');
     input.setAttribute('accept', 'image/*');
     input.click();
-    // input이 클릭되면 파일 선택창이 나타난다.
-
-    // input에 변화가 생길 경우  이미지를 선택
     input.addEventListener('change', async () => {
       const file = input.files![0];
-
-      // multer에 맞는 형식으로 데이터 가공
-      // 백엔드에 사항에 맞게 수정 필요
       const formData = new FormData();
       formData.append('img', file);
       console.log('formData', formData);
-
       try {
-        // 백엔드 multer라우터에 이미지를 보낸다.
+        //TODO 서버 url로 변경해야함 그리고 이미지 id와 이름을 받아와야함 => 상태 관리 필요(데이터 형식 변경)
         const result = await axios.post('http://localhost:4100/img', formData);
-        console.log('성공 시, 백엔드가 보내주는 데이터', result.data.url);
-        const IMG_URL = result.data.url;
-
-        // 에디터 객체
+        const { data } = result;
+        console.log(data);
+        const IMG_URL = result?.data.url;
+        dispatch(setAddedImg(IMG_URL));
+        //   {
+        //     "imageId" : 123,
+        //     "imageName" : "imageFileName"
+        //   }
         const editor = quillRef.current!.getEditor();
-
-        // 현재 에디터 커서 위치값 추적 및 이미지 삽입
         const range = editor.getSelection();
         editor.insertEmbed(range!.index, 'image', IMG_URL);
       } catch (error) {
@@ -134,7 +188,7 @@ const BodyInput: React.FC = () => {
               }}
               theme="snow"
               placeholder="게시글 내용을 입력하세요."
-              value={state.postInput.body}
+              value={state?.postInput.body || ''}
               onChange={valueCheck}
               modules={modules}
               formats={formats}
@@ -153,7 +207,7 @@ const BodyInput: React.FC = () => {
               }}
               theme="snow"
               placeholder="게시글 내용을 입력하세요."
-              value={state.postInput.body}
+              value={state?.postInput.body || ''}
               onChange={valueCheck}
               modules={modules}
               formats={formats}
