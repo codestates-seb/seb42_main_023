@@ -16,7 +16,6 @@ const TitleInput: React.FC = () => {
 
   const postQuery = postsApi.useGetPostQuery({ postId });
   const { data } = postQuery;
-  console.log('data', data);
 
   // 제목 value 확인
   const valueCheck = (event: React.ChangeEvent<HTMLInputElement>): void => {
@@ -48,7 +47,7 @@ const TitleInput: React.FC = () => {
             className="title-input"
             placeholder="제목을 입력해주세요."
             onChange={valueCheck}
-            value={data?.posts[0].title || ''}
+            value={data?.title || ''}
           ></Input>
         </TitleInputContainer>
       ) : (
@@ -59,7 +58,7 @@ const TitleInput: React.FC = () => {
             className="title-input"
             placeholder="제목을 입력해주세요."
             onChange={valueCheck}
-            value={data?.posts[0].title || ''}
+            value={data?.title || ''}
           ></Input>
           <Error>{state.validation.titleErr}</Error>
         </TitleInputContainer>

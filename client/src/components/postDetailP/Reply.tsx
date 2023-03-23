@@ -40,7 +40,7 @@ const Reply: React.FC<ReplyProps> = ({ replyInfo, idx }: ReplyProps) => {
   );
   const commentId = 'comment' in state && state.comment?.commentId;
   const replyId = 'reply' in state && state.reply?.replyId;
-  const page = 'comment' in state && state.comment?.page;
+  const page = 'reply' in state && state.reply?.page;
 
   // 답글
   const replyQuery = repliesApi.useGetReplyQuery({ commentId, page });
@@ -66,7 +66,7 @@ const Reply: React.FC<ReplyProps> = ({ replyInfo, idx }: ReplyProps) => {
     (state as ReplyStateType).reply.isEdit === undefined
   ) {
     const edit = Array.from(
-      { length: replyQuery.data.comment.length },
+      { length: replyQuery.data.comments.length },
       (el) => (el = false),
     );
 
