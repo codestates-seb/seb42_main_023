@@ -17,8 +17,6 @@ public interface PostsRepositoryCustom {
     // 추천 게시물 목록 조회
     List<Posts> findRecommendPostsList(int size);
 
-    // 게시글 최신 상태 조회
-    Posts findLatestPosts(Posts posts);
     // 단일 조회
     PostsDto.PostsDetailRes findPostsDetailById(Long postsId);
     // 단일 조회 : 로그인 유저 : 북마크 여부, 좋아요 여부, 싫어요 여부 추가
@@ -29,8 +27,6 @@ public interface PostsRepositoryCustom {
     Page<Posts> findPostsListBySearch(String keyword, String[] tagNames, Pageable pageable);
     // 목록 조회 : 회원 이름
     Page<Posts> findPostsListByMemberName(String memberName, Pageable pageable);
-    // 조회수 증가
-    void plusViewCountById(Long postsId);
 
     // 마이페이지
     Long findMemberPostsCount(String memberName);

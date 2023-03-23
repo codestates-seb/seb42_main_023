@@ -1,5 +1,8 @@
 package com.teamdragon.dragonmoney.app.domain.delete.entity;
 
+import com.teamdragon.dragonmoney.app.domain.comment.entity.Comment;
+import com.teamdragon.dragonmoney.app.domain.posts.entity.Posts;
+import com.teamdragon.dragonmoney.app.domain.reply.entity.Reply;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -25,6 +28,15 @@ public class DeleteResult {
     @Column
     @Enumerated(value = EnumType.STRING)
     private Reason deleteReason;
+
+    @OneToOne(mappedBy = "deleteResult")
+    private Posts posts;
+
+    @OneToOne(mappedBy = "deleteResult")
+    private Comment comment;
+
+    @OneToOne(mappedBy = "deleteResult")
+    private Reply reply;
 
     @Builder
     public DeleteResult(Reason deleteReason) {

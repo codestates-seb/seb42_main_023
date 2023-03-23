@@ -22,7 +22,7 @@ public class Bookmark {
     @JoinColumn(name = "OWNER_ID")
     private Member member;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
     @JoinColumn(name = "POSTS_ID")
     private Posts posts;
 
