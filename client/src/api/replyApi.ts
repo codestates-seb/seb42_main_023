@@ -79,5 +79,25 @@ export const repliesApi = createApi({
       },
       invalidatesTags: (result, error, arg) => [{ type: 'Reply', id: 'reply' }],
     }),
+    // 답글 싫어요 추가
+    addThumbDown: builder.mutation({
+      query: ({ replyId }) => {
+        return {
+          url: `posts/${replyId}/thumbdown`,
+          method: 'POST',
+        };
+      },
+      invalidatesTags: (result, error, arg) => [{ type: 'Reply', id: 'reply' }],
+    }),
+    // 답글 싫어요 제거
+    removeThumbDown: builder.mutation({
+      query: ({ replyId }) => {
+        return {
+          url: `posts/${replyId}/thumbdown`,
+          method: 'DELETE',
+        };
+      },
+      invalidatesTags: (result, error, arg) => [{ type: 'Reply', id: 'reply' }],
+    }),
   }),
 });

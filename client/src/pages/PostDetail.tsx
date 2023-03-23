@@ -88,6 +88,17 @@ const PostDetail: React.FC = () => {
   const { data, isSuccess } = postDetailQuery;
   const postMutation = postsApi.useDeletePostMutation();
   const [deletePost] = postMutation;
+  // 게시글 좋아요 추가, 삭제
+  const addThumbUpMutation = postsApi.useAddThumbUpMutation();
+  const [addThumbUp] = addThumbUpMutation;
+  const removeThumbUpMutation = postsApi.useRemoveThumbUpMutation();
+  const [removeThumbUp] = removeThumbUpMutation;
+  // 게시글 싫어요  추가, 삭제
+  const addThumbDownMutation = postsApi.useAddThumbDownMutation();
+  const [addThumbDown] = addThumbUpMutation;
+  const removeThumbDownMutation = postsApi.useRemoveThumbDownMutation();
+  const [removeThumbDown] = removeThumbUpMutation;
+
   // 댓글 조회 및 삭제
   const commentQuery = commentsApi.useGetCommentQuery({ postId });
   const commentMutation = commentsApi.useDeleteCommentMutation();
@@ -109,14 +120,20 @@ const PostDetail: React.FC = () => {
 
   // 좋아요 클릭 함수
   const changeLiikeHandler = (): void => {
-    if ('post' in state) {
-      dispatch(setLike(state.post?.isLike));
+    console.log('isThumUp', !data?.isThumbup);
+    if (!data?.isThumup) {
+      addThumbUp({ postId });
+    } else {
+      removeThumbUp({ postId });
     }
   };
   // 싫어요 클릭 함수
   const changeDislikeHandler = (): void => {
-    if ('post' in state) {
-      dispatch(setDislike(state.post?.isDislike));
+    console.log('isThumDown', !data?.isThumbdown);
+    if (!data.isThumbdown) {
+      addThumbDown({ postId });
+    } else {
+      removeThumbDown({ postId });
     }
   };
   // 북마크 클릭 함수
