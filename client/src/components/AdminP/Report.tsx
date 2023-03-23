@@ -1,16 +1,13 @@
 import React from 'react';
 import styled from 'styled-components';
 import { WhiteBtn, BlueBtn } from '../common/Btn';
-
-// interface ReportProps {
-//   selectedReport: number | null;
-// }
-
-// const Report: React.FC<ReportProps> = ({ selectedReport }) => {
-//   console.log(selectedReport); // reportId
+import { useAppDispatch, useAppSelector } from '../../hooks';
+import { setIsReviewOpen } from '../../slices/reportSlice';
 
 const Report: React.FC = () => {
-  // console.log(selectedReport); // reportId
+  // tools
+  const dispatch = useAppDispatch();
+  const { selectedReport } = useAppSelector(({ report }) => report);
 
   return (
     <ReportContainer>
@@ -50,7 +47,9 @@ const Report: React.FC = () => {
         </tr>
       </Table>
       <div className="button-container">
-        <CheckedBtn>확인</CheckedBtn>
+        <CheckedBtn onClick={() => dispatch(setIsReviewOpen(false))}>
+          확인
+        </CheckedBtn>
         <SeeDetailBtn>자세히 보기</SeeDetailBtn>
       </div>
     </ReportContainer>
@@ -122,7 +121,7 @@ const singleReportData = {
   writer: '작성자',
   reporter: '신고자',
   description:
-    '가나다라마바사아자차카타파하이게스무글자가나다라마바사아자차카타파하이게마흔셋글자ㅎ',
+    '가나다라마바사아자차카타파하이게스무글자가나다라마바사아자차카타파하이게마흔글자',
   postId: 2,
   commentId: null,
   replyId: null,

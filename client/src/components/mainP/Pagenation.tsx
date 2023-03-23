@@ -25,7 +25,6 @@ const Pagination = () => {
       dispatch(setPageOffsetNext());
     }
   };
-
   return (
     <PaginationContainer>
       <ul>

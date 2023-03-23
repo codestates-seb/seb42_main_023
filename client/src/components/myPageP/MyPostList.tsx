@@ -7,7 +7,7 @@ import ViewIcon from '../../assets/common/ViewIcon';
 import Thumnail from '../common/Thumnail';
 import { TagItem } from '../common/Tag';
 import { Link } from 'react-router-dom';
-import { membersPostListApi } from '../../api/postListapi';
+import { membersPostListApi } from '../../api/memberapi';
 import { timeSince } from '../mainP/Timecalculator';
 
 export interface Tags {
@@ -30,7 +30,7 @@ export interface PostItem {
 function MyPostList() {
   const { community } = useAppSelector(({ main }) => main);
   const postListquery = membersPostListApi.useGetPostListQuery({
-    endpoint: community,
+    name: 'bunny',
   });
   const { data, isSuccess } = postListquery;
 

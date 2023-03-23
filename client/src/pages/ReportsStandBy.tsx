@@ -1,26 +1,29 @@
 import React from 'react';
 import NavAdmin from '../components/AdminP/NavAdmin';
 import styled from 'styled-components';
-import { useState } from 'react';
+// import { useState } from 'react';
 import { WhiteBtn } from '../components/common/Btn';
-import Pagination from '../components/AdminP/Pagination';
+// import Pagination from '../components/AdminP/Pagination';
+import Report from '../components/AdminP/Report';
+import { useAppSelector, useAppDispatch } from '../hooks';
+import { setIsReviewOpen, setSelectedReport } from '../slices/reportSlice';
 
-function ReportsStandBy() {
+const ReportsStandBy = () => {
+  // tools
+  const dispatch = useAppDispatch();
+  const { isReviewOpen } = useAppSelector(({ report }) => report);
   // 신고 대상 서치
-  const [selectedOption, setSelectedOption] = useState('all');
-  const changeSelectHandler = (
-    event: React.ChangeEvent<HTMLSelectElement>,
-  ): void => {
-    setSelectedOption(event.target.value);
-  };
+  // const [selectedOption, setSelectedOption] = useState('all');
+  // const changeSelectHandler = (
+  //   event: React.ChangeEvent<HTMLSelectElement>,
+  // ): void => {
+  //   setSelectedOption(event.target.value);
+  // };
 
-  // 신고 내역 모달창
-  const [showReportForm, setShowReportForm] = useState(false);
-  const [selectedReport, setSelectedReport] = useState<number | null>(null);
-
-  const clickReportHandler = (reportId: number): void => {
-    setShowReportForm(!showReportForm);
-    setSelectedReport(reportId);
+  const reviewReportHanlder = (reportId: number): void => {
+    console.log('reportId:', reportId);
+    dispatch(setIsReviewOpen(true));
+    dispatch(setSelectedReport(reportId));
   };
 
   return (
@@ -34,8 +37,8 @@ function ReportsStandBy() {
               <label htmlFor="report-target">신고대상</label>
               <select
                 id="report-target"
-                defaultValue={selectedOption}
-                onChange={changeSelectHandler}
+                // defaultValue={selectedOption}
+                // onChange={changeSelectHandler}
               >
                 <option value="all">전체</option>
                 <option value="post">게시글</option>
@@ -62,7 +65,6 @@ function ReportsStandBy() {
                   <tr
                     key={item.reportId}
                     className={idx % 2 === 0 ? 'row-even' : 'row-odd'}
-                    onClick={(): void => clickReportHandler(item.reportId)}
                   >
                     <td>{item.targetType}</td>
                     <td>{item.reportCategory}</td>
@@ -70,7 +72,11 @@ function ReportsStandBy() {
                     <td>{item.writer}</td>
                     <td>{item.reportedAT.replace('T', ' ').slice(0, -7)}</td>
                     <td>
-                      <HandleBtn>검토하기</HandleBtn>
+                      <HandleBtn
+                        onClick={() => reviewReportHanlder(item.reportId)}
+                      >
+                        검토하기
+                      </HandleBtn>
                     </td>
                     <td>
                       <HandleBtn>삭제하기</HandleBtn>
@@ -82,12 +88,11 @@ function ReportsStandBy() {
           </Table>
         </ReportMain>
       </div>
-
-      {/* {showReportForm ? <Report selectedReport={selectedReport} /> : null} */}
-      <Pagination />
+      {isReviewOpen ? <Report /> : null}
+      {/* <Pagination /> */}
     </AdminMain>
   );
-}
+};
 
 export default ReportsStandBy;
 
