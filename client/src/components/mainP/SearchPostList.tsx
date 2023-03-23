@@ -45,7 +45,6 @@ function SearchPostList() {
 
   return (
     <List>
-      서치페이지
       {isSuccess &&
         data.posts.map((post: PostItem) => {
           return (

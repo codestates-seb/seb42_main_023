@@ -25,26 +25,32 @@ const Main = () => {
     <>
       <FilterWrap>
         <div>
-          {community === '' ? (
-            <ClickComuntyBtn>커뮤니티</ClickComuntyBtn>
-          ) : (
-            <ComuntyBtn onClick={() => dispatch(setCommunity(''))}>
-              커뮤니티
-            </ComuntyBtn>
+          {!searchOn && (
+            <>
+              {community === '' ? (
+                <ClickComuntyBtn>커뮤니티</ClickComuntyBtn>
+              ) : (
+                <ComuntyBtn onClick={() => dispatch(setCommunity(''))}>
+                  커뮤니티
+                </ComuntyBtn>
+              )}
+              {community === '' ? (
+                <ComuntyBtn
+                  onClick={() => dispatch(setCommunity('/best-awards'))}
+                >
+                  <AiOutlineTrophy size={20} />
+                  명예의전당
+                </ComuntyBtn>
+              ) : (
+                <ClickComuntyBtn>
+                  <AiOutlineTrophy size={20} />
+                  명예의전당
+                </ClickComuntyBtn>
+              )}
+            </>
           )}
-          {community === '' ? (
-            <ComuntyBtn onClick={() => dispatch(setCommunity('/best-awards'))}>
-              <AiOutlineTrophy size={20} />
-              명예의전당
-            </ComuntyBtn>
-          ) : (
-            <ClickComuntyBtn>
-              <AiOutlineTrophy size={20} />
-              명예의전당
-            </ClickComuntyBtn>
-          )}
+          <DropdownButton />
         </div>
-        <DropdownButton />
       </FilterWrap>
       {searchOn ? <SearchPostList /> : <PostList />}
       {isSuccess && <Pagenation />}
