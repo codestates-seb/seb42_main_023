@@ -12,10 +12,6 @@ export const tempTokenApi = createApi({
         method: 'POST',
         body: { tempAccessToken },
       }),
-      transformResponse: (response, meta) => {
-        console.log('this is header', meta?.response?.headers);
-        return response;
-      },
     }),
   }),
 });
