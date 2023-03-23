@@ -1,9 +1,21 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
+import Cookies from 'js-cookie';
+
+const url = process.env.REACT_APP_SERVER_ADDRESS;
 
 // 댓글 API
 export const commentsApi = createApi({
   reducerPath: 'commentsApi',
-  baseQuery: fetchBaseQuery({ baseUrl: 'http://localhost:3000' }),
+  baseQuery: fetchBaseQuery({
+    baseUrl: url,
+    credentials: 'include',
+    prepareHeaders: (headers) => {
+      const accsessToken = Cookies.get('Authorization');
+      console.log(accsessToken);
+      headers.set('Content-Type', 'application/json');
+      return headers;
+    },
+  }),
   tagTypes: ['Comment'],
   endpoints: (builder) => ({
     // 댓글 조회
