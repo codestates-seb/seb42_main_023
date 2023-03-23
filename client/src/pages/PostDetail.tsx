@@ -96,7 +96,7 @@ const PostDetail: React.FC = () => {
   const replyMutation = repliesApi.useDeleteReplyMutation();
   const [deleteReply] = replyMutation;
   // 신고 추가
-  const reportMutation = reportApi.useSetReportMutation();
+  const reportMutation = reportApi.usePostReportMutation();
   const [sendReport] = reportMutation;
 
   // 시간 계산

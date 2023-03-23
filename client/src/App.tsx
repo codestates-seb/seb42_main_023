@@ -7,7 +7,6 @@ import Login from './pages/Login';
 import SetNickname from './pages/SetNickname';
 import RecommendLoan from './pages/RecommendLoan';
 import HappyHouse from './pages/HappyHouse';
-import AdminReport from './pages/AdminReport';
 import CreatePost from './pages/CreatePost';
 import UpdatePost from './pages/UpdatePost';
 import Main from './pages/Main';
@@ -16,6 +15,8 @@ import Footer from './components/common/Footer';
 import HeaderDefault from './components/common/HeaderDefault';
 import TempToken from './pages/tempToken';
 import MyPage from './pages/MyPage';
+import ReportsStandBy from './pages/ReportsStandBy';
+import ReportsDeleted from './pages/ReportsDeleted';
 
 const App: React.FC = () => {
   return (
@@ -32,12 +33,13 @@ const App: React.FC = () => {
               <Route path="/posts/update/:postId" element={<UpdatePost />} />
               <Route path="/login" element={<Login />} />
               <Route path="/setnickname" element={<SetNickname />} />
-              <Route path="/adminreport" element={<AdminReport />} />
               <Route path="/recommendedloan" element={<RecommendLoan />} />
               <Route path="/happyhouse" element={<HappyHouse />} />
               <Route path="/temptoken" element={<TempToken />} />
               <Route path="/post/" element={<CreatePost />} />
               <Route path="/mypage" element={<MyPage />} />
+              <Route path="/reportsstandby" element={<ReportsStandBy />} />
+              <Route path="/reportsdeleted" element={<ReportsDeleted />} />
             </Routes>
           </main>
           <Footer />
