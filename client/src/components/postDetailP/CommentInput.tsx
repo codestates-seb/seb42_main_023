@@ -38,7 +38,7 @@ const CommentInput: React.FC = () => {
 
   return (
     <CommentInputContainer>
-      <h1>댓글 {query.data && query.data.comment.length}개 </h1>
+      <h1>댓글 {query.data && query.data.comments.length}개 </h1>
       <Input
         type="text"
         placeholder="댓글을 남겨 주세요"
