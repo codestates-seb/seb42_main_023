@@ -26,6 +26,7 @@ public class BookmarkService {
     public Bookmark createBookmark(String memberName, Long postsId) {
         Member member = memberService.findMember(memberName);
         Posts posts = postsService.findOne(postsId);
+        posts.plusBookmarkCount();
 
         Bookmark bookmark = Bookmark.builder()
                 .member(member)
@@ -41,6 +42,8 @@ public class BookmarkService {
         Long memberId = member.getId();
 
         Bookmark bookmark = findBookmark(memberId, postsId);
+        Posts posts = bookmark.getPosts();
+        postsService.minusBookmarkCount(posts);
 
         bookmarkRepository.delete(bookmark);
     }
