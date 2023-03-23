@@ -5,7 +5,17 @@ import com.teamdragon.dragonmoney.app.domain.posts.entity.Posts;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
+import java.time.LocalDateTime;
+import java.util.List;
+
 public interface PostsRepositoryCustom {
+
+    // 주간 인기 게시물 목록 조회
+    List<Posts> findWeeklyPopularList(int size, LocalDateTime from, LocalDateTime to);
+    // 명예의 전당 목록 조회
+    Page<Posts> findBestAwardsListByPage(Pageable pageable);
+    // 추천 게시물 목록 조회
+    List<Posts> findRecommendPostsList(int size);
 
     // 게시글 최신 상태 조회
     Posts findLatestPosts(Posts posts);

@@ -2,6 +2,7 @@ package com.teamdragon.dragonmoney.app.domain.posts.repository;
 
 import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.types.*;
+import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.jpa.JPAExpressions;
 import com.querydsl.jpa.JPQLQuery;
 import com.querydsl.jpa.impl.JPAQuery;
@@ -14,6 +15,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.support.PageableExecutionUtils;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 import static com.teamdragon.dragonmoney.app.domain.bookmark.entity.QBookmark.*;
@@ -28,6 +30,68 @@ import static com.teamdragon.dragonmoney.app.domain.thumb.entity.QThumbup.*;
 public class PostsRepositoryImpl implements PostsRepositoryCustom {
 
     private final JPAQueryFactory queryFactory;
+
+    // 주간 인기 게시물 목록 조회
+    @Override
+    public List<Posts> findWeeklyPopularList(int size, LocalDateTime from, LocalDateTime to) {
+        return queryFactory
+                .select(posts)
+                .distinct()
+                .from(posts)
+                .where(posts.state.eq(Posts.State.ACTIVE))
+                .where(posts.createdAt.between(from, to))
+                .orderBy(posts.viewCount.add(
+                        posts.commentCount.add(
+                                posts.thumbupCount.add(
+                                        posts.bookmarkCount
+                                )
+                        )
+                ).desc())
+                .limit(size)
+                .fetch();
+    }
+
+    // 명예의 전당 목록 조회
+    @Override
+    public Page<Posts> findBestAwardsListByPage(Pageable pageable) {
+        // 정렬 기준 변환
+        OrderSpecifier[] orders = getAllOrderSpecifiers(pageable, posts);
+
+        List<Posts> content = queryFactory
+                .select(posts).distinct()
+                .from(posts)
+                .leftJoin(posts.postsTags, postsTag).fetchJoin()
+                .leftJoin(postsTag.tag, tag).fetchJoin()
+                .where(posts.state.eq(Posts.State.ACTIVE))
+                .where(posts.bestAwards.isNotNull())
+                .orderBy(orders)
+                .offset(pageable.getOffset())
+                .limit(pageable.getPageSize())
+                .fetch();
+        JPAQuery<Long> countQuery = queryFactory
+                .select(posts.count())
+                .distinct()
+                .where(posts.state.eq(Posts.State.ACTIVE))
+                .where(posts.bestAwards.isNotNull())
+                .from(posts)
+                .leftJoin(posts.postsTags, postsTag).fetchJoin()
+                .leftJoin(postsTag.tag, tag).fetchJoin();
+
+        return PageableExecutionUtils.getPage(content, pageable, countQuery::fetchOne);
+    }
+
+    // 추천 게시물 목록 조회
+    @Override
+    public List<Posts> findRecommendPostsList(int size) {
+        return queryFactory
+                .select(posts)
+                .distinct()
+                .from(posts)
+                .where(posts.state.eq(Posts.State.ACTIVE))
+                .orderBy(Expressions.numberTemplate(Double.class, "function('rand')").asc())
+                .limit(size)
+                .fetch();
+    }
 
     // 최신 반영 Posts 조회
     @Override

@@ -140,6 +140,12 @@ public class PostsService implements ThumbCountService {
         }
     }
 
+    // 게시글 북마크 수 빼기
+    public void minusBookmarkCount(Posts posts) {
+        posts.minusBookmarkCount();
+        postsRepository.save(posts);
+    }
+
     // 게시글 목록 조회 : 요청페이지번호, 정렬기준
     public Page<Posts> findPostsList(int page, Posts.OrderBy orderBy){
         Pageable pageable = PageRequest.of(page - 1 , PAGE_ELEMENT_SIZE, Sort.by(orderBy.getTargetProperty()).descending());
@@ -170,35 +176,6 @@ public class PostsService implements ThumbCountService {
         return postsRepository.findBookmarkPostsListByMemberName(memberName, pageable);
     }
 
-    // update 로 인한 태그 삭제 및 추가 처리
-    private List<PostsTag> updateTags(Posts updatePosts, Posts originalPosts) {
-        List<String> updateTagNames = updatePosts.getTagNames();
-        List<String> originalTagNames = originalPosts.getTagNames();
-
-        List<String> newTagNames = new ArrayList<>();
-        List<String> removedTagNames = new ArrayList<>();
-
-        for (String updateTagName : updateTagNames) {
-            if (!originalTagNames.contains(updateTagName)) {
-                newTagNames.add(updateTagName);
-            }
-        }
-        for (String originalTagName : originalTagNames) {
-            if (!updateTagNames.contains(originalTagName)) {
-                removedTagNames.add(originalTagName);
-            }
-        }
-        postsTagRepository.deleteAllByPostsIdAndTagName(originalPosts.getId(), removedTagNames);
-        return getPostsTags(newTagNames);
-    }
-
-    // 조회수 증가
-    private void plusViewCount(Long postsId) {
-        Posts findPosts = findVerifyPostsById(postsId);
-        findPosts.plusViewCount();
-        postsRepository.save(findPosts);
-    }
-
     @Override
     public ThumbDto thumbupStateUpdate(Long postsId, boolean needInquiry, ThumbDto.ACTION action) {
         Posts findPosts = findVerifyPostsById(postsId);
@@ -227,6 +204,35 @@ public class PostsService implements ThumbCountService {
             return updatePosts.getThumbCount();
         }
         return null;
+    }
+
+    // update 로 인한 태그 삭제 및 추가 처리
+    private List<PostsTag> updateTags(Posts updatePosts, Posts originalPosts) {
+        List<String> updateTagNames = updatePosts.getTagNames();
+        List<String> originalTagNames = originalPosts.getTagNames();
+
+        List<String> newTagNames = new ArrayList<>();
+        List<String> removedTagNames = new ArrayList<>();
+
+        for (String updateTagName : updateTagNames) {
+            if (!originalTagNames.contains(updateTagName)) {
+                newTagNames.add(updateTagName);
+            }
+        }
+        for (String originalTagName : originalTagNames) {
+            if (!updateTagNames.contains(originalTagName)) {
+                removedTagNames.add(originalTagName);
+            }
+        }
+        postsTagRepository.deleteAllByPostsIdAndTagName(originalPosts.getId(), removedTagNames);
+        return getPostsTags(newTagNames);
+    }
+
+    // 조회수 증가
+    private void plusViewCount(Long postsId) {
+        Posts findPosts = findVerifyPostsById(postsId);
+        findPosts.plusViewCount();
+        postsRepository.save(findPosts);
     }
 
     // 작성자 확인
