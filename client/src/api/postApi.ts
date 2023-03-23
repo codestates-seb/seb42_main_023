@@ -120,6 +120,26 @@ export const postsApi = createApi({
       },
       invalidatesTags: (result, error, arg) => [{ type: 'Post', id: 'post' }],
     }),
+    // 게시글 싫어요  추가
+    addThumbDown: builder.mutation({
+      query: ({ postId }) => {
+        return {
+          url: `posts/${postId}/thumbdown`,
+          method: 'POST',
+        };
+      },
+      invalidatesTags: (result, error, arg) => [{ type: 'Post', id: 'post' }],
+    }),
+    // 게시글 싫어요 제거
+    removeThumbDown: builder.mutation({
+      query: ({ postId }) => {
+        return {
+          url: `posts/${postId}/thumbdown`,
+          method: 'DELETE',
+        };
+      },
+      invalidatesTags: (result, error, arg) => [{ type: 'Post', id: 'post' }],
+    }),
     // 북마크 추가
     addBookmark: builder.mutation({
       query: ({ memberName, postId }) => {
@@ -130,7 +150,8 @@ export const postsApi = createApi({
       },
       invalidatesTags: (result, error, arg) => [{ type: 'Post', id: 'post' }],
     }),
-    // 북마크 추가
+
+    // 북마크 제거
     removeBookmark: builder.mutation({
       query: ({ memberName, postId }) => {
         return {
