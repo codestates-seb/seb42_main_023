@@ -15,9 +15,6 @@ import { ReactComponent as CheckedIcon } from '../assets/checked.svg';
 import { ReactComponent as NoCheckedIcon } from '../assets/noChecked.svg';
 import {
   setIsOpenDelete,
-  setBookmark,
-  setDislike,
-  setLike,
   setIsOpenReport,
   setIsOpenFilter,
   setReportOption,
@@ -130,19 +127,25 @@ const PostDetail: React.FC = () => {
   const changeLiikeHandler = (): void => {
     // 좋아요만 있는 경우
     if (data?.isThumup && !data?.isThumbdown) {
-      // 좋아요 제거
+      console.log('좋아요 삭제');
       removeThumbUp({ postId });
+      return;
     }
     // 싫어요만 있는 경우
     if (!data?.isThumup && data?.isThumbdown) {
+      console.log('싫어요 삭제 후 좋아요 추가');
       removeThumbDown({ postId });
-      addThumbUp({ postId });
+      setTimeout(() => {
+        addThumbUp({ postId });
+      }, 500);
+      return;
     }
     // 둘 다 없는 경우
     if (!data?.isThumbdown && !data?.isThumbdown) {
+      console.log('좋아요 삭제');
       addThumbUp({ postId });
+      return;
     }
-    return;
   };
 
   //TODO 버그 수정 중
@@ -151,18 +154,27 @@ const PostDetail: React.FC = () => {
     // 좋아요만 있는 경우
     if (data?.isThumup && !data?.isThumbdown) {
       // 좋아요 제거, 싫어요 추가
+      console.log('좋아요 삭제 후 싫어요 추가');
       removeThumbUp({ postId });
-      addThumbDown({ postId });
+      setTimeout(() => {
+        addThumbDown({ postId });
+      }, 500);
+      return;
     }
     // 싫어요만 있는 경우
     if (!data?.isThumbdown && data?.isThumbdown) {
       // 싫어요 제거
+      console.log('싫어요 삭제');
+
       removeThumbDown({ postId });
+      return;
     }
     // 둘 다 없는 경우
     if (!data?.isThumbdown && !data?.isThumbdown) {
       // 싫어요 추가
+      console.log('싫어요 추가');
       addThumbDown({ postId });
+      return;
     }
   };
   // 북마크 클릭 함수

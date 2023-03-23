@@ -47,6 +47,11 @@ const CreatePost: React.FC = () => {
   // }
 
   // 게시글 생성시 요청 Body
+
+  const savaImages = {
+    addedImages: currentImg,
+    removedImages: removedImg,
+  };
   const reqBody = {
     savaImages: {
       addedImages: currentImg,
@@ -67,7 +72,7 @@ const CreatePost: React.FC = () => {
       state.validation.bodyErr === '' &&
       state.validation.tagErr === ''
     ) {
-      createPost(JSON.stringify(reqBody));
+      createPost({ savaImages, titleValue, bodyValue, tagNames });
       alert('게시글이 생성되었습니다.');
     } else {
       if (state.validation.titleErr !== '' || !state.postInput.title.length) {
