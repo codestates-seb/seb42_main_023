@@ -78,6 +78,7 @@ const PostDetail: React.FC = () => {
   const navigate = useNavigate();
   const params = useParams();
   const postId = params.postId;
+
   const commentId = 'comment' in state ? state.comment?.commentId : null;
   const replyId = 'reply' in state ? state.reply?.replyId : null;
   const reportReason = 'post' in state ? state.post.reportOption : null;
@@ -86,6 +87,7 @@ const PostDetail: React.FC = () => {
   const postDetailQuery = postsApi.useGetPostQuery({ postId });
   console.log(postDetailQuery);
   const { data, isSuccess } = postDetailQuery;
+  const memberName = data?.memberName;
   const postMutation = postsApi.useDeletePostMutation();
   const [deletePost] = postMutation;
   // 게시글 좋아요 추가, 삭제
@@ -98,6 +100,11 @@ const PostDetail: React.FC = () => {
   const [addThumbDown] = addThumbDownMutation;
   const removeThumbDownMutation = postsApi.useRemoveThumbDownMutation();
   const [removeThumbDown] = removeThumbDownMutation;
+  // 북마크 추가, 삭제
+  const addBookmarkMutaion = postsApi.useAddBookmarkMutation();
+  const [addBookmark] = addBookmarkMutaion;
+  const removeBookmarkMutaion = postsApi.useRemoveBookmarkMutation();
+  const [removeBookmark] = removeBookmarkMutaion;
 
   // 댓글 조회 및 삭제
   const commentQuery = commentsApi.useGetCommentQuery({ postId });
@@ -118,6 +125,7 @@ const PostDetail: React.FC = () => {
   const isOpenCommentIntro = 'comment' in state && state?.comment.isOpeneIntro;
   const isOpenReplyIntro = 'reply' in state && state?.reply.isOpeneIntro;
 
+  //TODO 버그 수정 중
   // 좋아요 클릭 함수
   const changeLiikeHandler = (): void => {
     console.log('isThumUp', !data?.isThumbup);
@@ -131,10 +139,11 @@ const PostDetail: React.FC = () => {
       if (!data?.isThumup) {
         addThumbUp({ postId });
       } else {
-        removeThumbUp({ postId });
+        return;
       }
     }
   };
+  //TODO 버그 수정 중
   // 싫어요 클릭 함수
   const changeDislikeHandler = (): void => {
     console.log('isThumDown', !data?.isThumbdown);
@@ -148,16 +157,19 @@ const PostDetail: React.FC = () => {
       if (!data?.isThumbdown) {
         addThumbDown({ postId });
       } else {
-        removeThumbDown({ postId });
+        return;
       }
     }
   };
   // 북마크 클릭 함수
   const changeBookmarkHandler = (): void => {
-    if ('post' in state) {
-      dispatch(setBookmark(state.post?.isBookmark));
+    if (data?.isBookmarked) {
+      removeBookmark({ memberName, postId });
+    } else {
+      addBookmark({ memberName, postId });
     }
   };
+
   // 삭제 확인 모달창 오픈
   const confirmDeleteHandler = (): void => {
     if ('post' in state) {
@@ -413,7 +425,7 @@ const PostDetail: React.FC = () => {
                 {commentQuery.data && commentQuery.data.comment.length}
               </li>
               <button className="bookmark" onClick={changeBookmarkHandler}>
-                <BookmarkIcon checked={isSuccess && data.isBookmarked} />
+                <BookmarkIcon checked={isSuccess && data?.isBookmarked} />
               </button>
               <DropdownButton></DropdownButton>
             </ul>
