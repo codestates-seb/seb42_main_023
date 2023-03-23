@@ -66,7 +66,7 @@ const Reply: React.FC<ReplyProps> = ({ replyInfo, idx }: ReplyProps) => {
     (state as ReplyStateType).reply.isEdit === undefined
   ) {
     const edit = Array.from(
-      { length: replyQuery.data.comment.length },
+      { length: replyQuery.data.comments.length },
       (el) => (el = false),
     );
 
