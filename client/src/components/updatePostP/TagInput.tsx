@@ -1,26 +1,15 @@
-import React, { KeyboardEvent } from 'react';
+import React, { useRef } from 'react';
 import styled from 'styled-components';
 import { useAppDispatch, useAppSelector } from '../../hooks';
-import { setTagContent, setTag } from '../../slices/postInputSlice';
-import { setTagErr } from '../../slices/validationSlice';
-import Tag from '../common/Tag';
+import { setTitle } from '../../slices/postInputSlice';
+import { setTitleErr } from '../../slices/validationSlice';
 import { postsApi } from '../../api/postApi';
 import { useParams } from 'react-router-dom';
 
-interface Input {
-  className: string;
-  placeholder: string;
-  onChange: React.KeyboardEvent<HTMLInputElement>;
-  value: string;
-}
-
-// 공통 컴포넌트
-const TagInput: React.FC = () => {
+const TitleInput: React.FC = () => {
   const dispatch = useAppDispatch();
   const state = useAppSelector((state) => state);
-  const valueCheck = (event: React.ChangeEvent<HTMLInputElement>): void => {
-    dispatch(setTagContent(event.target.value));
-  };
+  const title = useRef<HTMLInputElement>(null);
   const params = useParams();
   const postId = Number(params.postId);
   console.log('postId', postId);
@@ -28,89 +17,68 @@ const TagInput: React.FC = () => {
   const postQuery = postsApi.useGetPostQuery({ postId });
   const { data } = postQuery;
   console.log('data', data);
-  //  테그 추가
-  const addTagHandler = (event: KeyboardEvent<HTMLInputElement>): void => {
-    const tag: Array<string> = state.postInput.tag;
-    const tagContent = state.postInput.tagContent;
 
-    // 유효성 검사
-    if (event.key === 'Enter' && event.nativeEvent.isComposing === false) {
-      // 태그 중복 입력 방지
-      console.log(tagContent);
-      if (tag.includes(tagContent)) {
-        dispatch(setTagErr(''));
-        return;
-      }
-      // 공백 방지
-      if (tagContent === '') {
-        dispatch(setTagErr(''));
-        return;
-      }
-      // 태그 길이
-      if (tagContent.length > 10) {
-        dispatch(setTagErr('태그 길이는 최대 10 글자 입니다.'));
-        return;
-      }
-      // 띄어쓰기 방지
-      if (tagContent.includes(' ')) {
-        dispatch(setTagErr('태그에 띄어쓰기를 포함할 수 없습니다.'));
-        return;
-      }
-      // 태그 개수 제한
-      if (tag.length >= 5) {
-        dispatch(setTagErr('태그는 5개까지만 입력 가능합니다.'));
-        return;
+  // 제목 value 확인
+  const valueCheck = (event: React.ChangeEvent<HTMLInputElement>): void => {
+    dispatch(setTitle(event.target.value));
+    validationTest();
+  };
+
+  // 유효성 검사
+  const validationTest = (): void => {
+    const titleValue = title!.current?.value;
+    if (titleValue!.length === 0) {
+      dispatch(setTitleErr('제목을 작성해주세요.'));
+    }
+    if (titleValue) {
+      if (titleValue.length < 5 || titleValue.length > 20) {
+        dispatch(setTitleErr('제목은 5자 이상 20자 이하로 작성해주세요.'));
       } else {
-        dispatch(setTagContent(''));
-        dispatch(setTagErr(''));
-        dispatch(setTag(tagContent));
+        dispatch(setTitleErr(''));
       }
     }
   };
-
   return (
     <>
-      {state.validation.tagErr === '' ? (
-        <TagInputContainer>
+      {state.validation.titleErr === '' ? (
+        <TitleInputContainer>
+          <h1> 게시글 수정</h1>
           <Input
-            className="tag-input"
-            placeholder="태그를 입력하고 엔터를 치세요.(최대 5개)"
+            ref={title}
+            className="title-input"
+            placeholder="제목을 입력해주세요."
             onChange={valueCheck}
-            onKeyDown={addTagHandler}
-            value={state.postInput.tagContent}
+            value={data?.posts[0].title || ''}
           ></Input>
-          <TagConatiner>
-            {state.postInput.tag.map((tag, idx) => {
-              return <Tag key={idx} content={tag}></Tag>;
-            })}
-          </TagConatiner>
-        </TagInputContainer>
+        </TitleInputContainer>
       ) : (
-        <TagInputContainer>
+        <TitleInputContainer>
+          <h1> 게시글 수정</h1>
           <Input
-            className="tag-input"
-            placeholder="태그를 입력하고 엔터를 치세요.(최대 5개)"
+            ref={title}
+            className="title-input"
+            placeholder="제목을 입력해주세요."
             onChange={valueCheck}
-            onKeyDown={addTagHandler}
-            value={state.postInput.tagContent}
+            value={data?.posts[0].title || ''}
           ></Input>
-          <Error>{state.validation.tagErr}</Error>
-          <TagConatiner>
-            {state.postInput.tag.map((tag, idx) => {
-              return <Tag key={idx} content={tag}></Tag>;
-            })}
-          </TagConatiner>
-        </TagInputContainer>
+          <Error>{state.validation.titleErr}</Error>
+        </TitleInputContainer>
       )}
     </>
   );
 };
 
-export default TagInput;
+export default TitleInput;
 
-const TagInputContainer = styled.div`
+const TitleInputContainer = styled.div`
   width: 100%;
-  height: 40px;
+  height: 100%;
+  margin-top: 50px;
+  margin-bottom: 20px;
+  h1 {
+    font-size: 24px;
+    font-weight: 400;
+  }
 `;
 
 const Input = styled.input`
@@ -118,6 +86,7 @@ const Input = styled.input`
   height: 50px;
   border: 1px solid #d4d4d4;
   padding: 0 10px 0 10px;
+  margin-top: 20px;
 `;
 
 const Error = styled.div`
@@ -126,10 +95,4 @@ const Error = styled.div`
   color: red;
   margin-top: 10px;
   padding: 0 10px 0 10px;
-`;
-const TagConatiner = styled.div`
-  display: flex;
-  width: 1000px;
-  justify-content: start;
-  margin-top: 15px;
 `;
