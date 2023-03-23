@@ -1,17 +1,17 @@
 import React from 'react';
 import styled from 'styled-components';
+// import axios from 'axios';
 import { FcGoogle } from 'react-icons/fc';
 import { SiNaver } from 'react-icons/si';
 import { RiKakaoTalkFill } from 'react-icons/ri';
 
 const Login: React.FC = () => {
-  const CLIENT_ID = process.env.REACT_APP_GOOGLE_CLIENT_ID;
-  const requestGoogleLoginHandler = (): void => {
-    console.log(CLIENT_ID);
+  const loginGoogleHandler = () => {
     return window.location.assign(
-      `https://accounts.google.com/o/oauth2/v2/auth?scope=profile&response_type=code&client_id=${CLIENT_ID}&redirect_uri=http://hp5234-dragonmoney-front.s3-website.ap-northeast-2.amazonaws.com/setnickname`,
+      'https://thedragonmoney.com/oauth2/authorization/google',
     );
   };
+
   return (
     <>
       <LoginMain>
@@ -19,7 +19,7 @@ const Login: React.FC = () => {
           <div>Logo</div>
           <p>회원가입 없이 간편하게 로그인하세요</p>
           <LoginBtnContainer>
-            <button className="btn google" onClick={requestGoogleLoginHandler}>
+            <button className="btn google" onClick={loginGoogleHandler}>
               <FcGoogle size="24" style={{ margin: '10px' }} />
               Google로 로그인하기
             </button>
@@ -54,8 +54,8 @@ const LoginForm = styled.div`
   width: 503px;
   height: 426px;
   margin: auto;
-  background-color: #fcfcfc;
-  border: 2px solid #f4f4f4;
+  background-color: var(--background-color);
+  border: 2px solid var(--border-color);
   border-radius: 5px;
   display: flex;
   flex-direction: column;
@@ -76,7 +76,7 @@ const LoginBtnContainer = styled.div`
   justify-content: space-between;
   > .btn {
     height: 50px;
-    border: 1px solid #d4d4d4;
+    border: 1px solid var(--border-color);
     display: flex;
     justify-content: center;
     align-items: center;

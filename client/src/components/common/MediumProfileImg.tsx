@@ -1,0 +1,47 @@
+import React from 'react';
+import styled from 'styled-components';
+import { useNavigate } from 'react-router-dom';
+import { membersApi } from '../../api/memberapi';
+import { useAppSelector, useAppDispatch } from '../../hooks';
+import { setMemberName } from '../../slices/headerSlice';
+import Cookies from 'js-cookie';
+
+const MediumProfileImg = () => {
+  const navigate = useNavigate();
+  const dispatch = useAppDispatch();
+  const { memberImg, memberName } = useAppSelector(({ header }) => header);
+  const auth = Cookies.get('Authorization');
+
+  const clickmemberHandler = () => {
+    dispatch(setMemberName(memberName));
+    navigate('/mypage');
+  };
+  return (
+    <Btn onClick={clickmemberHandler}>
+      <Item src={memberImg} />
+    </Btn>
+  );
+};
+
+export default MediumProfileImg;
+const Item = styled.img`
+  box-sizing: border-box;
+  border-radius: 50%;
+  object-fit: cover;
+  width: 50px;
+  height: 50px;
+  cursor: pointer;
+
+  transition: all 0.3s linear;
+  :hover {
+    transform: scale(1.2);
+  }
+`;
+const Btn = styled.button`
+  margin-left: 10px;
+  border-radius: 50%;
+  width: 50px;
+  height: 50px;
+  background-color: #fff;
+  overflow: hidden;
+`;

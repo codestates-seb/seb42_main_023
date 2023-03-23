@@ -1,90 +1,126 @@
-import React, { ReactNode } from 'react';
+import React, { useEffect } from 'react';
 import styled from 'styled-components';
 import { useNavigate, useLocation } from 'react-router-dom';
-import { useEffect, useState } from 'react';
+import { useAppSelector, useAppDispatch } from '../../hooks';
 import Logo from '../../assets/Logo.png';
 import LoginBtn from './LoginBtn';
 import SearchBar from './SearchBar';
+import SearchBtn from './SearchToggle';
+import PostBtn from './PostBtn';
+import MediumProfileImg from './MediumProfileImg';
+import HeaderNav from './HeaderNav';
+import { MdManageAccounts } from 'react-icons/md';
+import {
+  setPostQuery,
+  setCommentQuery,
+  setMemberName,
+  setMemberImg,
+} from '../../slices/headerSlice';
+import Cookies from 'js-cookie';
 
 function HeaderDefault() {
   const navigate = useNavigate();
+  const header = useAppSelector(({ header }) => header);
   const { pathname } = useLocation();
-  useEffect(() => console.log(pathname), []);
-  return (
-    <Head>
+  const dispatch = useAppDispatch();
+  const auth = Cookies.get('Authorization');
+  const adim = localStorage.getItem('role');
+
+  //TODO: 로그인시 유저데이터 저장
+  useEffect(() => {
+    if (auth !== undefined) {
+      const loginUser = localStorage.getItem('name');
+      const memberImg = localStorage.getItem('picture');
+      if (loginUser && memberImg) {
+        dispatch(setPostQuery(loginUser));
+        dispatch(setCommentQuery(loginUser));
+        dispatch(setMemberName(loginUser));
+        dispatch(setMemberImg(memberImg));
+      }
+    }
+  }, []);
+  return header.search ? (
+    <SearchHead>
+      <SearchBar />
+    </SearchHead>
+  ) : (
+    <NavHead>
       <div>
-        <button onClick={() => navigate('/')}>
+        <Main onClick={() => navigate('/')}>
           <img src={Logo} height={30}></img>
-        </button>
-        <nav>
-          <Btn onClick={() => navigate('/happyhouse')} value={pathname}>
-            집구하기
-          </Btn>
-          <Btn onClick={() => navigate('/')} value={pathname}>
-            뜨는주식
-          </Btn>
-          <Btn onClick={() => navigate('/')} value={pathname}>
-            세금계산기
-          </Btn>
-        </nav>
-        <LoginBtn />
+        </Main>
+        <HeaderNav />
+        <Btns>
+          {pathname === '/' && <SearchBtn />}
+          {auth === undefined && <LoginBtn />}
+          {auth !== undefined && (
+            <>
+              <PostBtn /> <MediumProfileImg />
+            </>
+          )}
+          {adim === 'ADMIN' && (
+            <>
+              <PostBtn />
+              <button onClick={() => navigate('/adminreport')}>
+                <MdManageAccounts size={30} />
+              </button>
+            </>
+          )}
+        </Btns>
       </div>
-    </Head>
+    </NavHead>
   );
 }
-interface BtnProps {
-  value: string;
-  children: ReactNode;
-  onClick: () => void;
-}
-const Btn = styled.button<BtnProps>`
-  :nth-child(1) {
-    border-bottom: ${({ value }) =>
-      ['/seoulrent', '/recommendloan', '/happyhouse'].includes(value)
-        ? '1px solid #0069CA'
-        : ''};
-    color: ${({ value }) =>
-      ['/seoulrent', '/recommendloan', '/happyhouse'].includes(value)
-        ? '#0069CA'
-        : ''};
-  }
-  :nth-child(2) {
-    border-bottom: ${({ value }) =>
-      ['/stock'].includes(value) ? '1px solid #0069CA' : ''};
-    color: ${({ value }) => (['/stock'].includes(value) ? '#0069CA' : '')};
-  }
-  :nth-child(3) {
-    border-bottom: ${({ value }) =>
-      ['/calculator'].includes(value) ? '1px solid #0069CA' : ''};
-    color: ${({ value }) => (['/calculator'].includes(value) ? '#0069CA' : '')};
-  }
-`;
 export default HeaderDefault;
 
-const Head = styled.header`
-  border-bottom: 1px solid #d9d9d9;
+const Main = styled.button`
   background-color: #fff;
-  z-index: 199;
-  button {
-    background-color: #fff;
-    cursor: pointer;
-  }
+  cursor: pointer;
+`;
+const NavHead = styled.header`
+  border-bottom: 1px solid var(--border-color);
+  background-color: #fff;
+  z-index: 98;
+  padding: 10px 0;
+  margin: 0 auto;
   div {
     max-width: 1100px;
-    display: flex;
     align-items: center;
-    height: inherit;
-    margin: 0 auto;
-    justify-content: space-between;
+    :first-child {
+      margin: 0px auto;
+      display: flex;
+      justify-content: space-between;
+    }
   }
   nav {
     width: 400px;
     display: flex;
     justify-content: space-between;
-    button {
+  }
+`;
+const SearchHead = styled.header`
+  border-bottom: 1px solid var(--border-color);
+  background-color: #fff;
+  padding: 10px 0;
+  z-index: 98;
+  div {
+    max-width: 1100px;
+    align-items: center;
+    :first-child {
+      display: flex;
+      justify-content: space-between;
+    }
+  }
+`;
+const Btns = styled.div`
+  display: flex;
+  button {
+    margin-left: 10px;
+    svg {
+      width: 30px;
       :hover {
-        color: #0069ca;
         transition: 0.3s;
+        color: var(--hover-font-gray-color);
       }
     }
   }

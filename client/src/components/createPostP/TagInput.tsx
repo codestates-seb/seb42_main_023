@@ -5,13 +5,6 @@ import { setTagContent, setTag } from '../../slices/postInputSlice';
 import { setTagErr } from '../../slices/validationSlice';
 import Tag from '../common/Tag';
 
-interface Input {
-  className: string;
-  placeholder: string;
-  onChange: React.KeyboardEvent<HTMLInputElement>;
-  value: string;
-}
-
 // 공통 컴포넌트
 const TagInput: React.FC = () => {
   const dispatch = useAppDispatch();
@@ -36,6 +29,11 @@ const TagInput: React.FC = () => {
       // 공백 방지
       if (tagContent === '') {
         dispatch(setTagErr(''));
+        return;
+      }
+      // 태그 길이
+      if (tagContent.length > 10) {
+        dispatch(setTagErr('태그 길이는 최대 10 글자 입니다.'));
         return;
       }
       // 띄어쓰기 방지

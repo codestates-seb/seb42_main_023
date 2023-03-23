@@ -1,35 +1,24 @@
 import React from 'react';
 import styled from 'styled-components';
 import NavRealEstate from '../components/common/NavRealEstate';
-// import { questionData } from '../data/surveyData';
-// import Intro from '../components/recommendLoan/Intro';
-// import Question from '../components/recommendLoan/Question';
-// import { useState } from 'react';
-
-// interface questionData {
-//     id: number;
-//     question: string;
-//     answer: ({
-//         content: string;
-//         next: number;
-//         resultId?: undefined;
-//     } | {
-//         content: string;
-//         resultId: number;
-//         next?: undefined;
-//     })[];
-// }
+import Intro from '../components/recommendLoan/Intro';
+import Question from '../components/recommendLoan/Question';
+import Result from '../components/recommendLoan/Result';
+import { questionData } from '../data/surveyData';
+import { useAppDispatch, useAppSelector } from '../hooks';
+import { setCurrentQuestion, setResultId } from '../slices/surveySlice';
 
 const RecommendLoan: React.FC = () => {
-  //   const [currentQuestion, setCurrentQuestion] = useState(null);
+  const dispatch = useAppDispatch();
+  const { currentQuestion, resultId } = useAppSelector((state) => state.survey);
+
   const nextQuestionHandler = (next: number) => {
-    // if (next === next) {
-    //   setCurrentQuestion(questionData[next]);
-    // } else if () {
-    //   next === resultId
-    //   move to result page.
-    // }
-    // }
+    dispatch(setCurrentQuestion(questionData[next]));
+  };
+
+  const showResultHandler = (result: string) => {
+    dispatch(setCurrentQuestion(null));
+    dispatch(setResultId(result));
   };
 
   return (
@@ -37,13 +26,18 @@ const RecommendLoan: React.FC = () => {
       <NavRealEstate />
       <div className="content-container">
         <SurveyBox>
-          {/* {currentQuestion! ? (
+          {!currentQuestion && !resultId && (
             <Intro nextQuestionHandler={nextQuestionHandler} />
-          ) : (
-            <Question />
-          )} */}
+          )}
 
-          {/* <Result /> */}
+          {currentQuestion && (
+            <Question
+              nextQuestionHandler={nextQuestionHandler}
+              showResultHandler={showResultHandler}
+            />
+          )}
+
+          {resultId && <Result />}
         </SurveyBox>
       </div>
     </MainContainer>
@@ -52,7 +46,7 @@ const RecommendLoan: React.FC = () => {
 
 export default RecommendLoan;
 
-const MainContainer = styled.div`
+export const MainContainer = styled.div`
   display: flex;
   > .content-container {
     border: 1px solid #d4d4d4;
@@ -67,7 +61,7 @@ const MainContainer = styled.div`
   }
 `;
 
-const SurveyBox = styled.div`
+export const SurveyBox = styled.div`
   width: 80%;
   height: 95%;
   background-color: #fff;

@@ -1,33 +1,34 @@
 import React from 'react';
 import styled from 'styled-components';
 import { BsDot } from 'react-icons/bs';
-import { useAppSelector } from '../../hooks';
-import ReactHtmlParser from 'react-html-parser';
 import { Link } from 'react-router-dom';
-import { StateType, PostType } from '../../types/PostDetail';
+import { PostType } from '../../types/PostDetail';
+import { recomendedPostsApi } from '../../api/postApi';
 
 const RecommendedPost: React.FC = () => {
-  const state = useAppSelector((state: StateType): StateType => {
-    return state;
+  const recommendPostsQuery = recomendedPostsApi.useGetRomendedPostsQuery({
+    recommend: 'recommend',
   });
-
+  const { data, isSuccess } = recommendPostsQuery;
   return (
     <RecommendedPostContainer>
       <ul>
-        {state.postSlice.popularPosts! &&
-          (state.postSlice.popularPosts as object[]).map(
-            (post: Partial<PostType>) => {
-              const url = `/posts/${post.postId}`;
-              return (
-                <li key={post.postId}>
-                  <p>
-                    <BsDot></BsDot>
-                    <Link to={url}>{ReactHtmlParser(post.title!)}</Link>
-                  </p>
-                </li>
-              );
-            },
-          )}
+        {isSuccess &&
+          data.map((post: Partial<PostType>) => {
+            const url = `/posts/${post.postId}`;
+            return (
+              <li key={post.postId}>
+                <p>
+                  <Link to={url}>
+                    <h1>
+                      <BsDot></BsDot>
+                      {post.title}
+                    </h1>
+                  </Link>
+                </p>
+              </li>
+            );
+          })}
       </ul>
     </RecommendedPostContainer>
   );
