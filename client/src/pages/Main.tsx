@@ -2,6 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 import PostList from '../components/mainP/PostList';
 import DropdownButton from '../components/mainP/DropdownButton';
+import SearchPostList from '../components/mainP/SearchPostList';
 import { AiOutlineTrophy } from 'react-icons/ai';
 import { NavBtn } from '../components/common/Btn';
 import { useAppDispatch, useAppSelector } from '../hooks';
@@ -11,7 +12,7 @@ import Pagenation from '../components/mainP/Pagenation';
 
 const Main = () => {
   const dispatch = useAppDispatch();
-  const { community, orderby, currentPage } = useAppSelector(
+  const { community, orderby, currentPage, searchOn } = useAppSelector(
     ({ main }) => main,
   );
   const postListquery = postListApi.useGetPostListQuery({
@@ -45,7 +46,7 @@ const Main = () => {
         </div>
         <DropdownButton />
       </FilterWrap>
-      <PostList />
+      {searchOn ? <SearchPostList /> : <PostList />}
       {isSuccess && <Pagenation />}
     </>
   );

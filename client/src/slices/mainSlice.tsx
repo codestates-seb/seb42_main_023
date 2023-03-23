@@ -26,6 +26,7 @@ const mainSlice = createSlice({
     orderby: 'latest',
     currentPage: 1,
     pageOffset: 0,
+    searchOn: false,
   },
   reducers: {
     // 커뮤니티 명예의 전당 토글
@@ -56,6 +57,10 @@ const mainSlice = createSlice({
     setCurrentPage: (state, action): void => {
       state.currentPage = action.payload;
     },
+    // 서치페이지
+    setSearchOn: (state, action): void => {
+      state.searchOn = action.payload;
+    },
   },
 });
 
@@ -68,4 +73,5 @@ export const {
   setPageOffsetNext,
   setPageOffsetPrev,
   setCurrentPage,
+  setSearchOn,
 } = mainSlice.actions;

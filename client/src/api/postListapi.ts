@@ -7,7 +7,7 @@ export const postListApi = createApi({
   tagTypes: ['PostList'],
   endpoints: (builder) => ({
     getPostList: builder.query({
-      //TODO: API쿼리에 맞게 수정하기
+      //TODO: PostList API
       //----커뮤니티----
       //posts?page=1&orderby='latest'
       //Content-Type:application/json
@@ -31,6 +31,22 @@ export const weeklyPopularApi = createApi({
       query: ({ endpoint }) => `posts/${endpoint}`,
       providesTags: (result, error, arg) => {
         return [{ type: 'weeklyPopular', id: arg.endpoint }];
+      },
+    }),
+  }),
+});
+// 검색 API
+export const SearchApi = createApi({
+  reducerPath: 'SearchApi',
+  baseQuery: fetchBaseQuery({ baseUrl: process.env.REACT_APP_SERVER_ADDRESS }),
+  tagTypes: ['Search'],
+  endpoints: (builder) => ({
+    getPostList: builder.query({
+      //posts/search?page=1&orderby=latest&keyword=''&tags=['','']
+      query: ({ page, orderby, keyword, tags }) =>
+        `posts/search?page=${page}&orderby=${orderby}&keyword=${keyword}&tags=${tags}`,
+      providesTags: (result, error, arg) => {
+        return [{ type: 'Search', id: arg.endpoint }];
       },
     }),
   }),
