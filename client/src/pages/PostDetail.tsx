@@ -95,9 +95,9 @@ const PostDetail: React.FC = () => {
   const [removeThumbUp] = removeThumbUpMutation;
   // 게시글 싫어요  추가, 삭제
   const addThumbDownMutation = postsApi.useAddThumbDownMutation();
-  const [addThumbDown] = addThumbUpMutation;
+  const [addThumbDown] = addThumbDownMutation;
   const removeThumbDownMutation = postsApi.useRemoveThumbDownMutation();
-  const [removeThumbDown] = removeThumbUpMutation;
+  const [removeThumbDown] = removeThumbDownMutation;
 
   // 댓글 조회 및 삭제
   const commentQuery = commentsApi.useGetCommentQuery({ postId });
@@ -121,19 +121,35 @@ const PostDetail: React.FC = () => {
   // 좋아요 클릭 함수
   const changeLiikeHandler = (): void => {
     console.log('isThumUp', !data?.isThumbup);
-    if (!data?.isThumup) {
+    // 싫어요 있는 경우
+    if (data?.isThumbdown) {
+      removeThumbDown({ postId });
       addThumbUp({ postId });
-    } else {
-      removeThumbUp({ postId });
+    }
+    // 싫어요가 없는 경우
+    if (!data?.isThumbdown) {
+      if (!data?.isThumup) {
+        addThumbUp({ postId });
+      } else {
+        removeThumbUp({ postId });
+      }
     }
   };
   // 싫어요 클릭 함수
   const changeDislikeHandler = (): void => {
     console.log('isThumDown', !data?.isThumbdown);
-    if (!data.isThumbdown) {
+    // 좋아요가 있는 경우
+    if (data?.isThumup) {
+      removeThumbUp({ postId });
       addThumbDown({ postId });
-    } else {
-      removeThumbDown({ postId });
+    }
+    // 좋아요가  없는 경우
+    if (!data?.isThumup) {
+      if (!data?.isThumbdown) {
+        addThumbDown({ postId });
+      } else {
+        removeThumbDown({ postId });
+      }
     }
   };
   // 북마크 클릭 함수
