@@ -128,37 +128,41 @@ const PostDetail: React.FC = () => {
   //TODO 버그 수정 중
   // 좋아요 클릭 함수
   const changeLiikeHandler = (): void => {
-    console.log('isThumUp', !data?.isThumbup);
-    // 싫어요 있는 경우
-    if (data?.isThumbdown) {
+    // 좋아요만 있는 경우
+    if (data?.isThumup && !data?.isThumbdown) {
+      // 좋아요 제거
+      removeThumbUp({ postId });
+    }
+    // 싫어요만 있는 경우
+    if (!data?.isThumup && data?.isThumbdown) {
       removeThumbDown({ postId });
       addThumbUp({ postId });
     }
-    // 싫어요가 없는 경우
-    if (!data?.isThumbdown) {
-      if (!data?.isThumup) {
-        addThumbUp({ postId });
-      } else {
-        return;
-      }
+    // 둘 다 없는 경우
+    if (!data?.isThumbdown && !data?.isThumbdown) {
+      addThumbUp({ postId });
     }
+    return;
   };
+
   //TODO 버그 수정 중
   // 싫어요 클릭 함수
   const changeDislikeHandler = (): void => {
-    console.log('isThumDown', !data?.isThumbdown);
-    // 좋아요가 있는 경우
-    if (data?.isThumup) {
+    // 좋아요만 있는 경우
+    if (data?.isThumup && !data?.isThumbdown) {
+      // 좋아요 제거, 싫어요 추가
       removeThumbUp({ postId });
       addThumbDown({ postId });
     }
-    // 좋아요가  없는 경우
-    if (!data?.isThumup) {
-      if (!data?.isThumbdown) {
-        addThumbDown({ postId });
-      } else {
-        return;
-      }
+    // 싫어요만 있는 경우
+    if (!data?.isThumbdown && data?.isThumbdown) {
+      // 싫어요 제거
+      removeThumbDown({ postId });
+    }
+    // 둘 다 없는 경우
+    if (!data?.isThumbdown && !data?.isThumbdown) {
+      // 싫어요 추가
+      addThumbDown({ postId });
     }
   };
   // 북마크 클릭 함수
