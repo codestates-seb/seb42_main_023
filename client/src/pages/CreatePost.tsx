@@ -120,6 +120,7 @@ const BtnContainer = styled.div`
   justify-content: flex-end;
   gap: 15px;
   width: 1000px;
+  min-width: 1000px;
   height: 40px;
   margin-top: 70px;
   margin-bottom: 30px;
