@@ -3,6 +3,8 @@ package com.teamdragon.dragonmoney.app.global.auth.controller;
 import com.teamdragon.dragonmoney.app.global.auth.dto.LoginResponseDto;
 import com.teamdragon.dragonmoney.app.global.auth.dto.TempAccessTokenDto;
 import com.teamdragon.dragonmoney.app.global.auth.service.OAuth2Service;
+import com.teamdragon.dragonmoney.app.global.exception.AuthExceptionCode;
+import com.teamdragon.dragonmoney.app.global.exception.AuthLogicException;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -43,15 +45,15 @@ public class OAuth2Controller {
     @PostMapping("/auth/refresh/{member-name}")
     public ResponseEntity issuedRefreshToken(@PathVariable("member-name") String name,
                                              HttpServletRequest request, HttpServletResponse response) {
-        String refreshTokenGetName = oAuth2Service.refreshTokenGetMemberName(request);
+        String memberNameGetRefreshToken = oAuth2Service.findRefreshTokenByMemberName(name);
 
-        if(refreshTokenGetName.equals(name)) {
-            String accessToken = oAuth2Service.delegateTempAccessToken(name);
-
-            return ResponseEntity.ok()
-                    .header("Authorization", "Bearer " + accessToken)
-                    .build();
+        if(!request.getHeader("Refresh").equals(memberNameGetRefreshToken)) {
+            throw new AuthLogicException(AuthExceptionCode.REFRESH_TOKEN_INVALID);
         }
-        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        String accessToken = oAuth2Service.delegateTempAccessToken(name);
+
+        return ResponseEntity.ok()
+                .header("Authorization", "Bearer " + accessToken)
+                .build();
     }
 }
