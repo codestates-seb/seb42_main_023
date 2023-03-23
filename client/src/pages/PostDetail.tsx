@@ -102,7 +102,7 @@ const PostDetail: React.FC = () => {
   // 시간 계산
   const time = timeSince(isSuccess && data?.posts?.createdAt);
   // 게시글 수정 여부
-  const isEdit = isSuccess && data.posts[0].modifiedAt !== '';
+  const isEdit = isSuccess && data.posts.modifiedAt !== '';
   // 댓글, 답글 작성자 소개페이지 오픈 여부
   const isOpenCommentIntro = 'comment' in state && state?.comment.isOpeneIntro;
   const isOpenReplyIntro = 'reply' in state && state?.reply.isOpeneIntro;
