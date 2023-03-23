@@ -1,6 +1,6 @@
 // TODO: injectEndpoints 사용 예시 참고해주세요.
 
-import { apiSlice } from '../api/apiSlice';
+import { apiSlice } from './apiSlice';
 
 // const nickname = localStorage.getItem('nickname');
 

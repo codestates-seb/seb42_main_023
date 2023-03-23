@@ -1,7 +1,6 @@
 import React from 'react';
 import { useEffect } from 'react';
 import { usePostTempTokenMutation } from '../api/tempTokenAPi';
-import { useNavigate } from 'react-router-dom';
 
 // ! 로그인 성공 후 로직
 // 1. 로그인에 성공하면 Google Resource Server는 backend서버로 유저 정보를 전송한다.
@@ -12,7 +11,6 @@ import { useNavigate } from 'react-router-dom';
 // 6. 클라이언트는 서버에게서 오는 유저 정보 (닉네임, 프로필사진, 어드민여부) 을 로컬스토리지에 저장한다. --> tempToken.ts에 로직 구현
 
 const TempToken: React.FC = () => {
-  const navigate = useNavigate();
   const [postTempToken] = usePostTempTokenMutation();
 
   useEffect(() => {
@@ -30,7 +28,7 @@ const TempToken: React.FC = () => {
         localStorage.setItem('role', role);
 
         // 로그인에 성공한 유저를 메인페이지로 리다이렉트
-        navigate('/');
+        window.location.href = '/';
       })
       .catch((err) => console.log('err in tempToken', err));
   }, []);
