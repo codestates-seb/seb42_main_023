@@ -397,7 +397,7 @@ const PostDetail: React.FC = () => {
               </button>
               <li className="likes">{isSuccess && data?.posthumbupCount}</li>
               <button onClick={changeDislikeHandler}>
-                <DislikeIcon checked={isSuccess && data?.isThumbDown} />
+                <DislikeIcon checked={isSuccess && data?.thumbupCount} />
               </button>
               <li className="dislikes">{isSuccess && data?.thumbDownCount}</li>
             </ul>

@@ -30,6 +30,7 @@ export interface CommentStateType {
     commentId: unknown;
     isEdit: Array<boolean>;
     isOpeneIntro: boolean;
+    page: number;
   };
 }
 
