@@ -5,7 +5,7 @@ import Cookies from 'js-cookie';
 interface Intro {
   intro: string;
 }
-// 회원정보 불러오기
+// mypage header 수정
 export const membersApi = createApi({
   reducerPath: 'membersApi',
   baseQuery: fetchBaseQuery({
