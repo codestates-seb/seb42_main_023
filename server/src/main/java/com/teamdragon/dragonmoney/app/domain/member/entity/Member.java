@@ -51,7 +51,7 @@ public class Member extends BaseTimeEntity {
     @Enumerated(value = EnumType.STRING)
     private MemberState state;
 
-    @ManyToOne(cascade = CascadeType.PERSIST, fetch = FetchType.LAZY)
+    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
     @JoinColumn(name = "DELETE_RESULT_ID")
     private DeleteResult deleteResult;
 

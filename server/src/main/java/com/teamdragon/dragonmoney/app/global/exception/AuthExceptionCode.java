@@ -11,7 +11,7 @@ public enum AuthExceptionCode {
     REFRESH_TOKEN_INVALID(401, null, "Invalid Refresh token"),
 
     // 주의 : 내부적으로만 사용하는 예외
-    ACCESS_TOKEN_EXPIRED(401, null, "Access token expired"),
+    ACCESS_TOKEN_EXPIRED(403, null, "Access token expired"),
 
     AUTHORIZED_FAIL(403, null, "Authorized Fail"),
     //권한이 없을 때

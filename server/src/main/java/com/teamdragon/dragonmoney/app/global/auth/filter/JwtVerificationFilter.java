@@ -5,6 +5,7 @@ import com.teamdragon.dragonmoney.app.global.auth.jwt.JwtTokenizer;
 import com.teamdragon.dragonmoney.app.global.auth.utils.CustomAuthorityUtils;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.security.SignatureException;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
@@ -19,8 +20,9 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 
+@Slf4j
 public class JwtVerificationFilter extends OncePerRequestFilter {
-    private final JwtTokenizer jwtTokenizer;    //jwt를 검증하고 claims(토큰에 포함된 정보)를 얻는 데 사용
+    private final JwtTokenizer jwtTokenizer;
     private final CustomAuthorityUtils authorityUtils;  //CustomAuthorityUtils는 JWT 검증에 성공하면 Authentication 객체에 채울 사용자의 권한을 생성하는 데 사용
 
     public JwtVerificationFilter(JwtTokenizer jwtTokenizer,
@@ -32,8 +34,7 @@ public class JwtVerificationFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         //특정 예외 타입의 Exception이 catch 되면 해당 Exception을 HttpServletRequest의 애트리뷰트(Attribute)로 추가
-        //예외가 발생하게 되면 SecurityContext에 클라이언트의 인증 정보(Authentication 객체)가 저장되지 않는다..
-
+        //예외가 발생하게 되면 SecurityContext에 클라이언트의 인증 정보(Authentication 객체)가 저장되지 않는다.
         try {
             Map<String, Object> claims = verifyJws(request);    //JWT를 검증하는데 사용되는 private 메서드
             setAuthenticationToContext(claims); // Authentication 객체를 SecurityContext에 저장하기 위한 private 메서드
@@ -45,20 +46,14 @@ public class JwtVerificationFilter extends OncePerRequestFilter {
             request.setAttribute("exception", e);
         }
 
-        // JWT의 서명 검증에 성공하고, Security Context에 Authentication을 저장한 뒤에는
-        // 다음(Next) Security Filter를 호출
         filterChain.doFilter(request, response);
     }
 
     //특정 조건에 부합하면(true이면) 해당 Filter의 동작을 수행하지 않고 다음 Filter로 건너뛰도록 한다.
     @Override
     protected boolean shouldNotFilter(HttpServletRequest request) throws ServletException {
-        //Authorization header의 값을 얻은 후에
         String authorization = request.getHeader("Authorization");
 
-        //Authorization header의 값이 null이거나
-        // Authorization header의 값이 “Bearer”로 시작하지 않는다면
-        // 해당 Filter의 동작을 수행하지 않도록 정의
         return authorization == null || !authorization.startsWith("Bearer");
     }
 
