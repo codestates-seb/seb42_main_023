@@ -45,8 +45,10 @@ const Reply: React.FC<ReplyProps> = ({ replyInfo, idx }: ReplyProps) => {
   const replySucccess = replyQuery.isSuccess;
   const replyMutation = repliesApi.useUpdataReplyMutation();
   const updateMutation = replyMutation[0];
-  // 댓글 작성자 소개페이지 오픈 여부
+  // 게시글, 댓글 작성자 소개페이지 오픈 여부
   const isOpenCommentIntro = 'comment' in state && state?.comment.isOpeneIntro;
+  const isOpenPostIntro = 'post' in state && state?.post.isOpeneIntro;
+
   // 답글 좋아요 클릭 함수
   const ReplyLiikeHandler = (): void => {
     dispatch(setReplyLike((state as ReplyStateType).reply.isReplyLike));
@@ -84,13 +86,26 @@ const Reply: React.FC<ReplyProps> = ({ replyInfo, idx }: ReplyProps) => {
   // 소개 페이지 오픈
   const IntroHandler = (event: React.MouseEvent<HTMLElement>) => {
     if (
-      'reply' in state &&
+      !isOpenPostIntro &&
       !isOpenCommentIntro &&
+      'reply' in state &&
       event.target instanceof HTMLElement
     ) {
       dispatch(setIsOpenIntro(state.reply.isOpeneIntro));
       dispatch(setReplyId(Number(event.target.dataset.replyid)));
       console.log('userName', event.target.id);
+    }
+  };
+
+  const outClickIntroHandler = (event: React.MouseEvent<HTMLElement>) => {
+    if (
+      !isOpenPostIntro &&
+      !isOpenCommentIntro &&
+      'post' in state &&
+      state.post.isOpeneIntro &&
+      event.target instanceof HTMLElement
+    ) {
+      dispatch(setIsOpenIntro(false));
     }
   };
 
@@ -124,7 +139,7 @@ const Reply: React.FC<ReplyProps> = ({ replyInfo, idx }: ReplyProps) => {
               <IntroInfo>
                 <ul className="intro-content-info">
                   <li className="image">
-                    <img src={replyInfo.memberImage} id=""></img>
+                    <img src={replyInfo.memberImage}></img>
                   </li>
                   <li className="intro-nickname">{replyInfo.memberName}</li>
                 </ul>
