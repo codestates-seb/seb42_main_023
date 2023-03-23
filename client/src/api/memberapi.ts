@@ -26,7 +26,7 @@ export const membersApi = createApi({
         return [{ type: 'members', id: arg.name }];
       },
     }),
-    //자기소개 수정
+    //자기소개 수정//
     updateMember: builder.mutation<Intro, { name: string; intro: string }>({
       query: ({ name, intro }) => {
         return {
