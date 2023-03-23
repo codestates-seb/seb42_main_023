@@ -3,7 +3,7 @@ import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 // 신고 API
 export const reportApi = createApi({
   reducerPath: 'reportApi',
-  baseQuery: fetchBaseQuery({ baseUrl: 'http://localhost:3000' }),
+  baseQuery: fetchBaseQuery({ baseUrl: process.env.REACT_APP_SERVER_ADDRESS }),
   tagTypes: ['Report'],
   endpoints: (builder) => ({
     // 신고 조회
