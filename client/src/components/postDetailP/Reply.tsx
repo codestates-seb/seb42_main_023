@@ -40,7 +40,7 @@ const Reply: React.FC<ReplyProps> = ({ replyInfo, idx }: ReplyProps) => {
   );
   const commentId = 'comment' in state && state.comment?.commentId;
   const replyId = 'reply' in state && state.reply?.replyId;
-  const page = 'reply' in state && state.reply?.page;
+  const page = ('reply' in state && state.reply?.page) || 1;
 
   // 답글
   const replyQuery = repliesApi.useGetReplyQuery({ commentId, page });
