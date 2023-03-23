@@ -6,11 +6,14 @@ import MyCommentList from '../components/myPageP/MyCommentList';
 import MyBookmark from '../components/myPageP/MyBookmark';
 import Sidebar from '../components/myPageP/Sidebar';
 import { useAppSelector } from '../hooks';
+import DeleteModal from '../components/myPageP/DeleteModal';
 
 function MyPage() {
-  const { filter } = useAppSelector(({ mypage }) => mypage);
+  const { filter, deleteAccountOpen } = useAppSelector(({ mypage }) => mypage);
+
   return (
     <MyPageWrap>
+      {deleteAccountOpen && <DeleteModal />}
       <Profile />
       <Content>
         <Sidebar />
