@@ -1,17 +1,18 @@
 import React from 'react';
 import NavAdmin from '../components/AdminP/NavAdmin';
 import styled from 'styled-components';
-// import { useState } from 'react';
 import { WhiteBtn } from '../components/common/Btn';
 // import Pagination from '../components/AdminP/Pagination';
 import Report from '../components/AdminP/Report';
 import { useAppSelector, useAppDispatch } from '../hooks';
 import { setIsReviewOpen, setSelectedReport } from '../slices/reportSlice';
+import { useDeleteReportMutation } from '../api/reportApi';
 
 const ReportsStandBy = () => {
   // tools
   const dispatch = useAppDispatch();
   const { isReviewOpen } = useAppSelector(({ report }) => report);
+  const [deleteReport] = useDeleteReportMutation();
   // 신고 대상 서치
   // const [selectedOption, setSelectedOption] = useState('all');
   // const changeSelectHandler = (
@@ -79,7 +80,9 @@ const ReportsStandBy = () => {
                       </HandleBtn>
                     </td>
                     <td>
-                      <HandleBtn>삭제하기</HandleBtn>
+                      <HandleBtn onClick={() => deleteReport(item.reportId)}>
+                        삭제하기
+                      </HandleBtn>
                     </td>
                   </tr>
                 );
