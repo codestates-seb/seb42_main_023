@@ -24,7 +24,6 @@ const Btn = styled.button`
   background-color: #fff;
   box-sizing: border-box;
   border: 1px solid #d9d9d9;
-  margin-left: 4px;
   :hover {
     background-color: #f9f6f6;
     transition: 0.3s;

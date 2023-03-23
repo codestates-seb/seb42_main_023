@@ -45,7 +45,7 @@ export default HappyHouse;
 const MainContainer = styled.div`
   display: flex;
   > .content-container {
-    border: 1px solid var(--border-color);
+    border: 1px solid #d4d4d4;
     margin-left: 20px;
     width: calc(100% - 160px);
     height: 100%;
@@ -71,11 +71,11 @@ const Title = styled.div`
 const Filter = styled.div`
   display: flex;
   justify-content: space-between;
-  border-bottom: 1px solid var(--border-color);
+  border-bottom: 1px solid #d4d4d4;
   > div > button {
     width: 130px;
     height: 35px;
-    border: 1px solid var(--border-color);
+    border: 1px solid #d4d4d4;
     background-color: aliceblue;
     cursor: pointer;
   }
@@ -83,15 +83,15 @@ const Filter = styled.div`
 
 const HouseItem = styled.a`
   height: 50px;
-  background-color: var(--background-color);
-  border-bottom: 1px solid var(--border-color);
+  background-color: #f8f8f8;
+  border-bottom: 1px solid #d4d4d4;
   display: flex;
   align-items: center;
   color: black;
   cursor: pointer;
 
   > .house-location {
-    background-color: var(--point-blue-color);
+    background-color: #0069ca;
     color: #fff;
     font-size: 12px;
     width: max-content;

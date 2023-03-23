@@ -1,7 +1,5 @@
-import React from 'react';
-import styled from 'styled-components';
 function Comment() {
-  return <div>Comment</div>;
+  return <div></div>;
 }
 
 export default Comment;

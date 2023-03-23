@@ -1,14 +1,13 @@
 import React from 'react';
-import styled from 'styled-components';
 import { IoIosArrowForward } from 'react-icons/io';
+import styled from 'styled-components';
 const Button = styled.button`
   background-color: #fff;
   cursor: pointer;
 `;
-
-function NextPageIcon({ handler }: { handler: () => void }) {
+function NextPageIcon() {
   return (
-    <Button onClick={handler}>
+    <Button>
       <IoIosArrowForward color="#94969b" />
     </Button>
   );
