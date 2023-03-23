@@ -41,7 +41,7 @@ const Reply: React.FC<ReplyProps> = ({ replyInfo, idx }: ReplyProps) => {
   const commentId = 'comment' in state && state.comment?.commentId;
   const replyId = 'reply' in state && state.reply?.replyId;
   const page = ('reply' in state && state.reply?.page) || 1;
-
+  console.log('replyPage', page);
   // 답글
   const replyQuery = repliesApi.useGetReplyQuery({ commentId, page });
   const replySucccess = replyQuery.isSuccess;
@@ -296,7 +296,7 @@ const ReplyContainer = styled.div`
   .reply-update {
     width: 40px;
     font-size: 16px;
-    margin: 3px 15px 0 35px;
+    margin: 3px 15px 0 15px;
     cursor: pointer;
   }
   .reply-delete {

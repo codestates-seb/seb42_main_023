@@ -388,7 +388,7 @@ const CommentContainer = styled.div`
   .comment-update {
     width: 40px;
     font-size: 16px;
-    margin: 3px 15px 0 35px;
+    margin: 3px 15px 0 15px;
     cursor: pointer;
   }
   .comment-delete {
