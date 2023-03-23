@@ -11,6 +11,7 @@ import {
   setRemovedImg,
   setAddedImg,
 } from '../../slices/postSlice';
+import Cookies from 'js-cookie';
 
 const url = process.env.REACT_APP_SERVER_ADDRESS + '/images';
 const BodyInput: React.FC = () => {
@@ -19,6 +20,7 @@ const BodyInput: React.FC = () => {
   const quillRef = useRef<ReactQuill>();
   const bodyValue = state.postInput.body;
   const addedImg = state.post?.addedImg;
+  const accsessToken = Cookies.get('Authorization');
 
   //  문자열을 HTML currentImg 변환
   const stringToHTML = function (str: string): HTMLElement {
@@ -81,7 +83,13 @@ const BodyInput: React.FC = () => {
       console.log('formData', formData);
       try {
         //TODO 서버 url로 변경해야함 그리고 이미지 id와 이름을 받아와야함 => 상태 관리 필요
-        const result = await axios.post(url, formData);
+        const result = await axios.post(url, formData, {
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: accsessToken,
+          },
+          withCredentials: true,
+        });
         const { data } = result;
         console.log('resData', data);
         const IMG_URL = result.data.url;
