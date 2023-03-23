@@ -14,16 +14,16 @@ export const tempTokenApi = createApi({
         body: { tempAccessToken },
       }),
       transformResponse: (response, meta, arg) => {
+        // RTK query에서 response header를 access한다.
         const headers = meta?.response?.headers;
-        console.log('Authorization', headers?.get('Authorization'));
-        console.log('Refresh', headers?.get('Refresh'));
 
+        // access token을 쿠키에 저장한다.
         const accessToken = headers?.get('Authorization');
-
         if (accessToken) {
           Cookies.set('Authorization', accessToken);
         }
 
+        // refresh token을 쿠키에 저장한다.
         const refreshToken = headers?.get('Refresh');
         if (refreshToken) {
           Cookies.set('Refresh', refreshToken);
