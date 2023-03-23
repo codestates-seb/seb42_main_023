@@ -1,8 +1,9 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
+import { env } from 'process';
 // 커뮤니티 게시글 API
 export const postListApi = createApi({
   reducerPath: 'postListApi',
-  baseQuery: fetchBaseQuery({ baseUrl: 'http://localhost:3000' }),
+  baseQuery: fetchBaseQuery({ baseUrl: process.env.REACT_APP_SERVER_ADDRESS }),
   tagTypes: ['PostList'],
   endpoints: (builder) => ({
     getPostList: builder.query({
@@ -23,7 +24,7 @@ export const postListApi = createApi({
 // 주간인기글 API
 export const weeklyPopularApi = createApi({
   reducerPath: 'weeklyPopularApi',
-  baseQuery: fetchBaseQuery({ baseUrl: 'http://localhost:3000' }),
+  baseQuery: fetchBaseQuery({ baseUrl: process.env.REACT_APP_SERVER_ADDRESS }),
   tagTypes: ['weeklyPopular'],
   endpoints: (builder) => ({
     getPostList: builder.query({

@@ -45,7 +45,8 @@ function PostList() {
 
   return (
     <List>
-      {community === '' && data.pageInfo.page === 1 && <WeeklyPopular />}
+      {/* TODO: 서버 Weekly popular 기능 구현시 추가
+      {community === '' && data.pageInfo.page === 1 && <WeeklyPopular />} */}
       {isSuccess &&
         data.posts.map((post: PostItem) => {
           return (
