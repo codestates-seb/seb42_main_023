@@ -1,7 +1,5 @@
 import React from 'react';
-// import axios from 'axios';
 import { useEffect } from 'react';
-// import Cookies from 'js-cookie';
 import { usePostTempTokenMutation } from '../api/tempTokenAPi';
 
 // ! 로그인 성공 후 로직
@@ -12,8 +10,11 @@ import { usePostTempTokenMutation } from '../api/tempTokenAPi';
 // 5. 클라이언트는 accessToken과 refreshToken을 쿠키에 저장한다.
 // 6. 클라이언트는 서버에게서 오는 유저 정보 (닉네임, 프로필사진) 을 로컬스토리지에 저장한다.
 
-// 모든 요청에 withCredentials가 true로 설정된다.
-// axios.defaults.withCredentials = true;
+interface Data {
+  name: string;
+  picture: string;
+  role: string;
+}
 
 const TempToken: React.FC = () => {
   const [postTempToken] = usePostTempTokenMutation();
@@ -25,8 +26,12 @@ const TempToken: React.FC = () => {
 
     postTempToken({ tempAccessToken })
       .unwrap()
-      .then((res) => {
-        console.log('res in tempToken', res);
+      .then((payload: any) => {
+        console.log('res in tempToken', payload);
+        const { name, picture, role } = payload;
+        localStorage.setItem('name', name);
+        localStorage.setItem('picture', picture);
+        localStorage.setItem('role', role);
       })
       .catch((err) => console.log('err in tempToken', err));
   }, []);

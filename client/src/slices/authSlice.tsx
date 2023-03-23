@@ -24,11 +24,11 @@ const authSlice = createSlice({
       (state, { payload, meta }) => {
         console.log('meta:', meta);
         console.log('meta.baseQueryMeta:', meta.baseQueryMeta);
-        state.name = payload.result.name;
-        state.picture = payload.result.picture;
-        state.role = payload.result.role;
-        state.Authorization = payload.result.Authorization;
-        state.Refresh = payload.result.Refresh;
+        // state.name = payload.result.name;
+        // state.picture = payload.result.picture;
+        // state.role = payload.result.role;
+        // state.Authorization = payload.result.Authorization;
+        // state.Refresh = payload.result.Refresh;
       },
     );
   },
