@@ -2,19 +2,23 @@ import React, { useRef } from 'react';
 import { useParams } from 'react-router-dom';
 import styled from 'styled-components';
 import { commentsApi } from '../../api/commentApi';
-import { useAppDispatch } from '../../hooks';
+import { useAppDispatch, useAppSelector } from '../../hooks';
 import { addCommentEdit, setComment } from '../../slices/commentSlice';
 
 const CommentInput: React.FC = () => {
   const commentRef = useRef<HTMLInputElement>(null);
   const dispatch = useAppDispatch();
+  const state = useAppSelector((state) => {
+    return state;
+  });
   const params = useParams();
   const postId = params.postId;
-  const query = commentsApi.useGetCommentQuery({ postId });
+  const page = 'comment' in state && state.comment?.page;
+  const query = commentsApi.useGetCommentQuery({ page, postId });
   // 댓글 추가 mutation
   const commetMutation = commentsApi.useSetCommentMutation();
   const [setComments] = commetMutation;
-
+  console.log('query.data?.comments : ', query.data?.comments);
   // 댓글 추가
   const addCommentHandler = async () => {
     await setComments({
@@ -38,7 +42,7 @@ const CommentInput: React.FC = () => {
 
   return (
     <CommentInputContainer>
-      <h1>댓글 {query.data && query.data.comments.length}개 </h1>
+      <h1>댓글 {query.data?.comments.length}개 </h1>
       <Input
         type="text"
         placeholder="댓글을 남겨 주세요"

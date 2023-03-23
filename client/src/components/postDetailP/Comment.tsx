@@ -318,9 +318,7 @@ const Comment: React.FC = () => {
                   답글 {comment.replyCount}
                 </ReplyBtn>
               </CommentContent>
-              {'reply' in state &&
-              ((isSuccess && state.reply.isOpened !== undefined) || null) &&
-              state.reply.isOpened[idx] ? (
+              {'reply' in state && isSuccess && state.reply?.isOpened[idx] ? (
                 <ReplyContainer>
                   <ReplyInput commentInfo={comment}></ReplyInput>
                   {filtered &&
@@ -388,7 +386,7 @@ const CommentContainer = styled.div`
   .comment-update {
     width: 40px;
     font-size: 16px;
-    margin: 3px 15px 0 35px;
+    margin: 3px 15px 0 15px;
     cursor: pointer;
   }
   .comment-delete {
