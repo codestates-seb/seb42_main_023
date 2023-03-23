@@ -4,7 +4,7 @@ import NextPageIcon from '../../assets/common/NextPageIcon';
 import PrevPageIcon from '../../assets/common/PrevPageIcon';
 import { useAppSelector, useAppDispatch } from '../../hooks';
 import { setPageOffsetNext, setPageOffsetPrev } from '../../slices/reportSlice';
-// import { useGetReportsStandByQuery } from '../../api/reportListApi';
+import { useGetReportsStandByQuery } from '../../api/reportApi';
 
 const Pagination = () => {
   // Tools
