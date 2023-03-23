@@ -5,7 +5,7 @@ import Cookies from 'js-cookie';
 interface Intro {
   intro: string;
 }
-// mypage header 수정
+// mypage header 수정//
 export const membersApi = createApi({
   reducerPath: 'membersApi',
   baseQuery: fetchBaseQuery({
