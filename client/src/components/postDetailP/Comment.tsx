@@ -354,7 +354,7 @@ const Comment: React.FC = () => {
                 </ReplyBtn>
               </CommentContent>
               {/* {'reply' in state && isSuccess && state.reply?.isOpened[idx] ? ( */}
-              {'reply' in state && state.reply?.isOpened[idx] ? (
+              {data && 'reply' in state && state.reply.isOpened[idx] ? (
                 <ReplyContainer>
                   <ReplyInput commentInfo={comment}></ReplyInput>
                   {filtered &&
