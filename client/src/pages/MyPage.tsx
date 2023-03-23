@@ -4,9 +4,6 @@ import Profile from '../components/myPageP/Profile';
 import Comment from '../components/myPageP/Comment';
 import MyPostList from '../components/myPageP/MyPostList';
 import Sidebar from '../components/myPageP/Sidebar';
-//TODO: remove cookies when logging out.
-// cookies.remove('accessToken')
-// cookies.remove('refreshToken')
 
 function MyPage() {
   return (

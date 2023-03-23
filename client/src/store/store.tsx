@@ -23,6 +23,7 @@ import { reportApi } from '../api/reportApi';
 import { nicknameApi } from '../api/nicknameApi';
 import { tempTokenApi } from '../api/tempTokenAPi';
 import reportSlice from '../slices/reportSlice';
+import { apiSlice } from '../api/apiSlice';
 
 const store = configureStore({
   reducer: {
@@ -52,6 +53,7 @@ const store = configureStore({
     [membersCommentsListApi.reducerPath]: membersCommentsListApi.reducer,
     [nicknameApi.reducerPath]: nicknameApi.reducer,
     [tempTokenApi.reducerPath]: tempTokenApi.reducer,
+    [apiSlice.reducerPath]: apiSlice.reducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware()
@@ -67,6 +69,7 @@ const store = configureStore({
       .concat(membersCommentsListApi.middleware)
       .concat(nicknameApi.middleware)
       .concat(tempTokenApi.middleware)
+      .concat(apiSlice.middleware) // TODO: 이거빼고 위에 concat은 다 지워도됌.
 
       .concat(logger),
 });
