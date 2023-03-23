@@ -21,7 +21,7 @@ export const repliesApi = createApi({
     // 답글 조회
     getReply: builder.query({
       query: ({ commentId, page }) =>
-        `comments/${commentId}/replies?page=${page}&orderby=thumbup`,
+        `comments/${commentId}/replies?page=1&orderby=thumbup`,
       providesTags: (result, error, arg) => {
         return [{ type: 'Reply', id: 'reply' }];
       },
@@ -54,6 +54,46 @@ export const repliesApi = createApi({
         console.log('id', replyId);
         return {
           url: `replies/${replyId}`,
+          method: 'DELETE',
+        };
+      },
+      invalidatesTags: (result, error, arg) => [{ type: 'Reply', id: 'reply' }],
+    }),
+    // 답글 좋아요 추가
+    addThumbUp: builder.mutation({
+      query: ({ replyId }) => {
+        return {
+          url: `posts/${replyId}/thumbup`,
+          method: 'POST',
+        };
+      },
+      invalidatesTags: (result, error, arg) => [{ type: 'Reply', id: 'reply' }],
+    }),
+    // 답글 좋아요 제거
+    removeThumbUp: builder.mutation({
+      query: ({ replyId }) => {
+        return {
+          url: `posts/${replyId}/thumbup`,
+          method: 'DELETE',
+        };
+      },
+      invalidatesTags: (result, error, arg) => [{ type: 'Reply', id: 'reply' }],
+    }),
+    // 답글 싫어요 추가
+    addThumbDown: builder.mutation({
+      query: ({ replyId }) => {
+        return {
+          url: `posts/${replyId}/thumbdown`,
+          method: 'POST',
+        };
+      },
+      invalidatesTags: (result, error, arg) => [{ type: 'Reply', id: 'reply' }],
+    }),
+    // 답글 싫어요 제거
+    removeThumbDown: builder.mutation({
+      query: ({ replyId }) => {
+        return {
+          url: `posts/${replyId}/thumbdown`,
           method: 'DELETE',
         };
       },

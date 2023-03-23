@@ -65,5 +65,54 @@ export const commentsApi = createApi({
         { type: 'Comment', id: arg.postId },
       ],
     }),
+
+    // 댓글 좋아요 추가
+    addThumbUp: builder.mutation({
+      query: ({ commentId }) => {
+        return {
+          url: `posts/${commentId}/thumbup`,
+          method: 'POST',
+        };
+      },
+      invalidatesTags: (result, error, arg) => [
+        { type: 'Comment', id: arg.postId },
+      ],
+    }),
+    // 댓글 좋아요 제거
+    removeThumbUp: builder.mutation({
+      query: ({ commentId }) => {
+        return {
+          url: `posts/${commentId}/thumbup`,
+          method: 'DELETE',
+        };
+      },
+      invalidatesTags: (result, error, arg) => [
+        { type: 'Comment', id: arg.postId },
+      ],
+    }),
+    // 댓글 싫어요 추가
+    addThumbDown: builder.mutation({
+      query: ({ commentId }) => {
+        return {
+          url: `posts/${commentId}/thumbdown`,
+          method: 'POST',
+        };
+      },
+      invalidatesTags: (result, error, arg) => [
+        { type: 'Comment', id: arg.postId },
+      ],
+    }),
+    // 댓글 좋아요 제거
+    removeThumbDown: builder.mutation({
+      query: ({ commentId }) => {
+        return {
+          url: `posts/${commentId}/thumbdown`,
+          method: 'DELETE',
+        };
+      },
+      invalidatesTags: (result, error, arg) => [
+        { type: 'Comment', id: arg.postId },
+      ],
+    }),
   }),
 });

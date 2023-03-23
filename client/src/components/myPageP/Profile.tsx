@@ -52,7 +52,8 @@ function Profile() {
           )}
         </article>
       </div>
-      {auth !== undefined && <DropdownButton />}
+      {/*TODO:테스트중*/}
+      {auth === undefined && <DropdownButton />}
     </ProfileWrap>
   );
 }

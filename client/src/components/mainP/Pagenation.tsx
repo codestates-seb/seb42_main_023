@@ -11,6 +11,7 @@ const Pagination = () => {
   const { community, pageOffset, currentPage, orderby } = useAppSelector(
     ({ main }) => main,
   );
+
   const postListquery = postListApi.useGetPostListQuery({
     community: community,
     page: currentPage,

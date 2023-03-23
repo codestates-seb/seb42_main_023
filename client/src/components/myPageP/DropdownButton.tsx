@@ -1,10 +1,13 @@
 import React, { useRef } from 'react';
 import styled from 'styled-components';
 import { useAppDispatch, useAppSelector } from '../../hooks';
-import { setFilter, setFilterOpen } from '../../slices/mypageSlice';
+import {
+  setFilter,
+  setFilterOpen,
+  setDeleteAccountOpen,
+} from '../../slices/mypageSlice';
 import { FiMoreHorizontal } from 'react-icons/fi';
 import Cookies from 'js-cookie';
-import axios from 'axios';
 
 const DropdownButton = () => {
   const dispatch = useAppDispatch();
@@ -24,11 +27,10 @@ const DropdownButton = () => {
 
     // 회원탈퇴 시 서버에 회원 delete 요청을 보낸다.
     if (option === '회원탈퇴') {
-      const nickname = localStorage.getItem('nickname');
-      axios.delete(`https://thedragonmoney.com/members/${nickname}`);
+      dispatch(setDeleteAccountOpen(true));
+    } else {
+      window.location.href = '/';
     }
-
-    window.location.href = '/';
   };
 
   const handleToggle = () => {

@@ -2,6 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 
 export const BlueBtn = styled.button`
+  border: 1px solid var(--point-blue-color);
   background-color: var(--point-blue-color);
   color: var(--point-font-color);
   box-sizing: border-box;
@@ -19,7 +20,6 @@ export const WhiteBtn = styled.button`
   }
 `;
 //검색하기 버튼
-//검색하기 버튼
 export const SearchBtn = styled.button`
   padding: 6px 20px;
   box-sizing: border-box;
@@ -32,7 +32,6 @@ export const SearchBtn = styled.button`
   }
 `;
 //검색취소 버튼
-//검색취소 버튼
 export const ClickSearchBtn = styled(SearchBtn)`
   background-color: #fff;
   color: #000;
@@ -42,7 +41,6 @@ export const ClickSearchBtn = styled(SearchBtn)`
   }
 `;
 //Header 집구하기, 뜨는주식, 세금계산기
-//Header 집구하기, 뜨는주식, 세금계산기
 export const NavBtn = styled.button`
   background-color: #fff;
   :hover {
@@ -50,7 +48,6 @@ export const NavBtn = styled.button`
     transition: 0.3s;
   }
 `;
-//Header 집구하기, 뜨는주식, 세금계산기 중 현재 위치페이지
 //Header 집구하기, 뜨는주식, 세금계산기 중 현재 위치페이지
 export const NavBtnClicked = styled(NavBtn)`
   border-bottom: 1px solid var(--point-blue-color);

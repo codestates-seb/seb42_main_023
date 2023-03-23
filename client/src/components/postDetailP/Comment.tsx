@@ -65,6 +65,17 @@ const Comment: React.FC = () => {
   const { isSuccess, data } = replyQuery;
   const contentEditInput = useRef<HTMLInputElement>(null);
 
+  // 답글 좋아요 추가, 삭제
+  const addThumbUpMutation = commentsApi.useAddThumbUpMutation();
+  const [addThumbUp] = addThumbUpMutation;
+  const removeThumbUpMutation = commentsApi.useRemoveThumbUpMutation();
+  const [removeThumbUp] = removeThumbUpMutation;
+  // 답글 싫어요  추가, 삭제
+  const addThumbDownMutation = commentsApi.useAddThumbUpMutation();
+  const [addThumbDown] = addThumbDownMutation;
+  const removeThumbDownMutation = commentsApi.useRemoveThumbDownMutation();
+  const [removeThumbDown] = removeThumbDownMutation;
+
   // 게시글, 답글 작성자 소개페이지 오픈 여부
   const isOpeReplyIntro = 'reply' in state && state?.reply.isOpeneIntro;
   const isOpePostIntro = 'post' in state && state?.post.isOpeneIntro;
@@ -95,17 +106,41 @@ const Comment: React.FC = () => {
     );
     dispatch(isEdit(edit as Array<boolean>));
   }
-
+  //TODO
   // 댓글 좋아요 클릭 함수
   const commentLiikeHandler = (): void => {
-    dispatch(setCommentLike((state as CommentStateType).comment.isCommentLike));
+    console.log('isThumUp', !commentQuery.data?.isThumbup);
+    // 싫어요 있는 경우
+    if (commentQuery.data?.isThumbdown) {
+      removeThumbDown({ commentId });
+      addThumbUp({ commentId });
+    }
+    // 싫어요가 없는 경우
+    if (!commentQuery.data?.isThumbdown) {
+      if (!data?.isThumup) {
+        addThumbUp({ commentId });
+      } else {
+        return;
+      }
+    }
   };
 
   // 댓글 싫어요 클릭 함수
   const commentDislikeHandler = (): void => {
-    dispatch(
-      setCommentDislike((state as CommentStateType).comment.isCommentDislike),
-    );
+    console.log('isThumDown', !commentQuery.data?.isThumbdown);
+    // 좋아요가 있는 경우
+    if (commentQuery.data?.isThumup) {
+      removeThumbUp({ commentId });
+      addThumbDown({ commentId });
+    }
+    // 좋아요가  없는 경우
+    if (!commentQuery.data?.isThumup) {
+      if (!commentQuery.data?.isThumbdown) {
+        addThumbDown({ commentId });
+      } else {
+        return;
+      }
+    }
   };
 
   // 삭제 확인 모달창
@@ -318,9 +353,8 @@ const Comment: React.FC = () => {
                   답글 {comment.replyCount}
                 </ReplyBtn>
               </CommentContent>
-              {'reply' in state &&
-              ((isSuccess && state.reply.isOpened !== undefined) || null) &&
-              state.reply.isOpened[idx] ? (
+              {/* {'reply' in state && isSuccess && state.reply?.isOpened[idx] ? ( */}
+              {data && 'reply' in state && state.reply.isOpened[idx] ? (
                 <ReplyContainer>
                   <ReplyInput commentInfo={comment}></ReplyInput>
                   {filtered &&
@@ -388,7 +422,7 @@ const CommentContainer = styled.div`
   .comment-update {
     width: 40px;
     font-size: 16px;
-    margin: 3px 15px 0 35px;
+    margin: 3px 15px 0 15px;
     cursor: pointer;
   }
   .comment-delete {

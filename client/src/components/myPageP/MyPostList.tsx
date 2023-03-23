@@ -33,7 +33,7 @@ function MyPostList() {
     query: query,
   });
   const { data, isSuccess } = membersPostListquery;
-  useEffect(() => console.log(query), []);
+
   if (!isSuccess) {
     return <div>Loading...</div>;
   }

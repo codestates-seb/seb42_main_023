@@ -15,9 +15,6 @@ import { ReactComponent as CheckedIcon } from '../assets/checked.svg';
 import { ReactComponent as NoCheckedIcon } from '../assets/noChecked.svg';
 import {
   setIsOpenDelete,
-  setBookmark,
-  setDislike,
-  setLike,
   setIsOpenReport,
   setIsOpenFilter,
   setReportOption,
@@ -78,6 +75,7 @@ const PostDetail: React.FC = () => {
   const navigate = useNavigate();
   const params = useParams();
   const postId = params.postId;
+
   const commentId = 'comment' in state ? state.comment?.commentId : null;
   const replyId = 'reply' in state ? state.reply?.replyId : null;
   const reportReason = 'post' in state ? state.post.reportOption : null;
@@ -86,8 +84,25 @@ const PostDetail: React.FC = () => {
   const postDetailQuery = postsApi.useGetPostQuery({ postId });
   console.log(postDetailQuery);
   const { data, isSuccess } = postDetailQuery;
+  const memberName = data?.memberName;
   const postMutation = postsApi.useDeletePostMutation();
   const [deletePost] = postMutation;
+  // 게시글 좋아요 추가, 삭제
+  const addThumbUpMutation = postsApi.useAddThumbUpMutation();
+  const [addThumbUp] = addThumbUpMutation;
+  const removeThumbUpMutation = postsApi.useRemoveThumbUpMutation();
+  const [removeThumbUp] = removeThumbUpMutation;
+  // 게시글 싫어요  추가, 삭제
+  const addThumbDownMutation = postsApi.useAddThumbDownMutation();
+  const [addThumbDown] = addThumbDownMutation;
+  const removeThumbDownMutation = postsApi.useRemoveThumbDownMutation();
+  const [removeThumbDown] = removeThumbDownMutation;
+  // 북마크 추가, 삭제
+  const addBookmarkMutaion = postsApi.useAddBookmarkMutation();
+  const [addBookmark] = addBookmarkMutaion;
+  const removeBookmarkMutaion = postsApi.useRemoveBookmarkMutation();
+  const [removeBookmark] = removeBookmarkMutaion;
+
   // 댓글 조회 및 삭제
   const commentQuery = commentsApi.useGetCommentQuery({ postId });
   const commentMutation = commentsApi.useDeleteCommentMutation();
@@ -107,24 +122,70 @@ const PostDetail: React.FC = () => {
   const isOpenCommentIntro = 'comment' in state && state?.comment.isOpeneIntro;
   const isOpenReplyIntro = 'reply' in state && state?.reply.isOpeneIntro;
 
+  //TODO 버그 수정 중
   // 좋아요 클릭 함수
   const changeLiikeHandler = (): void => {
-    if ('post' in state) {
-      dispatch(setLike(state.post?.isLike));
+    // 좋아요만 있는 경우
+    if (data?.isThumup && !data?.isThumbdown) {
+      console.log('좋아요 삭제');
+      removeThumbUp({ postId });
+      return;
+    }
+    // 싫어요만 있는 경우
+    if (!data?.isThumup && data?.isThumbdown) {
+      console.log('싫어요 삭제 후 좋아요 추가');
+      removeThumbDown({ postId });
+      setTimeout(() => {
+        addThumbUp({ postId });
+      }, 500);
+      return;
+    }
+    // 둘 다 없는 경우
+    if (!data?.isThumbdown && !data?.isThumbdown) {
+      console.log('좋아요 삭제');
+      addThumbUp({ postId });
+      return;
     }
   };
+
+  //TODO 버그 수정 중
   // 싫어요 클릭 함수
   const changeDislikeHandler = (): void => {
-    if ('post' in state) {
-      dispatch(setDislike(state.post?.isDislike));
+    // 좋아요만 있는 경우
+    if (data?.isThumup && !data?.isThumbdown) {
+      // 좋아요 제거, 싫어요 추가
+      console.log('좋아요 삭제 후 싫어요 추가');
+      removeThumbUp({ postId });
+      setTimeout(() => {
+        addThumbDown({ postId });
+      }, 500);
+      return;
+    }
+    // 싫어요만 있는 경우
+    if (!data?.isThumbdown && data?.isThumbdown) {
+      // 싫어요 제거
+      console.log('싫어요 삭제');
+
+      removeThumbDown({ postId });
+      return;
+    }
+    // 둘 다 없는 경우
+    if (!data?.isThumbdown && !data?.isThumbdown) {
+      // 싫어요 추가
+      console.log('싫어요 추가');
+      addThumbDown({ postId });
+      return;
     }
   };
   // 북마크 클릭 함수
   const changeBookmarkHandler = (): void => {
-    if ('post' in state) {
-      dispatch(setBookmark(state.post?.isBookmark));
+    if (data?.isBookmarked) {
+      removeBookmark({ memberName, postId });
+    } else {
+      addBookmark({ memberName, postId });
     }
   };
+
   // 삭제 확인 모달창 오픈
   const confirmDeleteHandler = (): void => {
     if ('post' in state) {
@@ -268,7 +329,7 @@ const PostDetail: React.FC = () => {
 
   return (
     <>
-      {commentQuery.data && 'post' in state && state.post?.isOpenDelete ? (
+      {'post' in state && state.post?.isOpenDelete ? (
         <ModalContainer>
           <DeleteModal>
             <div onClick={confirmDeleteHandler}> </div>
@@ -281,7 +342,8 @@ const PostDetail: React.FC = () => {
           </DeleteModal>
         </ModalContainer>
       ) : null}
-      {commentQuery.data && 'post' in state && state.post?.isOpenReport ? (
+
+      {'post' in state && state.post?.isOpenReport ? (
         <ModalContainer>
           <ReportModal>
             <div className="report">신고</div>
@@ -379,7 +441,7 @@ const PostDetail: React.FC = () => {
                 {commentQuery.data && commentQuery.data.comment.length}
               </li>
               <button className="bookmark" onClick={changeBookmarkHandler}>
-                <BookmarkIcon checked={isSuccess && data.isBookmarked} />
+                <BookmarkIcon checked={isSuccess && data?.isBookmarked} />
               </button>
               <DropdownButton></DropdownButton>
             </ul>
@@ -608,6 +670,7 @@ const ReportModal = styled.div`
   border: solid 1px #d4d4d4;
   border-radius: 5px;
   color: #5c5c5c;
+  z-index: 10;
   cursor: pointer;
   padding: 25px 15px 0 15px;
 
