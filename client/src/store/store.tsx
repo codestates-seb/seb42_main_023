@@ -23,6 +23,7 @@ import { reportApi } from '../api/reportApi';
 import { nicknameApi } from '../api/nicknameApi';
 import { tempTokenApi } from '../api/tempTokenAPi';
 import reportSlice from '../slices/reportSlice';
+import authSlice from '../slices/authSlice';
 
 const store = configureStore({
   reducer: {
@@ -38,6 +39,7 @@ const store = configureStore({
     survey: surveySlice.reducer,
     nickname: nicknameSlice.reducer,
     report: reportSlice.reducer,
+    auth: authSlice.reducer,
 
     // api Reducer
     [postsApi.reducerPath]: postsApi.reducer,
