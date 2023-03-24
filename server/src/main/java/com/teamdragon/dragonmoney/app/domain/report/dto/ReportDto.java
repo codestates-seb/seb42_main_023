@@ -111,17 +111,16 @@ public class ReportDto {
             this.targetType = report.getTargetType();
             this.description = report.getDescription();
             if(targetType.equals("post")) {
+                this.targetType = report.getTargetType().replace("post", "게시글");
                 this.writer = report.getTargetPosts().getWriter().getName();
-            } else if (targetType.equals("comment")) {
-                this.writer = report.getTargetComment().getWriter().getName();
-            } else if (targetType.equals("reply")) {
-                this.writer = report.getTargetReply().getWriter().getName();
-            }
-            if(targetType.equals("post")) {
                 this.postId = report.getTargetPosts().getId();
             } else if (targetType.equals("comment")) {
+                this.targetType = report.getTargetType().replace("comment", "댓글");
+                this.writer = report.getTargetComment().getWriter().getName();
                 this.postId = report.getTargetComment().getPosts().getId();
             } else if (targetType.equals("reply")) {
+                this.targetType = report.getTargetType().replace("reply", "답글");
+                this.writer = report.getTargetReply().getWriter().getName();
                 this.postId = report.getTargetReply().getComment().getPosts().getId();
             }
         }
