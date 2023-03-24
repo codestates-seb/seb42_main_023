@@ -21,7 +21,7 @@ const CommentInput: React.FC = () => {
   // 댓글 추가 mutation
   const commetMutation = commentsApi.useSetCommentMutation();
   const [setComments] = commetMutation;
-  console.log('query.data?.comments : ', commentQuery.data?.comments);
+
   // 댓글 추가
   const addCommentHandler = async () => {
     await setComments({

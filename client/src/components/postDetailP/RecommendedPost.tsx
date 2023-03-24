@@ -10,11 +10,12 @@ const RecommendedPost: React.FC = () => {
     recommend: 'recommend',
   });
   const { data, isSuccess } = recommendPostsQuery;
+  console.log('Recodata', data);
   return (
     <RecommendedPostContainer>
       <ul>
         {isSuccess &&
-          data.map((post: Partial<PostType>) => {
+          data?.map((post: Partial<PostType>) => {
             const url = `/posts/${post.postId}`;
             return (
               <li key={post.postId}>

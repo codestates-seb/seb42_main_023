@@ -50,7 +50,7 @@ const Comment: React.FC = () => {
   const postId = params.postId;
   const page = 'comment' in state && state.comment?.page;
   const commentId = 'comment' in state && state.comment?.commentId;
-
+  console.log('commentId', commentId);
   // 댓글 조회
   const commentQuery = commentsApi.useGetCommentQuery({ postId, page });
   const comentSucccess = commentQuery.isSuccess;
@@ -64,13 +64,13 @@ const Comment: React.FC = () => {
   const { isSuccess, data } = replyQuery;
   const contentEditInput = useRef<HTMLInputElement>(null);
 
-  // 답글 좋아요 추가, 삭제
+  // 댓글 좋아요 추가, 삭제
   const addThumbUpMutation = commentsApi.useAddThumbUpMutation();
   const [addThumbUp] = addThumbUpMutation;
   const removeThumbUpMutation = commentsApi.useRemoveThumbUpMutation();
   const [removeThumbUp] = removeThumbUpMutation;
-  // 답글 싫어요  추가, 삭제
-  const addThumbDownMutation = commentsApi.useAddThumbUpMutation();
+  // 댓글 싫어요  추가, 삭제
+  const addThumbDownMutation = commentsApi.useAddThumbDownMutation();
   const [addThumbDown] = addThumbDownMutation;
   const removeThumbDownMutation = commentsApi.useRemoveThumbDownMutation();
   const [removeThumbDown] = removeThumbDownMutation;
@@ -107,30 +107,48 @@ const Comment: React.FC = () => {
   }
   //TODO
   // 댓글 좋아요 클릭 함수
-  const commentLiikeHandler = (): void => {
-    console.log('isThumUp', !commentQuery.data?.isThumbup);
-    // 싫어요 있는 경우
-    if (commentQuery.data?.isThumbdown) {
-      removeThumbDown({ commentId });
-      addThumbUp({ commentId });
+  const commentLiikeHandler = (commentId: number): void => {
+    // 좋아요만 있는 경우
+    if (commentQuery.data?.isThumbup && !commentQuery.data?.isThumbdown) {
+      console.log('좋아요 삭제');
+      removeThumbUp({ commentId });
+      return;
     }
-    // 싫어요가 없는 경우
-    if (!commentQuery.data?.isThumbdown) {
-      if (!data?.isThumup) {
+    // 싫어요만 있는 경우
+    if (!commentQuery.data?.isThumbup && commentQuery.data?.isThumbdown) {
+      console.log('싫어요 삭제 후 좋아요 추가');
+      removeThumbDown({ commentId });
+      setTimeout(() => {
         addThumbUp({ commentId });
-      } else {
-        return;
-      }
+      }, 500);
+      return;
+    }
+    // 둘 다 없는 경우
+    if (!commentQuery.data?.isThumbdown && !commentQuery.data?.isThumbdown) {
+      console.log('좋아요 추가');
+      addThumbUp({ commentId });
+      return;
     }
   };
 
   // 댓글 싫어요 클릭 함수
-  const commentDislikeHandler = (): void => {
-    console.log('isThumDown', !commentQuery.data?.isThumbdown);
-    // 좋아요가 있는 경우
-    if (commentQuery.data?.isThumup) {
+  const commentDislikeHandler = (commentId: number): void => {
+    // 좋아요만 있는 경우
+    if (commentQuery.data?.isThumbup && !commentQuery.data?.isThumbdown) {
+      // 좋아요 제거, 싫어요 추가
+      console.log('좋아요 삭제 후 싫어요 추가');
       removeThumbUp({ commentId });
-      addThumbDown({ commentId });
+      setTimeout(() => {
+        addThumbDown({ commentId });
+      }, 500);
+      return;
+    }
+    // 싫어요만 있는 경우
+    if (!commentQuery.data?.isThumbup && commentQuery.data?.isThumbdown) {
+      // 싫어요 제거
+      console.log('싫어요 삭제');
+      removeThumbDown({ commentId });
+      return;
     }
     // 좋아요가  없는 경우
     if (!commentQuery.data?.isThumup) {
@@ -139,6 +157,13 @@ const Comment: React.FC = () => {
       } else {
         return;
       }
+    }
+    // 둘 다 없는 경우
+    if (!commentQuery.data?.isThumbup && !commentQuery.data?.isThumbdown) {
+      // 싫어요 추가
+      console.log('싫어요 추가');
+      addThumbDown({ commentId });
+      return;
     }
   };
 
@@ -313,11 +338,19 @@ const Comment: React.FC = () => {
                   >
                     신고
                   </li>
-                  <button onClick={commentLiikeHandler}>
+                  <button
+                    onClick={() => {
+                      commentLiikeHandler(comment.commentId);
+                    }}
+                  >
                     <LikeIcon checked={comment.isThumbup} />
                   </button>
                   <li className="comment-likes">{comment.thumbupCount}</li>
-                  <button onClick={commentDislikeHandler}>
+                  <button
+                    onClick={() => {
+                      commentDislikeHandler(comment.commentId);
+                    }}
+                  >
                     <DislikeIcon checked={comment.isThumbDown} />
                   </button>
                   <li className="comment-dislikes">{comment.thumbDownCount}</li>
