@@ -172,7 +172,8 @@ const Reply: React.FC<ReplyProps> = ({ replyInfo, idx }: ReplyProps) => {
   // 시간 계산
   const time = timeSince(replyInfo.createdAt);
   // 답글 수정 여부
-  const replyIsEdit = replyInfo.modifiedAt !== '';
+  const replyIsEdit =
+    replyInfo.createdAt !== replyInfo.modifiedAt ? true : false;
   return (
     <ReplyContainer>
       <ReplyInfo key={replyInfo.replyId}>

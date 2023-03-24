@@ -231,7 +231,8 @@ const Comment: React.FC = () => {
           // 시간 계산
           const time = timeSince(comment.createdAt);
           // 답글 수정 여부
-          const commentIsEdit = comment.modifiedAt !== '';
+          const commentIsEdit =
+            comment.modifiedAt !== comment.createdAt ? true : false;
 
           return (
             <>
