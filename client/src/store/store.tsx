@@ -5,11 +5,6 @@ import replySlice from '../slices/replySlice';
 import logger from 'redux-logger';
 import postInputSlice from '../slices/postInputSlice';
 import validationSlice from '../slices/validationSlice';
-import {
-  membersApi,
-  membersPostListApi,
-  membersCommentsListApi,
-} from '../api/memberapi';
 import headerSlice from '../slices/headerSlice';
 import mainSlice from '../slices/mainSlice';
 import mypageSlice from '../slices/mypageSlice';
@@ -43,9 +38,6 @@ const store = configureStore({
     [commentsApi.reducerPath]: commentsApi.reducer,
     [repliesApi.reducerPath]: repliesApi.reducer,
     [recomendedPostsApi.reducerPath]: recomendedPostsApi.reducer,
-    [membersApi.reducerPath]: membersApi.reducer,
-    [membersPostListApi.reducerPath]: membersPostListApi.reducer,
-    [membersCommentsListApi.reducerPath]: membersCommentsListApi.reducer,
     [nicknameApi.reducerPath]: nicknameApi.reducer,
     [tempTokenApi.reducerPath]: tempTokenApi.reducer,
     [apiSlice.reducerPath]: apiSlice.reducer,
@@ -59,7 +51,6 @@ const store = configureStore({
       .concat(nicknameApi.middleware)
       .concat(tempTokenApi.middleware)
       .concat(apiSlice.middleware) // TODO: 이거빼고 위에 concat은 다 지워도됌.
-
       .concat(logger),
 });
 
