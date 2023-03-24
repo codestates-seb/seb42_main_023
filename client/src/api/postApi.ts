@@ -70,11 +70,11 @@ export const postsApi = createApi({
 
     // 게시글 추가
     setPost: builder.mutation({
-      query: ({ saveIages, title, content, tagNames }) => {
+      query: ({ images, title, content, tags }) => {
         return {
           url: `posts`,
           method: 'POST',
-          body: { saveIages, title, content, tagNames },
+          body: { images, title, content, tags },
         };
       },
       invalidatesTags: (result, error, arg) => [{ type: 'Post', id: 'post' }],
