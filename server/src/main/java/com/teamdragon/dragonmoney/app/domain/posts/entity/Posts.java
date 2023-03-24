@@ -68,7 +68,7 @@ public class Posts extends BaseTimeEntity implements ThumbCountable {
     @JoinColumn(name = "DELETE_RESULT_ID")
     private DeleteResult deleteResult;
 
-    @OneToOne(mappedBy = "posts", fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
+    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
     private BestAwards bestAwards;
 
     @OneToMany(mappedBy = "posts", cascade = CascadeType.PERSIST)

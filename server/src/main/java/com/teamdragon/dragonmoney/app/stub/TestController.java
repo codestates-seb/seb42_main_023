@@ -37,6 +37,12 @@ public class TestController {
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
+    @PostMapping("/stub/post/best")
+    public ResponseEntity<?> bestAwardsMakeTest() {
+        stubService.makeBestAwards(null);
+        return new ResponseEntity<>(HttpStatus.CREATED);
+    }
+
     @PostMapping("/stub/comment")
     public ResponseEntity<?> commentMakeTest() {
         stubService.makeComments(null, null);

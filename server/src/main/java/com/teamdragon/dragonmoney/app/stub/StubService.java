@@ -6,6 +6,7 @@ import com.teamdragon.dragonmoney.app.domain.image.entity.Image;
 import com.teamdragon.dragonmoney.app.domain.image.repository.ImageRepository;
 import com.teamdragon.dragonmoney.app.domain.member.entity.Member;
 import com.teamdragon.dragonmoney.app.domain.member.repository.MemberRepository;
+import com.teamdragon.dragonmoney.app.domain.popular.entity.BestAwards;
 import com.teamdragon.dragonmoney.app.domain.posts.entity.Posts;
 import com.teamdragon.dragonmoney.app.domain.posts.entity.PostsTag;
 import com.teamdragon.dragonmoney.app.domain.posts.repository.PostsRepository;
@@ -238,6 +239,19 @@ public class StubService {
         thumbdownRepository.saveAll(thumbdowns);
     }
 
+    public void makeBestAwards(List<Posts> savePosts) {
+        if (savePosts == null) {
+            savePosts = postsRepository.findAll();
+        }
+        ArrayList<Posts> bestAwards = new ArrayList<>();
+        for (int i = 0; i < savePosts.size() / 3; i++) {
+            Posts posts = savePosts.get(i);
+            posts.selectedBestAwards(new BestAwards(posts));
+            bestAwards.add(posts);
+        }
+        postsRepository.saveAll(bestAwards);
+    }
+
     public void makeStubData() {
         // 회원 : 5명
         List<Member> saveMembers = makeMembers();
@@ -258,5 +272,8 @@ public class StubService {
         makeThumbPosts(saveMembers, savePosts);
         makeThumbComments(saveMembers, saveComments);
         makeThumbReplies(saveMembers, saveReplies);
+
+        // 명예의 전당 추가
+        makeBestAwards(savePosts);
     }
 }

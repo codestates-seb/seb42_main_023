@@ -25,31 +25,32 @@ public class PopularController {
 
     // 주간 인기 게시물 조회
     @GetMapping("/posts/weekly-popular")
-    public ResponseEntity<PostsDto.RecommendPostsListRes> findWeeklyPopularList() {
+    public ResponseEntity<PostsDto.WeeklyPopularRes> findWeeklyPopularList() {
         List<Posts> weeklyPopularList = popularService.findWeeklyPopularList();
-        PostsDto.RecommendPostsListRes response = new PostsDto.RecommendPostsListRes(weeklyPopularList);
+        PostsDto.WeeklyPopularRes response = PostsDto.WeeklyPopularRes.builder()
+                .posts(weeklyPopularList)
+                .start(popularService.getCountStartedAt())
+                .end(popularService.getCountEndedAt())
+                .build();
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
     // 명예의 전당 목록 조회
     @GetMapping("/posts/best-awards")
-    public ResponseEntity<PostsDto.PostsListRes> findBestAwardsList(@Valid @Positive @RequestParam int page,
-                                                @RequestParam String orderby) {
+    public ResponseEntity<PostsDto.BestAwardsRes> findBestAwardsList(@Valid @Positive @RequestParam int page,
+                                                                    @RequestParam String orderby) {
         Posts.OrderBy orderBy = checkOrderBy(orderby);
         Page<Posts> bestAwardsList = popularService.findBestAwardsList(page, orderBy);
-        PostsDto.PostsListRes response = new PostsDto.PostsListRes(bestAwardsList, orderby);
+        PostsDto.BestAwardsRes response = new PostsDto.BestAwardsRes(bestAwardsList, orderby);
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
     // 추천 게시물 목록 조회
     @GetMapping("/posts/recommend")
-    public ResponseEntity<PostsDto.WeeklyPopularRes> findRecommendPosts() {
+    public ResponseEntity<PostsDto.RecommendPostsListRes> findRecommendPosts() {
         List<Posts> recommendPosts = popularService.findRecommendPosts();
-        PostsDto.WeeklyPopularRes response = PostsDto.WeeklyPopularRes.builder()
-                .posts(recommendPosts)
-                .start(popularService.getCountStartedAt())
-                .end(popularService.getCountEndedAt())
-                .build();
+        PostsDto.RecommendPostsListRes response = new PostsDto.RecommendPostsListRes(recommendPosts);
+
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 

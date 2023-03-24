@@ -97,10 +97,31 @@ public class PostsDto {
             this.pageInfo = PageInfo.of(postsPage, orderBy);
 
             List<Posts> postsList = postsPage.getContent();
-            if (postsList != null) {
-                posts = postsList.stream()
+            if (postsList != null && !postsList.isEmpty() ) {
+                this.posts = postsList.stream()
                         .map(PostsListElement::new)
                         .collect(Collectors.toList());
+            } else {
+                this.posts = new ArrayList<>();
+            }
+        }
+    }
+
+    @Getter
+    public static class BestAwardsRes {
+        private PageInfo pageInfo;
+        private List<PostsListElement> bestAwards;
+
+        public BestAwardsRes(Page<Posts> postsPage, String orderBy) {
+            this.pageInfo = PageInfo.of(postsPage, orderBy);
+
+            List<Posts> postsList = postsPage.getContent();
+            if (postsList != null && !postsList.isEmpty()) {
+                this.bestAwards = postsList.stream()
+                        .map(PostsListElement::new)
+                        .collect(Collectors.toList());
+            } else {
+                this.bestAwards = new ArrayList<>();
             }
         }
     }
@@ -114,10 +135,12 @@ public class PostsDto {
 
         @Builder
         public WeeklyPopularRes(List<Posts> posts, LocalDateTime start, LocalDateTime end) {
-            if (posts != null) {
+            if (posts != null && !posts.isEmpty()) {
                 this.weeklyPopular = posts.stream()
                         .map(PostsListElement::new)
                         .collect(Collectors.toList());
+            } else {
+                this.weeklyPopular = new ArrayList<>();
             }
             this.start = start;
             this.end = end;
@@ -129,10 +152,12 @@ public class PostsDto {
         private List<PostsListElement> recommends;
 
         public RecommendPostsListRes(List<Posts> posts) {
-            if (posts != null) {
+            if (posts != null && !posts.isEmpty()) {
                 this.recommends = posts.stream()
                         .map(PostsListElement::new)
                         .collect(Collectors.toList());
+            } else {
+                this.recommends = new ArrayList<>();
             }
         }
     }
@@ -178,7 +203,6 @@ public class PostsDto {
         private String memberImage;
         private LocalDateTime createdAt;
         private LocalDateTime modifiedAt;
-        private Boolean isModified;
         private Long commentCount;
         private Long viewCount;
         private Long thumbupCount;
@@ -198,7 +222,6 @@ public class PostsDto {
             this.memberImage = posts.getWriter().getProfileImage();
             this.createdAt = posts.getCreatedAt();
             this.modifiedAt = posts.getModifiedAt();
-            this.isModified = (this.createdAt.isEqual(this.modifiedAt));
             this.commentCount = posts.getCommentCount();
             this.viewCount = posts.getViewCount();
             this.thumbupCount = posts.getThumbupCount();
@@ -222,7 +245,6 @@ public class PostsDto {
             this.memberImage = posts.getWriter().getProfileImage();
             this.createdAt = posts.getCreatedAt();
             this.modifiedAt = posts.getModifiedAt();
-            this.isModified = (this.createdAt.isEqual(this.modifiedAt));
             this.commentCount = posts.getCommentCount();
             this.viewCount = posts.getViewCount();
             this.thumbupCount = posts.getThumbupCount();
