@@ -19,7 +19,6 @@ import { postListApi, weeklyPopularApi, SearchApi } from '../api/postListapi';
 import surveySlice from '../slices/surveySlice';
 import { postsApi, recomendedPostsApi } from '../api/postApi';
 import { commentsApi } from '../api/commentApi';
-import { reportApi } from '../api/reportApi';
 import { nicknameApi } from '../api/nicknameApi';
 import { tempTokenApi } from '../api/tempTokenAPi';
 import reportSlice from '../slices/reportSlice';
@@ -45,7 +44,6 @@ const store = configureStore({
     [commentsApi.reducerPath]: commentsApi.reducer,
     [repliesApi.reducerPath]: repliesApi.reducer,
     [recomendedPostsApi.reducerPath]: recomendedPostsApi.reducer,
-    [reportApi.reducerPath]: reportApi.reducer,
     [postListApi.reducerPath]: postListApi.reducer,
     [weeklyPopularApi.reducerPath]: weeklyPopularApi.reducer,
     [membersApi.reducerPath]: membersApi.reducer,
@@ -62,7 +60,6 @@ const store = configureStore({
       .concat(commentsApi.middleware)
       .concat(repliesApi.middleware)
       .concat(recomendedPostsApi.middleware)
-      .concat(reportApi.middleware)
       .concat(weeklyPopularApi.middleware)
       .concat(nicknameApi.middleware)
       .concat(tempTokenApi.middleware)
