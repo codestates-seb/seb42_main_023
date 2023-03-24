@@ -55,8 +55,8 @@ function MyPostList() {
                 </Link>
                 <Itemside>
                   <div>
-                    {post.tags.map((tag) => (
-                      <Tag key={tag.id}>{tag.tagName}</Tag>
+                    {post.tags.map((tag, idx) => (
+                      <Tag key={idx}>{tag.tagName}</Tag>
                     ))}
                   </div>
                   <Info>

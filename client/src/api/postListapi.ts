@@ -4,19 +4,14 @@ import { apiSlice } from './apiSlice';
 // 커뮤니티&명예의전당&검색 게시글 API
 export const postListApi = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
-    getPostList: builder.query(
-      //posts/search?page=1&orderby=latest&keyword=''&tags=['','']
-      {
-        query: ({
-          postSetting = '',
-          page = 1,
-          orderby = 'latest',
-          keyword = '',
-          tags = '',
-        }) =>
-          `posts${postSetting}?page=${page}&orderby=${orderby}${keyword}${tags}`,
-      },
-    ),
+    getPostList: builder.query({
+      query: ({
+        postSetting = '',
+        page = 1,
+        orderby = 'latest',
+        search = '',
+      }) => `posts${postSetting}?page=${page}&orderby=${orderby}${search}`,
+    }),
   }),
 });
 

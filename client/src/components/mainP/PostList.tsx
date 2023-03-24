@@ -18,10 +18,10 @@ interface Props {
 }
 
 function PostList({ posts, currentPage }: Props) {
+  const { postSetting } = useAppSelector(({ main }) => main);
   return (
     <List>
-      {/* TODO: 서버 Weekly popular 기능 구현시 추가
-      {community === '' && currentPage === 1 && <WeeklyPopular />} */}
+      {postSetting === '' && currentPage === 1 && <WeeklyPopular />}
       {posts.map((post: PostListItem) => {
         return (
           <Item key={post.postId}>

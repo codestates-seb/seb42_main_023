@@ -16,6 +16,10 @@ interface Orderby {
   type: string;
   payload: 'latest' | 'thumbup' | 'view-count';
 }
+interface Page {
+  type: string;
+  payload: number;
+}
 
 const mainSlice = createSlice({
   name: 'mainstates',
@@ -24,6 +28,7 @@ const mainSlice = createSlice({
     filter: '최신순',
     filterOpen: false,
     orderby: 'latest',
+    currentPage: 1,
   },
   reducers: {
     // 커뮤니티, 명예의전당, 검색
@@ -42,9 +47,19 @@ const mainSlice = createSlice({
     setOrderby: (state, action: Orderby): void => {
       state.orderby = action.payload;
     },
+    // 현재페이지
+    setCurrentPage: (state, action: Page): void => {
+      state.currentPage = action.payload;
+      console.log('페이지' + state.currentPage);
+    },
   },
 });
 
 export default mainSlice;
-export const { setPostSetting, setFilter, setFilterOpen, setOrderby } =
-  mainSlice.actions;
+export const {
+  setPostSetting,
+  setFilter,
+  setFilterOpen,
+  setOrderby,
+  setCurrentPage,
+} = mainSlice.actions;

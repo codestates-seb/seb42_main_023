@@ -6,20 +6,23 @@ import { AiOutlineTrophy } from 'react-icons/ai';
 import { NavBtn } from '../components/common/Btn';
 import { useAppDispatch, useAppSelector } from '../hooks';
 import { postListApi } from '../api/postListapi';
-import { setPostSetting } from '../slices/mainSlice';
+import { setPostSetting, setCurrentPage } from '../slices/mainSlice';
 import Pagenation from '../components/mainP/Pagenation';
 
 const Main = () => {
   const dispatch = useAppDispatch();
   //페이지네이션
-  const [currentPage, setCurrentPage] = useState(1);
   const [pageOffset, setPageOffset] = useState(0);
 
-  const { postSetting, orderby } = useAppSelector(({ main }) => main);
+  const { postSetting, orderby, currentPage } = useAppSelector(
+    ({ main }) => main,
+  );
+  const { searchQuery } = useAppSelector(({ header }) => header);
   const postListquery = postListApi.useGetPostListQuery({
     postSetting: postSetting,
     page: currentPage,
     orderby: orderby,
+    search: searchQuery,
   });
   const { data, isSuccess } = postListquery;
 
@@ -57,7 +60,7 @@ const Main = () => {
               명예의전당
             </ComuntyBtn>
           )}
-          <DropdownButton setCurrentPage={setCurrentPage} />
+          <DropdownButton />
         </div>
       </FilterWrap>
       {isSuccess && <PostList posts={data.posts} currentPage={currentPage} />}
@@ -65,7 +68,6 @@ const Main = () => {
         <Pagenation
           pageInfo={data.pageInfo}
           pageOffset={pageOffset}
-          setCurrentPage={setCurrentPage}
           setPageOffset={setPageOffset}
         />
       )}
