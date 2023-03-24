@@ -12,8 +12,9 @@ const ReportReview: React.FC = () => {
   const { data, isSuccess } = useGetReportReviewQuery(selectedReport);
 
   // '자세히 보기' 버튼을 누르면 해당 페이지로 이동한다.
+  // TODO: 배포 후 프론트주소로 바꾸기
   const seeDetailHandler = () => {
-    window.open(`${process.env.REACT_APP_SERVER_ADDRESS}/posts/${data.postId}`);
+    window.open(`http://localhost:3000/posts/${data.postId}`);
   };
 
   return (
@@ -28,7 +29,7 @@ const ReportReview: React.FC = () => {
             </tr>
             <tr className="row-even">
               <th>신고시간</th>
-              <td>{data.reportedAT}</td>
+              <td>{data.reportedAt.replace('T', ' ').slice(0, -7)}</td>
             </tr>
             <tr>
               <th>신고유형</th>
@@ -37,10 +38,6 @@ const ReportReview: React.FC = () => {
             <tr className="row-even">
               <th>신고대상</th>
               <td>{data.targetType}</td>
-            </tr>
-            <tr>
-              <th>제목/내용</th>
-              <td>{data.title}</td>
             </tr>
             <tr className="row-even">
               <th>작성자</th>
@@ -70,7 +67,7 @@ const ReportReview: React.FC = () => {
 export default ReportReview;
 
 const ReportContainer = styled.div`
-  width: 450px;
+  width: 100%;
   height: max-content;
   padding: 20px;
   display: flex;
@@ -78,6 +75,7 @@ const ReportContainer = styled.div`
   justify-content: center;
   align-items: center;
   border: 1px solid #d4d4d4;
+  border: 1px solid red;
   > h1 {
     font-size: 20px;
   }
@@ -88,7 +86,7 @@ const ReportContainer = styled.div`
 `;
 
 const Table = styled.table`
-  width: 400px;
+  /* width: 100%; */
   height: max-content;
   margin: 20px 0px;
   border-top: 1px solid #d4d4d4;
@@ -101,7 +99,6 @@ const Table = styled.table`
     > th {
       font-weight: 600;
       width: 90px;
-      /* padding: 0px 10px; */
     }
   }
 `;
@@ -122,18 +119,3 @@ const SeeDetailBtn = styled(BlueBtn)`
     background-color: #203b53;
   }
 `;
-
-// const singleReportData = {
-//   reportId: 1,
-//   reportedAT: '2019-11-12T16:34:30.388',
-//   reportCategory: '양리목적/홍보성',
-//   targetType: '게시글',
-//   title: '광고. 이 보험 사세요!',
-//   writer: '작성자',
-//   reporter: '신고자',
-//   description:
-//     '가나다라마바사아자차카타파하이게스무글자가나다라마바사아자차카타파하이게마흔글자',
-//   postId: 2,
-//   commentId: null,
-//   replyId: null,
-// };

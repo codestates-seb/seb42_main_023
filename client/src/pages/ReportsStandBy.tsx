@@ -23,14 +23,12 @@ const ReportsStandBy = () => {
   const [deleteReport] = useDeleteReportMutation();
 
   // List report that qualifies 'orderby'
-  const {
-    data: reportData,
-    isLoading,
-    isSuccess,
-  } = useGetReportsStandByQuery({
+  const { data: reportData, isSuccess } = useGetReportsStandByQuery({
     page,
     orderby,
   });
+
+  console.log('data', reportData);
 
   // 신고 대상 필터링
   const changeSelectHandler = (event: React.ChangeEvent<HTMLSelectElement>) => {
@@ -40,6 +38,13 @@ const ReportsStandBy = () => {
   const reviewReportHanlder = (reportId: number): void => {
     dispatch(setIsReviewOpen(true));
     dispatch(setSelectedReport(reportId));
+  };
+
+  const deleteReportHanlder = (reportId: number): void => {
+    deleteReport(reportId)
+      .unwrap()
+      .then((res) => console.log('res in delete report:', res))
+      .then((err) => console.log('err in delete report:', err));
   };
 
   return (
@@ -72,10 +77,8 @@ const ReportsStandBy = () => {
               </tr>
             </thead>
             <tbody>
-              {isLoading && <div>Loading...</div>}
-              {!reportData && <div>처리할 신고글이 없습니다.</div>}
               {isSuccess &&
-                reportData.map((item: Report, idx: number) => {
+                reportData.reports.map((item: Report, idx: number) => {
                   return (
                     <tr
                       key={item.reportId}
@@ -83,7 +86,7 @@ const ReportsStandBy = () => {
                     >
                       <td>{item.targetType}</td>
                       <td>{item.reportCategory}</td>
-                      <td>{item.content}</td>
+                      <td>{item.description}</td>
                       <td>{item.writer}</td>
                       <td>{item.reportedAt.replace('T', ' ').slice(0, -7)}</td>
                       <td>
@@ -94,7 +97,9 @@ const ReportsStandBy = () => {
                         </HandleBtn>
                       </td>
                       <td>
-                        <HandleBtn onClick={() => deleteReport(item.reportId)}>
+                        <HandleBtn
+                          onClick={() => deleteReportHanlder(item.reportId)}
+                        >
                           삭제하기
                         </HandleBtn>
                       </td>
