@@ -138,7 +138,7 @@ public class ReplyService implements ThumbCountService {
     // 작성자 확인
     private Reply checkOwner(Member loginMember, Long replyId) {
         Reply findReply = findVerifyReplyById(replyId);
-        if (findReply.getWriter().getId().equals(loginMember.getId())) {
+        if (!findReply.getWriter().getId().equals(loginMember.getId())) {
             throw new AuthLogicException(AuthExceptionCode.AUTHORIZED_FAIL);
         }
         return findReply;

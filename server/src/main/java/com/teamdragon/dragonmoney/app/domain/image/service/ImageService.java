@@ -62,6 +62,9 @@ public class ImageService {
 
     // 이미지들 삭제
     public void removeImages(Member loginMember, List<Image> removeImages) {
+        if (removeImages == null || removeImages.isEmpty()) {
+            return;
+        }
         List<Long> imageIds = removeImages.stream().map(i -> i.getId()).collect(Collectors.toList());
         List<Image> findImages = imageRepository.findAllByIdsAndMemberId(imageIds, loginMember.getId());
         // 클라우드 복수 이미지 삭제

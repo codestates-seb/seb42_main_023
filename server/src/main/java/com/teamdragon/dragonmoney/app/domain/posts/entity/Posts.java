@@ -123,18 +123,20 @@ public class Posts extends BaseTimeEntity implements ThumbCountable {
         this.writer = writer;
         this.category = category;
         this.images = images;
-        if (images != null) {
+        if (images != null && images.size() != 0) {
             for (Image image : images) {
                 image.includedThisPosts(this);
             }
         }
-        if (postsTags != null) {
+        this.postsTags = postsTags;
+        if (postsTags != null && postsTags.size() != 0) {
             for (PostsTag postsTag : postsTags) {
                 postsTag.includedThisPosts(this);
             }
         }
         this.state = State.ACTIVE;
         this.deleteResult = null;
+        this.bookmarkCount = 0L;
         this.viewCount = 0L;
         this.thumbupCount = 0L;
         this.thumbdownCount = 0L;
@@ -222,10 +224,10 @@ public class Posts extends BaseTimeEntity implements ThumbCountable {
     }
 
     public void plusThumbdownCount() {
-        this.thumbupCount += 1;
+        this.thumbdownCount += 1;
     }
 
     public void minusThumbdownCount() {
-        this.thumbupCount -= 1;
+        this.thumbdownCount -= 1;
     }
 }
