@@ -15,6 +15,7 @@ import {
   ReplyStateType,
   CommentStateType,
   ReplyProps,
+  ReplyType,
 } from '../../types/PostDetail';
 import { repliesApi } from '../../api/replyApi';
 import {
@@ -60,14 +61,15 @@ const Reply: React.FC<ReplyProps> = ({ replyInfo, idx }: ReplyProps) => {
   const [removeThumbDown] = removeThumbDownMutation;
 
   // 답글 좋아요 클릭 함수
-  const ReplyLiikeHandler = (replyId: number): void => {
-    if (replyQuery.data?.isThumbup && !replyQuery.data?.isThumbdown) {
+  const ReplyLiikeHandler = (reply: ReplyType): void => {
+    const replyId = reply.replyId;
+    if (reply?.isThumbup && !reply?.isThumbdown) {
       console.log('좋아요 삭제');
       removeThumbUp({ replyId });
       return;
     }
     // 싫어요만 있는 경우
-    if (!replyQuery.data?.isThumbup && replyQuery.data?.isThumbdown) {
+    if (reply?.isThumbup && reply?.isThumbdown) {
       console.log('싫어요 삭제 후 좋아요 추가');
       removeThumbDown({ replyId });
       setTimeout(() => {
@@ -76,7 +78,7 @@ const Reply: React.FC<ReplyProps> = ({ replyInfo, idx }: ReplyProps) => {
       return;
     }
     // 둘 다 없는 경우
-    if (!replyQuery.data?.isThumbdown && !replyQuery.data?.isThumbdown) {
+    if (!reply?.isThumbdown && !reply?.isThumbdown) {
       console.log('좋아요 추가');
       addThumbUp({ replyId });
       return;
@@ -84,9 +86,10 @@ const Reply: React.FC<ReplyProps> = ({ replyInfo, idx }: ReplyProps) => {
   };
 
   // 답글 싫어요 클릭 함수
-  const ReplyDislikeHandler = (replyId: number): void => {
+  const ReplyDislikeHandler = (reply: ReplyType): void => {
+    const replyId = reply.replyId;
     // 좋아요만 있는 경우
-    if (replyQuery.data?.isThumbup && !replyQuery.data?.isThumbdown) {
+    if (reply?.isThumbup && !reply?.isThumbdown) {
       // 좋아요 제거, 싫어요 추가
       console.log('좋아요 삭제 후 싫어요 추가');
       removeThumbUp({ replyId });
@@ -96,15 +99,15 @@ const Reply: React.FC<ReplyProps> = ({ replyInfo, idx }: ReplyProps) => {
       return;
     }
     // 싫어요만 있는 경우
-    if (!replyQuery.data?.isThumbup && replyQuery.data?.isThumbdown) {
+    if (!reply?.isThumbup && reply?.isThumbdown) {
       // 싫어요 제거
       console.log('싫어요 삭제');
       removeThumbDown({ replyId });
       return;
     }
     // 좋아요가  없는 경우
-    if (!replyQuery.data?.isThumup) {
-      if (!replyQuery.data?.isThumbdown) {
+    if (!reply?.isThumbup) {
+      if (!reply?.isThumbdown) {
         addThumbDown({ replyId });
       } else {
         return;
@@ -269,23 +272,21 @@ const Reply: React.FC<ReplyProps> = ({ replyInfo, idx }: ReplyProps) => {
           <button
             onClick={() => {
               console.log('replyId', replyInfo.replyId);
-              ReplyLiikeHandler(replyInfo.replyId);
+              ReplyLiikeHandler(replyInfo);
             }}
           >
-            <LikeIcon checked={replyInfo && replyInfo.isThumbup} />
+            <LikeIcon checked={replyInfo?.isThumbup} />
           </button>
-          <li className="reply-likes">{replyInfo && replyInfo.thumbupCount}</li>
+          <li className="reply-likes">{replyInfo?.thumbupCount}</li>
           <button
             onClick={() => {
               console.log('replyId', replyInfo.replyId);
-              ReplyDislikeHandler(replyInfo.replyId);
+              ReplyDislikeHandler(replyInfo);
             }}
           >
-            <DislikeIcon checked={replyInfo && replyInfo.isThumbDown} />
+            <DislikeIcon checked={replyInfo?.isThumbdown} />
           </button>
-          <li className="reply-dislikes">
-            {replyInfo && replyInfo.thumbupCount}
-          </li>
+          <li className="reply-dislikes">{replyInfo?.thumbDownCount}</li>
         </ul>
       </ReplyInfo>
       <ReplyContent>

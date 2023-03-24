@@ -106,15 +106,17 @@ const Comment: React.FC = () => {
   }
   //TODO
   // 댓글 좋아요 클릭 함수
-  const commentLiikeHandler = (commentId: number): void => {
+  const commentLiikeHandler = (comment: CommentType): void => {
+    const commentId = comment.commentId;
     // 좋아요만 있는 경우
-    if (commentQuery.data?.isThumbup && !commentQuery.data?.isThumbdown) {
+    if (comment?.isThumbup && !comment?.isThumbdown) {
       console.log('좋아요 삭제');
       removeThumbUp({ commentId });
       return;
     }
     // 싫어요만 있는 경우
-    if (!commentQuery.data?.isThumbup && commentQuery.data?.isThumbdown) {
+    if (!comment?.isThumbup && comment?.isThumbdown) {
+      const commentId = comment.commentId;
       console.log('싫어요 삭제 후 좋아요 추가');
       removeThumbDown({ commentId });
       setTimeout(() => {
@@ -123,7 +125,7 @@ const Comment: React.FC = () => {
       return;
     }
     // 둘 다 없는 경우
-    if (!commentQuery.data?.isThumbdown && !commentQuery.data?.isThumbdown) {
+    if (!comment?.isThumbdown && !comment?.isThumbdown) {
       console.log('좋아요 추가');
       addThumbUp({ commentId });
       return;
@@ -131,9 +133,10 @@ const Comment: React.FC = () => {
   };
 
   // 댓글 싫어요 클릭 함수
-  const commentDislikeHandler = (commentId: number): void => {
+  const commentDislikeHandler = (comment: CommentType): void => {
+    const commentId = comment.commentId;
     // 좋아요만 있는 경우
-    if (commentQuery.data?.isThumbup && !commentQuery.data?.isThumbdown) {
+    if (comment.isThumbup && !comment?.isThumbdown) {
       // 좋아요 제거, 싫어요 추가
       console.log('좋아요 삭제 후 싫어요 추가');
       removeThumbUp({ commentId });
@@ -143,22 +146,22 @@ const Comment: React.FC = () => {
       return;
     }
     // 싫어요만 있는 경우
-    if (!commentQuery.data?.isThumbup && commentQuery.data?.isThumbdown) {
+    if (!comment?.isThumbup && comment?.isThumbdown) {
       // 싫어요 제거
       console.log('싫어요 삭제');
       removeThumbDown({ commentId });
       return;
     }
     // 좋아요가  없는 경우
-    if (!commentQuery.data?.isThumup) {
-      if (!commentQuery.data?.isThumbdown) {
+    if (!comment?.isThumbup) {
+      if (!comment?.isThumbdown) {
         addThumbDown({ commentId });
       } else {
         return;
       }
     }
     // 둘 다 없는 경우
-    if (!commentQuery.data?.isThumbup && !commentQuery.data?.isThumbdown) {
+    if (!comment?.isThumbup && !comment?.isThumbdown) {
       // 싫어요 추가
       console.log('싫어요 추가');
       addThumbDown({ commentId });
@@ -340,7 +343,7 @@ const Comment: React.FC = () => {
                   </li>
                   <button
                     onClick={() => {
-                      commentLiikeHandler(comment.commentId);
+                      commentLiikeHandler(comment);
                     }}
                   >
                     <LikeIcon checked={comment.isThumbup} />
@@ -348,10 +351,10 @@ const Comment: React.FC = () => {
                   <li className="comment-likes">{comment.thumbupCount}</li>
                   <button
                     onClick={() => {
-                      commentDislikeHandler(comment.commentId);
+                      commentDislikeHandler(comment);
                     }}
                   >
-                    <DislikeIcon checked={comment.isThumbDown} />
+                    <DislikeIcon checked={comment.isThumbdown} />
                   </button>
                   <li className="comment-dislikes">{comment.thumbDownCount}</li>
                 </ul>

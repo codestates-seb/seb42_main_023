@@ -70,7 +70,7 @@ export const commentsApi = createApi({
     addThumbUp: builder.mutation({
       query: ({ commentId }) => {
         return {
-          url: `posts/${commentId}/thumbup`,
+          url: `comments/${commentId}/thumbup`,
           method: 'POST',
         };
       },
@@ -82,7 +82,7 @@ export const commentsApi = createApi({
     removeThumbUp: builder.mutation({
       query: ({ commentId }) => {
         return {
-          url: `posts/${commentId}/thumbup`,
+          url: `comments/${commentId}/thumbup`,
           method: 'DELETE',
         };
       },
@@ -94,7 +94,7 @@ export const commentsApi = createApi({
     addThumbDown: builder.mutation({
       query: ({ commentId }) => {
         return {
-          url: `posts/${commentId}/thumbdown`,
+          url: `comments/${commentId}/thumbdown`,
           method: 'POST',
         };
       },
@@ -102,11 +102,11 @@ export const commentsApi = createApi({
         { type: 'Comment', id: arg.postId },
       ],
     }),
-    // 댓글 좋아요 제거
+    // 댓글 싫어요 제거
     removeThumbDown: builder.mutation({
       query: ({ commentId }) => {
         return {
-          url: `posts/${commentId}/thumbdown`,
+          url: `comments/${commentId}/thumbdown`,
           method: 'DELETE',
         };
       },
