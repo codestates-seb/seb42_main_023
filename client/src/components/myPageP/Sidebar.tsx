@@ -6,7 +6,6 @@ import { SidebarBtn } from '../common/Btn';
 import { membersApi } from '../../api/memberapi';
 import { setPostQuery, setCommentQuery } from '../../slices/headerSlice';
 
-//TODO:필터별 get요청
 function Sidebar() {
   const dispatch = useAppDispatch();
   const { filter } = useAppSelector(({ mypage }) => mypage);

@@ -11,7 +11,7 @@ import { AiOutlineSearch } from 'react-icons/ai';
 import * as Styled from '../common/Tag';
 import { MdCancel } from 'react-icons/md';
 import SearchBtn from './SearchToggle';
-import { setPostSetting } from '../../slices/mainSlice';
+import { setPostSetting, setCurrentPage } from '../../slices/mainSlice';
 import { setSearchQuery } from '../../slices/headerSlice';
 
 interface Input {
@@ -78,6 +78,7 @@ const SearchBar: React.FC = () => {
     if (input[0] === '#') {
       validation();
     } else {
+      dispatch(setCurrentPage(1));
       //tag x keyword o
       //TODO: 서버 수정 후 테스트
       if (tag.length === 0 && input.length !== 0) {
