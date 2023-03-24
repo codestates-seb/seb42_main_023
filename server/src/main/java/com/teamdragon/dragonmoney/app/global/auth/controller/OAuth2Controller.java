@@ -50,7 +50,7 @@ public class OAuth2Controller {
         if(!request.getHeader("Refresh").equals(memberNameGetRefreshToken)) {
             throw new AuthLogicException(AuthExceptionCode.REFRESH_TOKEN_INVALID);
         }
-        String accessToken = oAuth2Service.delegateTempAccessToken(name);
+        String accessToken = oAuth2Service.delegateAccessTokenAgain(name);
 
         return ResponseEntity.ok()
                 .header("Authorization", "Bearer " + accessToken)
