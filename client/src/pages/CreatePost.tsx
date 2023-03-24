@@ -7,6 +7,7 @@ import { BlueBtn, WhiteBtn } from '../components/common/Btn';
 import { useNavigate } from 'react-router-dom';
 import { useAppSelector } from '../hooks';
 import { postsApi } from '../api/postApi';
+import _ from 'lodash';
 
 const CreatePost: React.FC = () => {
   const navigate = useNavigate();
@@ -20,6 +21,19 @@ const CreatePost: React.FC = () => {
   const tagNames = tag.map((tagName) => {
     return { tagName };
   });
+
+  // const arr1 = [
+  //   { id: 1, image: '1' },
+  //   { id: 2, image: '2' },
+  //   { id: 3, image: '3' },
+  // ];
+  // const arr2 = [
+  //   { id: 1, image: '1' },
+  //   { id: 2, image: '2' },
+  // ];
+  // const result = _.differenceBy(arr1, arr2, 'image');
+  // console.log(arr1, arr2);
+  // console.log(result);
 
   //TODO image 배열을 객체형태로 바꾸어서 넣어줘야한다.
   //TODO imageId 값과 name은 서버에 업로드된 시점에 응답으로 요청이 오면 처리 해줘야한다.
@@ -47,19 +61,17 @@ const CreatePost: React.FC = () => {
   // }
 
   // 게시글 생성시 요청 Body
+  // addedImages: currentImg,
+  // removedImages: removedImg,
 
-  const savaImages = {
-    addedImages: currentImg,
-    removedImages: removedImg,
-  };
   const reqBody = {
-    savaImages: {
-      addedImages: currentImg,
-      removedImages: removedImg,
+    images: {
+      addedImages: [],
+      removedImages: [],
     },
     title: titleValue,
     content: bodyValue,
-    tagNames: tagNames,
+    tags: tagNames,
   };
 
   console.log('reqBody', reqBody);
@@ -72,7 +84,7 @@ const CreatePost: React.FC = () => {
       state.validation.bodyErr === '' &&
       state.validation.tagErr === ''
     ) {
-      createPost({ savaImages, titleValue, bodyValue, tagNames });
+      createPost(reqBody);
       alert('게시글이 생성되었습니다.');
     } else {
       if (state.validation.titleErr !== '' || !state.postInput.title.length) {

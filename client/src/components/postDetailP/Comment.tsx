@@ -24,8 +24,6 @@ import {
   ReplyType,
 } from '../../types/PostDetail';
 import {
-  setCommentDislike,
-  setCommentLike,
   setCommentId,
   isEdit,
   setIsEdit,
@@ -52,6 +50,7 @@ const Comment: React.FC = () => {
   const postId = params.postId;
   const page = 'comment' in state && state.comment?.page;
   const commentId = 'comment' in state && state.comment?.commentId;
+  console.log('commentId', commentId);
   // 댓글 조회
   const commentQuery = commentsApi.useGetCommentQuery({ postId, page });
   const comentSucccess = commentQuery.isSuccess;
@@ -61,17 +60,17 @@ const Comment: React.FC = () => {
   const [updateMutation] = commentMutation;
 
   // 답글 조회
-  const replyQuery = repliesApi.useGetReplyQuery({ commentId });
+  const replyQuery = repliesApi.useGetReplyQuery({ commentId, page });
   const { isSuccess, data } = replyQuery;
   const contentEditInput = useRef<HTMLInputElement>(null);
 
-  // 답글 좋아요 추가, 삭제
+  // 댓글 좋아요 추가, 삭제
   const addThumbUpMutation = commentsApi.useAddThumbUpMutation();
   const [addThumbUp] = addThumbUpMutation;
   const removeThumbUpMutation = commentsApi.useRemoveThumbUpMutation();
   const [removeThumbUp] = removeThumbUpMutation;
-  // 답글 싫어요  추가, 삭제
-  const addThumbDownMutation = commentsApi.useAddThumbUpMutation();
+  // 댓글 싫어요  추가, 삭제
+  const addThumbDownMutation = commentsApi.useAddThumbDownMutation();
   const [addThumbDown] = addThumbDownMutation;
   const removeThumbDownMutation = commentsApi.useRemoveThumbDownMutation();
   const [removeThumbDown] = removeThumbDownMutation;
@@ -108,30 +107,48 @@ const Comment: React.FC = () => {
   }
   //TODO
   // 댓글 좋아요 클릭 함수
-  const commentLiikeHandler = (): void => {
-    console.log('isThumUp', !commentQuery.data?.isThumbup);
-    // 싫어요 있는 경우
-    if (commentQuery.data?.isThumbdown) {
-      removeThumbDown({ commentId });
-      addThumbUp({ commentId });
+  const commentLiikeHandler = (commentId: number): void => {
+    // 좋아요만 있는 경우
+    if (commentQuery.data?.isThumbup && !commentQuery.data?.isThumbdown) {
+      console.log('좋아요 삭제');
+      removeThumbUp({ commentId });
+      return;
     }
-    // 싫어요가 없는 경우
-    if (!commentQuery.data?.isThumbdown) {
-      if (!data?.isThumup) {
+    // 싫어요만 있는 경우
+    if (!commentQuery.data?.isThumbup && commentQuery.data?.isThumbdown) {
+      console.log('싫어요 삭제 후 좋아요 추가');
+      removeThumbDown({ commentId });
+      setTimeout(() => {
         addThumbUp({ commentId });
-      } else {
-        return;
-      }
+      }, 500);
+      return;
+    }
+    // 둘 다 없는 경우
+    if (!commentQuery.data?.isThumbdown && !commentQuery.data?.isThumbdown) {
+      console.log('좋아요 추가');
+      addThumbUp({ commentId });
+      return;
     }
   };
 
   // 댓글 싫어요 클릭 함수
-  const commentDislikeHandler = (): void => {
-    console.log('isThumDown', !commentQuery.data?.isThumbdown);
-    // 좋아요가 있는 경우
-    if (commentQuery.data?.isThumup) {
+  const commentDislikeHandler = (commentId: number): void => {
+    // 좋아요만 있는 경우
+    if (commentQuery.data?.isThumbup && !commentQuery.data?.isThumbdown) {
+      // 좋아요 제거, 싫어요 추가
+      console.log('좋아요 삭제 후 싫어요 추가');
       removeThumbUp({ commentId });
-      addThumbDown({ commentId });
+      setTimeout(() => {
+        addThumbDown({ commentId });
+      }, 500);
+      return;
+    }
+    // 싫어요만 있는 경우
+    if (!commentQuery.data?.isThumbup && commentQuery.data?.isThumbdown) {
+      // 싫어요 제거
+      console.log('싫어요 삭제');
+      removeThumbDown({ commentId });
+      return;
     }
     // 좋아요가  없는 경우
     if (!commentQuery.data?.isThumup) {
@@ -140,6 +157,13 @@ const Comment: React.FC = () => {
       } else {
         return;
       }
+    }
+    // 둘 다 없는 경우
+    if (!commentQuery.data?.isThumbup && !commentQuery.data?.isThumbdown) {
+      // 싫어요 추가
+      console.log('싫어요 추가');
+      addThumbDown({ commentId });
+      return;
     }
   };
 
@@ -188,9 +212,7 @@ const Comment: React.FC = () => {
 
   useEffect(() => {
     // 답글 데이터가 변경될 때마다 총 답글 데이터 반영
-    if (replyQuery.data) {
-      dispatch(setTotalReplies(replyQuery.data && replyQuery.data?.comments));
-    }
+    dispatch(setTotalReplies(replyQuery.data?.replies || []));
   }, [data]);
   return (
     <CommentContainer>
@@ -316,11 +338,19 @@ const Comment: React.FC = () => {
                   >
                     신고
                   </li>
-                  <button onClick={commentLiikeHandler}>
+                  <button
+                    onClick={() => {
+                      commentLiikeHandler(comment.commentId);
+                    }}
+                  >
                     <LikeIcon checked={comment.isThumbup} />
                   </button>
                   <li className="comment-likes">{comment.thumbupCount}</li>
-                  <button onClick={commentDislikeHandler}>
+                  <button
+                    onClick={() => {
+                      commentDislikeHandler(comment.commentId);
+                    }}
+                  >
                     <DislikeIcon checked={comment.isThumbDown} />
                   </button>
                   <li className="comment-dislikes">{comment.thumbDownCount}</li>
@@ -353,22 +383,21 @@ const Comment: React.FC = () => {
                   답글 {comment.replyCount}
                 </ReplyBtn>
               </CommentContent>
-              {/* {'reply' in state && isSuccess && state.reply?.isOpened[idx] ? ( */}
-              {data && 'reply' in state && state.reply.isOpened[idx] ? (
+              {/* {isSuccess && 'reply' in state && state.reply.isOpened[idx] ? ( */}
+              {'reply' in state && isSuccess && state.reply?.isOpened[idx] ? (
                 <ReplyContainer>
                   <ReplyInput commentInfo={comment}></ReplyInput>
-                  {filtered &&
-                    filtered.map((reply: ReplyType, idx: number) => {
-                      return (
-                        <>
-                          <Reply
-                            key={reply.replyId}
-                            replyInfo={reply}
-                            idx={idx}
-                          ></Reply>
-                        </>
-                      );
-                    })}
+                  {filtered?.map((reply: ReplyType, idx: number) => {
+                    return (
+                      <>
+                        <Reply
+                          key={reply.replyId}
+                          replyInfo={reply}
+                          idx={idx}
+                        ></Reply>
+                      </>
+                    );
+                  })}
                 </ReplyContainer>
               ) : null}
             </>
@@ -415,7 +444,7 @@ const CommentContainer = styled.div`
     margin: 2px 15px 0 5px;
   }
   .created-time {
-    width: 65px;
+    width: 75px;
     font-size: 16px;
     margin: 3px 15px 0 5px;
   }

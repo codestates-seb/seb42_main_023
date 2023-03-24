@@ -1,8 +1,10 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 import Cookies from 'js-cookie';
-
+//TODO:test
 // Default baseQuery: 모든 요청에 access token을 보낸다.
 const baseQuery = fetchBaseQuery({
+  // 가상서버 테스트용
+  // baseUrl: 'http://localhost:3000',
   baseUrl: process.env.REACT_APP_SERVER_ADDRESS,
   // baseUrl: 'http://localhost:3000/',
   credentials: 'include',

@@ -11,8 +11,8 @@ import { AiOutlineSearch } from 'react-icons/ai';
 import * as Styled from '../common/Tag';
 import { MdCancel } from 'react-icons/md';
 import SearchBtn from './SearchToggle';
-import { SearchApi } from '../../api/postListapi';
-import { setSearchOn } from '../../slices/mainSlice';
+import { setPostSetting, setCurrentPage } from '../../slices/mainSlice';
+import { setSearchQuery } from '../../slices/headerSlice';
 
 interface Input {
   className: string;
@@ -25,7 +25,6 @@ const SearchBar: React.FC = () => {
   const dispatch = useAppDispatch();
   const header = useAppSelector(({ header }) => header);
   const valid = useAppSelector(({ validation }) => validation);
-  const { currentPage, orderby } = useAppSelector(({ main }) => main);
 
   //검색 인풋창 데이터 입력
   const valueCheck = (event: React.ChangeEvent<HTMLInputElement>): void => {
@@ -68,39 +67,47 @@ const SearchBar: React.FC = () => {
   };
 
   //검색 방식 분기
-  const searchHandler = (event: KeyboardEvent<HTMLInputElement>): void => {
+  const searchHandler = () => {
     const tag: Array<string> = header.tag;
     const input = header.input;
-    if (event.key === 'Enter' && event.nativeEvent.isComposing === false) {
-      if (tag.length === 0 && input === '') {
-        return;
+    //tag와 input 둘다 비었을 때
+    if (tag.length === 0 && input === '') {
+      return;
+    }
+    //태그 추가하기
+    if (input[0] === '#') {
+      validation();
+    } else {
+      dispatch(setCurrentPage(1));
+      //tag x keyword o
+      //TODO: 서버 수정 후 테스트
+      if (tag.length === 0 && input.length !== 0) {
+        dispatch(setPostSetting('/search'));
+        dispatch(setSearchQuery(`&keyword=${input}&tags=`));
       }
-      if (input !== '') {
-        if (input[0] === '#') {
-          validation();
-        } else if (tag.length === 0) {
-          // TODO:keyword 와 tags전송하기
-          // 검색실행
-          dispatch(setSearchOn(true));
-          // const postListquery = SearchApi.useGetPostListQuery({
-          //   page: currentPage,
-          //   orderby: orderby,
-          //   keyword: input,
-          //   tags: tag,
-          // });
-        }
+      //tag o keyword x
+      if (tag.length !== 0 && input.length === 0) {
+        const tagstring = tag.join();
+        dispatch(setPostSetting('/search'));
+        dispatch(setSearchQuery(`&keyword=&tags=${tagstring}`));
       }
-      if (tag.length !== 0 && input === '') {
-        //검색실행
-        dispatch(setSearchOn(true));
-        // const postListquery = SearchApi.useGetPostListQuery({
-        //   page: currentPage,
-        //   orderby: orderby,
-        //   keyword: input,
-        //   tags: tag,
-        // });
+      //tag o keyword o
+      if (tag.length !== 0 && input.length !== 0) {
+        const tagstring = tag.join();
+        dispatch(setPostSetting('/search'));
+        dispatch(setSearchQuery(`&keyword=${input}&tags=${tagstring}`));
       }
     }
+  };
+  //엔터로 검색
+  const searchEnterHandler = (event: KeyboardEvent<HTMLInputElement>): void => {
+    if (event.key === 'Enter' && event.nativeEvent.isComposing === false) {
+      searchHandler();
+    }
+  };
+  //클릭으로 검색
+  const searchClickHandler = (): void => {
+    searchHandler();
   };
 
   return (
@@ -112,10 +119,10 @@ const SearchBar: React.FC = () => {
               className="tag-input"
               placeholder="관심있는 내용을 검색해보세요."
               onChange={valueCheck}
-              onKeyDown={searchHandler}
+              onKeyDown={searchEnterHandler}
               value={header.input}
             ></Input>
-            <Icon>
+            <Icon onClick={searchClickHandler}>
               <AiOutlineSearch size={26} />
             </Icon>
             {header.tag.length === 0 && <Span>#태그를 검색하세요</Span>}
@@ -141,7 +148,7 @@ const SearchBar: React.FC = () => {
               className="tag-input"
               placeholder="관심있는 내용을 검색해보세요."
               onChange={valueCheck}
-              onKeyDown={searchHandler}
+              onKeyDown={searchEnterHandler}
               value={header.input}
             ></Input>
             <Icon>

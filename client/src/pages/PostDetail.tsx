@@ -82,7 +82,6 @@ const PostDetail: React.FC = () => {
   const reportErr = 'validation' in state ? state.validation.reportErr : null;
   // 게시글 조회 및 추가
   const postDetailQuery = postsApi.useGetPostQuery({ postId });
-  console.log(postDetailQuery);
   const { data, isSuccess } = postDetailQuery;
   const memberName = data?.memberName;
   const postMutation = postsApi.useDeletePostMutation();
@@ -126,13 +125,13 @@ const PostDetail: React.FC = () => {
   // 좋아요 클릭 함수
   const changeLiikeHandler = (): void => {
     // 좋아요만 있는 경우
-    if (data?.isThumup && !data?.isThumbdown) {
+    if (data?.isThumbup && !data?.isThumbdown) {
       console.log('좋아요 삭제');
       removeThumbUp({ postId });
       return;
     }
     // 싫어요만 있는 경우
-    if (!data?.isThumup && data?.isThumbdown) {
+    if (!data?.isThumbup && data?.isThumbdown) {
       console.log('싫어요 삭제 후 좋아요 추가');
       removeThumbDown({ postId });
       setTimeout(() => {
@@ -142,7 +141,7 @@ const PostDetail: React.FC = () => {
     }
     // 둘 다 없는 경우
     if (!data?.isThumbdown && !data?.isThumbdown) {
-      console.log('좋아요 삭제');
+      console.log('좋아요 추가');
       addThumbUp({ postId });
       return;
     }
@@ -152,7 +151,7 @@ const PostDetail: React.FC = () => {
   // 싫어요 클릭 함수
   const changeDislikeHandler = (): void => {
     // 좋아요만 있는 경우
-    if (data?.isThumup && !data?.isThumbdown) {
+    if (data?.isThumbup && !data?.isThumbdown) {
       // 좋아요 제거, 싫어요 추가
       console.log('좋아요 삭제 후 싫어요 추가');
       removeThumbUp({ postId });
@@ -162,7 +161,7 @@ const PostDetail: React.FC = () => {
       return;
     }
     // 싫어요만 있는 경우
-    if (!data?.isThumbdown && data?.isThumbdown) {
+    if (!data?.isThumbup && data?.isThumbdown) {
       // 싫어요 제거
       console.log('싫어요 삭제');
 
@@ -170,7 +169,7 @@ const PostDetail: React.FC = () => {
       return;
     }
     // 둘 다 없는 경우
-    if (!data?.isThumbdown && !data?.isThumbdown) {
+    if (!data?.isThumbup && !data?.isThumbdown) {
       // 싫어요 추가
       console.log('싫어요 추가');
       addThumbDown({ postId });
@@ -435,19 +434,17 @@ const PostDetail: React.FC = () => {
                 </IntorductionContainer>
               ) : null}
 
-              <li className="nickname">{isSuccess && data?.memberName}</li>
+              <li className="nickname">{data?.memberName}</li>
               <TimeIcon />
               <li className="created-time">{time} 전</li>
               <ViewIcon />
-              <li className="views">{isSuccess && data?.viewCount}</li>
+              <li className="views">{data?.viewCount}</li>
               <CommentIcon checked={true} />
-              <li className="comments">
-                {commentQuery.data && commentQuery.data.comment.length}
-              </li>
+              <li className="comments">{data?.commentCount}</li>
               <button className="bookmark" onClick={changeBookmarkHandler}>
-                <BookmarkIcon checked={isSuccess && data?.isBookmarked} />
+                <BookmarkIcon checked={data?.isBookmarked} />
               </button>
-              <DropdownButton></DropdownButton>
+              <DropdownButton memberName={data?.memberName}></DropdownButton>
             </ul>
           </PostInfo>
           <PostContent>
@@ -533,14 +530,14 @@ const PostContainer = styled.div`
     margin: 2px 15px 0 2px;
   }
   .created-time {
-    width: 65px;
+    width: 75px;
     font-size: 16px;
-    margin: 3px 10px 0 5px;
+    margin: 3px 30px 0 5px;
   }
   .views {
     width: 40px;
     font-size: 16px;
-    margin: 1px 25px 0 5px;
+    margin: 1px 15px 0 5px;
   }
   .comments {
     width: 40px;
