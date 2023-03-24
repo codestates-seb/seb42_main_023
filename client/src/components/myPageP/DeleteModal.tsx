@@ -37,9 +37,9 @@ function DeleteModal() {
         <h1>회원탈퇴</h1>
         <div>정말 탈퇴하시겠습니까?</div>
         <div>
-          <NoBtn onClick={() => dispatch(setDeleteAccountOpen(false))}>
+          {/* <NoBtn onClick={() => dispatch(setDeleteAccountOpen(false))}>
             아니요
-          </NoBtn>
+          </NoBtn> */}
           <YesBtn onClick={DeleteAccounthandler}>네, 탈퇴하겠습니다</YesBtn>
         </div>
       </ModalBox>
