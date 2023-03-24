@@ -3,6 +3,7 @@ import styled from 'styled-components';
 import NextPageIcon from '../../assets/common/NextPageIcon';
 import PrevPageIcon from '../../assets/common/PrevPageIcon';
 import { setCurrentPage } from '../../slices/mainSlice';
+// import { setCurrentReportPage } from '../../slices/reportSlice';
 import { useAppDispatch } from '../../hooks';
 
 interface Page {
@@ -34,6 +35,7 @@ const Pagination = ({ pageInfo, pageOffset, setPageOffset }: Props) => {
     if (e.target instanceof HTMLButtonElement) {
       const newPage = parseInt(e.target.value);
       dispatch(setCurrentPage(newPage));
+      // dispatch(setCurrentReportPage(newPage));
     }
   };
   return (
