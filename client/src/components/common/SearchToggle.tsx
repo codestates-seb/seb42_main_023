@@ -2,14 +2,12 @@ import React from 'react';
 import { useAppDispatch, useAppSelector } from '../../hooks';
 import { setSearch } from '../../slices/headerSlice';
 import { SearchBtn, ClickSearchBtn } from './Btn';
-import { setSearchOn } from '../../slices/mainSlice';
 
 function Search() {
   const dispatch = useAppDispatch();
   const header = useAppSelector(({ header }) => header);
   const cancleSearchHandler = () => {
     dispatch(setSearch(!header.search));
-    dispatch(setSearchOn(false));
   };
   return (
     <>
