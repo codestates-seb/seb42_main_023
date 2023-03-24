@@ -1,8 +1,8 @@
 import { createSlice } from '@reduxjs/toolkit';
 
-interface Comunity {
+interface postSetting {
   type: string;
-  payload: '' | '/best-awards';
+  payload: '' | '/best-awards' | '/search';
 }
 interface Filter {
   type: string;
@@ -24,11 +24,10 @@ const mainSlice = createSlice({
     filter: '최신순',
     filterOpen: false,
     orderby: 'latest',
-    searchOn: false,
   },
   reducers: {
     // 커뮤니티, 명예의전당, 검색
-    setPostSetting: (state, action: Comunity): void => {
+    setPostSetting: (state, action: postSetting): void => {
       state.postSetting = action.payload;
     },
     // 정렬필터
@@ -43,18 +42,9 @@ const mainSlice = createSlice({
     setOrderby: (state, action: Orderby): void => {
       state.orderby = action.payload;
     },
-    // 서치페이지
-    setSearchOn: (state, action): void => {
-      state.searchOn = action.payload;
-    },
   },
 });
 
 export default mainSlice;
-export const {
-  setPostSetting,
-  setFilter,
-  setFilterOpen,
-  setOrderby,
-  setSearchOn,
-} = mainSlice.actions;
+export const { setPostSetting, setFilter, setFilterOpen, setOrderby } =
+  mainSlice.actions;

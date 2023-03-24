@@ -11,12 +11,17 @@ interface Page {
 }
 interface Props {
   pageInfo: Page;
+  pageOffset: number;
   setCurrentPage: React.Dispatch<React.SetStateAction<number>>;
+  setPageOffset: React.Dispatch<React.SetStateAction<number>>;
 }
 
-const Pagination = ({ pageInfo, setCurrentPage }: Props) => {
-  const [pageOffset, setPageOffset] = useState(0);
-
+const Pagination = ({
+  pageInfo,
+  pageOffset,
+  setCurrentPage,
+  setPageOffset,
+}: Props) => {
   const prevPageHandler = () => {
     if (pageOffset > 0) {
       setPageOffset(pageOffset - 5);
@@ -28,11 +33,9 @@ const Pagination = ({ pageInfo, setCurrentPage }: Props) => {
     }
   };
   const pageButtonHandler = (e: React.MouseEvent<HTMLButtonElement>) => {
-    if (pageOffset + 5 < pageInfo.totalPages) {
-      if (e.target instanceof HTMLButtonElement) {
-        const newPage = parseInt(e.target.value);
-        setCurrentPage(newPage);
-      }
+    if (e.target instanceof HTMLButtonElement) {
+      const newPage = parseInt(e.target.value);
+      setCurrentPage(newPage);
     }
   };
   return (

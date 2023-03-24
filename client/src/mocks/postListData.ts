@@ -3,8 +3,8 @@ export const posts = {
   pageInfo: {
     page: 1,
     size: 10,
-    totalElement: 144,
-    totalPage: 13,
+    totalElements: 144,
+    totalPages: 13,
   },
   posts: [
     {
