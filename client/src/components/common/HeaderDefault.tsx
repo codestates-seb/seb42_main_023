@@ -61,9 +61,7 @@ function HeaderDefault() {
           {adim === 'ADMIN' && (
             <>
               <PostBtn />
-              <button
-                onClick={() => navigate('/reports/standby?page=1&orderby=all')}
-              >
+              <button onClick={() => navigate('reports/standby')}>
                 <MdManageAccounts size={30} />
               </button>
             </>
