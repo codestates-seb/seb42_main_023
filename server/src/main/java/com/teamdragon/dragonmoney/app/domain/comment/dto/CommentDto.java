@@ -86,7 +86,7 @@ public class CommentDto {
             this.memberImage = memberImage;
             this.createdAt = comment.getCreatedAt();
             this.modifiedAt = comment.getModifiedAt();
-            this.isModified = this.createdAt != this.modifiedAt;
+            this.isModified = (this.createdAt.isEqual(this.modifiedAt));
             this.replyCount = comment.getReplyCount();
             this.thumbupCount = comment.getThumbupCount();
             this.thumbDownCount = comment.getThumbdownCount();
@@ -107,7 +107,7 @@ public class CommentDto {
             this.memberImage = memberImage;
             this.createdAt = comment.getCreatedAt();
             this.modifiedAt = comment.getModifiedAt();
-            this.isModified = this.createdAt != this.modifiedAt;
+            this.isModified = (this.createdAt.isEqual(this.modifiedAt));
             this.replyCount = comment.getReplyCount();
             this.thumbupCount = comment.getThumbupCount();
             this.thumbDownCount = comment.getThumbdownCount();

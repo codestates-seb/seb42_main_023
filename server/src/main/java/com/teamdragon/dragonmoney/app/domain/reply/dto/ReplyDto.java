@@ -82,7 +82,7 @@ public class ReplyDto {
             this.memberImage = memberImage;
             this.createdAt = reply.getCreatedAt();
             this.modifiedAt = reply.getModifiedAt();
-            this.isModified = this.createdAt != this.modifiedAt;
+            this.isModified = (this.createdAt.isEqual(this.modifiedAt));
             this.thumbupCount = reply.getThumbupCount();
             this.thumbDownCount = reply.getThumbdownCount();
         }
@@ -100,7 +100,7 @@ public class ReplyDto {
             this.memberImage = memberImage;
             this.createdAt = reply.getCreatedAt();
             this.modifiedAt = reply.getModifiedAt();
-            this.isModified = this.createdAt != this.modifiedAt;
+            this.isModified = (this.createdAt.isEqual(this.modifiedAt));
             this.thumbupCount = reply.getThumbupCount();
             this.thumbDownCount = reply.getThumbdownCount();
             this.isThumbup = isThumbup != null;

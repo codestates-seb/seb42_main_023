@@ -55,13 +55,23 @@ public class PostsService implements ThumbCountService {
         Category findCategory = finderService.findCategoryById(CURRENT_CATEGORY_ID);
         // 이미지 삭제
         imageService.removeImages(loginMember, removedImages);
+
         // 업로드 이미지 조회
-        List<Image> findImages = imageService.findImages(newPosts.getImages());
+        List<Image> findImages = new ArrayList<>();
+        List<Image> newPostsImages = newPosts.getImages();
+        if (newPostsImages != null && !newPostsImages.isEmpty()) {
+            findImages = imageService.findImages(newPostsImages);
+        }
         // 태그 조회 및 저장
-        List<String> tagNames = newPosts.getPostsTags().stream()
-                .map(postsTag -> postsTag.getTag().getName())
-                .collect(Collectors.toList());
-        List<PostsTag> postsTags = getPostsTags(tagNames);
+        List<PostsTag> newPostsPostsTags = newPosts.getPostsTags();
+        List<PostsTag> postsTags = new ArrayList<>();
+        if (newPostsPostsTags != null && !newPostsPostsTags.isEmpty()) {
+            List<String> tagNames = newPostsPostsTags.stream()
+                    .map(postsTag -> postsTag.getTag().getName())
+                    .collect(Collectors.toList());
+            postsTags = getPostsTags(tagNames);
+        }
+
         Posts posts = Posts.builder()
                 .writer(loginMember)
                 .category(findCategory)
@@ -70,18 +80,7 @@ public class PostsService implements ThumbCountService {
                 .title(newPosts.getTitle())
                 .content(newPosts.getContent())
                 .build();
-        Posts savePosts = postsRepository.save(posts);
-        return savePosts;
-    }
-
-    private List<PostsTag> getPostsTags(List<String> tagNames) {
-        List<Tag> tags = saveTags(tagNames);
-        // PostsTag 설정
-        List<PostsTag> postsTags = new ArrayList<>();
-        for (Tag tag : tags) {
-            postsTags.add(new PostsTag(null, tag));
-        }
-        return postsTags;
+        return postsRepository.save(posts);
     }
 
     // 게시글 삭제
@@ -116,8 +115,10 @@ public class PostsService implements ThumbCountService {
         }
         // 추가된 이미지 : 이미지 추가
         List<Image> newImages = imageService.findImages(updatePosts.getImages());
-        for (Image newImage : newImages) {
-            originalPosts.addImage(newImage);
+        if (newImages != null && !newImages.isEmpty()) {
+            for (Image newImage : newImages) {
+                originalPosts.addImage(newImage);
+            }
         }
 
         originalPosts.updateTitle(updatePosts.getTitle());
@@ -206,6 +207,17 @@ public class PostsService implements ThumbCountService {
         return null;
     }
 
+    // PostsTag 획득
+    private List<PostsTag> getPostsTags(List<String> tagNames) {
+        List<Tag> tags = saveTags(tagNames);
+        // PostsTag 설정
+        List<PostsTag> postsTags = new ArrayList<>();
+        for (Tag tag : tags) {
+            postsTags.add(new PostsTag(null, tag));
+        }
+        return postsTags;
+    }
+
     // update 로 인한 태그 삭제 및 추가 처리
     private List<PostsTag> updateTags(Posts updatePosts, Posts originalPosts) {
         List<String> updateTagNames = updatePosts.getTagNames();
@@ -238,7 +250,7 @@ public class PostsService implements ThumbCountService {
     // 작성자 확인
     private Posts checkOwner(Member loginMember, Long postsId) {
         Posts findPosts = findVerifyPostsById(postsId);
-        if (findPosts.getWriter().getId().equals(loginMember.getId())) {
+        if (!findPosts.getWriter().getId().equals(loginMember.getId())) {
             throw new AuthLogicException(AuthExceptionCode.AUTHORIZED_FAIL);
         }
         return findPosts;

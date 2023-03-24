@@ -16,5 +16,7 @@ public interface ImageMapper {
     @Mapping(source = "fileName", target = "imageName")
     ImageDto.ImageResponse imageToImageResponse(Image image);
     List<Image> imageDtoListToImageList(List<PostsDto.ImageDto> imageDtos);
+    @Mapping(source = "imageId", target = "id")
+    @Mapping(source = "imageName", target = "fileName")
     Image imageDtoToImage(PostsDto.ImageDto imageDto);
 }

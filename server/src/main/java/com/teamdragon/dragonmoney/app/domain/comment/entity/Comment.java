@@ -153,10 +153,10 @@ public class Comment extends BaseTimeEntity implements ThumbCountable {
     }
 
     public void plusThumbdownCount() {
-        this.thumbupCount += 1;
+        this.thumbdownCount += 1;
     }
 
     public void minusThumbdownCount() {
-        this.thumbupCount -= 1;
+        this.thumbdownCount -= 1;
     }
 }

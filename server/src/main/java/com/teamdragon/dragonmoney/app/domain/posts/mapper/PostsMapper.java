@@ -33,6 +33,7 @@ public interface PostsMapper {
     @Mapping(source = "imageId", target = "id")
     @Mapping(source = "imageName", target = "fileName")
     Image imageDtoToImage(PostsDto.ImageDto imageDto);
-
+    @Mapping(source = "imageId", target = "id")
+    @Mapping(source = "imageName", target = "fileName")
     List<Image> imageDtoListToImageList(List<PostsDto.ImageDto> imageDtos);
 }

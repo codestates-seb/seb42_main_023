@@ -9,11 +9,16 @@ import org.springframework.stereotype.Service;
 
 import java.util.Optional;
 
-@RequiredArgsConstructor
 @Service
 public class CategoryService {
 
     private final CategoryRepository categoryRepository;
+
+    public CategoryService(CategoryRepository categoryRepository) {
+        this.categoryRepository = categoryRepository;
+        categoryRepository.save(new Category("firstCategoryTitle", "firstCategoryContent"));
+    }
+
 
     // 카테고리 단일 조회 : id
     public Category findCategoryById(Long categoryId) {

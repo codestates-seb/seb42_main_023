@@ -138,7 +138,7 @@ public class CommentService implements ThumbCountService {
     // 작성자 확인
     private Comment checkOwner(Member loginMember, Long commenmtId) {
         Comment findComment = findVerifyCommentById(commenmtId);
-        if (findComment.getWriter().getId().equals(loginMember.getId())) {
+        if (!findComment.getWriter().getId().equals(loginMember.getId())) {
             throw new AuthLogicException(AuthExceptionCode.AUTHORIZED_FAIL);
         }
         return findComment;

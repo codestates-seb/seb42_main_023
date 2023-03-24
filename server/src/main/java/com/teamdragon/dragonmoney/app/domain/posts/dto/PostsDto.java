@@ -198,7 +198,7 @@ public class PostsDto {
             this.memberImage = posts.getWriter().getProfileImage();
             this.createdAt = posts.getCreatedAt();
             this.modifiedAt = posts.getModifiedAt();
-            this.isModified = this.createdAt != modifiedAt;
+            this.isModified = (this.createdAt.isEqual(this.modifiedAt));
             this.commentCount = posts.getCommentCount();
             this.viewCount = posts.getViewCount();
             this.thumbupCount = posts.getThumbupCount();
@@ -222,7 +222,7 @@ public class PostsDto {
             this.memberImage = posts.getWriter().getProfileImage();
             this.createdAt = posts.getCreatedAt();
             this.modifiedAt = posts.getModifiedAt();
-            this.isModified = this.createdAt != modifiedAt;
+            this.isModified = (this.createdAt.isEqual(this.modifiedAt));
             this.commentCount = posts.getCommentCount();
             this.viewCount = posts.getViewCount();
             this.thumbupCount = posts.getThumbupCount();
