@@ -1,60 +1,60 @@
-import React, { useEffect } from 'react';
+import React, { useState } from 'react';
 import styled from 'styled-components';
 import NextPageIcon from '../../assets/common/NextPageIcon';
 import PrevPageIcon from '../../assets/common/PrevPageIcon';
-import { useAppSelector, useAppDispatch } from '../../hooks';
-import { setPageOffsetNext, setPageOffsetPrev } from '../../slices/mainSlice';
-import { postListApi } from '../../api/postListapi';
-import { setCurrentPage } from '../../slices/mainSlice';
 
-const Pagination = () => {
-  const { community, pageOffset, currentPage, orderby } = useAppSelector(
-    ({ main }) => main,
-  );
+interface Page {
+  page: number;
+  size: number;
+  totalElements: number;
+  totalPages: number;
+}
+interface Props {
+  pageInfo: Page;
+  pageOffset: number;
+  setCurrentPage: React.Dispatch<React.SetStateAction<number>>;
+  setPageOffset: React.Dispatch<React.SetStateAction<number>>;
+}
 
-  const postListquery = postListApi.useGetPostListQuery({
-    community: community,
-    page: currentPage,
-    orderby: orderby,
-  });
-  const { data, isSuccess } = postListquery;
-  const dispatch = useAppDispatch();
-
+const Pagination = ({
+  pageInfo,
+  pageOffset,
+  setCurrentPage,
+  setPageOffset,
+}: Props) => {
   const prevPageHandler = () => {
     if (pageOffset > 0) {
-      dispatch(setPageOffsetPrev());
+      setPageOffset(pageOffset - 5);
     }
   };
   const nextPageHandler = () => {
-    if (pageOffset + 5 < data.pageInfo.totalPage) {
-      dispatch(setPageOffsetNext());
+    if (pageOffset + 5 < pageInfo.totalPages) {
+      setPageOffset(pageOffset + 5);
     }
   };
   const pageButtonHandler = (e: React.MouseEvent<HTMLButtonElement>) => {
-    if (pageOffset + 5 < data.pageInfo.totalPage) {
-      if (e.target instanceof HTMLButtonElement) {
-        dispatch(setCurrentPage(e.target.value));
-      }
+    if (e.target instanceof HTMLButtonElement) {
+      const newPage = parseInt(e.target.value);
+      setCurrentPage(newPage);
     }
   };
   return (
     <PaginationContainer>
       <ul>
         <PrevPageIcon handler={prevPageHandler} />
-        {isSuccess &&
-          Array.from({ length: data.pageInfo.totalPage }, (v, i) => i + 1)
-            .filter((el) => el > 0 + pageOffset && el <= 5 + pageOffset)
-            .map((number) => (
-              <li key={number}>
-                <Link
-                  current={number === data.pageInfo.page}
-                  value={number}
-                  onClick={pageButtonHandler}
-                >
-                  {number}
-                </Link>
-              </li>
-            ))}
+        {Array.from({ length: pageInfo.totalPages }, (v, i) => i + 1)
+          .filter((el) => el > 0 + pageOffset && el <= 5 + pageOffset)
+          .map((number) => (
+            <li key={number}>
+              <Link
+                current={number === pageInfo.page}
+                value={number}
+                onClick={pageButtonHandler}
+              >
+                {number}
+              </Link>
+            </li>
+          ))}
         <NextPageIcon handler={nextPageHandler} />
       </ul>
     </PaginationContainer>

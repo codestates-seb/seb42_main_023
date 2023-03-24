@@ -8,7 +8,8 @@ import { Link } from 'react-router-dom';
 import styled from 'styled-components';
 import { weeklyPopularApi } from '../../api/postListapi';
 import { timeSince } from '../mainP/Timecalculator';
-import { PostItem, Itemside, Info, Tag } from './PostList';
+import { Itemside, Info, Tag } from './PostList';
+import { PostListItem } from '../../types/PostList';
 
 function WeeklyPopular() {
   const weeklyPopularquery = weeklyPopularApi.useGetPostListQuery({
@@ -19,7 +20,7 @@ function WeeklyPopular() {
   return (
     <>
       {isSuccess &&
-        data.posts.map((post: PostItem, index: number) => {
+        data.posts.map((post: PostListItem, index: number) => {
           return (
             <WeeklyBestItem key={post.postId}>
               <div>

@@ -11,8 +11,8 @@ import { AiOutlineSearch } from 'react-icons/ai';
 import * as Styled from '../common/Tag';
 import { MdCancel } from 'react-icons/md';
 import SearchBtn from './SearchToggle';
-import { SearchApi } from '../../api/postListapi';
-import { setSearchOn } from '../../slices/mainSlice';
+import { postListApi } from '../../api/postListapi';
+import { setPostSetting } from '../../slices/mainSlice';
 
 interface Input {
   className: string;
@@ -25,7 +25,6 @@ const SearchBar: React.FC = () => {
   const dispatch = useAppDispatch();
   const header = useAppSelector(({ header }) => header);
   const valid = useAppSelector(({ validation }) => validation);
-  const { currentPage, orderby } = useAppSelector(({ main }) => main);
 
   //검색 인풋창 데이터 입력
   const valueCheck = (event: React.ChangeEvent<HTMLInputElement>): void => {
@@ -81,24 +80,20 @@ const SearchBar: React.FC = () => {
         } else if (tag.length === 0) {
           // TODO:keyword 와 tags전송하기
           // 검색실행
-          dispatch(setSearchOn(true));
-          // const postListquery = SearchApi.useGetPostListQuery({
-          //   page: currentPage,
-          //   orderby: orderby,
-          //   keyword: input,
-          //   tags: tag,
-          // });
+          dispatch(setPostSetting('/search'));
+          const postListquery = postListApi.useGetPostListQuery({
+            keyword: input,
+            tags: tag,
+          });
         }
       }
       if (tag.length !== 0 && input === '') {
         //검색실행
-        dispatch(setSearchOn(true));
-        // const postListquery = SearchApi.useGetPostListQuery({
-        //   page: currentPage,
-        //   orderby: orderby,
-        //   keyword: input,
-        //   tags: tag,
-        // });
+        dispatch(setPostSetting('/search'));
+        const postListquery = postListApi.useGetPostListQuery({
+          keyword: input,
+          tags: tag,
+        });
       }
     }
   };
