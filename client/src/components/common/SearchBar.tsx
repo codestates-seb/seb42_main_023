@@ -25,7 +25,6 @@ const SearchBar: React.FC = () => {
   const dispatch = useAppDispatch();
   const header = useAppSelector(({ header }) => header);
   const valid = useAppSelector(({ validation }) => validation);
-  const { currentPage, orderby } = useAppSelector(({ main }) => main);
 
   //검색 인풋창 데이터 입력
   const valueCheck = (event: React.ChangeEvent<HTMLInputElement>): void => {

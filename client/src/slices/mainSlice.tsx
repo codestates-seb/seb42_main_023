@@ -20,18 +20,16 @@ interface Orderby {
 const mainSlice = createSlice({
   name: 'mainstates',
   initialState: {
-    community: '',
+    postSetting: '',
     filter: '최신순',
     filterOpen: false,
     orderby: 'latest',
-    currentPage: 1,
-    pageOffset: 0,
     searchOn: false,
   },
   reducers: {
-    // 커뮤니티 명예의 전당 토글
-    setCommunity: (state, action: Comunity): void => {
-      state.community = action.payload;
+    // 커뮤니티, 명예의전당, 검색
+    setPostSetting: (state, action: Comunity): void => {
+      state.postSetting = action.payload;
     },
     // 정렬필터
     setFilter: (state, action: Filter): void => {
@@ -45,18 +43,6 @@ const mainSlice = createSlice({
     setOrderby: (state, action: Orderby): void => {
       state.orderby = action.payload;
     },
-    // 페이지 next버튼
-    setPageOffsetNext: (state): void => {
-      state.pageOffset = state.pageOffset + 5;
-    },
-    // 페이지 prev버튼
-    setPageOffsetPrev: (state): void => {
-      state.pageOffset = state.pageOffset - 5;
-    },
-    // 현재 페이지 선택
-    setCurrentPage: (state, action): void => {
-      state.currentPage = action.payload;
-    },
     // 서치페이지
     setSearchOn: (state, action): void => {
       state.searchOn = action.payload;
@@ -66,12 +52,9 @@ const mainSlice = createSlice({
 
 export default mainSlice;
 export const {
-  setCommunity,
+  setPostSetting,
   setFilter,
   setFilterOpen,
   setOrderby,
-  setPageOffsetNext,
-  setPageOffsetPrev,
-  setCurrentPage,
   setSearchOn,
 } = mainSlice.actions;

@@ -5,10 +5,16 @@ import Cookies from 'js-cookie';
 // 커뮤니티 게시글 API
 export const postListApi = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
-    getPostList: builder.query({
-      query: ({ comunity = '', page, orderby }) =>
-        `posts${comunity}?page=${page}&orderby=${orderby}`,
-    }),
+    getPostList: builder.query(
+      //posts/search?page=1&orderby=latest&keyword=''&tags=['','']
+      {
+        query: ({ postSetting = '', page = 1, orderby = 'latest' }) =>
+          `posts${postSetting}?page=${page}&orderby=${orderby}`,
+      },
+      // {
+      //   query: ({ comunity = '' }) => `posts`,
+      // },
+    ),
   }),
 });
 

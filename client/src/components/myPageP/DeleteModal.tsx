@@ -7,6 +7,7 @@ import { membersApi } from '../../api/memberapi';
 import { setDeleteAccountOpen } from '../../slices/mypageSlice';
 import { BlueBtn, WhiteBtn } from '../../components/common/Btn';
 import axios from 'axios';
+import Cookies from 'js-cookie';
 
 function DeleteModal() {
   const dispatch = useAppDispatch();
@@ -20,6 +21,8 @@ function DeleteModal() {
   const handleClickOutside = (event: MouseEvent) => {
     if (modalRef.current && !modalRef.current.contains(event.target as Node)) {
       dispatch(setDeleteAccountOpen(false));
+      const auth = Cookies.get('Authorization');
+      console.log(auth);
     }
   };
   useEffect(() => {

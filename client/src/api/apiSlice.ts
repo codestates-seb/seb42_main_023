@@ -1,17 +1,17 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 import Cookies from 'js-cookie';
-
+//TODO:test
 // Default baseQuery: 모든 요청에 access token을 보낸다.
 const baseQuery = fetchBaseQuery({
-  baseUrl: process.env.REACT_APP_SERVER_ADDRESS,
-  credentials: 'include',
-  prepareHeaders: (headers) => {
-    const accessToken = Cookies.get('Authorization');
-    if (accessToken) {
-      headers.set('Authorization', accessToken);
-    }
-    return headers;
-  },
+  baseUrl: 'http://localhost:3000',
+  //   credentials: 'include',
+  //   prepareHeaders: (headers) => {
+  //     const accessToken = Cookies.get('Authorization');
+  //     if (accessToken) {
+  //       headers.set('Authorization', accessToken);
+  //     }
+  //     return headers;
+  //   },
 });
 
 // access token 이 만료되었을때 실행하는 refresh token flow
