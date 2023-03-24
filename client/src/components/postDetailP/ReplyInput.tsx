@@ -1,4 +1,4 @@
-import React, { useRef } from 'react';
+import React, { useRef, useState } from 'react';
 import styled from 'styled-components';
 import { repliesApi } from '../../api/replyApi';
 import { useAppDispatch } from '../../hooks';
@@ -11,8 +11,8 @@ const ReplyInput: React.FC<CommentProps> = ({ commentInfo }: CommentProps) => {
   const dispatch = useAppDispatch();
   const commentId = commentInfo.commentId;
 
-  const mutation = repliesApi.useSetReplyMutation();
-  const setReplys = mutation[0];
+  const replyMutation = repliesApi.useSetReplyMutation();
+  const setReplys = replyMutation[0];
 
   // 답글 추가
   const addReplyHandler = async () => {

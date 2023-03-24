@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { useParams } from 'react-router';
 import { useAppDispatch, useAppSelector } from '../../hooks';
 import styled from 'styled-components';
@@ -37,6 +37,7 @@ import {
 import { timeSince } from '../mainP/Timecalculator';
 
 const Comment: React.FC = () => {
+  const [page] = useState<number>(1);
   const dispatch = useAppDispatch();
   const state = useAppSelector(
     (
@@ -48,9 +49,7 @@ const Comment: React.FC = () => {
 
   const params = useParams();
   const postId = params.postId;
-  const page = 'comment' in state && state.comment?.page;
   const commentId = 'comment' in state && state.comment?.commentId;
-  console.log('commentId', commentId);
   // 댓글 조회
   const commentQuery = commentsApi.useGetCommentQuery({ postId, page });
   const comentSucccess = commentQuery.isSuccess;
@@ -61,7 +60,7 @@ const Comment: React.FC = () => {
 
   // 답글 조회
   const replyQuery = repliesApi.useGetReplyQuery({ commentId, page });
-  const { isSuccess, data } = replyQuery;
+  const { isSuccess, data, refetch } = replyQuery;
   const contentEditInput = useRef<HTMLInputElement>(null);
 
   // 댓글 좋아요 추가, 삭제
