@@ -6,8 +6,8 @@ import PrevPageIcon from '../../assets/common/PrevPageIcon';
 interface Page {
   page: number;
   size: number;
-  totalElement: number;
-  totalPage: number;
+  totalElements: number;
+  totalPages: number;
 }
 interface Props {
   pageInfo: Page;
@@ -23,12 +23,12 @@ const Pagination = ({ pageInfo, setCurrentPage }: Props) => {
     }
   };
   const nextPageHandler = () => {
-    if (pageOffset + 5 < pageInfo.totalPage) {
+    if (pageOffset + 5 < pageInfo.totalPages) {
       setPageOffset(pageOffset + 5);
     }
   };
   const pageButtonHandler = (e: React.MouseEvent<HTMLButtonElement>) => {
-    if (pageOffset + 5 < pageInfo.totalPage) {
+    if (pageOffset + 5 < pageInfo.totalPages) {
       if (e.target instanceof HTMLButtonElement) {
         const newPage = parseInt(e.target.value);
         setCurrentPage(newPage);
@@ -39,7 +39,7 @@ const Pagination = ({ pageInfo, setCurrentPage }: Props) => {
     <PaginationContainer>
       <ul>
         <PrevPageIcon handler={prevPageHandler} />
-        {Array.from({ length: pageInfo.totalPage }, (v, i) => i + 1)
+        {Array.from({ length: pageInfo.totalPages }, (v, i) => i + 1)
           .filter((el) => el > 0 + pageOffset && el <= 5 + pageOffset)
           .map((number) => (
             <li key={number}>

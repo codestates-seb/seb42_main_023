@@ -22,9 +22,9 @@ const Main = () => {
   const { data, isSuccess } = postListquery;
 
   //현재페이지 테스트
-  // useEffect(() => {
-  //   console.log(currentPage);
-  // }, [currentPage]);
+  useEffect(() => {
+    console.log(data.pageInfo.totalPages, currentPage);
+  }, [currentPage]);
 
   return (
     <>
@@ -54,13 +54,9 @@ const Main = () => {
               )}
             </>
           )}
-          <DropdownButton />
+          <DropdownButton setCurrentPage={setCurrentPage} />
         </div>
       </FilterWrap>
-      {/* {searchOn ? <SearchPostList setCurrentPage={setCurrentPage}/> : <PostList setCurrentPage={setCurrentPage} />} */}
-      {/* {searchOn ? <SearchPostList posts={data.posts} setCurrentPage={setCurrentPage}/> : (
-        <PostList posts={data.posts} setCurrentPage={setCurrentPage} />
-      )} */}
       {isSuccess && <PostList posts={data.posts} currentPage={currentPage} />}
       {isSuccess && (
         <Pagenation pageInfo={data.pageInfo} setCurrentPage={setCurrentPage} />
