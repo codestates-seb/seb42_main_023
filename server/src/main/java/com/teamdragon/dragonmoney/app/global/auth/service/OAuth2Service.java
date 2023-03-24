@@ -1,5 +1,6 @@
 package com.teamdragon.dragonmoney.app.global.auth.service;
 
+import com.teamdragon.dragonmoney.app.domain.common.service.FinderService;
 import com.teamdragon.dragonmoney.app.domain.member.entity.Member;
 import com.teamdragon.dragonmoney.app.domain.member.repository.MemberRepository;
 import com.teamdragon.dragonmoney.app.domain.member.service.MemberService;
@@ -24,6 +25,7 @@ public class OAuth2Service {
     private final RefreshTokenRepository refreshTokenRepository;
     private final MemberRepository memberRepository;
     private final MemberService memberService;
+    private final FinderService finderService;
 
     //Temp Access Token 발급
     public String delegateTempAccessToken(String name) {
@@ -51,6 +53,25 @@ public class OAuth2Service {
         claims.put("roles", roles);
 
         String subject = name;
+        Date expiration = jwtTokenizer.getTokenExpiration(jwtTokenizer.getAccessTokenExpirationMinutes());
+
+        String base64EncodedSecretKey = jwtTokenizer.encodeBase64SecretKey(jwtTokenizer.getSecretKey());
+
+        String accessToken = jwtTokenizer.generateAccessToken(claims, subject, expiration, base64EncodedSecretKey);
+
+        return accessToken;
+    }
+
+    // AccessToken 재발급
+    public String delegateAccessTokenAgain(String memberName) {
+        Member member = finderService.findVerifiedMemberByName(memberName);
+        List<String> roles = member.getMemberRoles();
+
+        Map<String, Object> claims = new HashMap<>();
+        claims.put("name", memberName);
+        claims.put("roles", roles);
+
+        String subject = memberName;
         Date expiration = jwtTokenizer.getTokenExpiration(jwtTokenizer.getAccessTokenExpirationMinutes());
 
         String base64EncodedSecretKey = jwtTokenizer.encodeBase64SecretKey(jwtTokenizer.getSecretKey());
