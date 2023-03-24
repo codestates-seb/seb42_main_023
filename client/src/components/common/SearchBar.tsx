@@ -77,24 +77,25 @@ const SearchBar: React.FC = () => {
     //태그 추가하기
     if (input[0] === '#') {
       validation();
-    }
-    //tag x keyword o
-    //TODO: 서버 수정 후 테스트
-    if (tag.length === 0 && input.length !== 0) {
-      dispatch(setPostSetting('/search'));
-      dispatch(setSearchQuery(`&keyword=${input}&tags=`));
-    }
-    //tag o keyword x
-    if (tag.length !== 0 && input.length === 0) {
-      const tagstring = tag.join();
-      dispatch(setPostSetting('/search'));
-      dispatch(setSearchQuery(`&keyword=&tags=${tagstring}`));
-    }
-    //tag o keyword o
-    if (tag.length !== 0 && input.length !== 0 && input[0] !== '#') {
-      const tagstring = tag.join();
-      dispatch(setPostSetting('/search'));
-      dispatch(setSearchQuery(`&keyword=${input}&tags=${tagstring}`));
+    } else {
+      //tag x keyword o
+      //TODO: 서버 수정 후 테스트
+      if (tag.length === 0 && input.length !== 0) {
+        dispatch(setPostSetting('/search'));
+        dispatch(setSearchQuery(`&keyword=${input}&tags=`));
+      }
+      //tag o keyword x
+      if (tag.length !== 0 && input.length === 0) {
+        const tagstring = tag.join();
+        dispatch(setPostSetting('/search'));
+        dispatch(setSearchQuery(`&keyword=&tags=${tagstring}`));
+      }
+      //tag o keyword o
+      if (tag.length !== 0 && input.length !== 0) {
+        const tagstring = tag.join();
+        dispatch(setPostSetting('/search'));
+        dispatch(setSearchQuery(`&keyword=${input}&tags=${tagstring}`));
+      }
     }
   };
   //엔터로 검색

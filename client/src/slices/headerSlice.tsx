@@ -49,6 +49,10 @@ const headerSlice = createSlice({
         (tag) => tag !== action.payload,
       );
     },
+    //검색 태그 초기화
+    deleteAllSarchTag: (state): void => {
+      (state.tag as Array<string>) = [];
+    },
     // 회원명 지정
     setMemberName: (state, action: Tag): void => {
       state.memberName = action.payload;
@@ -82,6 +86,7 @@ export const {
   setInput,
   setSearchTag,
   deleteSarchTag,
+  deleteAllSarchTag,
   setPostQuery,
   setCommentQuery,
   setMemberName,
