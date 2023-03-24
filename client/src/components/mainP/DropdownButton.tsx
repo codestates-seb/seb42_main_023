@@ -3,12 +3,9 @@ import styled from 'styled-components';
 import { BsFillCaretDownFill } from 'react-icons/bs';
 import { useAppDispatch, useAppSelector } from '../../hooks';
 import { setFilter, setFilterOpen, setOrderby } from '../../slices/mainSlice';
+import { setCurrentPage } from '../../slices/mainSlice';
 
-interface Props {
-  setCurrentPage: React.Dispatch<React.SetStateAction<number>>;
-}
-
-const DropdownButton = ({ setCurrentPage }: Props) => {
+const DropdownButton = () => {
   const dispatch = useAppDispatch();
   const { filter, filterOpen } = useAppSelector(({ main }) => main);
   const dropdownRef = useRef<HTMLDivElement>(null);
@@ -22,15 +19,15 @@ const DropdownButton = ({ setCurrentPage }: Props) => {
     dispatch(setFilter(option));
     dispatch(setFilterOpen(false));
     if (option === '최신순') {
-      setCurrentPage(1);
+      dispatch(setCurrentPage(1));
       dispatch(setOrderby('latest'));
     }
     if (option === '좋아요순') {
-      setCurrentPage(1);
+      dispatch(setCurrentPage(1));
       dispatch(setOrderby('thumbup'));
     }
     if (option === '조회순') {
-      setCurrentPage(1);
+      dispatch(setCurrentPage(1));
       dispatch(setOrderby('view-count'));
     }
   };

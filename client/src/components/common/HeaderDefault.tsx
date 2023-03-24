@@ -53,7 +53,7 @@ function HeaderDefault() {
         <Btns>
           {pathname === '/' && <SearchBtn />}
           {auth === undefined && <LoginBtn />}
-          {auth !== undefined && (
+          {auth !== undefined && adim !== 'ADMIN' && (
             <>
               <PostBtn /> <MediumProfileImg />
             </>
@@ -61,7 +61,9 @@ function HeaderDefault() {
           {adim === 'ADMIN' && (
             <>
               <PostBtn />
-              <button onClick={() => navigate('/adminreport')}>
+              <button
+                onClick={() => navigate('/reports/standby?page=1&orderby=all')}
+              >
                 <MdManageAccounts size={30} />
               </button>
             </>
