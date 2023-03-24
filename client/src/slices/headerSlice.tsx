@@ -24,6 +24,7 @@ const headerSlice = createSlice({
     commentQuery: '',
     memberName: '',
     memberImg: '',
+    searchQuery: '',
   },
   reducers: {
     // 검색창 헤더 토글
@@ -48,6 +49,16 @@ const headerSlice = createSlice({
         (tag) => tag !== action.payload,
       );
     },
+    // 회원명 지정
+    setMemberName: (state, action: Tag): void => {
+      state.memberName = action.payload;
+    },
+    // 회원이미지 지정
+    setMemberImg: (state, action: Tag): void => {
+      state.memberImg = action.payload;
+    },
+
+    /******* mypage 정보 세팅 ********/
     // 게시글 요청 핸들러
     setPostQuery: (state, action: Tag): void => {
       state.query = action.payload;
@@ -56,13 +67,10 @@ const headerSlice = createSlice({
     setCommentQuery: (state, action: Tag): void => {
       state.commentQuery = action.payload;
     },
-    // 회원명 지정
-    setMemberName: (state, action: Tag): void => {
-      state.memberName = action.payload;
-    },
-    // 회원이미지 지정
-    setMemberImg: (state, action: Tag): void => {
-      state.memberImg = action.payload;
+
+    // 검색 요청 핸들러
+    setSearchQuery: (state, action: Tag): void => {
+      state.searchQuery = action.payload;
     },
   },
 });
@@ -78,4 +86,5 @@ export const {
   setCommentQuery,
   setMemberName,
   setMemberImg,
+  setSearchQuery,
 } = headerSlice.actions;

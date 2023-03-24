@@ -4,7 +4,7 @@ import Cookies from 'js-cookie';
 // Default baseQuery: 모든 요청에 access token을 보낸다.
 const baseQuery = fetchBaseQuery({
   // 가상서버 테스트용
-  //   baseUrl: 'http://localhost:3000',
+  // baseUrl: 'http://localhost:3000',
   baseUrl: process.env.REACT_APP_SERVER_ADDRESS,
   credentials: 'include',
   prepareHeaders: (headers) => {
