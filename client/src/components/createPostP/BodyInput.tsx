@@ -12,6 +12,7 @@ import {
   setAddedImg,
 } from '../../slices/postSlice';
 import Cookies from 'js-cookie';
+import { logDOM } from '@testing-library/react';
 
 const url = process.env.REACT_APP_SERVER_ADDRESS + '/images';
 const BodyInput: React.FC = () => {
@@ -38,8 +39,13 @@ const BodyInput: React.FC = () => {
   // 본문 이미지 확인
   function imageCheck(): void {
     // 이미지 처리
-    const pattern = /((?<=<img......)(.*?)(?=.>))/gi;
-    const currentImg = bodyValue.match(pattern)!;
+    //TODO 문열 형태를 map을 이용해서 배열로 만들어 줘야함
+    const pattern = /((?<=<img......)(.*?)(?=...>))/gi;
+    // test
+
+    const testValue = `<img src="abc.png" />12312312432432123<img src="abcd.png" />`;
+    const currentImg = testValue.match(pattern)!;
+    console.log('currentImg', currentImg);
     const removedImg = addedImg?.filter((img) => {
       return !currentImg?.includes(img);
     });
@@ -79,24 +85,35 @@ const BodyInput: React.FC = () => {
     input.addEventListener('change', async () => {
       const file = input.files![0];
       const formData = new FormData();
-      formData.append('img', file);
+      formData.append('image', file);
       console.log('formData', formData);
+
       try {
         //TODO 서버 url로 변경해야함 그리고 이미지 id와 이름을 받아와야함 => 상태 관리 필요
         const result = await axios.post(url, formData, {
           headers: {
-            'Content-Type': 'application/json',
+            'Content-Type': 'multipart/form-data',
             Authorization: accsessToken,
           },
           withCredentials: true,
         });
+
         const { data } = result;
         console.log('resData', data);
-        const IMG_URL = result.data.url;
-        dispatch(setAddedImg(IMG_URL));
+        const { imageId, imageName } = data;
+
+        const ImgUrl = process.env.REACT_APP_S3_ADDRESS + '/' + imageName;
+        console.log('ImgUrl', ImgUrl);
+        const imgObj = {
+          imageId,
+          imageName,
+        };
+        console.log('imgObj', imgObj);
+        dispatch(setAddedImg(imgObj));
         const editor = quillRef.current!.getEditor();
         const range = editor.getSelection();
-        editor.insertEmbed(range!.index, 'image', IMG_URL);
+        // editor.insertEmbed(range!.index, 'image', ImgUrl);
+        editor.insertEmbed(range!.index, 'image', ImgUrl);
       } catch (error) {
         console.log(error);
       }

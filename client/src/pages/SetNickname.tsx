@@ -31,9 +31,9 @@ const SetNickname: React.FC = () => {
 
     postNickname({ name: nickname, tempName: tempName })
       .unwrap()
-      .then((res) => {
-        console.log('res in nickname', res);
-        if (res.useable) {
+      .then((response) => {
+        console.log('res in nickname', response);
+        if (response.useable) {
           navigate('/login');
         } else {
           dispatch(setNicknameErr('중복된 닉네임입니다.'));
@@ -41,7 +41,13 @@ const SetNickname: React.FC = () => {
       })
       .catch((err) => {
         console.log('err in nickname', err);
-        dispatch(setNicknameErr('닉네임은 2자 이상 8자 이하로 작성해주세요.'));
+        if (
+          err.fieldErrors.reason === '닉네임은 2자 이상 8자까지 가능합니다.'
+        ) {
+          dispatch(
+            setNicknameErr('닉네임은 2자 이상 8자 이하로 작성해주세요.'),
+          );
+        }
       });
   };
 
