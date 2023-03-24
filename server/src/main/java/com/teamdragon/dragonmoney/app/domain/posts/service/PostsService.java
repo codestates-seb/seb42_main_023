@@ -103,6 +103,24 @@ public class PostsService implements ThumbCountService {
         return postsId;
     }
 
+    // 신고에 의한 게시글 삭제
+    public void removeRepostedPosts(Member member, Posts posts) {
+        DeleteResult deleteResult = DeleteResult.builder()
+                .deleteReason(DeleteResult.Reason.DELETED_BY_REPORT)
+                .build();
+        posts.changeStateToDeleted(deleteResult);
+
+        // 태그 삭제
+        postsTagRepository.deleteByPosts_Id(posts.getId());
+        tagService.removeOrphanTag();
+        // 이미지 삭제
+        imageService.removeImages(member, posts.getImages());
+        // 댓글 삭제 처리
+        commentService.removeCommentsByParent(posts.getComments());
+
+        postsRepository.save(posts);
+    }
+
     // 게시글 수정
     public Posts updatePosts(Member loginMember, Long postsId, Posts updatePosts, List<Image> removedImages){
         Posts originalPosts = checkOwner(loginMember, postsId);

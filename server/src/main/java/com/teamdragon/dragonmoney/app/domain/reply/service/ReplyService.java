@@ -71,6 +71,15 @@ public class ReplyService implements ThumbCountService {
         replyRepository.saveAll(replies);
     }
 
+    // 신고에 의한 삭제
+    public void removeReportReply(Reply reply) {
+        reply.getComment().minusReplyCount();
+        DeleteResult deleteResult
+                = DeleteResult.builder().deleteReason(DeleteResult.Reason.SELF_DELETED).build();
+        reply.changeStateToDeleted(deleteResult);
+        replyRepository.save(reply);
+    }
+
     // 수정
     public Reply updateReply(Member loginMember, Long replyId, Reply updateReply) {
         Reply findReply = checkOwner(loginMember, replyId);

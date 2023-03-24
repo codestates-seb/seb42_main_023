@@ -76,6 +76,18 @@ public class CommentService implements ThumbCountService {
         commentRepository.saveAll(comments);
     }
 
+    // 신고로 인한 삭제
+    public void removeReportComment(Comment comment) {
+        Posts parentPosts = comment.getPosts();
+        parentPosts.minusCommentCount();
+        DeleteResult deleteResult
+                = DeleteResult.builder().deleteReason(DeleteResult.Reason.DELETED_BY_REPORT).build();
+        comment.changeStateToDeleted(deleteResult);
+        // 답글 삭제
+        replyService.removeCommentsByParent(comment.getReplies());
+        commentRepository.save(comment);
+    }
+
     // 수정
     public Comment updateComment(Member loginMember, Long commentId, Comment updateComment) {
         Comment findComment = checkOwner(loginMember, commentId);

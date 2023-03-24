@@ -91,10 +91,9 @@ public class SecurityConfiguration {
                         .antMatchers(HttpMethod.DELETE, "/comments/*/thumbdown").hasRole("USER")
                         .antMatchers(HttpMethod.DELETE, "/replies/*/thumbdown").hasRole("USER")
 
-                        .antMatchers(HttpMethod.POST, "/reports").hasRole("ADMIN")
-                        .antMatchers(HttpMethod.GET, "/reports").hasRole("ADMIN")
-                        .antMatchers(HttpMethod.GET, "/reports/**").hasAnyRole("ADMIN")
-                        .antMatchers(HttpMethod.DELETE, "/reports/**").hasRole("ADMIN")
+                        .antMatchers(HttpMethod.POST, "/reports").hasRole("USER")
+                        .antMatchers(HttpMethod.GET, "/reports/*").hasRole("ADMIN")
+                        .antMatchers(HttpMethod.DELETE, "/reports/*").hasRole("ADMIN")
                 )
                 .oauth2Login(oauth2 -> oauth2
                         .successHandler(new OAuth2MemberHandler(jwtTokenizer, authorityUtils, memberService, oAuth2Service))
