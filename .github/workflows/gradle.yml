@@ -81,10 +81,6 @@ jobs:
           java-version: '11'
           distribution: 'temurin'
 
-      # 서버 빌드 로그옵션
-      - name: Build log with Gradle
-        run: cd server && ./gradlew test -i
-
       # 서버 빌드 수행
       - name: Build with Gradle
         run: cd server && ./gradlew build
