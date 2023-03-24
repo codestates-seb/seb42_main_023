@@ -21,7 +21,7 @@ export const commentsApi = createApi({
     // 댓글 조회
     getComment: builder.query({
       query: ({ postId, page }) =>
-        `posts/${postId}/comments?page=${page}&orderby=thumbup`,
+        `posts/${postId}/comments?page=${page}&orderby=latest`,
       providesTags: (result, error, arg) => {
         console.log(result, error, arg);
         return [{ type: 'Comment', id: arg.postId }];
