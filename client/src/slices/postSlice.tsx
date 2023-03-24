@@ -81,8 +81,8 @@ const postSlice = createSlice({
       (state.removedImg as unknown) = action.payload;
     },
     //추가된 게시물 이미지(삭제된 이미지 포함)
-    setAddedImg: (state, action: PayloadAction<string>): void => {
-      (state.addedImg! as Array<string>).push(action.payload);
+    setAddedImg: (state, action: PayloadAction<object>): void => {
+      (state.addedImg! as Array<object>).push(action.payload);
     },
     // 소개 페이지 오픈
     setIsOpenIntro: (state, action: PayloadAction<boolean>): void => {

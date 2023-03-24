@@ -82,7 +82,6 @@ const PostDetail: React.FC = () => {
   const reportErr = 'validation' in state ? state.validation.reportErr : null;
   // 게시글 조회 및 추가
   const postDetailQuery = postsApi.useGetPostQuery({ postId });
-  console.log(postDetailQuery);
   const { data, isSuccess } = postDetailQuery;
   const memberName = data?.memberName;
   const postMutation = postsApi.useDeletePostMutation();
@@ -142,7 +141,7 @@ const PostDetail: React.FC = () => {
     }
     // 둘 다 없는 경우
     if (!data?.isThumbdown && !data?.isThumbdown) {
-      console.log('좋아요 삭제');
+      console.log('좋아요 추가');
       addThumbUp({ postId });
       return;
     }
@@ -437,9 +436,7 @@ const PostDetail: React.FC = () => {
               <ViewIcon />
               <li className="views">{isSuccess && data?.viewCount}</li>
               <CommentIcon checked={true} />
-              <li className="comments">
-                {commentQuery.data && commentQuery.data.comment.length}
-              </li>
+              <li className="comments">{data?.commentCount}</li>
               <button className="bookmark" onClick={changeBookmarkHandler}>
                 <BookmarkIcon checked={isSuccess && data?.isBookmarked} />
               </button>
@@ -531,12 +528,12 @@ const PostContainer = styled.div`
   .created-time {
     width: 65px;
     font-size: 16px;
-    margin: 3px 10px 0 5px;
+    margin: 3px 35px 0 5px;
   }
   .views {
     width: 40px;
     font-size: 16px;
-    margin: 1px 25px 0 5px;
+    margin: 1px 15px 0 5px;
   }
   .comments {
     width: 40px;

@@ -24,8 +24,6 @@ import {
   ReplyType,
 } from '../../types/PostDetail';
 import {
-  setCommentDislike,
-  setCommentLike,
   setCommentId,
   isEdit,
   setIsEdit,
@@ -52,6 +50,7 @@ const Comment: React.FC = () => {
   const postId = params.postId;
   const page = 'comment' in state && state.comment?.page;
   const commentId = 'comment' in state && state.comment?.commentId;
+
   // 댓글 조회
   const commentQuery = commentsApi.useGetCommentQuery({ postId, page });
   const comentSucccess = commentQuery.isSuccess;
@@ -61,7 +60,7 @@ const Comment: React.FC = () => {
   const [updateMutation] = commentMutation;
 
   // 답글 조회
-  const replyQuery = repliesApi.useGetReplyQuery({ commentId });
+  const replyQuery = repliesApi.useGetReplyQuery({ commentId, page });
   const { isSuccess, data } = replyQuery;
   const contentEditInput = useRef<HTMLInputElement>(null);
 
@@ -188,9 +187,7 @@ const Comment: React.FC = () => {
 
   useEffect(() => {
     // 답글 데이터가 변경될 때마다 총 답글 데이터 반영
-    if (replyQuery.data) {
-      dispatch(setTotalReplies(replyQuery.data && replyQuery.data?.comments));
-    }
+    dispatch(setTotalReplies(replyQuery.data?.replies || []));
   }, [data]);
   return (
     <CommentContainer>
@@ -353,22 +350,21 @@ const Comment: React.FC = () => {
                   답글 {comment.replyCount}
                 </ReplyBtn>
               </CommentContent>
-              {/* {'reply' in state && isSuccess && state.reply?.isOpened[idx] ? ( */}
-              {data && 'reply' in state && state.reply.isOpened[idx] ? (
+              {/* {isSuccess && 'reply' in state && state.reply.isOpened[idx] ? ( */}
+              {'reply' in state && isSuccess && state.reply?.isOpened[idx] ? (
                 <ReplyContainer>
                   <ReplyInput commentInfo={comment}></ReplyInput>
-                  {filtered &&
-                    filtered.map((reply: ReplyType, idx: number) => {
-                      return (
-                        <>
-                          <Reply
-                            key={reply.replyId}
-                            replyInfo={reply}
-                            idx={idx}
-                          ></Reply>
-                        </>
-                      );
-                    })}
+                  {filtered?.map((reply: ReplyType, idx: number) => {
+                    return (
+                      <>
+                        <Reply
+                          key={reply.replyId}
+                          replyInfo={reply}
+                          idx={idx}
+                        ></Reply>
+                      </>
+                    );
+                  })}
                 </ReplyContainer>
               ) : null}
             </>
@@ -415,7 +411,7 @@ const CommentContainer = styled.div`
     margin: 2px 15px 0 5px;
   }
   .created-time {
-    width: 65px;
+    width: 75px;
     font-size: 16px;
     margin: 3px 15px 0 5px;
   }

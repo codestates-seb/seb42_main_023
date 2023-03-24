@@ -66,7 +66,7 @@ const Reply: React.FC<ReplyProps> = ({ replyInfo, idx }: ReplyProps) => {
     (state as ReplyStateType).reply.isEdit === undefined
   ) {
     const edit = Array.from(
-      { length: replyQuery.data.comments.length },
+      { length: replyQuery.data?.replies.length },
       (el) => (el = false),
     );
 
@@ -226,13 +226,10 @@ const Reply: React.FC<ReplyProps> = ({ replyInfo, idx }: ReplyProps) => {
           </li>
         </ul>
       </ReplyInfo>
-
       <ReplyContent>
-        {/* TODO  답글 수정 모드 버그 수정 필요 => dataSet 활용하기!! edit 기본 값을 false로 하고 클릭 시 event.target의 dataSet을 변경 */}
         {'reply' in state &&
         replyInfo.replyId === replyId &&
-        state.reply.isEdit !== undefined &&
-        state.reply.isEdit[idx] ? (
+        state.reply?.isEdit[idx] ? (
           // 댓글 수정 시 생기는 INPUT
           <input
             className="edit-reply"
@@ -289,7 +286,7 @@ const ReplyContainer = styled.div`
     margin: 2px 15px 0 5px;
   }
   .reply-created-time {
-    width: 65px;
+    width: 75px;
     font-size: 16px;
     margin: 3px 15px 0 5px;
   }
