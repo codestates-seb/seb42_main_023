@@ -7,6 +7,7 @@ import com.querydsl.jpa.JPAExpressions;
 import com.querydsl.jpa.JPQLQuery;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
+import com.teamdragon.dragonmoney.app.domain.popular.entity.QBestAwards;
 import com.teamdragon.dragonmoney.app.domain.posts.dto.PostsDto;
 import com.teamdragon.dragonmoney.app.domain.posts.entity.Posts;
 import com.teamdragon.dragonmoney.app.global.pagenation.QueryDslUtil;
@@ -15,11 +16,14 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.support.PageableExecutionUtils;
 
+import javax.persistence.EntityManager;
+import javax.persistence.TypedQuery;
 import java.time.LocalDateTime;
 import java.util.List;
 
 import static com.teamdragon.dragonmoney.app.domain.bookmark.entity.QBookmark.*;
 import static com.teamdragon.dragonmoney.app.domain.member.entity.QMember.member;
+import static com.teamdragon.dragonmoney.app.domain.popular.entity.QBestAwards.*;
 import static com.teamdragon.dragonmoney.app.domain.posts.entity.QPosts.*;
 import static com.teamdragon.dragonmoney.app.domain.posts.entity.QPostsTag.*;
 import static com.teamdragon.dragonmoney.app.domain.tag.entity.QTag.*;
@@ -30,16 +34,18 @@ import static com.teamdragon.dragonmoney.app.domain.thumb.entity.QThumbup.*;
 public class PostsRepositoryImpl implements PostsRepositoryCustom {
 
     private final JPAQueryFactory queryFactory;
+    private final EntityManager entityManager;
 
     // 주간 인기 게시물 목록 조회
     @Override
     public List<Posts> findWeeklyPopularList(int size, LocalDateTime from, LocalDateTime to) {
         return queryFactory
-                .select(posts)
-                .distinct()
+                .select(posts).distinct()
                 .from(posts)
-                .where(posts.state.eq(Posts.State.ACTIVE))
-                .where(posts.createdAt.between(from, to))
+                .leftJoin(posts.writer, member).fetchJoin()
+                .leftJoin(posts.postsTags, postsTag).fetchJoin()
+                .leftJoin(postsTag.tag, tag).fetchJoin()
+                .where(posts.state.eq(Posts.State.ACTIVE), posts.createdAt.between(from, to))
                 .orderBy(
                         posts.viewCount.add(
                             posts.commentCount.add(
@@ -62,22 +68,20 @@ public class PostsRepositoryImpl implements PostsRepositoryCustom {
         List<Posts> content = queryFactory
                 .select(posts).distinct()
                 .from(posts)
+                .leftJoin(posts.writer, member).fetchJoin()
+                .leftJoin(posts.bestAwards, bestAwards).fetchJoin()
                 .leftJoin(posts.postsTags, postsTag).fetchJoin()
                 .leftJoin(postsTag.tag, tag).fetchJoin()
-                .where(posts.state.eq(Posts.State.ACTIVE))
-                .where(posts.bestAwards.isNotNull())
+                .where(posts.state.eq(Posts.State.ACTIVE), posts.bestAwards.isNotNull())
                 .orderBy(orders)
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
                 .fetch();
         JPAQuery<Long> countQuery = queryFactory
-                .select(posts.count())
-                .distinct()
-                .where(posts.state.eq(Posts.State.ACTIVE))
-                .where(posts.bestAwards.isNotNull())
+                .select(posts.count()).distinct()
                 .from(posts)
-                .leftJoin(posts.postsTags, postsTag).fetchJoin()
-                .leftJoin(postsTag.tag, tag).fetchJoin();
+                .leftJoin(posts.bestAwards, bestAwards)
+                .where(posts.state.eq(Posts.State.ACTIVE), posts.bestAwards.isNotNull());
 
         return PageableExecutionUtils.getPage(content, pageable, countQuery::fetchOne);
     }
@@ -85,14 +89,14 @@ public class PostsRepositoryImpl implements PostsRepositoryCustom {
     // 추천 게시물 목록 조회
     @Override
     public List<Posts> findRecommendPostsList(int size) {
-        return queryFactory
-                .select(posts)
-                .distinct()
-                .from(posts)
-                .where(posts.state.eq(Posts.State.ACTIVE))
-                .orderBy(Expressions.numberTemplate(Double.class, "function('rand')").asc())
-                .limit(size)
-                .fetch();
+        TypedQuery<Posts> query
+                = entityManager.createQuery(
+                        "SELECT p FROM Posts p WHERE p.state = :state AND p.bestAwards IS NOT NULL ORDER BY FUNCTION('RAND')",
+                        Posts.class)
+                .setParameter("state", Posts.State.ACTIVE)
+                .setMaxResults(size);
+
+        return query.getResultList();
     }
 
     // 단일 조회 : 미로그인 시
@@ -101,8 +105,7 @@ public class PostsRepositoryImpl implements PostsRepositoryCustom {
         return queryFactory
                 .select(Projections.constructor(PostsDto.PostsDetailRes.class, posts))
                 .from(posts)
-                .where(posts.state.eq(Posts.State.ACTIVE))
-                .where(posts.id.eq(postsId))
+                .where(posts.state.eq(Posts.State.ACTIVE), posts.id.eq(postsId))
                 .fetchOne();
     }
 
@@ -131,8 +134,7 @@ public class PostsRepositoryImpl implements PostsRepositoryCustom {
                 .from(posts)
                 .leftJoin(posts.postsTags, postsTag)
                 .leftJoin(postsTag.tag, tag)
-                .where(posts.state.eq(Posts.State.ACTIVE))
-                .where(posts.id.eq(postsId))
+                .where(posts.state.eq(Posts.State.ACTIVE), posts.id.eq(postsId))
                 .fetchFirst();
     }
 
@@ -146,6 +148,7 @@ public class PostsRepositoryImpl implements PostsRepositoryCustom {
                 .select(posts)
                 .distinct()
                 .from(posts)
+                .leftJoin(posts.writer, member).fetchJoin()
                 .leftJoin(posts.postsTags, postsTag).fetchJoin()
                 .leftJoin(postsTag.tag, tag).fetchJoin()
                 .where(posts.state.eq(Posts.State.ACTIVE))
@@ -186,8 +189,8 @@ public class PostsRepositoryImpl implements PostsRepositoryCustom {
         builder.and(posts.id.in(sub));
 
         List<Posts> content = queryFactory.selectFrom(posts).distinct()
-                .where(builder)
-                .where(posts.state.eq(Posts.State.ACTIVE))
+                .leftJoin(posts.writer, member).fetchJoin()
+                .where(posts.state.eq(Posts.State.ACTIVE), builder)
                 .orderBy(orders)
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
@@ -195,8 +198,7 @@ public class PostsRepositoryImpl implements PostsRepositoryCustom {
 
         JPAQuery<Long> countQuery = queryFactory.select(posts.count())
                 .from(posts)
-                .where(posts.state.eq(Posts.State.ACTIVE))
-                .where(builder);
+                .where(posts.state.eq(Posts.State.ACTIVE), builder);
 
         return PageableExecutionUtils.getPage(content, pageable, countQuery::fetchOne);
     }
@@ -210,10 +212,10 @@ public class PostsRepositoryImpl implements PostsRepositoryCustom {
         List<Posts> content = queryFactory
                 .selectFrom(posts)
                 .distinct()
+                .leftJoin(posts.writer, member).fetchJoin()
                 .leftJoin(posts.postsTags, postsTag)
                 .leftJoin(postsTag.tag, tag)
-                .where(posts.state.eq(Posts.State.ACTIVE))
-                .where(posts.writer.name.eq(memberName))
+                .where(posts.state.eq(Posts.State.ACTIVE), posts.writer.name.eq(memberName))
                 .orderBy(orders)
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
@@ -221,8 +223,7 @@ public class PostsRepositoryImpl implements PostsRepositoryCustom {
         JPAQuery<Long> countQuery = queryFactory
                 .select(posts.count())
                 .from(posts)
-                .where(posts.state.eq(Posts.State.ACTIVE))
-                .where(posts.writer.name.eq(memberName));
+                .where(posts.state.eq(Posts.State.ACTIVE), posts.writer.name.eq(memberName));
 
         return PageableExecutionUtils.getPage(content, pageable, countQuery::fetchOne);
     }
@@ -237,8 +238,7 @@ public class PostsRepositoryImpl implements PostsRepositoryCustom {
                 .from(thumbup)
                 .join(thumbup.parentPosts, posts)
                 .join(thumbup.member, member)
-                .where(posts.state.eq(Posts.State.ACTIVE))
-                .where(posts.writer.name.eq(memberName))
+                .where(posts.state.eq(Posts.State.ACTIVE), posts.writer.name.eq(memberName))
                 .orderBy(orders)
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
@@ -246,8 +246,7 @@ public class PostsRepositoryImpl implements PostsRepositoryCustom {
         JPAQuery<Long> countQuery = queryFactory
                 .select(posts.count())
                 .from(posts)
-                .where(posts.state.eq(Posts.State.ACTIVE))
-                .where(posts.writer.name.eq(memberName));
+                .where(posts.state.eq(Posts.State.ACTIVE), posts.writer.name.eq(memberName));
 
         return PageableExecutionUtils.getPage(content, pageable, countQuery::fetchOne);
     }
@@ -262,8 +261,7 @@ public class PostsRepositoryImpl implements PostsRepositoryCustom {
                 .from(bookmark)
                 .join(bookmark.posts, posts)
                 .join(bookmark.member, member)
-                .where(posts.state.eq(Posts.State.ACTIVE))
-                .where(posts.writer.name.eq(memberName))
+                .where(posts.state.eq(Posts.State.ACTIVE), posts.writer.name.eq(memberName))
                 .orderBy(orders)
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
@@ -271,8 +269,7 @@ public class PostsRepositoryImpl implements PostsRepositoryCustom {
         JPAQuery<Long> countQuery = queryFactory
                 .select(posts.count())
                 .from(posts)
-                .where(posts.state.eq(Posts.State.ACTIVE))
-                .where(posts.writer.name.eq(memberName));
+                .where(posts.state.eq(Posts.State.ACTIVE), posts.writer.name.eq(memberName));
 
         return PageableExecutionUtils.getPage(content, pageable, countQuery::fetchOne);
     }
@@ -283,8 +280,7 @@ public class PostsRepositoryImpl implements PostsRepositoryCustom {
         Long memberPostsCount = queryFactory
                 .select(posts.count())
                 .from(posts)
-                .where(posts.state.eq(Posts.State.ACTIVE))
-                .where(posts.writer.name.eq(memberName))
+                .where(posts.state.eq(Posts.State.ACTIVE), posts.writer.name.eq(memberName))
                 .fetchOne();
         return memberPostsCount;
     }
@@ -296,8 +292,7 @@ public class PostsRepositoryImpl implements PostsRepositoryCustom {
                 .select(thumbup.count())
                 .from(thumbup)
                 .where(thumbup.parentPosts.state.eq(Posts.State.ACTIVE))
-                .where(thumbup.member.name.eq(memberName))
-                .where(thumbup.parentPosts.id.isNotNull())
+                .where(thumbup.member.name.eq(memberName), thumbup.parentPosts.id.isNotNull())
                 .fetchOne();
         return memberPostsCount;
     }
@@ -308,8 +303,7 @@ public class PostsRepositoryImpl implements PostsRepositoryCustom {
         Long memberBookmarkPostsCount = queryFactory
                 .select(posts.count())
                 .from(bookmark)
-                .where(bookmark.posts.state.eq(Posts.State.ACTIVE))
-                .where(bookmark.member.name.eq(memberName))
+                .where(bookmark.posts.state.eq(Posts.State.ACTIVE), bookmark.member.name.eq(memberName))
                 .fetchOne();
         return memberBookmarkPostsCount;
     }

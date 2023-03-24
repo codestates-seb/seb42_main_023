@@ -49,10 +49,10 @@ public class Reply extends BaseTimeEntity implements ThumbCountable {
     @Column
     private Long thumbdownCount;
 
-    @OneToMany(mappedBy = "parentReply", orphanRemoval = true)
+    @OneToMany(mappedBy = "parentReply")
     private List<Thumbup> thumbups = new ArrayList<>();
 
-    @OneToMany(mappedBy = "parentReply", orphanRemoval = true)
+    @OneToMany(mappedBy = "parentReply")
     private List<Thumbdown> thumbdowns = new ArrayList<>();
 
     public enum State {

@@ -29,13 +29,13 @@ public class DeleteResult {
     @Enumerated(value = EnumType.STRING)
     private Reason deleteReason;
 
-    @OneToOne(mappedBy = "deleteResult")
+    @OneToOne(fetch = FetchType.LAZY, mappedBy = "deleteResult")
     private Posts posts;
 
-    @OneToOne(mappedBy = "deleteResult")
+    @OneToOne(fetch = FetchType.LAZY, mappedBy = "deleteResult")
     private Comment comment;
 
-    @OneToOne(mappedBy = "deleteResult")
+    @OneToOne(fetch = FetchType.LAZY, mappedBy = "deleteResult")
     private Reply reply;
 
     @Builder

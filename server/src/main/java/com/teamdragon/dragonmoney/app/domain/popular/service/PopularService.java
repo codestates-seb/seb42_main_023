@@ -32,7 +32,7 @@ public class PopularService {
     private LocalDateTime countEndedAt;
 
     private final int WEEKLY_POPULAR_MAX_SIZE = 3;
-    private final int RECOMMEND_POSTS_MAX_SIZE = 3;
+    private final int RECOMMEND_POSTS_MAX_SIZE = 10;
     private final int PAGE_ELEMENT_SIZE = 10;
 
     public PopularService(PostsRepository postsRepository, BestAwardsRepository bestAwardsRepository) {
@@ -81,6 +81,6 @@ public class PopularService {
 
     // 주간인기글 종료 시작시간 설정
     private LocalDateTime setEndTime(LocalDateTime startTime) {
-        return startTime.minusDays(7);
+        return startTime.plusDays(7);
     }
 }

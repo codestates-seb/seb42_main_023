@@ -22,7 +22,7 @@ public class BestAwards {
     @Column(name = "SELECTED_AT", updatable = false)
     private LocalDateTime selectedAt;
 
-    @OneToOne(cascade = CascadeType.PERSIST)
+    @OneToOne(mappedBy = "bestAwards", cascade = CascadeType.PERSIST)
     @JoinColumn(name = "POST_ID")
     private Posts posts;
 
