@@ -4,13 +4,15 @@ import { useAppSelector } from '../../hooks';
 import LikeIcon from '../../assets/common/LikeIcon';
 import TimeIcon from '../../assets/common/TimeIcon';
 import ViewIcon from '../../assets/common/ViewIcon';
-import Thumnail from '../common/Thumnail';
+import Thumnail from '../common/Thumbnail';
 import { TagItem } from '../common/Tag';
 import { Link } from 'react-router-dom';
 import { membersPostListApi } from '../../api/memberapi';
+import { postsApi } from '../../api/postApi';
 import { timeSince } from '../mainP/Timecalculator';
 import Pagination from '../common/Pagination';
 import { FaBookmark } from 'react-icons/fa';
+import Cookies from 'js-cookie';
 
 export interface Tags {
   id: number;
@@ -32,13 +34,28 @@ export interface PostItem {
 function MyPostList() {
   const [pageOffset, setPageOffset] = useState(0);
   const [currentPage, setCurrentPage] = useState(1);
-
+  const { filter } = useAppSelector(({ mypage }) => mypage);
   const { query } = useAppSelector(({ header }) => header);
   const membersPostListquery = membersPostListApi.useGetPostListQuery({
     query: query,
     page: currentPage,
   });
   const { data, isSuccess } = membersPostListquery;
+
+  //북마크 삭제하기
+  const memberName = localStorage.getItem('name');
+  const [postId, setPostId] = useState('1');
+  const removeBookmarkMutaion = postsApi.useRemoveBookmarkMutation();
+  const [removeBookmark] = removeBookmarkMutaion;
+  // 북마크 클릭 함수
+  //TODO: 클릭이벤트 미발생 에러
+  const deleteBookmarkHandler = (
+    e: React.MouseEvent<HTMLButtonElement>,
+  ): void => {
+    console.log('delete bookmark');
+    setPostId(e.currentTarget.value);
+    removeBookmark({ memberName, postId });
+  };
 
   if (!isSuccess) {
     return <div>Loading...</div>;
@@ -83,8 +100,12 @@ function MyPostList() {
                     </Info>
                   </Itemside>
                 </div>
-                {isSuccess && (
-                  <Bookmark>
+                {filter === '북마크' && isSuccess && (
+                  <Bookmark
+                    className="bookmark"
+                    value={post.postId}
+                    onClick={deleteBookmarkHandler}
+                  >
                     <FaBookmark />
                   </Bookmark>
                 )}
@@ -153,8 +174,8 @@ export const PostListWrap = styled.div`
 `;
 const Bookmark = styled.button`
   margin-left: 40px;
+  color: var(--sub-font-color);
   svg {
-    color: var(--sub-font-color);
     :hover {
       color: var(--hover-font-gray-color);
     }
