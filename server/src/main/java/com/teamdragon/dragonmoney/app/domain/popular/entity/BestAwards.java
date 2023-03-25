@@ -22,8 +22,7 @@ public class BestAwards {
     @Column(name = "SELECTED_AT", updatable = false)
     private LocalDateTime selectedAt;
 
-    @OneToOne(mappedBy = "bestAwards", cascade = CascadeType.PERSIST)
-    @JoinColumn(name = "POST_ID")
+    @OneToOne(fetch = FetchType.LAZY, mappedBy = "bestAwards", cascade = CascadeType.PERSIST)
     private Posts posts;
 
     public BestAwards(Posts posts) {

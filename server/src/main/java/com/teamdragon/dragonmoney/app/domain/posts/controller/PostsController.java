@@ -42,7 +42,7 @@ public class PostsController {
         // 이미지 처리
         PostsDto.CreatePostsImagesReq saveImages = postsDto.getSaveImages();
         List<Image> removedImages
-                = imageMapper.imageDtoListToImageList(saveImages.getRemovedImages());
+                = imageMapper.postImageDtoListToImageList(saveImages.getRemovedImages());
         // Posts 처리
         Posts posts = postsMapper.postDtoToPosts(postsDto);
         Posts savePosts = postsService.savePosts(loginMember, posts, removedImages);
@@ -69,7 +69,7 @@ public class PostsController {
         // 이미지 처리
         PostsDto.UpdatePostsImagesReq saveImages = updateReqDto.getSaveImages();
         List<Image> removedImages
-                = imageMapper.imageDtoListToImageList(saveImages.getRemovedImages());
+                = imageMapper.postImageDtoListToImageList(saveImages.getRemovedImages());
         // Posts 처리
         Posts posts = postsMapper.patchDtoToPosts(updateReqDto);
         Posts updatePosts = postsService.updatePosts(loginMember, postsId, posts, removedImages);

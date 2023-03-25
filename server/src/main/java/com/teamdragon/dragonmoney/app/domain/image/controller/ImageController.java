@@ -13,7 +13,12 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.validation.Valid;
 import java.security.Principal;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 @RequiredArgsConstructor
 @RestController
@@ -31,5 +36,14 @@ public class ImageController {
         Image saveImage = imageService.saveImage(loginMember, file);
         ImageDto.ImageResponse imageResponse = imageMapper.imageToImageResponse(saveImage);
         return new ResponseEntity<>(imageResponse, HttpStatus.CREATED);
+    }
+
+    @DeleteMapping("/images")
+    public ResponseEntity<Void> deleteImage(@AuthenticationPrincipal Principal principal,
+                                            @Valid @RequestBody ImageDto.DeleteImagesReq imagesDto) {
+        Member loginMember = finderService.findVerifiedMemberByName(principal.getName());
+        List<Image> images = imageMapper.imageDtoListToImageList(imagesDto.getRemoveImages());
+        imageService.removeImages(loginMember, images);
+        return new ResponseEntity<>(HttpStatus.CREATED);
     }
 }
