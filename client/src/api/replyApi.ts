@@ -63,7 +63,7 @@ export const repliesApi = createApi({
     addThumbUp: builder.mutation({
       query: ({ replyId }) => {
         return {
-          url: `posts/${replyId}/thumbup`,
+          url: `replies/${replyId}/thumbup`,
           method: 'POST',
         };
       },
@@ -73,7 +73,7 @@ export const repliesApi = createApi({
     removeThumbUp: builder.mutation({
       query: ({ replyId }) => {
         return {
-          url: `posts/${replyId}/thumbup`,
+          url: `replies/${replyId}/thumbup`,
           method: 'DELETE',
         };
       },
@@ -83,7 +83,7 @@ export const repliesApi = createApi({
     addThumbDown: builder.mutation({
       query: ({ replyId }) => {
         return {
-          url: `posts/${replyId}/thumbdown`,
+          url: `replies/${replyId}/thumbdown`,
           method: 'POST',
         };
       },
@@ -93,7 +93,7 @@ export const repliesApi = createApi({
     removeThumbDown: builder.mutation({
       query: ({ replyId }) => {
         return {
-          url: `posts/${replyId}/thumbdown`,
+          url: `replies/${replyId}/thumbdown`,
           method: 'DELETE',
         };
       },

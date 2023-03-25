@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import styled from 'styled-components';
 import CommentInput from '../components/postDetailP/CommentInput';
 import Comment from '../components/postDetailP/Comment';
@@ -34,6 +34,8 @@ import { postsApi } from '../api/postApi';
 import { reportApi } from '../api/reportApi';
 import { commentsApi } from '../api/commentApi';
 import { timeSince } from '../components/mainP/Timecalculator';
+import { membersApi } from '../api/memberapi';
+import _ from 'lodash';
 
 const reportOption = [
   '영리목적/홍보성',
@@ -45,7 +47,9 @@ const reportOption = [
   '기타',
 ];
 
-window.addEventListener('hashchange', () => console.log('test'));
+window.addEventListener('hashchange', () =>
+  console.log('test asdasdasdasdasdasdasdas'),
+);
 
 const PostDetail: React.FC = () => {
   const [checkedElement, setCheckedElement] = useState(-1);
@@ -72,10 +76,10 @@ const PostDetail: React.FC = () => {
       return state;
     },
   );
+
   const navigate = useNavigate();
   const params = useParams();
   const postId = params.postId;
-
   const commentId = 'comment' in state ? state.comment?.commentId : null;
   const replyId = 'reply' in state ? state.reply?.replyId : null;
   const reportReason = 'post' in state ? state.post.reportOption : null;
@@ -102,8 +106,7 @@ const PostDetail: React.FC = () => {
   const removeBookmarkMutaion = postsApi.useRemoveBookmarkMutation();
   const [removeBookmark] = removeBookmarkMutaion;
 
-  // 댓글 조회 및 삭제
-  const commentQuery = commentsApi.useGetCommentQuery({ postId });
+  // 댓글 삭제
   const commentMutation = commentsApi.useDeleteCommentMutation();
   const [deleteComment] = commentMutation;
   // 답글 삭제
@@ -112,15 +115,16 @@ const PostDetail: React.FC = () => {
   // 신고 추가
   const reportMutation = reportApi.usePostReportMutation();
   const [sendReport] = reportMutation;
-
+  //  멤버 정보 조회
+  const memeberQuery = membersApi.useGetMemberQuery({ name: memberName });
   // 시간 계산
   const time = timeSince(isSuccess && data?.createdAt);
   // 게시글 수정 여부
-  const isEdit = isSuccess && data.modifiedAt !== '';
+  const isEdit = data?.modifiedAt !== data?.createdAt ? true : false;
   // 댓글, 답글 작성자 소개페이지 오픈 여부
   const isOpenCommentIntro = 'comment' in state && state?.comment.isOpeneIntro;
   const isOpenReplyIntro = 'reply' in state && state?.reply.isOpeneIntro;
-
+  console.log('memeberName', memeberQuery.data);
   //TODO 버그 수정 중
   // 좋아요 클릭 함수
   const changeLiikeHandler = (): void => {
@@ -128,6 +132,7 @@ const PostDetail: React.FC = () => {
     if (data?.isThumbup && !data?.isThumbdown) {
       console.log('좋아요 삭제');
       removeThumbUp({ postId });
+
       return;
     }
     // 싫어요만 있는 경우
@@ -164,7 +169,6 @@ const PostDetail: React.FC = () => {
     if (!data?.isThumbup && data?.isThumbdown) {
       // 싫어요 제거
       console.log('싫어요 삭제');
-
       removeThumbDown({ postId });
       return;
     }
@@ -203,6 +207,7 @@ const PostDetail: React.FC = () => {
     if ('post' in state && state.post?.deleteType === '게시글') {
       deletePost({ postId });
       confirmDeleteHandler();
+
       console.log('post delete');
       navigate('/');
     }
@@ -326,6 +331,13 @@ const PostDetail: React.FC = () => {
     }
   };
 
+  useEffect(() => {
+    dispatch(setIsOpenReport(false));
+    dispatch(setIsOpenFilter(true));
+    dispatch(setIsOpenIntro(true));
+    dispatch(setIsOpenDelete(true));
+  }, [params]);
+
   return (
     <>
       {'post' in state && state.post?.isOpenDelete ? (
@@ -447,11 +459,19 @@ const PostDetail: React.FC = () => {
             <div>{isSuccess && data.content}</div>
 
             <ul className="post-info">
-              <button onClick={changeLiikeHandler}>
+              <button
+                onClick={_.debounce(() => {
+                  changeLiikeHandler();
+                }, 500)}
+              >
                 <LikeIcon checked={isSuccess && data?.isThumbup} />
               </button>
               <li className="likes">{isSuccess && data?.thumbupCount}</li>
-              <button onClick={changeDislikeHandler}>
+              <button
+                onClick={_.debounce(() => {
+                  changeDislikeHandler();
+                }, 500)}
+              >
                 <DislikeIcon checked={isSuccess && data?.isThumbdown} />
               </button>
               <li className="dislikes">{isSuccess && data?.thumbDownCount}</li>

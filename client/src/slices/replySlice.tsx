@@ -9,7 +9,7 @@ const replySlice = createSlice({
     replyId: undefined,
     isEdit: undefined,
     isOpened: undefined,
-    totalReplies: [],
+    totalReplies: undefined,
     replyCnt: undefined,
     isOpeneIntro: false,
     page: 1,
@@ -47,7 +47,7 @@ const replySlice = createSlice({
     },
     // 렌더링 답글
     setTotalReplies: (state, action: PayloadAction<Array<object>>): void => {
-      (state.totalReplies as Array<object>).unshift(...action.payload);
+      (state.totalReplies as unknown) = action.payload;
     },
     // 답글 클릭 여부
     isOpened: (state, action: PayloadAction<object>): void => {
