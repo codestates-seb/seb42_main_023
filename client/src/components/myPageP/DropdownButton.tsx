@@ -16,19 +16,16 @@ const DropdownButton = () => {
   const options: ['로그아웃', '회원탈퇴'] = ['로그아웃', '회원탈퇴'];
 
   const handleSelect = (option: '로그아웃' | '회원탈퇴') => {
-    //query login
-    // onSelect(option);
     dispatch(setFilterOpen(false));
 
-    // 로그아웃 또는 회원탈퇴 시 저장되어 있던 쿠키와, 로컬스토리지에 있던 유저 정보를 제거한다.
-    Cookies.remove('Authorization');
-    Cookies.remove('Refresh');
-    localStorage.clear();
-
-    // 회원탈퇴 시 서버에 회원 delete 요청을 보낸다.
+    // 회원탈퇴 시 확인메세지창을 띄운다 보낸다.
     if (option === '회원탈퇴') {
       dispatch(setDeleteAccountOpen(true));
     } else {
+      // 로그아웃 또는 회원탈퇴 시 저장되어 있던 쿠키와, 로컬스토리지에 있던 유저 정보를 제거한다.
+      Cookies.remove('Authorization');
+      Cookies.remove('Refresh');
+      localStorage.clear();
       window.location.href = '/';
     }
   };

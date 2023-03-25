@@ -6,11 +6,9 @@ import { membersApi } from '../../api/memberapi';
 
 const ProfileEdit = () => {
   const dispatch = useAppDispatch();
-  const { EditWidth, content, EditOpen } = useAppSelector(
-    ({ mypage }) => mypage,
-  );
-  const { memberName } = useAppSelector(({ header }) => header);
+  const { EditWidth, content } = useAppSelector(({ mypage }) => mypage);
   const inputRef = useRef<HTMLInputElement>(null);
+  //
 
   //처음 실행될 때 div의 넓이를 지정함
   useEffect(() => {
@@ -25,17 +23,7 @@ const ProfileEdit = () => {
       inputRef.current.style.width = `${inputRef.current.value?.length * 13}px`;
     }
   };
-  const submitHandler = () => {
-    dispatch(setEditOpen(!EditOpen));
-    //TODO: intro patch요청 시 type error
-    // const membersQuery = membersApi.useUpdateMemberMutation<{
-    //   name: string;
-    //   intro: string;
-    // }>({
-    //   name: memberName,
-    //   intro: content,
-    // });
-  };
+
   return (
     <Input>
       <input
@@ -44,7 +32,6 @@ const ProfileEdit = () => {
         onKeyUp={keyUpHandler}
         onChange={(e) => dispatch(setContent(e.target.value))}
       ></input>
-      <button onClick={submitHandler}>저장</button>
     </Input>
   );
 };
@@ -54,6 +41,8 @@ const Input = styled.div`
   input {
     :focus {
       outline: none;
+      border-bottom: 1px solid var(--border-color);
+      padding: 4px 0;
     }
   }
   button {
