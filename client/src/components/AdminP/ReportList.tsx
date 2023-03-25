@@ -1,23 +1,30 @@
-import React, { useState } from 'react';
+import React, { useState, Dispatch, SetStateAction } from 'react';
 import styled from 'styled-components';
 import ReportReview from './ReportReview';
 import { WhiteBtn } from '../common/Btn';
-import { useAppSelector, useAppDispatch } from '../../hooks';
-import { setOrderby, setSelectedReport } from '../../slices/reportSlice';
+import { useAppDispatch } from '../../hooks';
+import { setSelectedReport } from '../../slices/reportSlice';
 import { useDeleteReportMutation } from '../../api/reportApi';
-// import { useGetReportsStandByQuery } from '../../api/reportApi';
 import { Report } from '../../types/Report';
-// import Pagination from '../components/common/Pagination';
+import Pagination from '../common/Pagination';
 
 interface Props {
   reportData: Report;
+  isSuccess: boolean;
   standby: boolean;
+  setCurrentPage: Dispatch<SetStateAction<number>>;
+  setOrderby: Dispatch<SetStateAction<string>>;
 }
 
-const ReportList: React.FC<Props> = ({ reportData, standby }) => {
+const ReportList: React.FC<Props> = ({
+  reportData,
+  isSuccess,
+  standby,
+  setCurrentPage,
+  setOrderby,
+}) => {
   // tools
   const dispatch = useAppDispatch();
-  // const { isReviewOpen } = useAppSelector(({ report }) => report);
   const [isReviewOpen, setIsReviewOpen] = useState(false);
   const [deleteReport] = useDeleteReportMutation();
 
@@ -25,11 +32,10 @@ const ReportList: React.FC<Props> = ({ reportData, standby }) => {
   const [pageOffset, setPageOffset] = useState(0);
 
   const changeSelectHandler = (event: React.ChangeEvent<HTMLSelectElement>) => {
-    dispatch(setOrderby(event.target.value));
+    setOrderby(event.target.value);
   };
 
   const reviewReportHanlder = (reportId: number): void => {
-    // dispatch(setIsReviewOpen(true));
     setIsReviewOpen(true);
     dispatch(setSelectedReport(reportId));
   };
@@ -72,48 +78,52 @@ const ReportList: React.FC<Props> = ({ reportData, standby }) => {
           </tr>
         </thead>
         <tbody>
-          {reportData?.reports?.map((item, idx) => {
-            return (
-              <tr
-                key={item.reportId}
-                className={idx % 2 === 0 ? 'row-even' : 'row-odd'}
-              >
-                <td className="target-type">{item.targetType}</td>
-                <td className="report-category">{item.reportCategory}</td>
-                <td className="description">{item.description.slice(0, 20)}</td>
-                <td className="writer">{item.writer}</td>
-                <td className="reported-time">
-                  {item.reportedAt.replace('T', ' ').slice(0, -7)}
-                </td>
-                {standby ? (
-                  <React.Fragment>
-                    <td>
-                      <HandleBtn
-                        onClick={() => reviewReportHanlder(item.reportId)}
-                      >
-                        검토하기
-                      </HandleBtn>
-                    </td>
-                    <td>
-                      <HandleBtn
-                        onClick={() => deleteReportHanlder(item.reportId)}
-                      >
-                        삭제하기
-                      </HandleBtn>
-                    </td>
-                  </React.Fragment>
-                ) : null}
-              </tr>
-            );
-          })}
+          {isSuccess &&
+            reportData?.reports?.map((item, idx) => {
+              return (
+                <tr
+                  key={item.reportId}
+                  className={idx % 2 === 0 ? 'row-even' : 'row-odd'}
+                >
+                  <td className="target-type">{item.targetType}</td>
+                  <td className="report-category">{item.reportCategory}</td>
+                  <td className="description">
+                    {item.description.slice(0, 20)}
+                  </td>
+                  <td className="writer">{item.writer}</td>
+                  <td className="reported-time">
+                    {item.reportedAt.replace('T', ' ').slice(0, -7)}
+                  </td>
+                  {standby ? (
+                    <React.Fragment>
+                      <td>
+                        <HandleBtn
+                          onClick={() => reviewReportHanlder(item.reportId)}
+                        >
+                          검토하기
+                        </HandleBtn>
+                      </td>
+                      <td>
+                        <HandleBtn
+                          onClick={() => deleteReportHanlder(item.reportId)}
+                        >
+                          삭제하기
+                        </HandleBtn>
+                      </td>
+                    </React.Fragment>
+                  ) : null}
+                </tr>
+              );
+            })}
         </tbody>
       </Table>
       {isReviewOpen ? <ReportReview setIsReviewOpen={setIsReviewOpen} /> : null}
-      {/* <Pagination
+      <Pagination
         pageInfo={reportData.pageInfo}
         pageOffset={pageOffset}
         setPageOffset={setPageOffset}
-      /> */}
+        setCurrentPage={setCurrentPage}
+      />
     </ReportMain>
   );
 };
