@@ -37,9 +37,9 @@ const reportSlice = createSlice({
       state.pageOffset = state.pageOffset - 5;
     },
     // 검토하기 버튼
-    setIsReviewOpen: (state, action: PayloadAction<boolean>): void => {
-      state.isReviewOpen = action.payload;
-    },
+    // setIsReviewOpen: (state, action: PayloadAction<boolean>): void => {
+    //   state.isReviewOpen = action.payload;
+    // },
     // 선택된 신고글
     setSelectedReport: (state, action: PayloadAction<number | null>): void => {
       state.selectedReport = action.payload;
@@ -53,6 +53,6 @@ export const {
   setOrderby,
   setPageOffsetNext,
   setPageOffsetPrev,
-  setIsReviewOpen,
+  // setIsReviewOpen,
   setSelectedReport,
 } = reportSlice.actions;

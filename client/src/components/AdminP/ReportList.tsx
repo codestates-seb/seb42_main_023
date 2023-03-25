@@ -3,11 +3,7 @@ import styled from 'styled-components';
 import ReportReview from './ReportReview';
 import { WhiteBtn } from '../common/Btn';
 import { useAppSelector, useAppDispatch } from '../../hooks';
-import {
-  setIsReviewOpen,
-  setOrderby,
-  setSelectedReport,
-} from '../../slices/reportSlice';
+import { setOrderby, setSelectedReport } from '../../slices/reportSlice';
 import { useDeleteReportMutation } from '../../api/reportApi';
 // import { useGetReportsStandByQuery } from '../../api/reportApi';
 import { Report } from '../../types/Report';
@@ -21,28 +17,20 @@ interface Props {
 const ReportList: React.FC<Props> = ({ reportData, standby }) => {
   // tools
   const dispatch = useAppDispatch();
-  const { isReviewOpen } = useAppSelector(({ report }) => report);
+  // const { isReviewOpen } = useAppSelector(({ report }) => report);
+  const [isReviewOpen, setIsReviewOpen] = useState(false);
   const [deleteReport] = useDeleteReportMutation();
 
   // Pagination pageOffset
   const [pageOffset, setPageOffset] = useState(0);
 
-  // List report that qualifies 'orderby'
-  // const { data: reportData, isSuccess } = useGetReportsStandByQuery({
-  //   page,
-  //   orderby,
-  // });
-
-  // console.log('data', reportData);
-
-  // 신고 대상 필터링
   const changeSelectHandler = (event: React.ChangeEvent<HTMLSelectElement>) => {
-    console.log(event.target.value);
     dispatch(setOrderby(event.target.value));
   };
 
   const reviewReportHanlder = (reportId: number): void => {
-    dispatch(setIsReviewOpen(true));
+    // dispatch(setIsReviewOpen(true));
+    setIsReviewOpen(true);
     dispatch(setSelectedReport(reportId));
   };
 
@@ -120,7 +108,7 @@ const ReportList: React.FC<Props> = ({ reportData, standby }) => {
           })}
         </tbody>
       </Table>
-      {isReviewOpen ? <ReportReview /> : null}
+      {isReviewOpen ? <ReportReview setIsReviewOpen={setIsReviewOpen} /> : null}
       {/* <Pagination
         pageInfo={reportData.pageInfo}
         pageOffset={pageOffset}
