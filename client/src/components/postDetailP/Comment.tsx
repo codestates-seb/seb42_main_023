@@ -152,14 +152,7 @@ const Comment: React.FC = () => {
       removeThumbDown({ commentId });
       return;
     }
-    // 좋아요가  없는 경우
-    if (!comment?.isThumbup) {
-      if (!comment?.isThumbdown) {
-        addThumbDown({ commentId });
-      } else {
-        return;
-      }
-    }
+
     // 둘 다 없는 경우
     if (!comment?.isThumbup && !comment?.isThumbdown) {
       // 싫어요 추가
@@ -214,6 +207,7 @@ const Comment: React.FC = () => {
 
   useEffect(() => {
     // 답글 데이터가 변경될 때마다 총 답글 데이터 반영
+    console.log(replyQuery.data);
     dispatch(setTotalReplies(replyQuery.data?.replies || []));
   }, [data]);
   return (
@@ -342,17 +336,17 @@ const Comment: React.FC = () => {
                     신고
                   </li>
                   <button
-                    onClick={() => {
+                    onClick={_.debounce(() => {
                       commentLiikeHandler(comment);
-                    }}
+                    }, 500)}
                   >
                     <LikeIcon checked={comment.isThumbup} />
                   </button>
                   <li className="comment-likes">{comment.thumbupCount}</li>
                   <button
-                    onClick={() => {
+                    onClick={_.debounce(() => {
                       commentDislikeHandler(comment);
-                    }}
+                    }, 500)}
                   >
                     <DislikeIcon checked={comment.isThumbdown} />
                   </button>
@@ -383,7 +377,7 @@ const Comment: React.FC = () => {
                     dispatch(setIsOpened(idx));
                   }}
                 >
-                  답글 {comment.replyCount}
+                  답글
                 </ReplyBtn>
               </CommentContent>
               {/* {isSuccess && 'reply' in state && state.reply.isOpened[idx] ? ( */}
@@ -471,10 +465,12 @@ const CommentContainer = styled.div`
     cursor: pointer;
   }
   .comment-likes {
+    width: 30px;
     font-size: 16px;
     margin: 3px 15px 0 15px;
   }
   .comment-dislikes {
+    width: 30px;
     font-size: 16px;
     margin: 3px 15px 0 15px;
   }

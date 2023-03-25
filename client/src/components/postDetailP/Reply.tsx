@@ -9,7 +9,6 @@ import {
   setReplyId,
   setIsOpenIntro,
 } from '../../slices/replySlice';
-
 import {
   PostStateType,
   ReplyStateType,
@@ -26,6 +25,7 @@ import {
 } from '../../slices/postSlice';
 import { timeSince } from '../mainP/Timecalculator';
 import { setCommentId } from '../../slices/commentSlice';
+import _ from 'lodash';
 
 const Reply: React.FC<ReplyProps> = ({ replyInfo, idx }: ReplyProps) => {
   const replyEditInput = useRef<HTMLInputElement>(null);
@@ -37,9 +37,11 @@ const Reply: React.FC<ReplyProps> = ({ replyInfo, idx }: ReplyProps) => {
       return state;
     },
   );
+
   const commentId = 'comment' in state && state.comment?.commentId;
   const replyId = 'reply' in state && state.reply?.replyId;
   const page = ('reply' in state && state.reply?.page) || 1;
+
   // 답글
   const replyQuery = repliesApi.useGetReplyQuery({ commentId, page });
   const replySucccess = replyQuery.isSuccess;
@@ -105,13 +107,12 @@ const Reply: React.FC<ReplyProps> = ({ replyInfo, idx }: ReplyProps) => {
       removeThumbDown({ replyId });
       return;
     }
-    // 좋아요가  없는 경우
-    if (!reply?.isThumbup) {
-      if (!reply?.isThumbdown) {
-        addThumbDown({ replyId });
-      } else {
-        return;
-      }
+    // 둘 다 없는 경우
+    if (!reply?.isThumbup && !reply?.isThumbdown) {
+      // 싫어요 추가
+      console.log('싫어요 추가');
+      addThumbDown({ replyId });
+      return;
     }
   };
   // 답글 Edit 여부 확인을 위한 배열 생성
@@ -150,18 +151,6 @@ const Reply: React.FC<ReplyProps> = ({ replyInfo, idx }: ReplyProps) => {
       dispatch(setIsOpenIntro(state.reply.isOpeneIntro));
       dispatch(setReplyId(Number(event.target.dataset.replyid)));
       console.log('userName', event.target.id);
-    }
-  };
-
-  const outClickIntroHandler = (event: React.MouseEvent<HTMLElement>) => {
-    if (
-      !isOpenPostIntro &&
-      !isOpenCommentIntro &&
-      'post' in state &&
-      state.post.isOpeneIntro &&
-      event.target instanceof HTMLElement
-    ) {
-      dispatch(setIsOpenIntro(false));
     }
   };
 
@@ -270,19 +259,17 @@ const Reply: React.FC<ReplyProps> = ({ replyInfo, idx }: ReplyProps) => {
             신고
           </li>
           <button
-            onClick={() => {
-              console.log('replyId', replyInfo.replyId);
+            onClick={_.debounce(() => {
               ReplyLiikeHandler(replyInfo);
-            }}
+            }, 500)}
           >
             <LikeIcon checked={replyInfo?.isThumbup} />
           </button>
           <li className="reply-likes">{replyInfo?.thumbupCount}</li>
           <button
-            onClick={() => {
-              console.log('replyId', replyInfo.replyId);
+            onClick={_.debounce(() => {
               ReplyDislikeHandler(replyInfo);
-            }}
+            }, 500)}
           >
             <DislikeIcon checked={replyInfo?.isThumbdown} />
           </button>
@@ -373,10 +360,12 @@ const ReplyContainer = styled.div`
     cursor: pointer;
   }
   .reply-likes {
+    width: 30px;
     font-size: 16px;
     margin: 3px 15px 0 15px;
   }
   .reply-dislikes {
+    width: 30px;
     font-size: 16px;
     margin: 3px 15px 0 15px;
   }
