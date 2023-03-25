@@ -36,7 +36,7 @@ function MyPostList() {
   const [currentPage, setCurrentPage] = useState(1);
   const { filter } = useAppSelector(({ mypage }) => mypage);
   const { query } = useAppSelector(({ header }) => header);
-  const membersPostListquery = membersPostListApi.useGetPostListQuery({
+  const membersPostListquery = membersPostListApi.useGetMemberPostListQuery({
     query: query,
     page: currentPage,
   });
@@ -44,7 +44,6 @@ function MyPostList() {
 
   //북마크 삭제하기
   const memberName = localStorage.getItem('name');
-  const [postId, setPostId] = useState('1');
   const removeBookmarkMutaion = postsApi.useRemoveBookmarkMutation();
   const [removeBookmark] = removeBookmarkMutaion;
   // 북마크 클릭 함수
@@ -53,7 +52,7 @@ function MyPostList() {
     e: React.MouseEvent<HTMLButtonElement>,
   ): void => {
     console.log('delete bookmark');
-    setPostId(e.currentTarget.value);
+    const postId = e.currentTarget.value;
     removeBookmark({ memberName, postId });
   };
 

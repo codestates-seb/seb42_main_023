@@ -43,7 +43,7 @@ export const membersApi = apiSlice
 // 회원과 관련된 게시글 리스트
 export const membersPostListApi = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
-    getPostList: builder.query({
+    getMemberPostList: builder.query({
       query: ({ query, page }) => `members/${query}/posts?page=${page}`,
     }),
   }),
