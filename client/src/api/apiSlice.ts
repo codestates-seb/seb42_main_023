@@ -24,10 +24,6 @@ const baseQueryWithReauth = async (args: any, api: any, extraOptions: any) => {
   };
 
   // 접근 권한이 없는 경우 (일반 유저가 관리자 페이지로 들어갔을때)
-  console.log('result:', result);
-  console.log(' result?.error?.status:', result?.error?.status);
-  console.log('THISS:', (result?.error?.data as ErrorResHeader)?.message);
-
   if (
     result?.error?.status === 403 &&
     (result?.error?.data as ErrorResHeader)?.message === 'User unauthorized'
