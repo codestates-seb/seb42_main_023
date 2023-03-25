@@ -81,7 +81,7 @@ export interface PostType {
   content: string;
   isBookmarked: boolean;
   isThumbup: boolean;
-  isThumbDown: boolean;
+  isThumbdown: boolean;
 }
 
 export interface CommentType {
@@ -95,7 +95,7 @@ export interface CommentType {
   thumbupCount: number;
   thumbDownCount: number;
   isThumbup: boolean;
-  isThumbDown: boolean;
+  isThumbdown: boolean;
   length: number;
   content: string;
 }
@@ -111,7 +111,7 @@ export interface ReplyType {
   thumbupCount: number;
   thumbDownCount: number;
   isThumbup: boolean;
-  isThumbDown: boolean;
+  isThumbdown: boolean;
   content: string;
 }
 

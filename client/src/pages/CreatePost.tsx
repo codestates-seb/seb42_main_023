@@ -65,10 +65,28 @@ const CreatePost: React.FC = () => {
   // removedImages: removedImg,
 
   const reqBody = {
-    images: {
-      addedImages: [],
-      removedImages: [],
-    },
+    // saveImages: {
+    //   addedImages: [
+    //     {
+    //       imageId: 123,
+    //       imageName: 'imageFileName',
+    //     },
+    //     {
+    //       imageId: 123,
+    //       imageName: 'imageFileName',
+    //     },
+    //   ],
+    //   removedImages: [
+    //     {
+    //       imageId: 123,
+    //       imageName: 'imageFileName',
+    //     },
+    //     {
+    //       imageId: 123,
+    //       imageName: 'imageFileName',
+    //     },
+    //   ],
+    // },
     title: titleValue,
     content: bodyValue,
     tags: tagNames,
