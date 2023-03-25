@@ -19,6 +19,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Positive;
 import java.security.Principal;
 import java.util.*;
@@ -94,7 +95,7 @@ public class PostsController {
     // 목록 조회
     @GetMapping
     public ResponseEntity<PostsDto.PostsListRes> getPostsList(@Valid @Positive @RequestParam int page,
-                                                              @RequestParam String orderby) {
+                                                              @Valid @NotBlank @RequestParam String orderby) {
         Posts.OrderBy orderBy = checkOrderBy(orderby);
         Page<Posts> postsList = postsService.findPostsList(page, orderBy);
         PostsDto.PostsListRes response = new PostsDto.PostsListRes(postsList, orderBy.getOrderBy());
@@ -106,7 +107,7 @@ public class PostsController {
     public ResponseEntity<PostsDto.PostsListRes> getSearchPostsList(@RequestParam String keyword,
                                                                     @RequestParam String[] tags,
                                                                     @Valid @Positive @RequestParam int page,
-                                                                    @RequestParam String orderby) {
+                                                                    @Valid @NotBlank @RequestParam String orderby) {
         Posts.OrderBy orderBy = checkOrderBy(orderby);
         Page<Posts> postsList = postsService.findPostsListByTagsAndTitle(keyword, tags, page, orderBy);
         PostsDto.PostsListRes response = new PostsDto.PostsListRes(postsList, orderby);

@@ -18,6 +18,7 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Positive;
 import java.security.Principal;
 
@@ -48,7 +49,7 @@ public class ReplyController {
     public ResponseEntity<ReplyDto.ReplyListRes> findReplyList(@AuthenticationPrincipal Principal principal,
                                                                      @Valid @Positive @PathVariable("comment-id") Long commentId,
                                                                      @Valid @Positive @RequestParam int page,
-                                                                     @RequestParam String orderby) {
+                                                                     @Valid @NotBlank @RequestParam String orderby) {
         Reply.OrderBy orderBy = checkOrderBy(orderby);
         Member loginMember = memberService.findMember(principal.getName());
 
