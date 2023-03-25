@@ -17,8 +17,7 @@ public class RefreshToken {
     @Column(name = "REFRESH_TOKEN_ID")
     private Long refreshTokenId;
 
-    @JoinColumn(name = "MEMBER_ID")
-    @OneToOne
+    @OneToOne(mappedBy = "refreshToken", fetch = FetchType.LAZY)
     private Member member;
 
     @Column

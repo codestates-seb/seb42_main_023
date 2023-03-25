@@ -3,12 +3,15 @@ package com.teamdragon.dragonmoney.app.domain.member.service;
 import com.teamdragon.dragonmoney.app.domain.member.entity.Member;
 import com.teamdragon.dragonmoney.app.domain.member.repository.MemberRepository;
 import com.teamdragon.dragonmoney.app.domain.delete.entity.DeleteResult;
+import com.teamdragon.dragonmoney.app.global.exception.AuthExceptionCode;
+import com.teamdragon.dragonmoney.app.global.exception.AuthLogicException;
 import com.teamdragon.dragonmoney.app.global.exception.BusinessExceptionCode;
 import com.teamdragon.dragonmoney.app.global.exception.BusinessLogicException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.security.sasl.AuthenticationException;
 import java.util.List;
 import java.util.Optional;
 
@@ -19,25 +22,6 @@ import static com.teamdragon.dragonmoney.app.domain.delete.entity.DeleteResult.R
 @RequiredArgsConstructor
 public class MemberService {
     private final MemberRepository memberRepository;
-
-    //테스트를 위한 임시 메서드
-    public Member createMemberTemp(Member member) {
-        Optional<Member> optionalMember = memberRepository.findByName(member.getName());
-
-        if (optionalMember.isPresent())
-            throw new BusinessLogicException(BusinessExceptionCode.USER_EXISTS);
-
-        Member createdmember = Member.builder()
-                .name(member.getName())
-                .oauthkind("google")
-                .nameDuplicateCheck(true)
-                .email(member.getEmail())
-                .profileImage(member.getProfileImage())
-                .state(Member.MemberState.ACTIVE)
-                .build();
-
-        return memberRepository.save(createdmember);
-    }
 
     //oauth2 로그인 할 때 존재하는 회원인지 판별
     public Boolean checkOAuthMemberName(String oauthKind, String email) {
@@ -70,7 +54,6 @@ public class MemberService {
                 .tempName(tempName)
                 .email(email)
                 .build();
-//        customAuthorityUtils.createAuthorities(email);
         return memberRepository.save(member);
     }
 
@@ -83,10 +66,6 @@ public class MemberService {
 
     //uuid를 통해 회원 조회 및 이름 수정
     public Member updateMemberName(String tempName, String name) {
-//        Member memberOptional = memberRepository.findByTempName(tempName);
-//
-//        memberOptional.setName(name);
-//        memberOptional.setNameDuplicateCheck(true);
 
         Member memberOptional = findVerifiedMemberTempName(tempName);
         memberOptional.setName(name);
@@ -98,8 +77,8 @@ public class MemberService {
     //마이 페이지 자기소개 수정
     public Member updateMemberIntro(String name, Member member) {
         Member updatedMember = findVerifiedMemberName(name);
-
-        updatedMember.setIntro(member.getIntro());
+        updatedMember.changeMemberIntro(member.getIntro());
+        updatedMember.isModifiedNow();
 
         return memberRepository.save(updatedMember);
     }
@@ -138,5 +117,12 @@ public class MemberService {
 
         return optionalMember
                 .orElseThrow( () -> new BusinessLogicException(BusinessExceptionCode.USER_NOT_FOUND));
+    }
+
+    // 작성자 확인
+    public void checkLoginMember(String loginMember, String uriMember) {
+        if(!loginMember.equals(uriMember)) {
+            throw new AuthLogicException(AuthExceptionCode.USER_UNAUTHORIZED);
+        }
     }
 }

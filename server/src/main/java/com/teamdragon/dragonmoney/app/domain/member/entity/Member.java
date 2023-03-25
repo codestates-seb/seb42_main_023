@@ -27,7 +27,6 @@ public class Member extends BaseTimeEntity {
     private String profileImage;
 
     @Column(length = 1700)
-    @Setter
     private String intro;
 
     @Column
@@ -59,7 +58,8 @@ public class Member extends BaseTimeEntity {
     @ElementCollection(fetch = FetchType.EAGER)
     private List<String> memberRoles = new ArrayList<>();
 
-    @OneToOne(mappedBy = "member")
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "REFRESH_TOKEN_ID")
     private RefreshToken refreshToken;
 
     @Builder
@@ -95,5 +95,9 @@ public class Member extends BaseTimeEntity {
 
     public void saveRefreshToken(RefreshToken refreshToken) {
         this.refreshToken = refreshToken;
+    }
+
+    public void changeMemberIntro(String intro) {
+        this.intro = intro;
     }
 }
