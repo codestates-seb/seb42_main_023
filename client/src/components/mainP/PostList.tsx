@@ -5,7 +5,7 @@ import { useAppSelector } from '../../hooks';
 import LikeIcon from '../../assets/common/LikeIcon';
 import TimeIcon from '../../assets/common/TimeIcon';
 import ViewIcon from '../../assets/common/ViewIcon';
-import Thumnail from '../common/Thumnail';
+import Thumnail from '../common/Thumbnail';
 import { TagItem } from '../common/Tag';
 import { Link } from 'react-router-dom';
 import { postListApi } from '../../api/postListapi';
@@ -21,7 +21,7 @@ function PostList({ posts, currentPage }: Props) {
   const { postSetting } = useAppSelector(({ main }) => main);
   return (
     <List>
-      {/* {postSetting === '' && currentPage === 1 && <WeeklyPopular />} */}
+      {postSetting === '' && currentPage === 1 && <WeeklyPopular />}
       {posts.map((post: PostListItem) => {
         return (
           <Item key={post.postId}>

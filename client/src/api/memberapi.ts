@@ -11,6 +11,19 @@ export const membersApi = apiSlice
           return [{ type: 'members', id: arg.name }];
         },
       }),
+      //회원탈퇴//
+      //TODO : Unauthorized 401
+      deleteMember: builder.mutation({
+        query: ({ name }) => {
+          return {
+            url: `members/${name}`,
+            method: 'DELETE',
+          };
+        },
+        invalidatesTags: (result, error, arg) => [
+          { type: 'members', id: arg.name },
+        ],
+      }),
       //자기소개 수정//
       updateMember: builder.mutation({
         query: ({ name, intro }) => {
@@ -30,7 +43,7 @@ export const membersApi = apiSlice
 // 회원과 관련된 게시글 리스트
 export const membersPostListApi = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
-    getPostList: builder.query({
+    getMemberPostList: builder.query({
       query: ({ query, page }) => `members/${query}/posts?page=${page}`,
     }),
   }),

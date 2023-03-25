@@ -12,17 +12,22 @@ import Cookies from 'js-cookie';
 function DeleteModal() {
   const dispatch = useAppDispatch();
   const modalRef = useRef<HTMLDivElement>(null);
+
+  const removeMemberMutaion = membersApi.useDeleteMemberMutation();
+  const [removeMember] = removeMemberMutaion;
+
   const DeleteAccounthandler = () => {
-    const nickname = localStorage.getItem('nickname');
-    axios.delete(`https://thedragonmoney.com/members/${nickname}`);
+    Cookies.remove('Authorization');
+    Cookies.remove('Refresh');
+    const name = localStorage.getItem('name');
+    removeMember({ name });
+    localStorage.clear();
     window.location.href = '/';
   };
 
   const handleClickOutside = (event: MouseEvent) => {
     if (modalRef.current && !modalRef.current.contains(event.target as Node)) {
       dispatch(setDeleteAccountOpen(false));
-      const auth = Cookies.get('Authorization');
-      console.log(auth);
     }
   };
   useEffect(() => {

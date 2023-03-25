@@ -26,11 +26,30 @@ function HeaderDefault() {
   const auth = Cookies.get('Authorization');
   const adim = localStorage.getItem('role');
 
+  //인코딩 핸들러
+  // const checkHasIncode = keyword => {
+  //   const check_kor = /[ㄱ-ㅎ|ㅏ-ㅣ|가-힣]/; // 한글인지 식별해주기 위한 정규표현식
+
+  //   if (keyword.match(check_kor)) {
+  //     const encodeKeyword = encodeURI(keyword); // 한글 인코딩
+  //     return encodeKeyword;
+  //   } else {
+  //     return keyword;
+  //   }
+  // };
+
+  // export const searchKeyword = keyword => {
+  //   return client.get(
+  //     ${API.baseUrl}contents/search?keyword=${checkHasIncode(keyword)}
+  //   );
+  // };
+
   //TODO: 로그인시 유저데이터 저장
   useEffect(() => {
     if (auth !== undefined) {
       const loginUser = localStorage.getItem('name');
       const memberImg = localStorage.getItem('picture');
+
       if (loginUser && memberImg) {
         dispatch(setPostQuery(loginUser));
         dispatch(setCommentQuery(loginUser));

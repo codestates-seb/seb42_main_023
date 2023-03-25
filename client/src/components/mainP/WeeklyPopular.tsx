@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import LikeIcon from '../../assets/common/LikeIcon';
 import TimeIcon from '../../assets/common/TimeIcon';
 import ViewIcon from '../../assets/common/ViewIcon';
-import Thumnail from '../common/Thumnail';
+import Thumnail from '../common/Thumbnail';
 import { BsTrophy } from 'react-icons/bs';
 import { Link } from 'react-router-dom';
 import styled from 'styled-components';
