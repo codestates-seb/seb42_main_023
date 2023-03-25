@@ -84,6 +84,8 @@ const PostDetail: React.FC = () => {
   const replyId = 'reply' in state ? state.reply?.replyId : null;
   const reportReason = 'post' in state ? state.post.reportOption : null;
   const reportErr = 'validation' in state ? state.validation.reportErr : null;
+  const loginUserName = window.localStorage.getItem('name');
+
   // 게시글 조회 및 추가
   const postDetailQuery = postsApi.useGetPostQuery({ postId });
   const { data, isSuccess } = postDetailQuery;
@@ -105,7 +107,6 @@ const PostDetail: React.FC = () => {
   const [addBookmark] = addBookmarkMutaion;
   const removeBookmarkMutaion = postsApi.useRemoveBookmarkMutation();
   const [removeBookmark] = removeBookmarkMutaion;
-
   // 댓글 삭제
   const commentMutation = commentsApi.useDeleteCommentMutation();
   const [deleteComment] = commentMutation;
@@ -207,7 +208,6 @@ const PostDetail: React.FC = () => {
     if ('post' in state && state.post?.deleteType === '게시글') {
       deletePost({ postId });
       confirmDeleteHandler();
-
       console.log('post delete');
       navigate('/');
     }
@@ -256,10 +256,10 @@ const PostDetail: React.FC = () => {
         reportReason: reportReason,
         description: reportTextRef.current?.value,
         targetType: 'post',
-        postId: postId,
+        postId: Number(postId),
         commentId: null,
         replyId: null,
-        reporterName: '유저이름',
+        reporterName: loginUserName,
       });
       dispatch(setIsOpenReport('post' in state && state.post?.isOpenReport));
       dispatch(setReportErr(''));
@@ -276,7 +276,7 @@ const PostDetail: React.FC = () => {
         postId: null,
         commentId: commentId,
         replyId: null,
-        reporterName: '유저이름',
+        reporterName: loginUserName,
       });
       dispatch(setIsOpenReport('post' in state && state.post?.isOpenReport));
       dispatch(setReportErr(''));
@@ -293,7 +293,7 @@ const PostDetail: React.FC = () => {
         postId: null,
         commentId: null,
         replyId: replyId,
-        reporterName: '유저이름',
+        reporterName: loginUserName,
       });
       dispatch(setIsOpenReport('post' in state && state.post?.isOpenReport));
       dispatch(setReportErr(''));
@@ -456,7 +456,7 @@ const PostDetail: React.FC = () => {
             </ul>
           </PostInfo>
           <PostContent>
-            <div>{isSuccess && data.content}</div>
+            <div>{isSuccess && data?.content}</div>
 
             <ul className="post-info">
               <button

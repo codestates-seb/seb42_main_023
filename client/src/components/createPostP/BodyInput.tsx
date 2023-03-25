@@ -12,7 +12,11 @@ import {
   setAddedImg,
 } from '../../slices/postSlice';
 import Cookies from 'js-cookie';
-import { logDOM } from '@testing-library/react';
+
+interface ImgObj {
+  imagedId: number;
+  imageName: string;
+}
 
 const url = process.env.REACT_APP_SERVER_ADDRESS + '/images';
 const BodyInput: React.FC = () => {
@@ -40,14 +44,13 @@ const BodyInput: React.FC = () => {
   function imageCheck(): void {
     // 이미지 처리
     //TODO 문열 형태를 map을 이용해서 배열로 만들어 줘야함
-    const pattern = /((?<=<img......)(.*?)(?=...>))/gi;
+    const pattern =
+      /((?<=<img..........................................................)(.*?)(?=.>))/gi;
     // test
 
-    const testValue = `<img src="abc.png" />12312312432432123<img src="abcd.png" />`;
-    const currentImg = testValue.match(pattern)!;
-    console.log('currentImg', currentImg);
-    const removedImg = addedImg?.filter((img) => {
-      return !currentImg?.includes(img);
+    const currentImg = bodyValue.match(pattern)!;
+    const removedImg = addedImg?.filter((obj: ImgObj) => {
+      return !currentImg?.includes(obj.imageName);
     });
     dispatch(setCurrentImg(currentImg));
     dispatch(setRemovedImg(removedImg));
@@ -112,7 +115,7 @@ const BodyInput: React.FC = () => {
         dispatch(setAddedImg(imgObj));
         const editor = quillRef.current!.getEditor();
         const range = editor.getSelection();
-        // editor.insertEmbed(range!.index, 'image', ImgUrl);
+
         editor.insertEmbed(range!.index, 'image', ImgUrl);
       } catch (error) {
         console.log(error);
