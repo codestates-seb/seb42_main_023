@@ -157,7 +157,7 @@ public class MyPageDto {
             this.memberName = comment.getWriter().getName();
             this.createdAt = comment.getCreatedAt();
             this.thumbupCount = comment.getThumbupCount();
-            this.thumbdownCount = comment.getThumbupCount();
+            this.thumbdownCount = comment.getThumbdownCount();
         }
     }
 }
