@@ -454,7 +454,12 @@ const PostDetail: React.FC = () => {
               <li className="views">{data?.viewCount}</li>
               <CommentIcon checked={true} />
               <li className="comments">{data?.commentCount}</li>
-              <button className="bookmark" onClick={changeBookmarkHandler}>
+              <button
+                className="bookmark"
+                onClick={_.debounce(() => {
+                  changeBookmarkHandler();
+                }, 500)}
+              >
                 <BookmarkIcon checked={data?.isBookmarked} />
               </button>
               <DropdownButton memberName={data?.memberName}></DropdownButton>
