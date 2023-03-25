@@ -98,7 +98,7 @@ const ReportList: React.FC<Props> = ({ reportData, standby }) => {
                   {item.reportedAt.replace('T', ' ').slice(0, -7)}
                 </td>
                 {standby ? (
-                  <>
+                  <React.Fragment>
                     <td>
                       <HandleBtn
                         onClick={() => reviewReportHanlder(item.reportId)}
@@ -112,8 +112,8 @@ const ReportList: React.FC<Props> = ({ reportData, standby }) => {
                       >
                         삭제하기
                       </HandleBtn>
-                    </td>{' '}
-                  </>
+                    </td>
+                  </React.Fragment>
                 ) : null}
               </tr>
             );

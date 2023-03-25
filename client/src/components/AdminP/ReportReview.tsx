@@ -23,34 +23,36 @@ const ReportReview: React.FC = () => {
         <>
           <h1>신고내용</h1>
           <Table>
-            <tr>
-              <th>신고번호</th>
-              <td>{data.reportId}</td>
-            </tr>
-            <tr className="row-even">
-              <th>신고시간</th>
-              <td>{data.reportedAt.replace('T', ' ').slice(0, -7)}</td>
-            </tr>
-            <tr>
-              <th>신고유형</th>
-              <td>{data.reportCategory}</td>
-            </tr>
-            <tr className="row-even">
-              <th>신고대상</th>
-              <td>{data.targetType}</td>
-            </tr>
-            <tr className="row-even">
-              <th>작성자</th>
-              <td>{data.writer}</td>
-            </tr>
-            <tr>
-              <th>신고자</th>
-              <td>{data.reporter}</td>
-            </tr>
-            <tr className="row-even">
-              <th>사유</th>
-              <td>{data.description}</td>
-            </tr>
+            <tbody>
+              <tr>
+                <th>신고번호</th>
+                <td>{data.reportId}</td>
+              </tr>
+              <tr className="row-even">
+                <th>신고시간</th>
+                <td>{data.reportedAt.replace('T', ' ').slice(0, -7)}</td>
+              </tr>
+              <tr>
+                <th>신고유형</th>
+                <td>{data.reportCategory}</td>
+              </tr>
+              <tr className="row-even">
+                <th>신고대상</th>
+                <td>{data.targetType}</td>
+              </tr>
+              <tr className="row-even">
+                <th>작성자</th>
+                <td>{data.writer}</td>
+              </tr>
+              <tr>
+                <th>신고자</th>
+                <td>{data.reporter}</td>
+              </tr>
+              <tr className="row-even">
+                <th>사유</th>
+                <td>{data.description}</td>
+              </tr>
+            </tbody>
           </Table>
           <div className="button-container">
             <CheckedBtn onClick={() => dispatch(setIsReviewOpen(false))}>
@@ -91,7 +93,7 @@ const Table = styled.table`
   margin: 20px 0px;
   border-top: 1px solid #d4d4d4;
   border-bottom: 1px solid #d4d4d4;
-  > tr {
+  > tbody > tr {
     height: 40px;
     &.row-even {
       background-color: #f8f8f8;
