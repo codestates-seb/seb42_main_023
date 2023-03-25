@@ -36,6 +36,7 @@ import { commentsApi } from '../api/commentApi';
 import { timeSince } from '../components/mainP/Timecalculator';
 import { membersApi } from '../api/memberapi';
 import _ from 'lodash';
+import parse from 'html-react-parser';
 
 const reportOption = [
   '영리목적/홍보성',
@@ -125,8 +126,10 @@ const PostDetail: React.FC = () => {
   // 댓글, 답글 작성자 소개페이지 오픈 여부
   const isOpenCommentIntro = 'comment' in state && state?.comment.isOpeneIntro;
   const isOpenReplyIntro = 'reply' in state && state?.reply.isOpeneIntro;
-  console.log('memeberName', memeberQuery.data);
-  //TODO 버그 수정 중
+  //파싱된 데이터
+  const parsedData = parse(String(data?.content));
+  console.log(parsedData);
+
   // 좋아요 클릭 함수
   const changeLiikeHandler = (): void => {
     // 좋아요만 있는 경우
@@ -153,7 +156,6 @@ const PostDetail: React.FC = () => {
     }
   };
 
-  //TODO 버그 수정 중
   // 싫어요 클릭 함수
   const changeDislikeHandler = (): void => {
     // 좋아요만 있는 경우
@@ -459,7 +461,7 @@ const PostDetail: React.FC = () => {
             </ul>
           </PostInfo>
           <PostContent>
-            <div>{isSuccess && data?.content}</div>
+            <div>{parsedData}</div>
 
             <ul className="post-info">
               <button

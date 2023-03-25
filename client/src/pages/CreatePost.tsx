@@ -61,6 +61,7 @@ const CreatePost: React.FC = () => {
   };
   const cancelAddHandler = (): void => {
     navigate('/');
+    location.reload();
   };
 
   return (

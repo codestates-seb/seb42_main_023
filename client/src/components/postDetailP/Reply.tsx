@@ -190,10 +190,7 @@ const Reply: React.FC<ReplyProps> = ({ replyInfo, idx }: ReplyProps) => {
                   <li className="intro-nickname">{replyInfo.memberName}</li>
                 </ul>
               </IntroInfo>
-              <label className="introduction">
-                {/* TODO 수정 필요*/}
-                {replyInfo.content}
-              </label>
+              <label className="introduction">{replyInfo.content}</label>
               <div className="intro-moreInfo">더보기 》</div>
             </IntorductionContainer>
           ) : null}
@@ -207,6 +204,10 @@ const Reply: React.FC<ReplyProps> = ({ replyInfo, idx }: ReplyProps) => {
             <li
               className="reply-update"
               id="edit"
+              style={{
+                display:
+                  loginUserName === replyInfo?.memberName ? 'block' : 'none',
+              }}
               onClick={(): void => {
                 if (!replyEditInput.current?.value) {
                   dispatch(setIsEdit(idx));
@@ -223,8 +224,11 @@ const Reply: React.FC<ReplyProps> = ({ replyInfo, idx }: ReplyProps) => {
             </li>
           ) : (
             <li
-              // TODO
               className="reply-update"
+              style={{
+                display:
+                  loginUserName === replyInfo?.memberName ? 'block' : 'none',
+              }}
               onClick={(): void => {
                 dispatch(setCommentId(replyInfo.commentId));
                 dispatch(setReplyId(replyInfo.replyId));
@@ -234,21 +238,30 @@ const Reply: React.FC<ReplyProps> = ({ replyInfo, idx }: ReplyProps) => {
               수정
             </li>
           )}
-          <li
-            className="reply-delete"
-            id="답글"
-            onClick={(event: React.MouseEvent<HTMLElement>) => {
-              dispatch(setReplyId(replyInfo.replyId));
-              deleteTypeChecker(event);
-              confirmDeleteHandler();
-            }}
-          >
-            삭제
-          </li>
+          {loginUserName === replyInfo.memberName ? (
+            <li
+              className="reply-delete"
+              id="답글"
+              onClick={(event: React.MouseEvent<HTMLElement>) => {
+                dispatch(setReplyId(replyInfo.replyId));
+                deleteTypeChecker(event);
+                confirmDeleteHandler();
+              }}
+            >
+              삭제
+            </li>
+          ) : null}
+
           <li
             className="reply-report"
             data-category="reply"
             data-replyId={String(replyInfo.replyId)}
+            style={{
+              margin:
+                loginUserName === replyInfo?.memberName
+                  ? '3px 110px 0 5px'
+                  : '3px 195px 0 5px',
+            }}
             onClick={(event): void => {
               dispatch(
                 setIsOpenReport('post' in state && state.post.isOpenReport),
