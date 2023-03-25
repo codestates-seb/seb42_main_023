@@ -118,12 +118,14 @@ const ReportList: React.FC<Props> = ({
         </tbody>
       </Table>
       {isReviewOpen ? <ReportReview setIsReviewOpen={setIsReviewOpen} /> : null}
-      <Pagination
-        pageInfo={reportData.pageInfo}
-        pageOffset={pageOffset}
-        setPageOffset={setPageOffset}
-        setCurrentPage={setCurrentPage}
-      />
+      {isSuccess && (
+        <Pagination
+          pageInfo={reportData.pageInfo}
+          pageOffset={pageOffset}
+          setPageOffset={setPageOffset}
+          setCurrentPage={setCurrentPage}
+        />
+      )}
     </ReportMain>
   );
 };
