@@ -19,6 +19,10 @@ const baseQueryWithReauth = async (args: any, api: any, extraOptions: any) => {
   let result = await baseQuery(args, api, extraOptions);
 
   // 접근 권한이 없는 경우 (일반 유저가 관리자 페이지로 들어갔을때)
+  console.log('result:', result);
+  console.log(' result?.error?.status:', result?.error?.status);
+  // ! console.log('message:', result?.error?.data?.message);
+
   if (
     result?.error?.status === 403 &&
     result.meta?.response?.headers.get('message') === 'User unauthorized'
@@ -36,16 +40,28 @@ const baseQueryWithReauth = async (args: any, api: any, extraOptions: any) => {
 
   // access token이 만료되었다는 status와 메세지를 받으면, 새로운 access token 발급을 위해 refresh token 보내기
   if (
-    result?.error?.status === 401 &&
-    result.meta?.response?.headers.get('message') === 'Access token expired'
+    result?.error?.status === 401
+    // result.meta?.response?.headers.get('message') === 'Authorized Fail'
   ) {
+    console.log('detect error');
+
+    // !Send a POST request to the server to get a new access token
+    //! 테스트 전에 에러 메세지 가져올 수 있는거 알아보기
+    // const refreshResult = await baseQuery(arg, api, extraOptions);
+    // console.log('refreshResult', refreshResult);
     const name = localStorage.getItem('name');
+
     const refreshResult = await baseQuery(
-      `/auth/refresh/${name}`,
+      {
+        url: `/auth/refresh/${name}`,
+        method: 'POST',
+        headers: {
+          Refresh: Cookies.get('Refresh'),
+        },
+      },
       api,
       extraOptions,
     );
-    console.log('refreshResult', refreshResult);
 
     // response headers로 온 새로운 access token을 쿠키에 저장하기
     const headers = refreshResult?.meta?.response?.headers;

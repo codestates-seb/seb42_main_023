@@ -12,7 +12,10 @@ import {
 import { useNavigate, useParams } from 'react-router-dom';
 import { PostStateType } from '../../types/PostDetail';
 
-const DropdownButton = () => {
+interface Props {
+  memberName: string;
+}
+const DropdownButton = ({ memberName }: Props) => {
   const dispatch = useAppDispatch();
   const state = useAppSelector((state) => {
     return state;
@@ -20,13 +23,11 @@ const DropdownButton = () => {
   const params = useParams();
   const postId = params.postId;
   const navigate = useNavigate();
-
   const dropdownRef = useRef<HTMLDivElement>(null);
-  const options: ['신고하기', '수정하기', '삭제하기'] = [
-    '신고하기',
-    '수정하기',
-    '삭제하기',
-  ];
+  const writerOptions: ['수정하기', '삭제하기'] = ['수정하기', '삭제하기'];
+  const viewerOptions: ['신고하기'] = ['신고하기'];
+  const loginUserName = window.localStorage.getItem('name');
+  const option = memberName === loginUserName ? writerOptions : viewerOptions;
 
   // 삭제 확인 모달창
   const confirmDeleteHandler = (): void => {
@@ -65,7 +66,7 @@ const DropdownButton = () => {
       </Button>
       {state.post.isOpenFilter && (
         <List>
-          {options.map((option) => (
+          {option.map((option) => (
             <ListItem
               id="게시글"
               key={option}

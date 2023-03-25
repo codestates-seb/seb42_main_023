@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { useParams } from 'react-router';
 import { useAppDispatch, useAppSelector } from '../../hooks';
 import styled from 'styled-components';
@@ -24,8 +24,6 @@ import {
   ReplyType,
 } from '../../types/PostDetail';
 import {
-  setCommentDislike,
-  setCommentLike,
   setCommentId,
   isEdit,
   setIsEdit,
@@ -39,6 +37,7 @@ import {
 import { timeSince } from '../mainP/Timecalculator';
 
 const Comment: React.FC = () => {
+  const [page] = useState<number>(1);
   const dispatch = useAppDispatch();
   const state = useAppSelector(
     (
@@ -47,10 +46,9 @@ const Comment: React.FC = () => {
       return state;
     },
   );
-
+  const loginUserName = window.localStorage.getItem('name');
   const params = useParams();
   const postId = params.postId;
-  const page = 'comment' in state && state.comment?.page;
   const commentId = 'comment' in state && state.comment?.commentId;
   // 댓글 조회
   const commentQuery = commentsApi.useGetCommentQuery({ postId, page });
@@ -61,17 +59,17 @@ const Comment: React.FC = () => {
   const [updateMutation] = commentMutation;
 
   // 답글 조회
-  const replyQuery = repliesApi.useGetReplyQuery({ commentId });
-  const { isSuccess, data } = replyQuery;
+  const replyQuery = repliesApi.useGetReplyQuery({ commentId, page });
+  const { isSuccess, data, refetch } = replyQuery;
   const contentEditInput = useRef<HTMLInputElement>(null);
 
-  // 답글 좋아요 추가, 삭제
+  // 댓글 좋아요 추가, 삭제
   const addThumbUpMutation = commentsApi.useAddThumbUpMutation();
   const [addThumbUp] = addThumbUpMutation;
   const removeThumbUpMutation = commentsApi.useRemoveThumbUpMutation();
   const [removeThumbUp] = removeThumbUpMutation;
-  // 답글 싫어요  추가, 삭제
-  const addThumbDownMutation = commentsApi.useAddThumbUpMutation();
+  // 댓글 싫어요  추가, 삭제
+  const addThumbDownMutation = commentsApi.useAddThumbDownMutation();
   const [addThumbDown] = addThumbDownMutation;
   const removeThumbDownMutation = commentsApi.useRemoveThumbDownMutation();
   const [removeThumbDown] = removeThumbDownMutation;
@@ -108,38 +106,59 @@ const Comment: React.FC = () => {
   }
   //TODO
   // 댓글 좋아요 클릭 함수
-  const commentLiikeHandler = (): void => {
-    console.log('isThumUp', !commentQuery.data?.isThumbup);
-    // 싫어요 있는 경우
-    if (commentQuery.data?.isThumbdown) {
-      removeThumbDown({ commentId });
-      addThumbUp({ commentId });
+  const commentLiikeHandler = (comment: CommentType): void => {
+    const commentId = comment.commentId;
+    // 좋아요만 있는 경우
+    if (comment?.isThumbup && !comment?.isThumbdown) {
+      console.log('좋아요 삭제');
+      removeThumbUp({ commentId });
+      return;
     }
-    // 싫어요가 없는 경우
-    if (!commentQuery.data?.isThumbdown) {
-      if (!data?.isThumup) {
+    // 싫어요만 있는 경우
+    if (!comment?.isThumbup && comment?.isThumbdown) {
+      const commentId = comment.commentId;
+      console.log('싫어요 삭제 후 좋아요 추가');
+      removeThumbDown({ commentId });
+      setTimeout(() => {
         addThumbUp({ commentId });
-      } else {
-        return;
-      }
+      }, 500);
+      return;
+    }
+    // 둘 다 없는 경우
+    if (!comment?.isThumbdown && !comment?.isThumbdown) {
+      console.log('좋아요 추가');
+      addThumbUp({ commentId });
+      return;
     }
   };
 
   // 댓글 싫어요 클릭 함수
-  const commentDislikeHandler = (): void => {
-    console.log('isThumDown', !commentQuery.data?.isThumbdown);
-    // 좋아요가 있는 경우
-    if (commentQuery.data?.isThumup) {
+  const commentDislikeHandler = (comment: CommentType): void => {
+    const commentId = comment.commentId;
+    // 좋아요만 있는 경우
+    if (comment.isThumbup && !comment?.isThumbdown) {
+      // 좋아요 제거, 싫어요 추가
+      console.log('좋아요 삭제 후 싫어요 추가');
       removeThumbUp({ commentId });
-      addThumbDown({ commentId });
-    }
-    // 좋아요가  없는 경우
-    if (!commentQuery.data?.isThumup) {
-      if (!commentQuery.data?.isThumbdown) {
+      setTimeout(() => {
         addThumbDown({ commentId });
-      } else {
-        return;
-      }
+      }, 500);
+      return;
+    }
+    // 싫어요만 있는 경우
+    if (!comment?.isThumbup && comment?.isThumbdown) {
+      // 싫어요 제거
+      console.log('싫어요 삭제');
+      removeThumbDown({ commentId });
+      return;
+    }
+
+    // 둘 다 없는 경우
+    if (!comment?.isThumbup && !comment?.isThumbdown) {
+      // 싫어요 추가
+      console.log('싫어요 추가');
+      addThumbDown({ commentId });
+      return;
     }
   };
 
@@ -162,7 +181,6 @@ const Comment: React.FC = () => {
       dispatch(setReportType(event.target.dataset.category!));
     }
   };
-  //TODO
   // 소개 페이지 오픈
   const IntroHandler = (event: React.MouseEvent<HTMLElement>) => {
     if (
@@ -188,9 +206,8 @@ const Comment: React.FC = () => {
 
   useEffect(() => {
     // 답글 데이터가 변경될 때마다 총 답글 데이터 반영
-    if (replyQuery.data) {
-      dispatch(setTotalReplies(replyQuery.data && replyQuery.data?.comments));
-    }
+    console.log(replyQuery.data);
+    dispatch(setTotalReplies(replyQuery.data?.replies || []));
   }, [data]);
   return (
     <CommentContainer>
@@ -210,7 +227,8 @@ const Comment: React.FC = () => {
           // 시간 계산
           const time = timeSince(comment.createdAt);
           // 답글 수정 여부
-          const commentIsEdit = comment.modifiedAt !== '';
+          const commentIsEdit =
+            comment.modifiedAt !== comment.createdAt ? true : false;
 
           return (
             <>
@@ -227,8 +245,6 @@ const Comment: React.FC = () => {
                       data-commentId={comment.commentId}
                     ></img>
                   </li>
-                  {/* TODO */}
-
                   {'comment' in state &&
                   state.comment.isOpeneIntro &&
                   comment?.commentId === state.comment?.commentId ? (
@@ -243,14 +259,10 @@ const Comment: React.FC = () => {
                           </li>
                         </ul>
                       </IntroInfo>
-                      <label className="introduction">
-                        {/* TODO 수정 필요*/}
-                        {comment.content}
-                      </label>
+                      <label className="introduction">{comment.content}</label>
                       <div className="intro-moreInfo">더보기 》</div>
                     </IntorductionContainer>
                   ) : null}
-                  {/* TODO */}
 
                   <li className="nickname">{comment.memberName}</li>
                   <TimeIcon />
@@ -258,12 +270,17 @@ const Comment: React.FC = () => {
                   <li className="created-time">{time} 전</li>
 
                   {'comment' in state &&
-                  ((comentSucccess && state.comment.isEdit !== undefined) ||
-                    null) &&
+                  state?.comment.isEdit !== undefined &&
                   state.comment.isEdit[idx] ? (
                     <li
                       className="comment-update"
                       id="edit"
+                      style={{
+                        display:
+                          loginUserName === comment?.memberName
+                            ? 'block'
+                            : 'none',
+                      }}
                       onClick={(): void => {
                         if (!contentEditInput.current?.value) {
                           dispatch(setIsEdit(idx));
@@ -282,6 +299,12 @@ const Comment: React.FC = () => {
                   ) : (
                     <li
                       className="comment-update"
+                      style={{
+                        display:
+                          loginUserName == comment?.memberName
+                            ? 'block'
+                            : 'none',
+                      }}
                       onClick={(): void => {
                         dispatch(setIsEdit(idx));
                       }}
@@ -289,22 +312,30 @@ const Comment: React.FC = () => {
                       수정
                     </li>
                   )}
+                  {loginUserName === comment.memberName ? (
+                    <li
+                      className="comment-delete"
+                      id="댓글"
+                      onClick={(event: React.MouseEvent<HTMLElement>): void => {
+                        dispatch(setCommentId(comment.commentId));
+                        deleteTypeChecker(event);
+                        confirmDeleteHandler();
+                      }}
+                    >
+                      삭제
+                    </li>
+                  ) : null}
 
-                  <li
-                    className="comment-delete"
-                    id="댓글"
-                    onClick={(event: React.MouseEvent<HTMLElement>): void => {
-                      dispatch(setCommentId(comment.commentId));
-                      deleteTypeChecker(event);
-                      confirmDeleteHandler();
-                    }}
-                  >
-                    삭제
-                  </li>
                   <li
                     className="comment-report"
                     data-category="comment"
                     data-commentId={String(comment.commentId)}
+                    style={{
+                      margin:
+                        loginUserName === comment?.memberName
+                          ? '3px 148px 0 5px'
+                          : '3px 228px 0 5px',
+                    }}
                     onClick={(event): void => {
                       dispatch(
                         setIsOpenReport(
@@ -316,12 +347,20 @@ const Comment: React.FC = () => {
                   >
                     신고
                   </li>
-                  <button onClick={commentLiikeHandler}>
+                  <button
+                    onClick={_.debounce(() => {
+                      commentLiikeHandler(comment);
+                    }, 500)}
+                  >
                     <LikeIcon checked={comment.isThumbup} />
                   </button>
                   <li className="comment-likes">{comment.thumbupCount}</li>
-                  <button onClick={commentDislikeHandler}>
-                    <DislikeIcon checked={comment.isThumbDown} />
+                  <button
+                    onClick={_.debounce(() => {
+                      commentDislikeHandler(comment);
+                    }, 500)}
+                  >
+                    <DislikeIcon checked={comment.isThumbdown} />
                   </button>
                   <li className="comment-dislikes">{comment.thumbDownCount}</li>
                 </ul>
@@ -350,25 +389,24 @@ const Comment: React.FC = () => {
                     dispatch(setIsOpened(idx));
                   }}
                 >
-                  답글 {comment.replyCount}
+                  답글
                 </ReplyBtn>
               </CommentContent>
-              {/* {'reply' in state && isSuccess && state.reply?.isOpened[idx] ? ( */}
-              {data && 'reply' in state && state.reply.isOpened[idx] ? (
+              {/* {isSuccess && 'reply' in state && state.reply.isOpened[idx] ? ( */}
+              {'reply' in state && isSuccess && state.reply?.isOpened[idx] ? (
                 <ReplyContainer>
                   <ReplyInput commentInfo={comment}></ReplyInput>
-                  {filtered &&
-                    filtered.map((reply: ReplyType, idx: number) => {
-                      return (
-                        <>
-                          <Reply
-                            key={reply.replyId}
-                            replyInfo={reply}
-                            idx={idx}
-                          ></Reply>
-                        </>
-                      );
-                    })}
+                  {filtered?.map((reply: ReplyType, idx: number) => {
+                    return (
+                      <>
+                        <Reply
+                          key={reply.replyId}
+                          replyInfo={reply}
+                          idx={idx}
+                        ></Reply>
+                      </>
+                    );
+                  })}
                 </ReplyContainer>
               ) : null}
             </>
@@ -415,7 +453,7 @@ const CommentContainer = styled.div`
     margin: 2px 15px 0 5px;
   }
   .created-time {
-    width: 65px;
+    width: 75px;
     font-size: 16px;
     margin: 3px 15px 0 5px;
   }
@@ -439,10 +477,12 @@ const CommentContainer = styled.div`
     cursor: pointer;
   }
   .comment-likes {
+    width: 30px;
     font-size: 16px;
     margin: 3px 15px 0 15px;
   }
   .comment-dislikes {
+    width: 30px;
     font-size: 16px;
     margin: 3px 15px 0 15px;
   }

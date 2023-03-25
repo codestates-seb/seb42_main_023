@@ -40,8 +40,8 @@ const App: React.FC = () => {
               <Route path="/post/" element={<CreatePost />} />
               <Route path="/mypage" element={<MyPage />} />
               <Route path="/seoulrent" element={<SeoulRent />} />
-              <Route path="/reportsstandby" element={<ReportsStandBy />} />
-              <Route path="/reportsdeleted" element={<ReportsDeleted />} />
+              <Route path="/reports/standby" element={<ReportsStandBy />} />
+              <Route path="/reports/deleted" element={<ReportsDeleted />} />
             </Routes>
           </main>
           <Footer />

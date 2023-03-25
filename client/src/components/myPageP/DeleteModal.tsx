@@ -4,23 +4,31 @@ import { useAppDispatch, useAppSelector } from '../../hooks';
 import { setFilter } from '../../slices/mypageSlice';
 import { SidebarBtn } from '../common/Btn';
 import { membersApi } from '../../api/memberapi';
-// import { setDeleteAccountOpen } from '../../slices/mypageSlice';
+import { setDeleteAccountOpen } from '../../slices/mypageSlice';
 import { BlueBtn, WhiteBtn } from '../../components/common/Btn';
 import axios from 'axios';
+import Cookies from 'js-cookie';
 
 function DeleteModal() {
   const dispatch = useAppDispatch();
   const modalRef = useRef<HTMLDivElement>(null);
+
+  const removeMemberMutaion = membersApi.useDeleteMemberMutation();
+  const [removeMember] = removeMemberMutaion;
+
   const DeleteAccounthandler = () => {
-    const nickname = localStorage.getItem('nickname');
-    axios.delete(`https://thedragonmoney.com/members/${nickname}`);
+    Cookies.remove('Authorization');
+    Cookies.remove('Refresh');
+    const name = localStorage.getItem('name');
+    removeMember({ name });
+    localStorage.clear();
     window.location.href = '/';
   };
 
   const handleClickOutside = (event: MouseEvent) => {
-    // if (modalRef.current && !modalRef.current.contains(event.target as Node)) {
-    //   dispatch(setDeleteAccountOpen(false));
-    // }
+    if (modalRef.current && !modalRef.current.contains(event.target as Node)) {
+      dispatch(setDeleteAccountOpen(false));
+    }
   };
   useEffect(() => {
     document.addEventListener('mousedown', handleClickOutside);
@@ -34,9 +42,9 @@ function DeleteModal() {
         <h1>회원탈퇴</h1>
         <div>정말 탈퇴하시겠습니까?</div>
         <div>
-          {/* <NoBtn onClick={() => dispatch(setDeleteAccountOpen(false))}>
+          <NoBtn onClick={() => dispatch(setDeleteAccountOpen(false))}>
             아니요
-          </NoBtn> */}
+          </NoBtn>
           <YesBtn onClick={DeleteAccounthandler}>네, 탈퇴하겠습니다</YesBtn>
         </div>
       </ModalBox>

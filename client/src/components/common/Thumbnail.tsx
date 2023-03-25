@@ -5,11 +5,11 @@ interface Props {
   content: string;
 }
 
-const Thumnail = ({ content }: Props) => {
-  return <>{content.length === 0 ? <None /> : <Item src={content} />}</>;
+const Thumbnail = ({ content }: Props) => {
+  return <>{content === null ? <None /> : <Item src={content} />}</>;
 };
 
-export default Thumnail;
+export default Thumbnail;
 const Item = styled.img`
   width: 74px;
   height: 50px;

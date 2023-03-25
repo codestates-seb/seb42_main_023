@@ -1,59 +1,76 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import PostList from '../components/mainP/PostList';
 import DropdownButton from '../components/mainP/DropdownButton';
-import SearchPostList from '../components/mainP/SearchPostList';
 import { AiOutlineTrophy } from 'react-icons/ai';
 import { NavBtn } from '../components/common/Btn';
 import { useAppDispatch, useAppSelector } from '../hooks';
 import { postListApi } from '../api/postListapi';
-import { setCommunity } from '../slices/mainSlice';
-import Pagenation from '../components/mainP/Pagenation';
+import { setPostSetting, setCurrentPage } from '../slices/mainSlice';
+import Pagenation from '../components/common/Pagination';
 
 const Main = () => {
   const dispatch = useAppDispatch();
-  const { community, orderby, currentPage, searchOn } = useAppSelector(
-    ({ main }) => main,
-  );
+  //페이지네이션
+  const [pageOffset, setPageOffset] = useState(0);
+  const [currentPage, setCurrentPage] = useState(1);
+
+  const { postSetting, orderby } = useAppSelector(({ main }) => main);
+  const { searchQuery } = useAppSelector(({ header }) => header);
   const postListquery = postListApi.useGetPostListQuery({
-    community: community,
+    postSetting: postSetting,
     page: currentPage,
     orderby: orderby,
+    search: searchQuery,
   });
-  const { isSuccess } = postListquery;
+  const { data, isSuccess } = postListquery;
+
   return (
     <>
       <FilterWrap>
         <div>
-          {!searchOn && (
-            <>
-              {community === '' ? (
-                <ClickComuntyBtn>커뮤니티</ClickComuntyBtn>
-              ) : (
-                <ComuntyBtn onClick={() => dispatch(setCommunity(''))}>
-                  커뮤니티
-                </ComuntyBtn>
-              )}
-              {community === '' ? (
-                <ComuntyBtn
-                  onClick={() => dispatch(setCommunity('/best-awards'))}
-                >
-                  <AiOutlineTrophy size={20} />
-                  명예의전당
-                </ComuntyBtn>
-              ) : (
-                <ClickComuntyBtn>
-                  <AiOutlineTrophy size={20} />
-                  명예의전당
-                </ClickComuntyBtn>
-              )}
-            </>
+          {postSetting === '' ? (
+            <ClickComuntyBtn>커뮤니티</ClickComuntyBtn>
+          ) : (
+            <ComuntyBtn
+              onClick={() => {
+                setCurrentPage(1);
+                setPageOffset(0);
+                dispatch(setPostSetting(''));
+              }}
+            >
+              커뮤니티
+            </ComuntyBtn>
+          )}
+          {postSetting === '/best-awards' ? (
+            <ClickComuntyBtn>
+              <AiOutlineTrophy size={20} />
+              명예의전당
+            </ClickComuntyBtn>
+          ) : (
+            <ComuntyBtn
+              onClick={() => {
+                setCurrentPage(1);
+                setPageOffset(0);
+                dispatch(setPostSetting('/best-awards'));
+              }}
+            >
+              <AiOutlineTrophy size={20} />
+              명예의전당
+            </ComuntyBtn>
           )}
           <DropdownButton />
         </div>
       </FilterWrap>
-      {searchOn ? <SearchPostList /> : <PostList />}
-      {isSuccess && <Pagenation />}
+      {isSuccess && <PostList posts={data.posts} currentPage={currentPage} />}
+      {isSuccess && (
+        <Pagenation
+          pageInfo={data.pageInfo}
+          pageOffset={pageOffset}
+          setPageOffset={setPageOffset}
+          setCurrentPage={setCurrentPage}
+        />
+      )}
     </>
   );
 };
