@@ -48,7 +48,7 @@ public class OAuth2MemberHandler extends SimpleUrlAuthenticationSuccessHandler {
         List<String> authorities = authorityUtils.createRoles(email);
 
         //이미 가입한 회원일 때(이미 크리덴셜에 정보가 있으므로 따로 정보를 가져올 필요가 없다)
-        if(memberService.checkOAuthMemberName("google", email)) {
+        if(memberService.checkOAuthMemberName(email)) {
             //해당 email에 맞는 name을 가져온다.
             String name = memberService.getNameBySearchEmail(email);
             //임시 토큰 발급
