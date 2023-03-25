@@ -90,9 +90,10 @@ public class CommentService implements ThumbCountService {
 
     // 수정
     public Comment updateComment(Member loginMember, Long commentId, Comment updateComment) {
-        Comment findComment = checkOwner(loginMember, commentId);
-        findComment.updateContent(updateComment.getContent());
-        return commentRepository.save(findComment);
+        Comment originalComment = checkOwner(loginMember, commentId);
+        originalComment.isModifiedNow();
+        originalComment.updateContent(updateComment.getContent());
+        return commentRepository.save(originalComment);
     }
 
     // 목록 조회

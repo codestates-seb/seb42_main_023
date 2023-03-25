@@ -124,6 +124,8 @@ public class PostsService implements ThumbCountService {
     // 게시글 수정
     public Posts updatePosts(Member loginMember, Long postsId, Posts updatePosts, List<Image> removedImages){
         Posts originalPosts = checkOwner(loginMember, postsId);
+        originalPosts.isModifiedNow();
+
         // 이미지 처리
         imageService.removeImages(loginMember, removedImages);
         // 태그 처리
@@ -174,7 +176,11 @@ public class PostsService implements ThumbCountService {
     // 게시글 목록 조회 : 검색기능 : 태그목록 + 제목
     public Page<Posts> findPostsListByTagsAndTitle(String keyword, String[] tagNames, int page, Posts.OrderBy orderBy){
         Pageable pageable = PageRequest.of(page - 1 , PAGE_ELEMENT_SIZE, Sort.by(orderBy.getTargetProperty()).descending());
-        return postsRepository.findPostsListBySearch(keyword, tagNames, pageable);
+        if (tagNames == null || tagNames.length == 0) {
+            return postsRepository.findPostsListBySearchWithoutTagNames(keyword, pageable);
+        } else {
+            return postsRepository.findPostsListBySearch(keyword, tagNames, pageable);
+        }
     }
 
     // 게시글 목록 조회 : 작성자 닉네임

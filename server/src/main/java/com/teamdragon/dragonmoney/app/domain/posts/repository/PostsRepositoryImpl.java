@@ -180,7 +180,7 @@ public class PostsRepositoryImpl implements PostsRepositoryCustom {
         JPQLQuery<Long> sub = JPAExpressions.select(postsTag.posts.id)
                 .distinct()
                 .from(postsTag)
-                .join(postsTag.tag, tag)
+                .join(postsTag.posts, posts).fetchJoin()
                 .where(tag.name.in(tagNames))
                 .groupBy(postsTag.posts.id)
                 .having(postsTag.posts.id.count().goe(tagNames.length));
@@ -190,6 +190,8 @@ public class PostsRepositoryImpl implements PostsRepositoryCustom {
 
         List<Posts> content = queryFactory.selectFrom(posts).distinct()
                 .leftJoin(posts.writer, member).fetchJoin()
+                .leftJoin(posts.postsTags, postsTag).fetchJoin()
+                .leftJoin(postsTag.tag, tag).fetchJoin()
                 .where(posts.state.eq(Posts.State.ACTIVE), builder)
                 .orderBy(orders)
                 .offset(pageable.getOffset())
@@ -202,6 +204,28 @@ public class PostsRepositoryImpl implements PostsRepositoryCustom {
 
         return PageableExecutionUtils.getPage(content, pageable, countQuery::fetchOne);
     }
+
+    // Posts 목록 조회 : 검색결과 + 페이징 : 태그 없음
+    @Override
+    public Page<Posts> findPostsListBySearchWithoutTagNames(String keyword, Pageable pageable) {
+        // 정렬 기준 변환
+        OrderSpecifier[] orders = getAllOrderSpecifiers(pageable, posts);
+
+        List<Posts> content = queryFactory.selectFrom(posts).distinct()
+                .leftJoin(posts.writer, member).fetchJoin()
+                .leftJoin(posts.postsTags, postsTag).fetchJoin()
+                .leftJoin(postsTag.tag, tag).fetchJoin()
+                .where(posts.state.eq(Posts.State.ACTIVE), posts.title.containsIgnoreCase(keyword))
+                .orderBy(orders)
+                .offset(pageable.getOffset())
+                .limit(pageable.getPageSize())
+                .fetch();
+
+        JPAQuery<Long> countQuery = queryFactory.select(posts.count())
+                .from(posts)
+                .where(posts.state.eq(Posts.State.ACTIVE), posts.title.containsIgnoreCase(keyword));
+
+        return PageableExecutionUtils.getPage(content, pageable, countQuery::fetchOne);    }
 
     // Posts 목록 조회 : 유저이름 + 페이징
     @Override

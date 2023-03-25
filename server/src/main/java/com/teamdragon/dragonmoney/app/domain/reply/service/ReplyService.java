@@ -82,9 +82,10 @@ public class ReplyService implements ThumbCountService {
 
     // 수정
     public Reply updateReply(Member loginMember, Long replyId, Reply updateReply) {
-        Reply findReply = checkOwner(loginMember, replyId);
-        findReply.updateContent(updateReply.getContent());
-        return replyRepository.save(findReply);
+        Reply originalReply = checkOwner(loginMember, replyId);
+        originalReply.isModifiedNow();
+        originalReply.updateContent(updateReply.getContent());
+        return replyRepository.save(originalReply);
     }
 
     // 목록 조회
