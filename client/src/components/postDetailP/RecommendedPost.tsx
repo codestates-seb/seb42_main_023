@@ -13,7 +13,7 @@ const RecommendedPost: React.FC = () => {
   console.log('Recodata', data);
   return (
     <RecommendedPostContainer>
-      <ul>
+      {/* <ul>
         {isSuccess &&
           data?.map((post: Partial<PostType>) => {
             const url = `/posts/${post.postId}`;
@@ -30,7 +30,7 @@ const RecommendedPost: React.FC = () => {
               </li>
             );
           })}
-      </ul>
+      </ul> */}
     </RecommendedPostContainer>
   );
 };
