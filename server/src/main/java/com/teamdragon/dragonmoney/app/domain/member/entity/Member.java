@@ -100,4 +100,9 @@ public class Member extends BaseTimeEntity {
     public void changeMemberIntro(String intro) {
         this.intro = intro;
     }
+
+    public void deletedMember() {
+        this.state = MemberState.DELETED;
+        this.nameDuplicateCheck = false;
+    }
 }

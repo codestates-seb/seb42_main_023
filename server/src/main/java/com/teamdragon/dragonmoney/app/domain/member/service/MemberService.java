@@ -22,11 +22,12 @@ import static com.teamdragon.dragonmoney.app.domain.delete.entity.DeleteResult.R
 @RequiredArgsConstructor
 public class MemberService {
     private final MemberRepository memberRepository;
+    private final String OAUTH2_KIND = "google";
 
     //oauth2 로그인 할 때 존재하는 회원인지 판별
-    public Boolean checkOAuthMemberName(String oauthKind, String email) {
+    public Boolean checkOAuthMemberName(String email) {
         //사용자 닉네임 설정 여부, 이메일, oauthkind를 같이 조회
-        Optional<Member> optionalNameDuplicateCheck = memberRepository.findByNameDuplicateCheckAndEmailAndOauthkind(true, email, oauthKind);
+        Optional<Member> optionalNameDuplicateCheck = memberRepository.findByNameDuplicateCheckAndEmailAndOauthkind(true, email, OAUTH2_KIND);
 
         //회원이 있을 때
         if (optionalNameDuplicateCheck.isPresent())
@@ -37,7 +38,7 @@ public class MemberService {
 
     //조회한 이메일을 통해 이름 가져오기
     public String getNameBySearchEmail(String email) {
-        Optional<Member> getMember = memberRepository.findByEmailAndOauthkind(email, "google");
+        Optional<Member> getMember = memberRepository.findByNameDuplicateCheckAndEmailAndOauthkind(true, email, OAUTH2_KIND);
         String name = getMember.get().getName();
 
         return name;
@@ -92,8 +93,7 @@ public class MemberService {
     public Member deleteMember(String name) {
         Member deletedMember = findVerifiedMemberName(name);
 
-        deletedMember.setState(Member.MemberState.DELETED);
-        deletedMember.setNameDuplicateCheck(false);
+        deletedMember.deletedMember();
 
         DeleteResult deleteResult = DeleteResult.builder()
                 .deleteReason(SELF_DELETED)
