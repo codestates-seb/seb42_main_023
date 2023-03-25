@@ -17,6 +17,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Positive;
 import java.security.Principal;
 
@@ -48,7 +49,7 @@ public class CommentController {
     public ResponseEntity<CommentDto.CommentListRes> findCommentList(@AuthenticationPrincipal Principal principal,
                                                                      @Valid @Positive @PathVariable("post-id") Long postsId,
                                                                      @Valid @Positive @RequestParam int page,
-                                                                     @RequestParam String orderby) {
+                                                                     @Valid @NotBlank @RequestParam String orderby) {
         Comment.OrderBy orderBy = checkOrderBy(orderby);
         Member loginMember = memberService.findMember(principal.getName());
 

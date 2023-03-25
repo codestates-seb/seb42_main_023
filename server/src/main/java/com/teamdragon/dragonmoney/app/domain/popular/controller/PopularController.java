@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Positive;
 import java.util.List;
 
@@ -38,7 +39,7 @@ public class PopularController {
     // 명예의 전당 목록 조회
     @GetMapping("/posts/best-awards")
     public ResponseEntity<PostsDto.BestAwardsRes> findBestAwardsList(@Valid @Positive @RequestParam int page,
-                                                                    @RequestParam String orderby) {
+                                                                     @Valid @NotBlank @RequestParam String orderby) {
         Posts.OrderBy orderBy = checkOrderBy(orderby);
         Page<Posts> bestAwardsList = popularService.findBestAwardsList(page, orderBy);
         PostsDto.BestAwardsRes response = new PostsDto.BestAwardsRes(bestAwardsList, orderby);
