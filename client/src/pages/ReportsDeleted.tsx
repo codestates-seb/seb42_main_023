@@ -1,14 +1,32 @@
-import React from 'react';
-// import NavAdmin from '../components/AdminP/NavAdmin';
-import Report from '../components/AdminP/ReportReview';
+import React, { useState } from 'react';
+import styled from 'styled-components';
+import NavAdmin from '../components/AdminP/NavAdmin';
+import ReportList from '../components/AdminP/ReportList';
+import { useGetReportsDeletedQuery } from '../api/reportApi';
+import { useAppSelector, useAppDispatch } from '../hooks';
 
-function ReportsDeleted() {
+const ReportsDeleted = () => {
+  const dispatch = useAppDispatch();
+
+  const { page, orderby } = useAppSelector(({ report }) => report);
+  const { data } = useGetReportsDeletedQuery({
+    page,
+    orderby,
+  });
+
   return (
-    <div>
-      {/* <NavAdmin /> */}
-      <Report />
-    </div>
+    <AdminMain>
+      <NavAdmin />
+      <ReportList reportData={data} standby={false} />
+    </AdminMain>
   );
-}
+};
 
 export default ReportsDeleted;
+
+// Admin 페이지의 main
+const AdminMain = styled.div`
+  width: 100%;
+  height: 100%;
+  display: flex;
+`;

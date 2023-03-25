@@ -259,8 +259,11 @@ const PostDetail: React.FC = () => {
         postId: Number(postId),
         commentId: null,
         replyId: null,
-        reporterName: loginUserName,
-      });
+        reporterName: localStorage.getItem('name'),
+      })
+        .unwrap()
+        .then((res) => console.log('res in report:', res))
+        .catch((err: any) => console.log('err in report:', err));
       dispatch(setIsOpenReport('post' in state && state.post?.isOpenReport));
       dispatch(setReportErr(''));
       setCheckedElement(-1);

@@ -10,10 +10,10 @@ const NavAdmin: React.FC = () => {
 
   useEffect(() => {
     switch (window.location.pathname) {
-      case '/reportsstandby':
+      case '/reports/standby':
         setCurrentTab(0);
         break;
-      case '/reportsdeleted':
+      case '/reports/deleted':
         setCurrentTab(1);
         break;
       default:
@@ -32,7 +32,7 @@ const NavAdmin: React.FC = () => {
           <li
             className={currentTab === 0 ? 'current' : ''}
             onClick={(): void => {
-              navigate('/reportsstandby');
+              navigate('/reports/standby');
             }}
           >
             미처리 신고글
@@ -40,7 +40,7 @@ const NavAdmin: React.FC = () => {
           <li
             className={currentTab === 1 ? 'current' : ''}
             onClick={(): void => {
-              navigate('/reportsdeleted');
+              navigate('/reports/deleted');
             }}
           >
             처리된 신고글

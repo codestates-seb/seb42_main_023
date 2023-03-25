@@ -31,7 +31,7 @@ export const membersApi = apiSlice
 export const membersPostListApi = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
     getPostList: builder.query({
-      query: ({ query }) => `members/${query}/posts`,
+      query: ({ query, page }) => `members/${query}/posts?page=${page}`,
     }),
   }),
 });
@@ -39,7 +39,8 @@ export const membersPostListApi = apiSlice.injectEndpoints({
 export const membersCommentsListApi = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
     getCommentsList: builder.query({
-      query: ({ commentQuery }) => `members/${commentQuery}/comments`,
+      query: ({ commentQuery, page }) =>
+        `members/${commentQuery}/comments?page=${page}`,
     }),
   }),
 });

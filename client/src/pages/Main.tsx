@@ -7,16 +7,15 @@ import { NavBtn } from '../components/common/Btn';
 import { useAppDispatch, useAppSelector } from '../hooks';
 import { postListApi } from '../api/postListapi';
 import { setPostSetting, setCurrentPage } from '../slices/mainSlice';
-import Pagenation from '../components/mainP/Pagenation';
+import Pagenation from '../components/common/Pagination';
 
 const Main = () => {
   const dispatch = useAppDispatch();
   //페이지네이션
   const [pageOffset, setPageOffset] = useState(0);
+  const [currentPage, setCurrentPage] = useState(1);
 
-  const { postSetting, orderby, currentPage } = useAppSelector(
-    ({ main }) => main,
-  );
+  const { postSetting, orderby } = useAppSelector(({ main }) => main);
   const { searchQuery } = useAppSelector(({ header }) => header);
   const postListquery = postListApi.useGetPostListQuery({
     postSetting: postSetting,
@@ -69,6 +68,7 @@ const Main = () => {
           pageInfo={data.pageInfo}
           pageOffset={pageOffset}
           setPageOffset={setPageOffset}
+          setCurrentPage={setCurrentPage}
         />
       )}
     </>
