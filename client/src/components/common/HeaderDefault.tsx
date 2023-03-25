@@ -24,25 +24,8 @@ function HeaderDefault() {
   const { pathname } = useLocation();
   const dispatch = useAppDispatch();
   const auth = Cookies.get('Authorization');
-  const adim = localStorage.getItem('role');
-
-  //인코딩 핸들러
-  // const checkHasIncode = keyword => {
-  //   const check_kor = /[ㄱ-ㅎ|ㅏ-ㅣ|가-힣]/; // 한글인지 식별해주기 위한 정규표현식
-
-  //   if (keyword.match(check_kor)) {
-  //     const encodeKeyword = encodeURI(keyword); // 한글 인코딩
-  //     return encodeKeyword;
-  //   } else {
-  //     return keyword;
-  //   }
-  // };
-
-  // export const searchKeyword = keyword => {
-  //   return client.get(
-  //     ${API.baseUrl}contents/search?keyword=${checkHasIncode(keyword)}
-  //   );
-  // };
+  const adim = 'ADMIN';
+  //localStorage.getItem('role');
 
   //TODO: 로그인시 유저데이터 저장
   useEffect(() => {
@@ -71,19 +54,20 @@ function HeaderDefault() {
         <HeaderNav />
         <Btns>
           {pathname === '/' && <SearchBtn />}
-          {auth === undefined && <LoginBtn />}
+          {/* {auth === undefined && <LoginBtn />} */}
           {auth !== undefined && adim !== 'ADMIN' && (
             <>
               <PostBtn /> <MediumProfileImg />
             </>
           )}
           {adim === 'ADMIN' && (
-            <>
+            <Adminwrap>
               <PostBtn />
+              <MediumProfileImg />
               <button onClick={() => navigate('reports/standby')}>
                 <MdManageAccounts size={30} />
               </button>
-            </>
+            </Adminwrap>
           )}
         </Btns>
       </div>
@@ -143,4 +127,9 @@ const Btns = styled.div`
       }
     }
   }
+`;
+const Adminwrap = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
 `;

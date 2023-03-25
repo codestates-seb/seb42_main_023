@@ -13,8 +13,10 @@ const MediumProfileImg = () => {
   const auth = Cookies.get('Authorization');
 
   const clickmemberHandler = () => {
-    dispatch(setMemberName(memberName));
-    navigate('/mypage');
+    if (auth !== undefined) {
+      dispatch(setMemberName(memberName));
+      navigate('/mypage');
+    }
   };
   return (
     <Btn onClick={clickmemberHandler}>
