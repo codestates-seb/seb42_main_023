@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { useAppSelector } from '../../hooks';
 import LikeIcon from '../../assets/common/LikeIcon';
@@ -9,6 +9,8 @@ import { TagItem } from '../common/Tag';
 import { Link } from 'react-router-dom';
 import { membersPostListApi } from '../../api/memberapi';
 import { timeSince } from '../mainP/Timecalculator';
+import Pagination from '../mainP/Pagenation';
+import { FaBookmark } from 'react-icons/fa';
 
 export interface Tags {
   id: number;
@@ -28,9 +30,13 @@ export interface PostItem {
 }
 
 function MyPostList() {
+  const [pageOffset, setPageOffset] = useState(0);
+  const [currentPage, setCurrentPage] = useState(1);
+
   const { query } = useAppSelector(({ header }) => header);
   const membersPostListquery = membersPostListApi.useGetPostListQuery({
     query: query,
+    page: currentPage,
   });
   const { data, isSuccess } = membersPostListquery;
 
@@ -39,47 +45,62 @@ function MyPostList() {
   }
 
   return (
-    <List>
-      {isSuccess &&
-        data.posts.map((post: PostItem) => {
-          return (
-            <Item key={post.postId}>
-              <div>
-                <Link to={`/posts/${post.postId}`}>
-                  <Thumnail content={post.imgUrl} />
-                </Link>
-              </div>
-              <div>
-                <Link to={`/posts/${post.postId}`}>
-                  <h1>{post.title}</h1>
-                </Link>
-                <Itemside>
-                  <div>
-                    {post.tags.map((tag, idx) => (
-                      <Tag key={idx}>{tag.tagName}</Tag>
-                    ))}
-                  </div>
-                  <Info>
-                    <span>{post.memberName}</span>
-                    <span>
-                      <TimeIcon />
-                      {timeSince(post.createdAt)}
-                    </span>
-                    <span>
-                      <ViewIcon />
-                      {post.viewCount}
-                    </span>
-                    <span>
-                      <LikeIcon checked={false} />
-                      {post.thumbupCount}
-                    </span>
-                  </Info>
-                </Itemside>
-              </div>
-            </Item>
-          );
-        })}
-    </List>
+    <PostListWrap>
+      <List>
+        {isSuccess &&
+          data.posts.map((post: PostItem) => {
+            return (
+              <Item key={post.postId}>
+                <div>
+                  <Link to={`/posts/${post.postId}`}>
+                    <Thumnail content={post.imgUrl} />
+                  </Link>
+                </div>
+                <div>
+                  <Link to={`/posts/${post.postId}`}>
+                    <h1>{post.title}</h1>
+                  </Link>
+                  <Itemside>
+                    <div>
+                      {post.tags.map((tag, idx) => (
+                        <Tag key={idx}>{tag.tagName}</Tag>
+                      ))}
+                    </div>
+                    <Info>
+                      <span>{post.memberName}</span>
+                      <span>
+                        <TimeIcon />
+                        {timeSince(post.createdAt)}
+                      </span>
+                      <span>
+                        <ViewIcon />
+                        {post.viewCount}
+                      </span>
+                      <span>
+                        <LikeIcon checked={false} />
+                        {post.thumbupCount}
+                      </span>
+                    </Info>
+                  </Itemside>
+                </div>
+                {isSuccess && (
+                  <Bookmark>
+                    <FaBookmark />
+                  </Bookmark>
+                )}
+              </Item>
+            );
+          })}
+      </List>
+      {isSuccess && (
+        <Pagination
+          pageInfo={data.pageInfo}
+          pageOffset={pageOffset}
+          setPageOffset={setPageOffset}
+          setCurrentPage={setCurrentPage}
+        />
+      )}
+    </PostListWrap>
   );
 }
 
@@ -87,7 +108,6 @@ export default MyPostList;
 
 const List = styled.ul`
   width: 100%;
-  overflow: scroll;
 `;
 export const Item = styled.li`
   height: 100px;
@@ -125,4 +145,18 @@ export const Info = styled.div`
 `;
 export const Tag = styled(TagItem)`
   padding: 4px 10px;
+`;
+export const PostListWrap = styled.div`
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+`;
+const Bookmark = styled.button`
+  margin-left: 40px;
+  svg {
+    color: var(--sub-font-color);
+    :hover {
+      color: var(--hover-font-gray-color);
+    }
+  }
 `;

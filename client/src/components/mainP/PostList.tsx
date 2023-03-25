@@ -21,7 +21,7 @@ function PostList({ posts, currentPage }: Props) {
   const { postSetting } = useAppSelector(({ main }) => main);
   return (
     <List>
-      {postSetting === '' && currentPage === 1 && <WeeklyPopular />}
+      {/* {postSetting === '' && currentPage === 1 && <WeeklyPopular />} */}
       {posts.map((post: PostListItem) => {
         return (
           <Item key={post.postId}>
