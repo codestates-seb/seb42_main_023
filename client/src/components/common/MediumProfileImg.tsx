@@ -3,18 +3,25 @@ import styled from 'styled-components';
 import { useNavigate } from 'react-router-dom';
 import { membersApi } from '../../api/memberapi';
 import { useAppSelector, useAppDispatch } from '../../hooks';
-import { setMemberName } from '../../slices/headerSlice';
+import {
+  setMemberName,
+  setPostQuery,
+  setCommentQuery,
+} from '../../slices/headerSlice';
 import Cookies from 'js-cookie';
 
 const MediumProfileImg = () => {
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
-  const { memberImg, memberName } = useAppSelector(({ header }) => header);
+  const { memberImg } = useAppSelector(({ header }) => header);
+  const loginUser = localStorage.getItem('name');
   const auth = Cookies.get('Authorization');
 
   const clickmemberHandler = () => {
-    if (auth !== undefined) {
-      dispatch(setMemberName(memberName));
+    if (auth !== undefined && loginUser) {
+      dispatch(setPostQuery(loginUser));
+      dispatch(setCommentQuery(loginUser));
+      dispatch(setMemberName(loginUser));
       navigate('/mypage');
     }
   };

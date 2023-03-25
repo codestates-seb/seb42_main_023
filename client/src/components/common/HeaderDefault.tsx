@@ -29,13 +29,9 @@ function HeaderDefault() {
   //TODO: 로그인시 유저데이터 저장
   useEffect(() => {
     if (auth !== undefined) {
-      const loginUser = localStorage.getItem('name');
       const memberImg = localStorage.getItem('picture');
 
-      if (loginUser && memberImg) {
-        dispatch(setPostQuery(loginUser));
-        dispatch(setCommentQuery(loginUser));
-        dispatch(setMemberName(loginUser));
+      if (memberImg) {
         dispatch(setMemberImg(memberImg));
       }
     }
