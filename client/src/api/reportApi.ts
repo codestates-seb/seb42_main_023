@@ -6,14 +6,14 @@ export const reportApi = apiSlice
     endpoints: (builder) => ({
       // 미처리 신고글 전체 조회 [관리자 페이지]
       getReportsStandBy: builder.query({
-        query: ({ page = 1, orderby = 'all' }) =>
-          `reportsstandby?page=${page}&orderby=${orderby}`,
+        query: ({ page, orderby }) =>
+          `reports/standby?page=${page}&orderby=${orderby}`,
         providesTags: ['report'],
       }),
       // 처리된 신고글 전체 조회 [관리자 페이지]
       getReportsDeleted: builder.query({
         query: ({ page = 1, orderby = 'all' }) =>
-          `reportsdeleted?page=${page}&orderby=${orderby}`,
+          `reports/deleted?page=${page}&orderby=${orderby}`,
         providesTags: ['report'],
       }),
       // 신고 세부 내용 조회 [관리자 페이지]
@@ -23,7 +23,7 @@ export const reportApi = apiSlice
       }),
       // 신고글 삭제 [관리자 페이지]
       deleteReport: builder.mutation({
-        query: ({ reportId }) => ({
+        query: (reportId) => ({
           url: `/reports/${reportId}`,
           method: 'DELETE',
         }),
@@ -43,7 +43,15 @@ export const reportApi = apiSlice
           return {
             url: `reports`,
             method: 'POST',
-            body: { targetType },
+            body: {
+              reportReason,
+              description,
+              targetType,
+              postId,
+              commentId,
+              replyId,
+              reporterName,
+            },
           };
         },
         invalidatesTags: ['report'],

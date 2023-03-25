@@ -9,7 +9,7 @@ import { membersCommentsListApi } from '../../api/memberapi';
 import { timeSince } from '../mainP/Timecalculator';
 import { CommentType } from '../../types/PostDetail';
 import { PostListWrap } from './MyPostList';
-import Pagination from '../mainP/Pagenation';
+import Pagination from '../common/Pagination';
 
 const MyCommentList = () => {
   const [pageOffset, setPageOffset] = useState(0);

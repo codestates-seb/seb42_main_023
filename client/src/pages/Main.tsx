@@ -7,7 +7,7 @@ import { NavBtn } from '../components/common/Btn';
 import { useAppDispatch, useAppSelector } from '../hooks';
 import { postListApi } from '../api/postListapi';
 import { setPostSetting, setCurrentPage } from '../slices/mainSlice';
-import Pagenation from '../components/mainP/Pagenation';
+import Pagenation from '../components/common/Pagination';
 
 const Main = () => {
   const dispatch = useAppDispatch();
