@@ -1,8 +1,7 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import styled from 'styled-components';
 import NextPageIcon from '../../assets/common/NextPageIcon';
 import PrevPageIcon from '../../assets/common/PrevPageIcon';
-import { setCurrentPage } from '../../slices/mainSlice';
 import { useAppDispatch } from '../../hooks';
 
 interface Page {
@@ -15,10 +14,16 @@ interface Props {
   pageInfo: Page;
   pageOffset: number;
   setPageOffset: React.Dispatch<React.SetStateAction<number>>;
+  setCurrentPage: React.Dispatch<React.SetStateAction<number>>;
 }
 
 //TODO: 전역 state로 현재 페이지 상태값 관리
-const Pagination = ({ pageInfo, pageOffset, setPageOffset }: Props) => {
+const Pagination = ({
+  pageInfo,
+  pageOffset,
+  setPageOffset,
+  setCurrentPage,
+}: Props) => {
   const dispatch = useAppDispatch();
   const prevPageHandler = () => {
     if (pageOffset > 0) {
@@ -33,9 +38,16 @@ const Pagination = ({ pageInfo, pageOffset, setPageOffset }: Props) => {
   const pageButtonHandler = (e: React.MouseEvent<HTMLButtonElement>) => {
     if (e.target instanceof HTMLButtonElement) {
       const newPage = parseInt(e.target.value);
-      dispatch(setCurrentPage(newPage));
+      setCurrentPage(newPage);
     }
   };
+  //현재페이지 초기화
+  useEffect(() => {
+    return () => {
+      setCurrentPage(1);
+    };
+  }, []);
+
   return (
     <PaginationContainer>
       <ul>

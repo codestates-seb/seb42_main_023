@@ -78,7 +78,6 @@ const SearchBar: React.FC = () => {
     if (input[0] === '#') {
       validation();
     } else {
-      dispatch(setCurrentPage(1));
       //tag x keyword o
       //TODO: 서버 수정 후 테스트
       if (tag.length === 0 && input.length !== 0) {
