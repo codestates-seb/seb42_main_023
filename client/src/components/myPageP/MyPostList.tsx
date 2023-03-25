@@ -9,7 +9,7 @@ import { TagItem } from '../common/Tag';
 import { Link } from 'react-router-dom';
 import { membersPostListApi } from '../../api/memberapi';
 import { timeSince } from '../mainP/Timecalculator';
-import Pagination from '../mainP/Pagenation';
+import Pagination from '../common/Pagination';
 import { FaBookmark } from 'react-icons/fa';
 
 export interface Tags {
