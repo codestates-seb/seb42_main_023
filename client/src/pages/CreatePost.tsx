@@ -44,6 +44,8 @@ const CreatePost: React.FC = () => {
     ) {
       createPost(reqBody);
       alert('게시글이 생성되었습니다.');
+      navigate('/');
+      location.reload();
     } else {
       if (state.validation.titleErr !== '' || !state.postInput.title.length) {
         alert('제목을 다시 확인해 주세요.');
