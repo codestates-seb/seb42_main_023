@@ -93,7 +93,7 @@ public class MemberService {
     public Member deleteMember(String name) {
         Member deletedMember = findVerifiedMemberName(name);
 
-        deletedMember.deletedMember();
+        deletedMember.deletedMemberChangedState();
 
         DeleteResult deleteResult = DeleteResult.builder()
                 .deleteReason(SELF_DELETED)

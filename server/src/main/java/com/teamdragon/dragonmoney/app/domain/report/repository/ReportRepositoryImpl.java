@@ -4,6 +4,9 @@ import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.core.types.Path;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
+import com.teamdragon.dragonmoney.app.domain.comment.entity.Comment;
+import com.teamdragon.dragonmoney.app.domain.posts.entity.Posts;
+import com.teamdragon.dragonmoney.app.domain.reply.entity.Reply;
 import com.teamdragon.dragonmoney.app.domain.report.entity.Report;
 import com.teamdragon.dragonmoney.app.global.pagenation.QueryDslUtil;
 import lombok.RequiredArgsConstructor;
@@ -70,6 +73,7 @@ public class ReportRepositoryImpl implements ReportRepositoryCustom{
                 .distinct()
                 .where(report.handleState.eq(handledState))
                 .where(report.targetPosts.isNotNull())
+                .where(posts.state.eq(Posts.State.ACTIVE))
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
                 .fetch();
@@ -87,6 +91,7 @@ public class ReportRepositoryImpl implements ReportRepositoryCustom{
                     .distinct()
                     .where(report.handleState.eq(handledState))
                     .where(report.targetComment.isNotNull())
+                    .where(comment.state.eq(Comment.State.ACTIVE))
                     .offset(pageable.getOffset())
                     .limit(pageable.getPageSize())
                     .fetch();
@@ -104,6 +109,7 @@ public class ReportRepositoryImpl implements ReportRepositoryCustom{
                     .distinct()
                     .where(report.handleState.eq(handledState))
                     .where(report.targetReply.isNotNull())
+                    .where(reply.state.eq(Reply.State.ACTIVE))
                     .offset(pageable.getOffset())
                     .limit(pageable.getPageSize())
                     .fetch();
