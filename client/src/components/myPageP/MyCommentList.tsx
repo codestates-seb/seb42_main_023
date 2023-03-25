@@ -7,7 +7,6 @@ import TimeIcon from '../../assets/common/TimeIcon';
 import { Link } from 'react-router-dom';
 import { membersCommentsListApi } from '../../api/memberapi';
 import { timeSince } from '../mainP/Timecalculator';
-import { CommentType } from '../../types/PostDetail';
 import { PostListWrap } from './MyPostList';
 import Pagination from '../common/Pagination';
 
@@ -22,7 +21,21 @@ const MyCommentList = () => {
       page: currentPage,
     });
   const { data, isSuccess } = membersCommentsListquery;
-
+  interface CommentType {
+    commentId: number;
+    memberName: string;
+    memberImage: string;
+    createdAt: string;
+    modifiedAt: string;
+    isModified: boolean;
+    replyCount: number;
+    thumbupCount: number;
+    thumbdownCount: number; //thumbDownCount
+    isThumbup: boolean;
+    isThumbdown: boolean;
+    length: number;
+    comment: string; //content
+  }
   if (!isSuccess) {
     return <div>Loading...</div>;
   }
@@ -30,22 +43,22 @@ const MyCommentList = () => {
     <PostListWrap>
       <List>
         {isSuccess &&
-          data.map((comment: CommentType) => {
+          data.comments.map((item: CommentType) => {
             return (
-              <li key={comment.commentId}>
-                <div>{comment.content}</div>
+              <li key={item.commentId}>
+                <div>{item.comment}</div>
                 <CommentInfo>
                   <span>
                     <TimeIcon />
-                    {timeSince(comment.createdAt)}
+                    {timeSince(item.createdAt)}
                   </span>
                   <span>
                     <FaRegThumbsUp size={13} />
-                    {comment.thumbupCount}
+                    {item.thumbupCount}
                   </span>
                   <span>
                     <FaRegThumbsDown size={13} />
-                    {comment.thumbDownCount}
+                    {item.thumbdownCount}
                   </span>
                 </CommentInfo>
               </li>
