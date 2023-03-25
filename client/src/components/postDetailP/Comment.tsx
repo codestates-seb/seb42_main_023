@@ -181,7 +181,6 @@ const Comment: React.FC = () => {
       dispatch(setReportType(event.target.dataset.category!));
     }
   };
-  //TODO
   // 소개 페이지 오픈
   const IntroHandler = (event: React.MouseEvent<HTMLElement>) => {
     if (
@@ -271,13 +270,17 @@ const Comment: React.FC = () => {
                   <li className="created-time">{time} 전</li>
 
                   {'comment' in state &&
-                  ((comentSucccess && state.comment.isEdit !== undefined) ||
-                    null) &&
+                  state?.comment.isEdit !== undefined &&
                   state.comment.isEdit[idx] ? (
-                    // && loginUserName === comment.memberName
                     <li
                       className="comment-update"
                       id="edit"
+                      style={{
+                        display:
+                          loginUserName === comment?.memberName
+                            ? 'block'
+                            : 'none',
+                      }}
                       onClick={(): void => {
                         if (!contentEditInput.current?.value) {
                           dispatch(setIsEdit(idx));
@@ -296,6 +299,12 @@ const Comment: React.FC = () => {
                   ) : (
                     <li
                       className="comment-update"
+                      style={{
+                        display:
+                          loginUserName == comment?.memberName
+                            ? 'block'
+                            : 'none',
+                      }}
                       onClick={(): void => {
                         dispatch(setIsEdit(idx));
                       }}
@@ -321,6 +330,12 @@ const Comment: React.FC = () => {
                     className="comment-report"
                     data-category="comment"
                     data-commentId={String(comment.commentId)}
+                    style={{
+                      margin:
+                        loginUserName === comment?.memberName
+                          ? '3px 148px 0 5px'
+                          : '3px 228px 0 5px',
+                    }}
                     onClick={(event): void => {
                       dispatch(
                         setIsOpenReport(
