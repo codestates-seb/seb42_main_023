@@ -24,8 +24,7 @@ function HeaderDefault() {
   const { pathname } = useLocation();
   const dispatch = useAppDispatch();
   const auth = Cookies.get('Authorization');
-  const adim = 'ADMIN';
-  //localStorage.getItem('role');
+  const adim = localStorage.getItem('role');
 
   //TODO: 로그인시 유저데이터 저장
   useEffect(() => {
@@ -54,7 +53,7 @@ function HeaderDefault() {
         <HeaderNav />
         <Btns>
           {pathname === '/' && <SearchBtn />}
-          {/* {auth === undefined && <LoginBtn />} */}
+          {auth === undefined && <LoginBtn />}
           {auth !== undefined && adim !== 'ADMIN' && (
             <>
               <PostBtn /> <MediumProfileImg />
