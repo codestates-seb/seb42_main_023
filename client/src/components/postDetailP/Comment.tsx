@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { useParams } from 'react-router';
 import { useAppDispatch, useAppSelector } from '../../hooks';
 import styled from 'styled-components';
@@ -37,6 +37,7 @@ import {
 import { timeSince } from '../mainP/Timecalculator';
 
 const Comment: React.FC = () => {
+  const [page] = useState<number>(1);
   const dispatch = useAppDispatch();
   const state = useAppSelector(
     (
@@ -48,9 +49,7 @@ const Comment: React.FC = () => {
 
   const params = useParams();
   const postId = params.postId;
-  const page = 'comment' in state && state.comment?.page;
   const commentId = 'comment' in state && state.comment?.commentId;
-  console.log('commentId', commentId);
   // 댓글 조회
   const commentQuery = commentsApi.useGetCommentQuery({ postId, page });
   const comentSucccess = commentQuery.isSuccess;
@@ -61,7 +60,7 @@ const Comment: React.FC = () => {
 
   // 답글 조회
   const replyQuery = repliesApi.useGetReplyQuery({ commentId, page });
-  const { isSuccess, data } = replyQuery;
+  const { isSuccess, data, refetch } = replyQuery;
   const contentEditInput = useRef<HTMLInputElement>(null);
 
   // 댓글 좋아요 추가, 삭제
@@ -107,15 +106,17 @@ const Comment: React.FC = () => {
   }
   //TODO
   // 댓글 좋아요 클릭 함수
-  const commentLiikeHandler = (commentId: number): void => {
+  const commentLiikeHandler = (comment: CommentType): void => {
+    const commentId = comment.commentId;
     // 좋아요만 있는 경우
-    if (commentQuery.data?.isThumbup && !commentQuery.data?.isThumbdown) {
+    if (comment?.isThumbup && !comment?.isThumbdown) {
       console.log('좋아요 삭제');
       removeThumbUp({ commentId });
       return;
     }
     // 싫어요만 있는 경우
-    if (!commentQuery.data?.isThumbup && commentQuery.data?.isThumbdown) {
+    if (!comment?.isThumbup && comment?.isThumbdown) {
+      const commentId = comment.commentId;
       console.log('싫어요 삭제 후 좋아요 추가');
       removeThumbDown({ commentId });
       setTimeout(() => {
@@ -124,7 +125,7 @@ const Comment: React.FC = () => {
       return;
     }
     // 둘 다 없는 경우
-    if (!commentQuery.data?.isThumbdown && !commentQuery.data?.isThumbdown) {
+    if (!comment?.isThumbdown && !comment?.isThumbdown) {
       console.log('좋아요 추가');
       addThumbUp({ commentId });
       return;
@@ -132,9 +133,10 @@ const Comment: React.FC = () => {
   };
 
   // 댓글 싫어요 클릭 함수
-  const commentDislikeHandler = (commentId: number): void => {
+  const commentDislikeHandler = (comment: CommentType): void => {
+    const commentId = comment.commentId;
     // 좋아요만 있는 경우
-    if (commentQuery.data?.isThumbup && !commentQuery.data?.isThumbdown) {
+    if (comment.isThumbup && !comment?.isThumbdown) {
       // 좋아요 제거, 싫어요 추가
       console.log('좋아요 삭제 후 싫어요 추가');
       removeThumbUp({ commentId });
@@ -144,22 +146,15 @@ const Comment: React.FC = () => {
       return;
     }
     // 싫어요만 있는 경우
-    if (!commentQuery.data?.isThumbup && commentQuery.data?.isThumbdown) {
+    if (!comment?.isThumbup && comment?.isThumbdown) {
       // 싫어요 제거
       console.log('싫어요 삭제');
       removeThumbDown({ commentId });
       return;
     }
-    // 좋아요가  없는 경우
-    if (!commentQuery.data?.isThumup) {
-      if (!commentQuery.data?.isThumbdown) {
-        addThumbDown({ commentId });
-      } else {
-        return;
-      }
-    }
+
     // 둘 다 없는 경우
-    if (!commentQuery.data?.isThumbup && !commentQuery.data?.isThumbdown) {
+    if (!comment?.isThumbup && !comment?.isThumbdown) {
       // 싫어요 추가
       console.log('싫어요 추가');
       addThumbDown({ commentId });
@@ -212,6 +207,7 @@ const Comment: React.FC = () => {
 
   useEffect(() => {
     // 답글 데이터가 변경될 때마다 총 답글 데이터 반영
+    console.log(replyQuery.data);
     dispatch(setTotalReplies(replyQuery.data?.replies || []));
   }, [data]);
   return (
@@ -232,7 +228,8 @@ const Comment: React.FC = () => {
           // 시간 계산
           const time = timeSince(comment.createdAt);
           // 답글 수정 여부
-          const commentIsEdit = comment.modifiedAt !== '';
+          const commentIsEdit =
+            comment.modifiedAt !== comment.createdAt ? true : false;
 
           return (
             <>
@@ -339,19 +336,19 @@ const Comment: React.FC = () => {
                     신고
                   </li>
                   <button
-                    onClick={() => {
-                      commentLiikeHandler(comment.commentId);
-                    }}
+                    onClick={_.debounce(() => {
+                      commentLiikeHandler(comment);
+                    }, 500)}
                   >
                     <LikeIcon checked={comment.isThumbup} />
                   </button>
                   <li className="comment-likes">{comment.thumbupCount}</li>
                   <button
-                    onClick={() => {
-                      commentDislikeHandler(comment.commentId);
-                    }}
+                    onClick={_.debounce(() => {
+                      commentDislikeHandler(comment);
+                    }, 500)}
                   >
-                    <DislikeIcon checked={comment.isThumbDown} />
+                    <DislikeIcon checked={comment.isThumbdown} />
                   </button>
                   <li className="comment-dislikes">{comment.thumbDownCount}</li>
                 </ul>
@@ -380,7 +377,7 @@ const Comment: React.FC = () => {
                     dispatch(setIsOpened(idx));
                   }}
                 >
-                  답글 {comment.replyCount}
+                  답글
                 </ReplyBtn>
               </CommentContent>
               {/* {isSuccess && 'reply' in state && state.reply.isOpened[idx] ? ( */}
@@ -468,10 +465,12 @@ const CommentContainer = styled.div`
     cursor: pointer;
   }
   .comment-likes {
+    width: 30px;
     font-size: 16px;
     margin: 3px 15px 0 15px;
   }
   .comment-dislikes {
+    width: 30px;
     font-size: 16px;
     margin: 3px 15px 0 15px;
   }

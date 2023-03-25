@@ -22,7 +22,6 @@ export const recomendedPostsApi = createApi({
     getRomendedPosts: builder.query({
       query: ({ recommend }) => `posts/${recommend}`,
       providesTags: (result, error, arg) => {
-        console.log(result, error, arg);
         return [{ type: 'RecomendedPosts', id: arg.recommend }];
       },
     }),
@@ -53,19 +52,6 @@ export const postsApi = createApi({
         console.log('test');
         return [{ type: 'Post', id: 'post' }];
       },
-
-      //TODO  req, res 관리
-      transformResponse: (response, meta, arg) => {
-        const headers = meta?.response?.headers;
-        console.log('content-type', headers?.get('x-powered-by'));
-        return response;
-      },
-
-      transformErrorResponse: (
-        response: { status: string | number },
-        meta,
-        arg,
-      ) => response.status,
     }),
 
     // 게시글 추가

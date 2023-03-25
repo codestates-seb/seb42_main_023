@@ -16,7 +16,7 @@ const CommentInput: React.FC = () => {
   const postId = params.postId;
   const page = 'comment' in state && state.comment?.page;
   const postQuery = postsApi.useGetPostQuery({ postId });
-  const commentQuery = commentsApi.useGetCommentQuery({ page, postId });
+  const { refetch } = postQuery;
 
   // 댓글 추가 mutation
   const commetMutation = commentsApi.useSetCommentMutation();
@@ -29,6 +29,7 @@ const CommentInput: React.FC = () => {
       content: commentRef.current?.value,
     });
     dispatch(addCommentEdit(false));
+    refetch();
     commentRef.current!.value = '';
   };
 
