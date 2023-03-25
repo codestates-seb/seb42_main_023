@@ -25,6 +25,8 @@ public interface PostsRepositoryCustom {
     Page<Posts> findPostsListByPage(Pageable pageable);
     // 목록 조회 : 검색
     Page<Posts> findPostsListBySearch(String keyword, String[] tagNames, Pageable pageable);
+    // 목록 조회 : 검색 : 태그 없는경우
+    Page<Posts> findPostsListBySearchWithoutTagNames(String keyword, Pageable pageable);
     // 목록 조회 : 회원 이름
     Page<Posts> findPostsListByMemberName(String memberName, Pageable pageable);
 

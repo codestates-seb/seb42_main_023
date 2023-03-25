@@ -110,18 +110,18 @@ public class PostsDto {
     @Getter
     public static class BestAwardsRes {
         private PageInfo pageInfo;
-        private List<PostsListElement> bestAwards;
+        private List<PostsListElement> posts;
 
         public BestAwardsRes(Page<Posts> postsPage, String orderBy) {
             this.pageInfo = PageInfo.of(postsPage, orderBy);
 
             List<Posts> postsList = postsPage.getContent();
             if (postsList != null && !postsList.isEmpty()) {
-                this.bestAwards = postsList.stream()
+                this.posts = postsList.stream()
                         .map(PostsListElement::new)
                         .collect(Collectors.toList());
             } else {
-                this.bestAwards = new ArrayList<>();
+                this.posts = new ArrayList<>();
             }
         }
     }
@@ -129,18 +129,18 @@ public class PostsDto {
     @Getter
     @NoArgsConstructor
     public static class WeeklyPopularRes {
-        private List<PostsListElement> weeklyPopular;
+        private List<PostsListElement> posts;
         private LocalDateTime start;
         private LocalDateTime end;
 
         @Builder
         public WeeklyPopularRes(List<Posts> posts, LocalDateTime start, LocalDateTime end) {
             if (posts != null && !posts.isEmpty()) {
-                this.weeklyPopular = posts.stream()
+                this.posts = posts.stream()
                         .map(PostsListElement::new)
                         .collect(Collectors.toList());
             } else {
-                this.weeklyPopular = new ArrayList<>();
+                this.posts = new ArrayList<>();
             }
             this.start = start;
             this.end = end;

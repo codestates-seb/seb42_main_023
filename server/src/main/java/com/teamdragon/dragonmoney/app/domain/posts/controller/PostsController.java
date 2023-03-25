@@ -109,7 +109,7 @@ public class PostsController {
                                                                     @RequestParam String orderby) {
         Posts.OrderBy orderBy = checkOrderBy(orderby);
         Page<Posts> postsList = postsService.findPostsListByTagsAndTitle(keyword, tags, page, orderBy);
-        PostsDto.PostsListRes response = new PostsDto.PostsListRes(postsList, orderBy.getOrderBy());
+        PostsDto.PostsListRes response = new PostsDto.PostsListRes(postsList, orderby);
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
