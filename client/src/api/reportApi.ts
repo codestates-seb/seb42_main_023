@@ -40,6 +40,15 @@ export const reportApi = apiSlice
           replyId,
           reporterName,
         }) => {
+          console.log({
+            reportReason,
+            description,
+            targetType,
+            postId,
+            commentId,
+            replyId,
+            reporterName,
+          });
           return {
             url: `reports`,
             method: 'POST',

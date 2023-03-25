@@ -46,7 +46,7 @@ const Comment: React.FC = () => {
       return state;
     },
   );
-
+  const loginUserName = window.localStorage.getItem('name');
   const params = useParams();
   const postId = params.postId;
   const commentId = 'comment' in state && state.comment?.commentId;
@@ -246,8 +246,6 @@ const Comment: React.FC = () => {
                       data-commentId={comment.commentId}
                     ></img>
                   </li>
-                  {/* TODO */}
-
                   {'comment' in state &&
                   state.comment.isOpeneIntro &&
                   comment?.commentId === state.comment?.commentId ? (
@@ -262,14 +260,10 @@ const Comment: React.FC = () => {
                           </li>
                         </ul>
                       </IntroInfo>
-                      <label className="introduction">
-                        {/* TODO 수정 필요*/}
-                        {comment.content}
-                      </label>
+                      <label className="introduction">{comment.content}</label>
                       <div className="intro-moreInfo">더보기 》</div>
                     </IntorductionContainer>
                   ) : null}
-                  {/* TODO */}
 
                   <li className="nickname">{comment.memberName}</li>
                   <TimeIcon />
@@ -280,6 +274,7 @@ const Comment: React.FC = () => {
                   ((comentSucccess && state.comment.isEdit !== undefined) ||
                     null) &&
                   state.comment.isEdit[idx] ? (
+                    // && loginUserName === comment.memberName
                     <li
                       className="comment-update"
                       id="edit"
@@ -308,18 +303,20 @@ const Comment: React.FC = () => {
                       수정
                     </li>
                   )}
+                  {loginUserName === comment.memberName ? (
+                    <li
+                      className="comment-delete"
+                      id="댓글"
+                      onClick={(event: React.MouseEvent<HTMLElement>): void => {
+                        dispatch(setCommentId(comment.commentId));
+                        deleteTypeChecker(event);
+                        confirmDeleteHandler();
+                      }}
+                    >
+                      삭제
+                    </li>
+                  ) : null}
 
-                  <li
-                    className="comment-delete"
-                    id="댓글"
-                    onClick={(event: React.MouseEvent<HTMLElement>): void => {
-                      dispatch(setCommentId(comment.commentId));
-                      deleteTypeChecker(event);
-                      confirmDeleteHandler();
-                    }}
-                  >
-                    삭제
-                  </li>
                   <li
                     className="comment-report"
                     data-category="comment"

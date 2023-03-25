@@ -15,78 +15,18 @@ const CreatePost: React.FC = () => {
   const [createPost] = postsApi.useSetPostMutation();
   const titleValue = state.postInput.title;
   const bodyValue = state.postInput.body;
-  const currentImg = state.post.currentImg;
+  const addedImg = state.post.addedImg;
   const removedImg = state.post.removedImg;
   const tag = state.postInput.tag;
   const tagNames = tag.map((tagName) => {
     return { tagName };
   });
 
-  // const arr1 = [
-  //   { id: 1, image: '1' },
-  //   { id: 2, image: '2' },
-  //   { id: 3, image: '3' },
-  // ];
-  // const arr2 = [
-  //   { id: 1, image: '1' },
-  //   { id: 2, image: '2' },
-  // ];
-  // const result = _.differenceBy(arr1, arr2, 'image');
-  // console.log(arr1, arr2);
-  // console.log(result);
-
-  //TODO image 배열을 객체형태로 바꾸어서 넣어줘야한다.
-  //TODO imageId 값과 name은 서버에 업로드된 시점에 응답으로 요청이 오면 처리 해줘야한다.
-  // 	"saveImages" : {
-  //     "addedImages" : [
-  //         {
-  //             "imageId" : 123,
-  //             "imageName" : "imageFileName"
-  //         },
-  //         {
-  //             "imageId" : 123,
-  //             "imageName" : "imageFileName"
-  //         }
-  //     ],
-  //     "removedImages" : [
-  //         {
-  //             "imageId" : 123,
-  //             "imageName" : "imageFileName"
-  //         },
-  //         {
-  //             "imageId" : 123,
-  //             "imageName" : "imageFileName"
-  //         }
-  //     ]
-  // }
-
-  // 게시글 생성시 요청 Body
-  // addedImages: currentImg,
-  // removedImages: removedImg,
-
   const reqBody = {
-    // saveImages: {
-    //   addedImages: [
-    //     {
-    //       imageId: 123,
-    //       imageName: 'imageFileName',
-    //     },
-    //     {
-    //       imageId: 123,
-    //       imageName: 'imageFileName',
-    //     },
-    //   ],
-    //   removedImages: [
-    //     {
-    //       imageId: 123,
-    //       imageName: 'imageFileName',
-    //     },
-    //     {
-    //       imageId: 123,
-    //       imageName: 'imageFileName',
-    //     },
-    //   ],
-    // },
+    saveImages: {
+      addedImages: addedImg,
+      removedImages: removedImg,
+    },
     title: titleValue,
     content: bodyValue,
     tags: tagNames,

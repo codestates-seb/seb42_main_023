@@ -37,7 +37,7 @@ const Reply: React.FC<ReplyProps> = ({ replyInfo, idx }: ReplyProps) => {
       return state;
     },
   );
-
+  const loginUserName = window.localStorage.getItem('name');
   const commentId = 'comment' in state && state.comment?.commentId;
   const replyId = 'reply' in state && state.reply?.replyId;
   const page = ('reply' in state && state.reply?.page) || 1;
