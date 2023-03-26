@@ -12,4 +12,5 @@ public interface MemberRepository extends JpaRepository<Member, Long> {
     Optional<Member> findByTempName(String tempName);
     Optional<Member> findByTempAccessToken(String tempAccessToken);
     Optional<Member> findByNameDuplicateCheckAndEmailAndOauthkind(Boolean isDuplicateCheck, String email, String oauthkind);
+    Optional<Member> findByEmailAndOauthkindAndState(String email, String oauthkind, Member.MemberState state);
 }

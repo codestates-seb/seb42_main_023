@@ -11,11 +11,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.security.sasl.AuthenticationException;
 import java.util.List;
 import java.util.Optional;
-
-import static com.teamdragon.dragonmoney.app.domain.delete.entity.DeleteResult.Reason.SELF_DELETED;
 
 @Service
 @Transactional
@@ -26,10 +23,9 @@ public class MemberService {
 
     //oauth2 로그인 할 때 존재하는 회원인지 판별
     public Boolean checkOAuthMemberName(String email) {
-        //사용자 닉네임 설정 여부, 이메일, oauthkind를 같이 조회
-        Optional<Member> optionalNameDuplicateCheck = memberRepository.findByNameDuplicateCheckAndEmailAndOauthkind(true, email, OAUTH2_KIND);
+        Optional<Member> optionalNameDuplicateCheck
+                = memberRepository.findByNameDuplicateCheckAndEmailAndOauthkind(true, email, OAUTH2_KIND);
 
-        //회원이 있을 때
         if (optionalNameDuplicateCheck.isPresent())
             return true;
 
@@ -78,7 +74,7 @@ public class MemberService {
     //마이 페이지 자기소개 수정
     public Member updateMemberIntro(String name, Member member) {
         Member updatedMember = findVerifiedMemberName(name);
-        updatedMember.changeMemberIntro(member.getIntro());
+        updatedMember.updatedMemberIntro(member.getIntro());
         updatedMember.isModifiedNow();
 
         return memberRepository.save(updatedMember);
@@ -93,13 +89,12 @@ public class MemberService {
     public Member deleteMember(String name) {
         Member deletedMember = findVerifiedMemberName(name);
 
-        deletedMember.deletedMemberChangedState();
-
         DeleteResult deleteResult = DeleteResult.builder()
-                .deleteReason(SELF_DELETED)
+                .deleteReason(DeleteResult.Reason.SELF_DELETED)
                 .build();
+        deletedMember.deletedMemberChangedState(deleteResult);
 
-        deletedMember.setDeleteResult(deleteResult);
+
 
         return memberRepository.save(deletedMember);
     }
@@ -117,6 +112,16 @@ public class MemberService {
 
         return optionalMember
                 .orElseThrow( () -> new BusinessLogicException(BusinessExceptionCode.USER_NOT_FOUND));
+    }
+
+    public Boolean checkDeletedName(String email) {
+        Optional<Member> optionalDeletedCheck
+                = memberRepository.findByEmailAndOauthkindAndState(email, OAUTH2_KIND, Member.MemberState.DELETED);
+
+        if (optionalDeletedCheck.isPresent())
+            return true;
+
+        return false;
     }
 
     // 작성자 확인

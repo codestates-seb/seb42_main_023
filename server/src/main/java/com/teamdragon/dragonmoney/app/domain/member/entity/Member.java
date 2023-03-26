@@ -33,7 +33,6 @@ public class Member extends BaseTimeEntity {
     private String tempName;
 
     @Column
-    @Setter
     private String tempAccessToken;
 
     @Email
@@ -93,16 +92,25 @@ public class Member extends BaseTimeEntity {
         }
     }
 
+    public void saveTempAccessToken(String tempAccessToken) {
+        this.tempAccessToken = tempAccessToken;
+    }
+
+    public void changedMemberState(MemberState memberState) {
+        this.state = memberState;
+    }
+
     public void saveRefreshToken(RefreshToken refreshToken) {
         this.refreshToken = refreshToken;
     }
 
-    public void changeMemberIntro(String intro) {
+    public void updatedMemberIntro(String intro) {
         this.intro = intro;
     }
 
-    public void deletedMemberChangedState() {
+    public void deletedMemberChangedState(DeleteResult deleteResult) {
         this.state = MemberState.DELETED;
         this.nameDuplicateCheck = false;
+        this.deleteResult = deleteResult;
     }
 }
