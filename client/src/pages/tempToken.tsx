@@ -24,12 +24,6 @@ const TempToken: React.FC = () => {
         // 유저 정보를 로컬스토리지에 저장
         const { name, picture, role } = payload;
 
-        //디버깅용 콘솔 추가
-        console.log('payload', payload);
-        console.log('name:', name);
-        console.log('name:', picture);
-        console.log('name:', role);
-
         localStorage.setItem('name', name);
         localStorage.setItem('picture', picture);
         localStorage.setItem('role', role);
