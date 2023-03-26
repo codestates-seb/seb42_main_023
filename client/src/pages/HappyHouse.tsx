@@ -81,6 +81,18 @@ const HappyHouse: React.FC = () => {
               <th>공고마감일</th>
             </tr>
           </thead>
+          <tbody>
+            <tr>
+              <td>공고중</td>
+              <td>세종특별자치시</td>
+              <td>행복도시3-1M5블록 10년 공공임대주택리츠 </td>
+              <td>
+                <SeeDetailBtn>보기</SeeDetailBtn>
+              </td>
+              <td>2023.01.23</td>
+              <td>2023.07.23</td>
+            </tr>
+          </tbody>
           {/* <tbody>
           {houseList.map(house, idx) => {
             <tr key={idx}>
