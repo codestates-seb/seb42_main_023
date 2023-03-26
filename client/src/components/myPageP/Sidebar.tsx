@@ -1,15 +1,16 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import styled from 'styled-components';
 import { useAppDispatch, useAppSelector } from '../../hooks';
 import { setFilter } from '../../slices/mypageSlice';
 import { SidebarBtn } from '../common/Btn';
 import { membersApi } from '../../api/memberapi';
 import { setPostQuery, setCommentQuery } from '../../slices/headerSlice';
+import axios from 'axios';
 
 function Sidebar() {
   const dispatch = useAppDispatch();
   const { filter } = useAppSelector(({ mypage }) => mypage);
-  const { query, memberName } = useAppSelector(({ header }) => header);
+  const { memberName } = useAppSelector(({ header }) => header);
   const membersQuery = membersApi.useGetMemberQuery({
     name: memberName,
   });
@@ -40,6 +41,12 @@ function Sidebar() {
     dispatch(setFilter('북마크'));
     dispatch(setPostQuery(memberName));
   };
+
+  useEffect(() => {
+    return () => {
+      setFilter('작성한 글');
+    };
+  }, []);
 
   return (
     <Nav>
