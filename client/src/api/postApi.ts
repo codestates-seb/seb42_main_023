@@ -56,22 +56,22 @@ export const postsApi = createApi({
 
     // 게시글 추가
     setPost: builder.mutation({
-      query: ({ saveImages, title, content, tags }) => {
+      query: ({ saveImages, title, content, tagNames }) => {
         return {
           url: `posts`,
           method: 'POST',
-          body: { saveImages, title, content, tags },
+          body: { saveImages, title, content, tagNames },
         };
       },
       invalidatesTags: [{ type: 'Post', id: 'post' }],
     }),
     // 게시글 수정
     updatePost: builder.mutation({
-      query: ({ postId, title, content }) => {
+      query: ({ postId, saveImages, title, content, tagNames }) => {
         return {
           url: `posts/${postId}`,
           method: 'PATCH',
-          body: { title, content },
+          body: { saveImages, title, content, tagNames },
         };
       },
       invalidatesTags: [{ type: 'Post', id: 'post' }],
