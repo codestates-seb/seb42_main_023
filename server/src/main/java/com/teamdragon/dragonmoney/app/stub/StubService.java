@@ -4,6 +4,7 @@ import com.teamdragon.dragonmoney.app.domain.comment.entity.Comment;
 import com.teamdragon.dragonmoney.app.domain.comment.repository.CommentRepository;
 import com.teamdragon.dragonmoney.app.domain.image.entity.Image;
 import com.teamdragon.dragonmoney.app.domain.image.repository.ImageRepository;
+import com.teamdragon.dragonmoney.app.domain.information.information.house.happyhouse.service.HappyHouseService;
 import com.teamdragon.dragonmoney.app.domain.member.entity.Member;
 import com.teamdragon.dragonmoney.app.domain.member.repository.MemberRepository;
 import com.teamdragon.dragonmoney.app.domain.popular.entity.BestAwards;
@@ -39,6 +40,7 @@ public class StubService {
     private final ReplyRepository replyRepository;
     private final ThumbdownRepository thumbdownRepository;
     private final HousePriceService housePriceService;
+    private final HappyHouseService happyHouseService;
 
     private final String MEMBER_IMAGE_URL = "https://preview.free3d.com/img/2018/03/2269226802687772611/8mk0tyu6.jpg";
     private final String POSTS_IMAGE_URL = "https://cdn.dribbble.com/userupload/2585189/file/original-83a7c6bde4d8c033d208318966e913d7.png?compress=1&resize=752x";
@@ -48,6 +50,10 @@ public class StubService {
     private final int IMAGE_NUMBER_IN_POSTS = 3;
     private final int COMMENT_NUMBER_IN_POSTS = 20;
     private final int REPLY_NUMBER_IN_COMMENT = 20;
+
+    public void makeHappyHouseData() {
+        happyHouseService.findHappyHouseByAreas();
+    }
 
     public void makeHousePriceData() {
         housePriceService.collectPriceByAreas();
