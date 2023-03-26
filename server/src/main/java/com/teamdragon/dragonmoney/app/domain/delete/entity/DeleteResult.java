@@ -47,7 +47,8 @@ public class DeleteResult {
     public enum Reason {
         SELF_DELETED("작성자 본인에 의한 삭제"),
         DELETED_BY_REPORT("신고에 의한 삭제"),
-        DELETED_BY_PARENT("상위객체 삭제로 인한 삭제");
+        DELETED_BY_PARENT("상위객체 삭제로 인한 삭제"),
+        DELETED_BY_MEMBER_REMOVE("회원 탈퇴로 인한 삭제");
 
         private String reason;
 

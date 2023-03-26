@@ -100,7 +100,11 @@ public class MyPageDto {
 
         public MyPagePostsListElement(Posts posts) {
             this.postId = posts.getId();
-            this.title = posts.getTitle();
+            if (posts.getState() == Posts.State.ACTIVE) {
+                this.title = posts.getContent();
+            } else {
+                this.title = posts.getState().getMessage();
+            }
             this.memberName = posts.getWriter().getName();
             this.createdAt = posts.getCreatedAt();
             this.viewCount = posts.getViewCount();
@@ -152,7 +156,11 @@ public class MyPageDto {
 
         public MyPageCommentListElement(Comment comment) {
             this.commentId = comment.getId();
-            this.comment = comment.getContent();
+            if (comment.getState() == Comment.State.ACTIVE) {
+                this.comment = comment.getContent();
+            } else {
+                this.comment = comment.getState().getMessage();
+            }
             this.postId = comment.getPosts().getId();
             this.memberName = comment.getWriter().getName();
             this.createdAt = comment.getCreatedAt();

@@ -9,4 +9,5 @@ public interface ReportRepositoryCustom {
     String findReportCommentWriter(Long reportId);
     String findReportReplyWriter(Long reportId);
     Page<Report> findStandbyReportListByHandledState(String orderby, Report.State handledState, Pageable pageable);
+    Page<Report> findDeletedReportListByHandledState(String orderby, Report.State handledState, Pageable pageable);
 }

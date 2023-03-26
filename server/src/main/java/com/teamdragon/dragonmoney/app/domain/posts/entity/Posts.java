@@ -87,7 +87,8 @@ public class Posts extends BaseTimeEntity implements ThumbCountable {
     // 게시글 상태
     public enum State {
         ACTIVE("활성", "활성상태 입니다."),
-        DELETED("삭제", "삭제된 댓글입니다.");
+        DELETED("삭제", "삭제된 게시글입니다."),
+        REPORTED("삭제", "신고된 게시글입니다.");
 
         @Getter
         private final String state;
@@ -188,6 +189,11 @@ public class Posts extends BaseTimeEntity implements ThumbCountable {
 
     public void changeStateToDeleted(DeleteResult deleteResult){
         this.state = State.DELETED;
+        if(deleteResult.getDeleteReason() == DeleteResult.Reason.DELETED_BY_REPORT) {
+            this.state = Posts.State.REPORTED;
+        } else {
+            this.state = Posts.State.DELETED;
+        }
         this.deleteResult = deleteResult;
     }
 

@@ -75,7 +75,7 @@ public class ReplyService implements ThumbCountService {
     public void removeReportReply(Reply reply) {
         reply.getComment().minusReplyCount();
         DeleteResult deleteResult
-                = DeleteResult.builder().deleteReason(DeleteResult.Reason.SELF_DELETED).build();
+                = DeleteResult.builder().deleteReason(DeleteResult.Reason.DELETED_BY_REPORT).build();
         reply.changeStateToDeleted(deleteResult);
         replyRepository.save(reply);
     }

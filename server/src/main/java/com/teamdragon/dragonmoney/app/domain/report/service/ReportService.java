@@ -107,7 +107,7 @@ public class ReportService {
 
         if (orderBy.equals(POST_ENG) || orderBy.equals(COMMENT_ENG) || orderBy.equals(REPLY_ENG) || orderBy.equals(All_ENG)){
             Pageable pageable = PageRequest.of(page - 1, PAGE_ELEMENT_SIZE, Sort.by(SORT_PROPERTY).descending());
-            return reportRepository.findStandbyReportListByHandledState(orderBy, Report.State.DELETED, pageable);
+            return reportRepository.findDeletedReportListByHandledState(orderBy, Report.State.DELETED, pageable);
         } else {
             throw new BusinessLogicException(BusinessExceptionCode.BAD_REQUEST);
         }

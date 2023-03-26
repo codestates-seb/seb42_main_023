@@ -61,9 +61,6 @@ public class CommentService implements ThumbCountService {
         DeleteResult deleteResult
                 = DeleteResult.builder().deleteReason(DeleteResult.Reason.SELF_DELETED).build();
         findComment.changeStateToDeleted(deleteResult);
-        // 답글 삭제
-        replyService.removeCommentsByParent(findComment.getReplies());
-        commentRepository.save(findComment);
         return commentId;
     }
 

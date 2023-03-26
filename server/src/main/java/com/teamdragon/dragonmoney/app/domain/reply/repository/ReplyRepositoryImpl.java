@@ -49,7 +49,6 @@ public class ReplyRepositoryImpl implements ReplyRepositoryCustom{
                 .from(reply)
                 .leftJoin(reply.writer, member)
                 .leftJoin(reply.comment, comment)
-                .where(reply.state.eq(Reply.State.ACTIVE))
                 .where(reply.comment.id.eq(commentId))
                 .orderBy(orders)
                 .offset(pageable.getOffset())
@@ -60,7 +59,6 @@ public class ReplyRepositoryImpl implements ReplyRepositoryCustom{
                 .select(reply.count())
                 .distinct()
                 .from(reply)
-                .where(reply.state.eq(Reply.State.ACTIVE))
                 .where(reply.comment.id.eq(commentId));
 
         return PageableExecutionUtils.getPage(content, pageable, countQuery::fetchOne);
@@ -91,7 +89,6 @@ public class ReplyRepositoryImpl implements ReplyRepositoryCustom{
                 .from(reply)
                 .leftJoin(reply.writer, member)
                 .leftJoin(reply.comment, comment)
-                .where(reply.state.eq(Reply.State.ACTIVE))
                 .where(reply.comment.id.eq(commentId))
                 .orderBy(orders)
                 .offset(pageable.getOffset())
@@ -102,7 +99,6 @@ public class ReplyRepositoryImpl implements ReplyRepositoryCustom{
                 .select(reply.count())
                 .distinct()
                 .from(reply)
-                .where(reply.state.eq(Reply.State.ACTIVE))
                 .where(reply.comment.id.eq(commentId));
 
         return PageableExecutionUtils.getPage(content, pageable, countQuery::fetchOne);

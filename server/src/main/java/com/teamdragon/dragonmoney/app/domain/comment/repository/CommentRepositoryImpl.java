@@ -43,7 +43,6 @@ public class CommentRepositoryImpl implements CommentRepositoryCustom {
                 .from(comment)
                 .leftJoin(comment.writer, member)
                 .leftJoin(comment.posts, posts)
-                .where(comment.state.eq(Comment.State.ACTIVE))
                 .where(comment.posts.id.eq(postsId))
                 .orderBy(orders)
                 .offset(pageable.getOffset())
@@ -54,7 +53,6 @@ public class CommentRepositoryImpl implements CommentRepositoryCustom {
                 .select(comment.count())
                 .distinct()
                 .from(comment)
-                .where(comment.state.eq(Comment.State.ACTIVE))
                 .where(comment.posts.id.eq(postsId));
 
         return PageableExecutionUtils.getPage(content, pageable, countQuery::fetchOne);
@@ -86,7 +84,6 @@ public class CommentRepositoryImpl implements CommentRepositoryCustom {
                 .from(comment)
                 .leftJoin(comment.writer, member)
                 .leftJoin(comment.posts, posts)
-                .where(comment.state.eq(Comment.State.ACTIVE))
                 .where(comment.posts.id.eq(postsId))
                 .orderBy(orders)
                 .offset(pageable.getOffset())
@@ -97,7 +94,6 @@ public class CommentRepositoryImpl implements CommentRepositoryCustom {
                 .select(comment.count())
                 .distinct()
                 .from(comment)
-                .where(comment.state.eq(Comment.State.ACTIVE))
                 .where(comment.posts.id.eq(postsId));
 
         return PageableExecutionUtils.getPage(content, pageable, countQuery::fetchOne);
@@ -110,8 +106,7 @@ public class CommentRepositoryImpl implements CommentRepositoryCustom {
 
         List<Comment> content = queryFactory
                 .selectFrom(comment).distinct()
-                .where(comment.state.eq(Comment.State.ACTIVE))
-                .where(comment.writer.name.eq(memberName))
+                .where(comment.state.notIn(Comment.State.DELETED), comment.writer.name.eq(memberName))
                 .orderBy(orders)
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
@@ -119,8 +114,7 @@ public class CommentRepositoryImpl implements CommentRepositoryCustom {
         JPAQuery<Long> countQuery = queryFactory
                 .select(comment.count())
                 .from(comment)
-                .where(comment.state.eq(Comment.State.ACTIVE))
-                .where(comment.writer.name.eq(memberName));
+                .where(comment.state.notIn(Comment.State.DELETED), comment.writer.name.eq(memberName));
 
         return PageableExecutionUtils.getPage(content, pageable, countQuery::fetchOne);
     }
@@ -135,8 +129,7 @@ public class CommentRepositoryImpl implements CommentRepositoryCustom {
                 .from(thumbup)
                 .leftJoin(thumbup.parentComment, comment)
                 .leftJoin(thumbup.member, member)
-                .where(comment.state.eq(Comment.State.ACTIVE))
-                .where(comment.writer.name.eq(memberName))
+                .where(comment.state.notIn(Comment.State.DELETED), comment.writer.name.eq(memberName))
                 .orderBy(orders)
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
@@ -144,8 +137,7 @@ public class CommentRepositoryImpl implements CommentRepositoryCustom {
         JPAQuery<Long> countQuery = queryFactory
                 .select(comment.count())
                 .from(comment)
-                .where(comment.state.eq(Comment.State.ACTIVE))
-                .where(comment.writer.name.eq(memberName));
+                .where(comment.state.notIn(Comment.State.DELETED), comment.writer.name.eq(memberName));
 
         return PageableExecutionUtils.getPage(content, pageable, countQuery::fetchOne);
     }
@@ -156,8 +148,7 @@ public class CommentRepositoryImpl implements CommentRepositoryCustom {
         Long memberCommentCount = queryFactory
                 .select(comment.count())
                 .from(comment)
-                .where(comment.state.eq(Comment.State.ACTIVE))
-                .where(comment.writer.name.eq(memberName))
+                .where(comment.state.notIn(Comment.State.DELETED), comment.writer.name.eq(memberName))
                 .fetchOne();
         return memberCommentCount;
     }
@@ -168,9 +159,8 @@ public class CommentRepositoryImpl implements CommentRepositoryCustom {
         Long memberPostsCount = queryFactory
                 .select(thumbup.count())
                 .from(thumbup)
-                .where(thumbup.parentComment.state.eq(Comment.State.ACTIVE))
-                .where(thumbup.member.name.eq(memberName))
-                .where(thumbup.parentComment.id.isNotNull())
+                .join(thumbup.parentComment, comment)
+                .where(comment.state.notIn(Comment.State.DELETED), thumbup.member.name.eq(memberName), thumbup.parentComment.id.isNotNull())
                 .fetchOne();
         return memberPostsCount;
     }
