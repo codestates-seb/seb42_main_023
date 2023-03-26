@@ -16,7 +16,8 @@ const postSlice = createSlice({
     reportType: undefined,
     currentImg: undefined,
     removedImg: undefined,
-    totalImg: undefined,
+    totalImg: [],
+    remainImg: undefined,
     addedImg: [],
     isOpeneIntro: false,
   },
@@ -76,9 +77,13 @@ const postSlice = createSlice({
     setRemovedImg: (state, action: PayloadAction<Array<string>>): void => {
       (state.removedImg as unknown) = action.payload;
     },
+    // 남아있는 이미지
+    setRemaindImg: (state, action: PayloadAction<Array<object>>): void => {
+      (state.remainImg as unknown) = action.payload;
+    },
     // 전체 이미지
-    setTotalmg: (state, action: PayloadAction<Array<string>>): void => {
-      (state.removedImg as unknown) = action.payload;
+    setTotalmg: (state, action: PayloadAction<object>): void => {
+      (state.totalImg! as Array<object>).push(action.payload);
     },
     //추가된 게시물 이미지(삭제된 이미지 포함)
     setAddedImg: (state, action: PayloadAction<object>): void => {
@@ -106,6 +111,7 @@ export const {
   setReportType,
   setCurrentImg,
   setRemovedImg,
+  setRemaindImg,
   setTotalmg,
   setAddedImg,
   setIsOpenIntro,

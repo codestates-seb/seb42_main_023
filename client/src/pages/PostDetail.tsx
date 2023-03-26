@@ -128,7 +128,6 @@ const PostDetail: React.FC = () => {
   const isOpenReplyIntro = 'reply' in state && state?.reply.isOpeneIntro;
   //파싱된 데이터
   const parsedData = parse(String(data?.content));
-  console.log(parsedData);
 
   // 좋아요 클릭 함수
   const changeLiikeHandler = (): void => {
@@ -506,6 +505,9 @@ const Container = styled.div<any>`
   height: 100%;
   max-height: 1000px;
   overflow: scroll;
+  img {
+    max-width: 720px;
+  }
 `;
 // Post 컨테이너
 const PostContainer = styled.div`
