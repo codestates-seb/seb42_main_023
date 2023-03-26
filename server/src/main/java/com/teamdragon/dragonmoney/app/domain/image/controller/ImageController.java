@@ -44,6 +44,6 @@ public class ImageController {
         Member loginMember = finderService.findVerifiedMemberByName(principal.getName());
         List<Image> images = imageMapper.imageDtoListToImageList(imagesDto.getRemoveImages());
         imageService.removeImages(loginMember, images);
-        return new ResponseEntity<>(HttpStatus.CREATED);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 }
