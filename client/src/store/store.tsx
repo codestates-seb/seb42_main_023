@@ -5,21 +5,14 @@ import replySlice from '../slices/replySlice';
 import logger from 'redux-logger';
 import postInputSlice from '../slices/postInputSlice';
 import validationSlice from '../slices/validationSlice';
-import {
-  membersApi,
-  membersPostListApi,
-  membersCommentsListApi,
-} from '../api/memberapi';
 import headerSlice from '../slices/headerSlice';
 import mainSlice from '../slices/mainSlice';
 import mypageSlice from '../slices/mypageSlice';
 import nicknameSlice from '../slices/nicknameSlice';
 import { repliesApi } from '../api/replyApi';
-import { postListApi, weeklyPopularApi, SearchApi } from '../api/postListapi';
 import surveySlice from '../slices/surveySlice';
 import { postsApi, recomendedPostsApi } from '../api/postApi';
 import { commentsApi } from '../api/commentApi';
-import { reportApi } from '../api/reportApi';
 import { nicknameApi } from '../api/nicknameApi';
 import { tempTokenApi } from '../api/tempTokenAPi';
 import reportSlice from '../slices/reportSlice';
@@ -46,15 +39,8 @@ const store = configureStore({
     [commentsApi.reducerPath]: commentsApi.reducer,
     [repliesApi.reducerPath]: repliesApi.reducer,
     [recomendedPostsApi.reducerPath]: recomendedPostsApi.reducer,
-    [reportApi.reducerPath]: reportApi.reducer,
-    [postListApi.reducerPath]: postListApi.reducer,
-    [weeklyPopularApi.reducerPath]: weeklyPopularApi.reducer,
-    [membersApi.reducerPath]: membersApi.reducer,
-    [membersPostListApi.reducerPath]: membersPostListApi.reducer,
-    [membersCommentsListApi.reducerPath]: membersCommentsListApi.reducer,
     [nicknameApi.reducerPath]: nicknameApi.reducer,
     [tempTokenApi.reducerPath]: tempTokenApi.reducer,
-    [SearchApi.reducerPath]: SearchApi.reducer,
     [apiSlice.reducerPath]: apiSlice.reducer,
     [happyHouseApi.reducerPath]: happyHouseApi.reducer,
   },
@@ -64,11 +50,8 @@ const store = configureStore({
       .concat(commentsApi.middleware)
       .concat(repliesApi.middleware)
       .concat(recomendedPostsApi.middleware)
-      .concat(reportApi.middleware)
-      .concat(weeklyPopularApi.middleware)
       .concat(nicknameApi.middleware)
       .concat(tempTokenApi.middleware)
-      .concat(SearchApi.middleware)
       .concat(apiSlice.middleware) // TODO: 이거빼고 위에 concat은 다 지워도됌.
       .concat(happyHouseApi.middleware)
 

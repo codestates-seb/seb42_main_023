@@ -2,13 +2,14 @@ import React, { useState, useEffect } from 'react';
 import LikeIcon from '../../assets/common/LikeIcon';
 import TimeIcon from '../../assets/common/TimeIcon';
 import ViewIcon from '../../assets/common/ViewIcon';
-import Thumnail from '../common/Thumnail';
+import Thumnail from '../common/Thumbnail';
 import { BsTrophy } from 'react-icons/bs';
 import { Link } from 'react-router-dom';
 import styled from 'styled-components';
 import { weeklyPopularApi } from '../../api/postListapi';
 import { timeSince } from '../mainP/Timecalculator';
-import { PostItem, Itemside, Info, Tag } from './PostList';
+import { Itemside, Info, Tag } from './PostList';
+import { PostListItem } from '../../types/PostList';
 
 function WeeklyPopular() {
   const weeklyPopularquery = weeklyPopularApi.useGetPostListQuery({
@@ -19,7 +20,7 @@ function WeeklyPopular() {
   return (
     <>
       {isSuccess &&
-        data.posts.map((post: PostItem, index: number) => {
+        data.posts.map((post: PostListItem, index: number) => {
           return (
             <WeeklyBestItem key={post.postId}>
               <div>

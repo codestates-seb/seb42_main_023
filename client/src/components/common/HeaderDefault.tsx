@@ -29,12 +29,9 @@ function HeaderDefault() {
   //TODO: 로그인시 유저데이터 저장
   useEffect(() => {
     if (auth !== undefined) {
-      const loginUser = localStorage.getItem('name');
       const memberImg = localStorage.getItem('picture');
-      if (loginUser && memberImg) {
-        dispatch(setPostQuery(loginUser));
-        dispatch(setCommentQuery(loginUser));
-        dispatch(setMemberName(loginUser));
+
+      if (memberImg) {
         dispatch(setMemberImg(memberImg));
       }
     }
@@ -53,18 +50,19 @@ function HeaderDefault() {
         <Btns>
           {pathname === '/' && <SearchBtn />}
           {auth === undefined && <LoginBtn />}
-          {auth !== undefined && (
+          {auth !== undefined && adim !== 'ADMIN' && (
             <>
               <PostBtn /> <MediumProfileImg />
             </>
           )}
           {adim === 'ADMIN' && (
-            <>
+            <Adminwrap>
               <PostBtn />
-              <button onClick={() => navigate('/adminreport')}>
+              <MediumProfileImg />
+              <button onClick={() => navigate('reports/standby')}>
                 <MdManageAccounts size={30} />
               </button>
-            </>
+            </Adminwrap>
           )}
         </Btns>
       </div>
@@ -124,4 +122,9 @@ const Btns = styled.div`
       }
     }
   }
+`;
+const Adminwrap = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
 `;

@@ -7,13 +7,21 @@ import { membersApi } from '../../api/memberapi';
 import { setDeleteAccountOpen } from '../../slices/mypageSlice';
 import { BlueBtn, WhiteBtn } from '../../components/common/Btn';
 import axios from 'axios';
+import Cookies from 'js-cookie';
 
 function DeleteModal() {
   const dispatch = useAppDispatch();
   const modalRef = useRef<HTMLDivElement>(null);
+
+  const removeMemberMutaion = membersApi.useDeleteMemberMutation();
+  const [removeMember] = removeMemberMutaion;
+
   const DeleteAccounthandler = () => {
-    const nickname = localStorage.getItem('nickname');
-    axios.delete(`https://thedragonmoney.com/members/${nickname}`);
+    Cookies.remove('Authorization');
+    Cookies.remove('Refresh');
+    const name = localStorage.getItem('name');
+    removeMember({ name });
+    localStorage.clear();
     window.location.href = '/';
   };
 

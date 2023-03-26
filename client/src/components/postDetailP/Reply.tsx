@@ -6,17 +6,15 @@ import LikeIcon from '../../assets/common/LikeIcon';
 import {
   isEdit,
   setIsEdit,
-  setReplyDislike,
-  setReplyLike,
   setReplyId,
   setIsOpenIntro,
 } from '../../slices/replySlice';
-
 import {
   PostStateType,
   ReplyStateType,
   CommentStateType,
   ReplyProps,
+  ReplyType,
 } from '../../types/PostDetail';
 import { repliesApi } from '../../api/replyApi';
 import {
@@ -27,6 +25,7 @@ import {
 } from '../../slices/postSlice';
 import { timeSince } from '../mainP/Timecalculator';
 import { setCommentId } from '../../slices/commentSlice';
+import _ from 'lodash';
 
 const Reply: React.FC<ReplyProps> = ({ replyInfo, idx }: ReplyProps) => {
   const replyEditInput = useRef<HTMLInputElement>(null);
@@ -38,35 +37,91 @@ const Reply: React.FC<ReplyProps> = ({ replyInfo, idx }: ReplyProps) => {
       return state;
     },
   );
+  const loginUserName = window.localStorage.getItem('name');
   const commentId = 'comment' in state && state.comment?.commentId;
   const replyId = 'reply' in state && state.reply?.replyId;
   const page = ('reply' in state && state.reply?.page) || 1;
-  console.log('replyPage', page);
+
   // 답글
   const replyQuery = repliesApi.useGetReplyQuery({ commentId, page });
   const replySucccess = replyQuery.isSuccess;
   const replyMutation = repliesApi.useUpdataReplyMutation();
-  const updateMutation = replyMutation[0];
+  const [updateMutation] = replyMutation;
   // 게시글, 댓글 작성자 소개페이지 오픈 여부
   const isOpenCommentIntro = 'comment' in state && state?.comment.isOpeneIntro;
   const isOpenPostIntro = 'post' in state && state?.post.isOpeneIntro;
 
+  // 답글 좋아요 추가, 삭제
+  const addThumbUpMutation = repliesApi.useAddThumbUpMutation();
+  const [addThumbUp] = addThumbUpMutation;
+  const removeThumbUpMutation = repliesApi.useRemoveThumbUpMutation();
+  const [removeThumbUp] = removeThumbUpMutation;
+  // 답글 싫어요  추가, 삭제
+  const addThumbDownMutation = repliesApi.useAddThumbDownMutation();
+  const [addThumbDown] = addThumbDownMutation;
+  const removeThumbDownMutation = repliesApi.useRemoveThumbDownMutation();
+  const [removeThumbDown] = removeThumbDownMutation;
+
   // 답글 좋아요 클릭 함수
-  const ReplyLiikeHandler = (): void => {
-    dispatch(setReplyLike((state as ReplyStateType).reply.isReplyLike));
-  };
-  // 답글 싫어요 클릭 함수
-  const ReplyDislikeHandler = (): void => {
-    dispatch(setReplyDislike((state as ReplyStateType).reply.isReplyDislike));
+  const ReplyLiikeHandler = (reply: ReplyType): void => {
+    const replyId = reply.replyId;
+    if (reply?.isThumbup && !reply?.isThumbdown) {
+      console.log('좋아요 삭제');
+      removeThumbUp({ replyId });
+      return;
+    }
+    // 싫어요만 있는 경우
+    if (reply?.isThumbup && reply?.isThumbdown) {
+      console.log('싫어요 삭제 후 좋아요 추가');
+      removeThumbDown({ replyId });
+      setTimeout(() => {
+        addThumbUp({ replyId });
+      }, 500);
+      return;
+    }
+    // 둘 다 없는 경우
+    if (!reply?.isThumbdown && !reply?.isThumbdown) {
+      console.log('좋아요 추가');
+      addThumbUp({ replyId });
+      return;
+    }
   };
 
+  // 답글 싫어요 클릭 함수
+  const ReplyDislikeHandler = (reply: ReplyType): void => {
+    const replyId = reply.replyId;
+    // 좋아요만 있는 경우
+    if (reply?.isThumbup && !reply?.isThumbdown) {
+      // 좋아요 제거, 싫어요 추가
+      console.log('좋아요 삭제 후 싫어요 추가');
+      removeThumbUp({ replyId });
+      setTimeout(() => {
+        addThumbDown({ replyId });
+      }, 500);
+      return;
+    }
+    // 싫어요만 있는 경우
+    if (!reply?.isThumbup && reply?.isThumbdown) {
+      // 싫어요 제거
+      console.log('싫어요 삭제');
+      removeThumbDown({ replyId });
+      return;
+    }
+    // 둘 다 없는 경우
+    if (!reply?.isThumbup && !reply?.isThumbdown) {
+      // 싫어요 추가
+      console.log('싫어요 추가');
+      addThumbDown({ replyId });
+      return;
+    }
+  };
   // 답글 Edit 여부 확인을 위한 배열 생성
   if (
     replyQuery.isSuccess &&
     (state as ReplyStateType).reply.isEdit === undefined
   ) {
     const edit = Array.from(
-      { length: replyQuery.data.comments.length },
+      { length: replyQuery.data?.replies.length },
       (el) => (el = false),
     );
 
@@ -99,18 +154,6 @@ const Reply: React.FC<ReplyProps> = ({ replyInfo, idx }: ReplyProps) => {
     }
   };
 
-  const outClickIntroHandler = (event: React.MouseEvent<HTMLElement>) => {
-    if (
-      !isOpenPostIntro &&
-      !isOpenCommentIntro &&
-      'post' in state &&
-      state.post.isOpeneIntro &&
-      event.target instanceof HTMLElement
-    ) {
-      dispatch(setIsOpenIntro(false));
-    }
-  };
-
   // 신고 카테고리 확인
   const reportTypeChecker = (event: React.MouseEvent<HTMLElement>): void => {
     if (event.target instanceof HTMLElement) {
@@ -121,7 +164,8 @@ const Reply: React.FC<ReplyProps> = ({ replyInfo, idx }: ReplyProps) => {
   // 시간 계산
   const time = timeSince(replyInfo.createdAt);
   // 답글 수정 여부
-  const replyIsEdit = replyInfo.modifiedAt !== '';
+  const replyIsEdit =
+    replyInfo.createdAt !== replyInfo.modifiedAt ? true : false;
   return (
     <ReplyContainer>
       <ReplyInfo key={replyInfo.replyId}>
@@ -146,10 +190,7 @@ const Reply: React.FC<ReplyProps> = ({ replyInfo, idx }: ReplyProps) => {
                   <li className="intro-nickname">{replyInfo.memberName}</li>
                 </ul>
               </IntroInfo>
-              <label className="introduction">
-                {/* TODO 수정 필요*/}
-                {replyInfo.content}
-              </label>
+              <label className="introduction">{replyInfo.content}</label>
               <div className="intro-moreInfo">더보기 》</div>
             </IntorductionContainer>
           ) : null}
@@ -163,6 +204,10 @@ const Reply: React.FC<ReplyProps> = ({ replyInfo, idx }: ReplyProps) => {
             <li
               className="reply-update"
               id="edit"
+              style={{
+                display:
+                  loginUserName === replyInfo?.memberName ? 'block' : 'none',
+              }}
               onClick={(): void => {
                 if (!replyEditInput.current?.value) {
                   dispatch(setIsEdit(idx));
@@ -179,8 +224,11 @@ const Reply: React.FC<ReplyProps> = ({ replyInfo, idx }: ReplyProps) => {
             </li>
           ) : (
             <li
-              // TODO
               className="reply-update"
+              style={{
+                display:
+                  loginUserName === replyInfo?.memberName ? 'block' : 'none',
+              }}
               onClick={(): void => {
                 dispatch(setCommentId(replyInfo.commentId));
                 dispatch(setReplyId(replyInfo.replyId));
@@ -190,21 +238,30 @@ const Reply: React.FC<ReplyProps> = ({ replyInfo, idx }: ReplyProps) => {
               수정
             </li>
           )}
-          <li
-            className="reply-delete"
-            id="답글"
-            onClick={(event: React.MouseEvent<HTMLElement>) => {
-              dispatch(setReplyId(replyInfo.replyId));
-              deleteTypeChecker(event);
-              confirmDeleteHandler();
-            }}
-          >
-            삭제
-          </li>
+          {loginUserName === replyInfo.memberName ? (
+            <li
+              className="reply-delete"
+              id="답글"
+              onClick={(event: React.MouseEvent<HTMLElement>) => {
+                dispatch(setReplyId(replyInfo.replyId));
+                deleteTypeChecker(event);
+                confirmDeleteHandler();
+              }}
+            >
+              삭제
+            </li>
+          ) : null}
+
           <li
             className="reply-report"
             data-category="reply"
             data-replyId={String(replyInfo.replyId)}
+            style={{
+              margin:
+                loginUserName === replyInfo?.memberName
+                  ? '3px 110px 0 5px'
+                  : '3px 195px 0 5px',
+            }}
             onClick={(event): void => {
               dispatch(
                 setIsOpenReport('post' in state && state.post.isOpenReport),
@@ -214,25 +271,28 @@ const Reply: React.FC<ReplyProps> = ({ replyInfo, idx }: ReplyProps) => {
           >
             신고
           </li>
-          <button onClick={ReplyLiikeHandler}>
-            <LikeIcon checked={replyInfo && replyInfo.isThumbup} />
+          <button
+            onClick={_.debounce(() => {
+              ReplyLiikeHandler(replyInfo);
+            }, 500)}
+          >
+            <LikeIcon checked={replyInfo?.isThumbup} />
           </button>
-          <li className="reply-likes">{replyInfo && replyInfo.thumbupCount}</li>
-          <button onClick={ReplyDislikeHandler}>
-            <DislikeIcon checked={replyInfo && replyInfo.isThumbDown} />
+          <li className="reply-likes">{replyInfo?.thumbupCount}</li>
+          <button
+            onClick={_.debounce(() => {
+              ReplyDislikeHandler(replyInfo);
+            }, 500)}
+          >
+            <DislikeIcon checked={replyInfo?.isThumbdown} />
           </button>
-          <li className="reply-dislikes">
-            {replyInfo && replyInfo.thumbupCount}
-          </li>
+          <li className="reply-dislikes">{replyInfo?.thumbDownCount}</li>
         </ul>
       </ReplyInfo>
-
       <ReplyContent>
-        {/* TODO  답글 수정 모드 버그 수정 필요 => dataSet 활용하기!! edit 기본 값을 false로 하고 클릭 시 event.target의 dataSet을 변경 */}
         {'reply' in state &&
         replyInfo.replyId === replyId &&
-        state.reply.isEdit !== undefined &&
-        state.reply.isEdit[idx] ? (
+        state.reply?.isEdit[idx] ? (
           // 댓글 수정 시 생기는 INPUT
           <input
             className="edit-reply"
@@ -289,7 +349,7 @@ const ReplyContainer = styled.div`
     margin: 2px 15px 0 5px;
   }
   .reply-created-time {
-    width: 65px;
+    width: 75px;
     font-size: 16px;
     margin: 3px 15px 0 5px;
   }
@@ -313,10 +373,12 @@ const ReplyContainer = styled.div`
     cursor: pointer;
   }
   .reply-likes {
+    width: 30px;
     font-size: 16px;
     margin: 3px 15px 0 15px;
   }
   .reply-dislikes {
+    width: 30px;
     font-size: 16px;
     margin: 3px 15px 0 15px;
   }

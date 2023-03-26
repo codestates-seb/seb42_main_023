@@ -5,87 +5,61 @@ import { useAppSelector } from '../../hooks';
 import LikeIcon from '../../assets/common/LikeIcon';
 import TimeIcon from '../../assets/common/TimeIcon';
 import ViewIcon from '../../assets/common/ViewIcon';
-import Thumnail from '../common/Thumnail';
+import Thumnail from '../common/Thumbnail';
 import { TagItem } from '../common/Tag';
 import { Link } from 'react-router-dom';
 import { postListApi } from '../../api/postListapi';
 import { timeSince } from '../mainP/Timecalculator';
+import { PostListItem } from '../../types/PostList';
 
-export interface Tags {
-  id: number;
-  tagName: string;
+interface Props {
+  posts: PostListItem[];
+  currentPage: number;
 }
 
-export interface PostItem {
-  postId: number;
-  imgUrl: string;
-  title: string;
-  tags: Tags[];
-  memberName: string;
-  createdAt: string;
-  modified_at: string;
-  viewCount: number;
-  thumbupCount: number;
-}
-
-function PostList() {
-  const { community, currentPage, orderby } = useAppSelector(
-    ({ main }) => main,
-  );
-  const postListquery = postListApi.useGetPostListQuery({
-    community: community,
-    page: currentPage,
-    orderby: orderby,
-  });
-  const { data, isSuccess } = postListquery;
-
-  if (!isSuccess) {
-    return <div>Loading...</div>;
-  }
-
+function PostList({ posts, currentPage }: Props) {
+  const { postSetting } = useAppSelector(({ main }) => main);
   return (
     <List>
-      {/* TODO: 서버 Weekly popular 기능 구현시 추가
-      {community === '' && data.pageInfo.page === 1 && <WeeklyPopular />} */}
-      {isSuccess &&
-        data.posts.map((post: PostItem) => {
-          return (
-            <Item key={post.postId}>
-              <div>
-                <Link to={`/posts/${post.postId}`}>
-                  <Thumnail content={post.imgUrl} />
-                </Link>
-              </div>
-              <div>
-                <Link to={`/posts/${post.postId}`}>
-                  <h1>{post.title}</h1>
-                </Link>
-                <Itemside>
-                  <div>
-                    {post.tags.map((tag) => (
-                      <Tag key={tag.id}>{tag.tagName}</Tag>
-                    ))}
-                  </div>
-                  <Info>
-                    <span>{post.memberName}</span>
-                    <span>
-                      <TimeIcon />
-                      {timeSince(post.createdAt)}
-                    </span>
-                    <span>
-                      <ViewIcon />
-                      {post.viewCount}
-                    </span>
-                    <span>
-                      <LikeIcon checked={false} />
-                      {post.thumbupCount}
-                    </span>
-                  </Info>
-                </Itemside>
-              </div>
-            </Item>
-          );
-        })}
+      {postSetting === '' && currentPage === 1 && <WeeklyPopular />}
+      {posts.map((post: PostListItem) => {
+        return (
+          <Item key={post.postId}>
+            <div>
+              <Link to={`/posts/${post.postId}`}>
+                <Thumnail content={post.imgUrl} />
+              </Link>
+            </div>
+            <div>
+              <Link to={`/posts/${post.postId}`}>
+                <h1>{post.title}</h1>
+              </Link>
+              <Itemside>
+                <div>
+                  {post.tags.map((tag, idx) => (
+                    <Tag key={idx}>{tag.tagName}</Tag>
+                  ))}
+                </div>
+                <Info>
+                  <span>{post.memberName}</span>
+                  <span>
+                    <TimeIcon />
+                    {timeSince(post.createdAt)}
+                  </span>
+                  <span>
+                    <ViewIcon />
+                    {post.viewCount}
+                  </span>
+                  <span>
+                    <LikeIcon checked={false} />
+                    {post.thumbupCount}
+                  </span>
+                </Info>
+              </Itemside>
+            </div>
+          </Item>
+        );
+      })}
     </List>
   );
 }

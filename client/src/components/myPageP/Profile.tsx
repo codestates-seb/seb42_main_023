@@ -16,7 +16,7 @@ import Cookies from 'js-cookie';
 
 function Profile() {
   const dispatch = useAppDispatch();
-  const { EditOpen } = useAppSelector(({ mypage }) => mypage);
+  const { EditOpen, content } = useAppSelector(({ mypage }) => mypage);
   const { memberName } = useAppSelector(({ header }) => header);
   const divRef = useRef<HTMLDivElement>(null);
   const membersQuery = membersApi.useGetMemberQuery({
@@ -28,8 +28,17 @@ function Profile() {
   //자기소개 input토글
   const EditOpenHandler = () => {
     dispatch(setContent(data.member.intro));
-    dispatch(setEditWidth(divRef.current?.offsetWidth as number));
+    dispatch(setEditWidth((divRef.current?.offsetWidth as number) + 30));
     dispatch(setEditOpen(!EditOpen));
+  };
+  //자기소개 수정
+  const updateMemberMutaion = membersApi.useUpdateMemberMutation();
+  const [updateMember] = updateMemberMutaion;
+  const submitHandler = () => {
+    dispatch(setEditOpen(!EditOpen));
+    const name = localStorage.getItem('name');
+    const intro = content;
+    updateMember({ name, intro });
   };
 
   return (
@@ -37,23 +46,27 @@ function Profile() {
       <div>
         {isSuccess && <LargeProfileImg url={data.member.memberImage} />}
         <article>
-          {isSuccess && <h1>{data.member.memberName}</h1>}
+          {isSuccess && (
+            <h1>
+              {data.member.memberName}
+              {auth !== undefined &&
+                (EditOpen ? (
+                  <button onClick={submitHandler}>수정완료</button>
+                ) : (
+                  <button onClick={EditOpenHandler}>
+                    <BsPencil />
+                  </button>
+                ))}
+            </h1>
+          )}
           {EditOpen ? (
             <ProfileEdit />
           ) : (
-            <div ref={divRef}>
-              {isSuccess && data.member.intro}
-              {auth !== undefined && (
-                <EditBtn onClick={EditOpenHandler}>
-                  <BsPencil />
-                </EditBtn>
-              )}
-            </div>
+            <Intro ref={divRef}>{isSuccess && data.member.intro}</Intro>
           )}
         </article>
       </div>
-      {/*TODO:테스트중*/}
-      {auth === undefined && <DropdownButton />}
+      {auth !== undefined && <DropdownButton />}
     </ProfileWrap>
   );
 }
@@ -74,12 +87,18 @@ const ProfileWrap = styled.div`
       font-weight: 600;
       font-size: 20px;
       margin-bottom: 10px;
+      button {
+        margin-left: 24px;
+        :hover {
+          color: var(--hover-font-gray-color);
+        }
+      }
     }
   }
   > div:nth-child(1) {
     display: felx;
   }
 `;
-const EditBtn = styled(IconBtn)`
-  margin-left: 24px;
+const Intro = styled.div`
+  width: 100%;
 `;
