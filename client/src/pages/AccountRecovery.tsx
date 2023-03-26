@@ -5,10 +5,10 @@ import { BlueBtn } from '../components/common/Btn';
 import { usePostTempTokenMutation } from '../api/tempTokenAPi';
 
 const AccountRecovery: React.FC = () => {
+  const [postTempToken] = usePostTempTokenMutation();
+
   // '계정 복구' 버튼을 눌렀을 때 실행되는 함수
   const recoverAccountHandler = () => {
-    const [postTempToken] = usePostTempTokenMutation();
-
     const url = new URL(window.location.href);
     const tempAccessToken = url.searchParams.get('tempAccessToken');
     console.log('tempAccessToken', tempAccessToken);
