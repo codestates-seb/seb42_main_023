@@ -47,21 +47,29 @@ public class OAuth2MemberHandler extends SimpleUrlAuthenticationSuccessHandler {
         String email = String.valueOf(oAuth2User.getAttributes().get("email"));
         List<String> authorities = authorityUtils.createRoles(email);
 
-        //이미 가입한 회원일 때(이미 크리덴셜에 정보가 있으므로 따로 정보를 가져올 필요가 없다)
-        if(memberService.checkOAuthMemberName(email)) {
-            //해당 email에 맞는 name을 가져온다.
+        // 탈퇴 후 복구할 회원
+        if(memberService.checkDeletedName(email)) {
             String name = memberService.getNameBySearchEmail(email);
-            //임시 토큰 발급
             String tempAccessToken = oAuth2Service.delegateTempAccessToken(name);
-            //tempAccessToken을 db에 저장
+
             oAuth2Service.updatedTempAccessToken(name, tempAccessToken);
+
+            redirectForComeBackMember(request, response, tempAccessToken, authorities);
+        }
+        // 이미 있는 회원
+        else if(memberService.checkOAuthMemberName(email)) {
+            String name = memberService.getNameBySearchEmail(email);
+            String tempAccessToken = oAuth2Service.delegateTempAccessToken(name);
+
+            oAuth2Service.updatedTempAccessToken(name, tempAccessToken);
+
             redirectForTempAccessToken(request, response, tempAccessToken, authorities);
-        } else {                        //신규 회원일 때 (정보를 저장)
-            //UUID 생성
+        }
+        // 신규 회원
+       else {
             String tempName = UUID.randomUUID().toString();
-            //DB에 정보 저장
             memberService.saveMember("google", picture, tempName, email, authorities);
-            //중복 검사 페이지로 리다이렉트
+
             redirectNameCheckPage(request, response, tempName);
         }
     }
@@ -76,6 +84,13 @@ public class OAuth2MemberHandler extends SimpleUrlAuthenticationSuccessHandler {
     //임시 토큰을 줄 페이지로 리다이렉트
     private void redirectForTempAccessToken(HttpServletRequest request, HttpServletResponse response, String tempAccessToken, List<String> authorities) throws IOException {
         String uri = createTempAccessTokenURI(tempAccessToken).toString();
+
+        getRedirectStrategy().sendRedirect(request, response, uri);
+    }
+
+    //임시 토큰을 줄 페이지로 리다이렉트
+    private void redirectForComeBackMember(HttpServletRequest request, HttpServletResponse response, String tempAccessToken, List<String> authorities) throws IOException {
+        String uri = deletedMemberComebackURI(tempAccessToken).toString();
 
         getRedirectStrategy().sendRedirect(request, response, uri);
     }
@@ -107,6 +122,22 @@ public class OAuth2MemberHandler extends SimpleUrlAuthenticationSuccessHandler {
                 .host("localhost")
                 .port(3000)
                 .path("/temptoken")
+                .queryParams(queryParams)
+                .build()
+                .toUri();
+    }
+
+    private URI deletedMemberComebackURI(String tempAccessToken) {
+        MultiValueMap<String, String> queryParams = new LinkedMultiValueMap<>();
+        queryParams.add("tempAccessToken", tempAccessToken);
+
+        return UriComponentsBuilder
+                .newInstance()
+                .scheme("http")
+//                .host("hp5234-dragonmoney-front.s3-website.ap-northeast-2.amazonaws.com")
+                .host("localhost")
+                .port(3000)
+                .path("/recovery")
                 .queryParams(queryParams)
                 .build()
                 .toUri();
