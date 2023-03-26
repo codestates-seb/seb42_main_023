@@ -6,7 +6,7 @@ import {
   setFilterOpen,
   setDeleteAccountOpen,
 } from '../../slices/mypageSlice';
-import { useDeleteMemberMutation } from '../../api/memberapi'; // TODO: 이 줄의 코드를 옮겨주세요
+
 import { FiMoreHorizontal } from 'react-icons/fi';
 import Cookies from 'js-cookie';
 
@@ -16,23 +16,12 @@ const DropdownButton = () => {
   const dropdownRef = useRef<HTMLDivElement>(null);
   const options: ['로그아웃', '회원탈퇴'] = ['로그아웃', '회원탈퇴'];
 
-  // TODO: 아래 코드를 옮겨주세요 (20 ~ 21번째 줄)
-  const name = localStorage.getItem('name');
-  const [deleteMember] = useDeleteMemberMutation();
-
   const handleSelect = (option: '로그아웃' | '회원탈퇴') => {
     dispatch(setFilterOpen(false));
 
     // 회원탈퇴 시 확인메세지창을 띄우고, '네'를 클릭시 회원탈퇴가 되며 저장되어 있던 쿠키와 유저정보를 제거한다.
     if (option === '회원탈퇴') {
       dispatch(setDeleteAccountOpen(true));
-
-      // TODO: 아래 코드를 옮겨주세요 (30 ~ 34번째 줄)
-      deleteMember(name);
-      Cookies.remove('Authorization');
-      Cookies.remove('Refresh');
-      localStorage.clear();
-      window.location.href = '/';
     }
     // 로그아웃시 저장되어 있던 쿠키와, 로컬스토리지에 있던 유저 정보를 제거한다.
     if (option === '로그아웃') {
