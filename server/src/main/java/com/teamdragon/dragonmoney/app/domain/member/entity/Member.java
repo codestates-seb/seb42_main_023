@@ -110,7 +110,6 @@ public class Member extends BaseTimeEntity {
 
     public void deletedMemberChangedState(DeleteResult deleteResult) {
         this.state = MemberState.DELETED;
-        this.nameDuplicateCheck = false;
         this.deleteResult = deleteResult;
     }
 }
