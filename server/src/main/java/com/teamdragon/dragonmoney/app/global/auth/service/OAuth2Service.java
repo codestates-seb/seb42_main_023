@@ -8,8 +8,12 @@ import com.teamdragon.dragonmoney.app.global.auth.dto.LoginResponseDto;
 import com.teamdragon.dragonmoney.app.global.auth.jwt.JwtTokenizer;
 import com.teamdragon.dragonmoney.app.global.auth.refresh.entity.RefreshToken;
 import com.teamdragon.dragonmoney.app.global.auth.refresh.repository.RefreshTokenRepository;
+import com.teamdragon.dragonmoney.app.global.exception.AuthExceptionCode;
+import com.teamdragon.dragonmoney.app.global.exception.AuthLogicException;
 import com.teamdragon.dragonmoney.app.global.exception.BusinessExceptionCode;
 import com.teamdragon.dragonmoney.app.global.exception.BusinessLogicException;
+import io.jsonwebtoken.ExpiredJwtException;
+import io.jsonwebtoken.security.SignatureException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -106,20 +110,31 @@ public class OAuth2Service {
     //tempAccessToken 저장
     public Member updatedTempAccessToken(String name, String tempAccessToken) {
         Member member = memberService.findVerifiedMemberName(name);
-        member.setTempAccessToken(tempAccessToken);
+        member.saveTempAccessToken(tempAccessToken);
 
         return memberRepository.save(member);
     }
 
+    // Refresh Token 검증
+    public void verifyJws(HttpServletRequest request) {
+        try {
+            Map<String, Object> claims = refreshTokenGetMemberName(request);
+        } catch (SignatureException se) {
+            throw new AuthLogicException(AuthExceptionCode.REFRESH_TOKEN_INVALID);
+        } catch (ExpiredJwtException ee) {
+            throw new AuthLogicException(AuthExceptionCode.REFRESH_TOKEN_EXPIRED);
+        } catch (Exception e) {
+            throw new AuthLogicException(AuthExceptionCode.USER_UNAUTHORIZED);
+        }
+    }
+
     //Resresh Token 파싱
-    public String refreshTokenGetMemberName(HttpServletRequest request) {
+    public Map<String, Object> refreshTokenGetMemberName(HttpServletRequest request) {
         String jws = request.getHeader("Refresh");
         String base64EncodedSecretKey = jwtTokenizer.encodeBase64SecretKey(jwtTokenizer.getSecretKey());
         Map<String, Object> claims = jwtTokenizer.getClaims(jws, base64EncodedSecretKey).getBody();
 
-        String name = String.valueOf(claims.get("sub"));
-
-        return name;
+        return claims;
     }
 
     //로그인 정보 찾기
@@ -135,6 +150,14 @@ public class OAuth2Service {
         loginResponseDto.setPicture(picture);
         loginResponseDto.setRole(role);
         return loginResponseDto;
+    }
+
+    // 탈퇴된 회원 복구
+    public Member changedMemberState(String tempAccessToken) {
+        Member member = findMemberByTempAccessToken(tempAccessToken);
+        member.changedMemberState(Member.MemberState.ACTIVE);
+
+        return memberRepository.save(member);
     }
 
     // 해당 임시 토큰을 가진 회원이 있는지 조회
