@@ -2,12 +2,11 @@ package com.teamdragon.dragonmoney.app.domain.posts.repository;
 
 import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.types.*;
-import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.jpa.JPAExpressions;
 import com.querydsl.jpa.JPQLQuery;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
-import com.teamdragon.dragonmoney.app.domain.popular.entity.QBestAwards;
+import com.teamdragon.dragonmoney.app.domain.delete.entity.DeleteResult;
 import com.teamdragon.dragonmoney.app.domain.posts.dto.PostsDto;
 import com.teamdragon.dragonmoney.app.domain.posts.entity.Posts;
 import com.teamdragon.dragonmoney.app.global.pagenation.QueryDslUtil;
@@ -285,7 +284,7 @@ public class PostsRepositoryImpl implements PostsRepositoryCustom {
                 .from(bookmark)
                 .join(bookmark.posts, posts)
                 .join(bookmark.member, member)
-                .where(posts.state.notIn(Posts.State.DELETED), posts.writer.name.eq(memberName))
+                .where(posts.state.notIn(Posts.State.DELETED), bookmark.member.name.eq(memberName))
                 .orderBy(orders)
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
@@ -328,7 +327,7 @@ public class PostsRepositoryImpl implements PostsRepositoryCustom {
                 .select(posts.count())
                 .from(bookmark)
                 .join(bookmark.posts, posts)
-                .where(posts.state.notIn(Posts.State.DELETED), posts.writer.name.eq(memberName))
+                .where(posts.state.notIn(Posts.State.DELETED), bookmark.member.name.eq(memberName))
                 .fetchOne();
         return memberBookmarkPostsCount;
     }
