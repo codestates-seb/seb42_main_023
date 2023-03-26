@@ -61,7 +61,9 @@ const Reply: React.FC<ReplyProps> = ({ replyInfo, idx }: ReplyProps) => {
   const [addThumbDown] = addThumbDownMutation;
   const removeThumbDownMutation = repliesApi.useRemoveThumbDownMutation();
   const [removeThumbDown] = removeThumbDownMutation;
-
+  // 답글 수정 여부
+  const replyIsEdit =
+    replyInfo.createdAt !== replyInfo.modifiedAt ? true : false;
   // 답글 좋아요 클릭 함수
   const ReplyLiikeHandler = (reply: ReplyType): void => {
     const replyId = reply.replyId;
@@ -139,7 +141,6 @@ const Reply: React.FC<ReplyProps> = ({ replyInfo, idx }: ReplyProps) => {
     }
   };
 
-  //TODO
   // 소개 페이지 오픈
   const IntroHandler = (event: React.MouseEvent<HTMLElement>) => {
     if (
@@ -163,9 +164,14 @@ const Reply: React.FC<ReplyProps> = ({ replyInfo, idx }: ReplyProps) => {
   };
   // 시간 계산
   const time = timeSince(replyInfo.createdAt);
-  // 답글 수정 여부
-  const replyIsEdit =
-    replyInfo.createdAt !== replyInfo.modifiedAt ? true : false;
+  const enterHandler = (
+    event: React.KeyboardEvent<HTMLInputElement>,
+    fun: object,
+  ): void => {
+    if (!replyEditInput.current?.value) return;
+    if (event.key === 'Enter') {
+    }
+  };
   return (
     <ReplyContainer>
       <ReplyInfo key={replyInfo.replyId}>
@@ -208,7 +214,7 @@ const Reply: React.FC<ReplyProps> = ({ replyInfo, idx }: ReplyProps) => {
                 display:
                   loginUserName === replyInfo?.memberName ? 'block' : 'none',
               }}
-              onClick={(): void => {
+              onClick={(event): void => {
                 if (!replyEditInput.current?.value) {
                   dispatch(setIsEdit(idx));
                   return;
@@ -242,6 +248,12 @@ const Reply: React.FC<ReplyProps> = ({ replyInfo, idx }: ReplyProps) => {
             <li
               className="reply-delete"
               id="답글"
+              style={{
+                margin:
+                  loginUserName === replyInfo?.memberName
+                    ? '3px 119px 0 5px'
+                    : '3px 195px 0 5px',
+              }}
               onClick={(event: React.MouseEvent<HTMLElement>) => {
                 dispatch(setReplyId(replyInfo.replyId));
                 deleteTypeChecker(event);
@@ -257,10 +269,8 @@ const Reply: React.FC<ReplyProps> = ({ replyInfo, idx }: ReplyProps) => {
             data-category="reply"
             data-replyId={String(replyInfo.replyId)}
             style={{
-              margin:
-                loginUserName === replyInfo?.memberName
-                  ? '3px 110px 0 5px'
-                  : '3px 195px 0 5px',
+              display:
+                loginUserName === replyInfo?.memberName ? 'none' : 'block',
             }}
             onClick={(event): void => {
               dispatch(

@@ -12,47 +12,39 @@ import {
   setCurrentImg,
   setRemovedImg,
   setAddedImg,
+  setRemaindImg,
+  setTotalmg,
 } from '../../slices/postSlice';
 import _ from 'lodash';
+import Cookies from 'js-cookie';
 
+interface ImgObj {
+  imagedId: number;
+  imageName: string;
+}
+
+const url = process.env.REACT_APP_SERVER_ADDRESS + '/images';
 const BodyInput: React.FC = () => {
   const dispatch = useAppDispatch();
   const quillRef = useRef<ReactQuill>();
   const state = useAppSelector((state) => state);
   const params = useParams();
   const postId = Number(params.postId);
-  const bodyValue = state.postInput?.body;
-  const addedImg = state.post?.addedImg;
   const postQuery = postsApi.useGetPostQuery({ postId });
   const { data } = postQuery;
-  //TODO body 데이터는 태그 형태로 들어오고 => 태그를 제거한 상태로 각 요소에 배치해야함
-  // const pattern = /<[^>]*>?/g;
-  //TODO string.replace(/<[^>]*>?/g, '');
+  const bodyValue = state.postInput?.body;
+  const addedImg = state.post?.addedImg;
+  const removedImg = state.post?.removedImg;
+  const totalImg = state.post?.totalImg;
+  const remainImg = data?.images;
+  const accsessToken = Cookies.get('Authorization');
+
+  console.log('remainImg', remainImg);
   //TODO 받아온 body 데이터에서 이미지를 추출해서 remainImage, addedImages, removedImages를 요청 바디에 보내줘야함
   // 초기 이미지, 추가한 이미지, 제거한 이미지
   // 전체 이미지 = 초기 이미지 + 추가한 이미지
   // 제거한 이미지 = 전채 이미지에서 현재 이미지 제외
-  const body = data?.content;
-  const arr1 = [
-    { imageId: 1, imageName: 'a' },
-    { imageId: 2, imageName: 'b' },
-    { imageId: 3, imageName: 'c' },
-  ];
-  const arr2 = [
-    { imageId: 1, imageName: 'a' },
-    { imageId: 2, imageName: 'b' },
-  ];
-  // const arr3 = _.difference(arr2, arr1);
-  // console.log('new', arr3);
-  // const index = [1, 2];
-  // const result = [];
-  // for (const idx of index) {
-  //   const result = arr1.result.filter((el) => {
-  //     if (el.imageId === idx) false;
-  //   });
-  // }
-  // arr1.filter((el) => {});
-  // console.log('result', result);
+  const img: Array<any> = _.cloneDeep(totalImg!);
 
   //  문자열을 HTML 요소로 변환
   const stringToHTML = function (str: string): HTMLElement {
@@ -61,27 +53,24 @@ const BodyInput: React.FC = () => {
     return dom;
   };
 
-  // 본문 내용이 바뀔 때 마다 이미지 체크
-  useEffect(() => {
-    if (bodyValue) imageCheck();
-  }, [bodyValue]);
-
   // 본문 value 확인
   function valueCheck(): void {
     dispatch(setBody(quillRef?.current?.value as string));
     validationTest();
   }
+
   // 본문 이미지 확인
   function imageCheck(): void {
     // 이미지 처리
-    const pattern = /((?<=<img......)(.*?)(?=.>))/gi;
-    console.log('bodyValue', bodyValue);
-    const currentImg = bodyValue!.match(pattern)!;
-    const removedImg = addedImg?.filter((img) => {
-      return !currentImg?.includes(img);
+    const pattern =
+      /((?<=<img..........................................................)(.*?)(?=.>))/gi;
+    const currentImg = bodyValue.match(pattern)!;
+    const removedImg = totalImg?.filter((obj: ImgObj) => {
+      return !currentImg?.includes(obj.imageName);
     });
+
     dispatch(setCurrentImg(currentImg));
-    dispatch(setRemovedImg(removedImg));
+    dispatch(setRemovedImg(_.uniqBy(removedImg!, 'imageId')));
   }
 
   // 유효성 검사
@@ -100,9 +89,29 @@ const BodyInput: React.FC = () => {
     }
   };
 
+  //  본문 내용이 바뀔 때 마다 이미지 체크
+  useEffect(() => {
+    (remainImg as Array<object>)?.map((el: object) => {
+      dispatch(setTotalmg(el));
+    });
+    if ((removedImg! as Array<object>)?.length === 0 && totalImg) {
+      dispatch(setRemaindImg(_.uniqBy(totalImg!, 'imageId')));
+    }
+    if ((removedImg! as Array<object>)?.length !== 0) {
+      console.log(
+        'testasdasdasdas',
+        _.differenceBy(remainImg, removedImg!, 'imageId'),
+      );
+
+      // dispatch(
+      //   setRemaindImg(_.differenceBy(remainImg, removedImg!, 'imageId')),
+      // );
+    }
+    if (bodyValue) imageCheck();
+  }, [bodyValue]);
+
   // 에디터 이미지 핸들러
   const imageHandler = (): void => {
-    // 이미지를 저장할  DOM 생성
     const input = document.createElement('input');
     input.setAttribute('type', 'file');
     input.setAttribute('accept', 'image/*');
@@ -110,22 +119,36 @@ const BodyInput: React.FC = () => {
     input.addEventListener('change', async () => {
       const file = input.files![0];
       const formData = new FormData();
-      formData.append('img', file);
+      formData.append('image', file);
       console.log('formData', formData);
+      console.log('url', url);
       try {
-        //TODO 서버 url로 변경해야함 그리고 이미지 id와 이름을 받아와야함 => 상태 관리 필요(데이터 형식 변경)
-        const result = await axios.post('http://localhost:4100/img', formData);
+        const result = await axios.post(url, formData, {
+          headers: {
+            'Content-Type': 'multipart/form-data',
+            Authorization: accsessToken,
+          },
+          withCredentials: true,
+        });
+
         const { data } = result;
-        console.log(data);
-        const IMG_URL = result?.data.url;
-        dispatch(setAddedImg(IMG_URL));
-        //   {
-        //     "imageId" : 123,
-        //     "imageName" : "imageFileName"
-        //   }
+        console.log('resData', data);
+        const { imageId, imageName } = data;
+
+        const ImgUrl = process.env.REACT_APP_S3_ADDRESS + '/' + imageName;
+        console.log('ImgUrl', ImgUrl);
+        const imgObj = {
+          imageId,
+          imageName,
+        };
+        console.log('imgObj', imgObj);
+        dispatch(setAddedImg(imgObj));
+        dispatch(setTotalmg(imgObj));
+        // img!.push(imgObj);
         const editor = quillRef.current!.getEditor();
         const range = editor.getSelection();
-        editor.insertEmbed(range!.index, 'image', IMG_URL);
+
+        editor.insertEmbed(range!.index, 'image', ImgUrl);
       } catch (error) {
         console.log(error);
       }
@@ -188,7 +211,7 @@ const BodyInput: React.FC = () => {
               }}
               theme="snow"
               placeholder="게시글 내용을 입력하세요."
-              value={state?.postInput.body || ''}
+              value={state?.postInput.body}
               onChange={valueCheck}
               modules={modules}
               formats={formats}
@@ -207,7 +230,7 @@ const BodyInput: React.FC = () => {
               }}
               theme="snow"
               placeholder="게시글 내용을 입력하세요."
-              value={state?.postInput.body || ''}
+              value={state?.postInput.body}
               onChange={valueCheck}
               modules={modules}
               formats={formats}
