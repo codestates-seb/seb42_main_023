@@ -76,10 +76,9 @@ public class TestController {
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
-    @GetMapping("/stub/api/price")
+    @PostMapping("/stub/api/price")
     public ResponseEntity<?> testPrice() {
         stubService.makeHousePriceData();
-        return new ResponseEntity<>(HttpStatus.OK);
+        return new ResponseEntity<>(HttpStatus.CREATED);
     }
-
 }
