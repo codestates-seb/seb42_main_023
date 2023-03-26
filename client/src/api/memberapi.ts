@@ -46,6 +46,9 @@ export const membersPostListApi = apiSlice.injectEndpoints({
     getMemberPostList: builder.query({
       query: ({ query, page }) => `members/${query}/posts?page=${page}`,
     }),
+    getMemberBookmark: builder.query({
+      query: ({ query, page }) => `members/${query}/posts?page=${page}`,
+    }),
   }),
 });
 // 회원과 관련된 댓글 리스트
