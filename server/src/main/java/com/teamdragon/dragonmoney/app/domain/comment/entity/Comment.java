@@ -108,6 +108,19 @@ public class Comment extends BaseTimeEntity implements ThumbCountable {
         this.replyCount = 0L;
     }
 
+    public String displayContentMessageByState() {
+        if (this.state == State.DELETED
+                && this.deleteResult.getDeleteReason() == DeleteResult.Reason.DELETED_BY_REPORT) {
+            return "신고된 댓글입니다.";
+        }
+        else if (this.state == State.DELETED
+                && this.deleteResult.getDeleteReason() == DeleteResult.Reason.SELF_DELETED) {
+            return "삭제된 댓글입니다.";
+        } else {
+            return this.content;
+        }
+    }
+
     public void includedThisPosts(Posts posts){
         this.posts = posts;
         if (!this.posts.getComments().contains(this)) {

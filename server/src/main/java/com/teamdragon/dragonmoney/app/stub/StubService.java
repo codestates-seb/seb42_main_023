@@ -18,9 +18,9 @@ import com.teamdragon.dragonmoney.app.domain.thumb.entity.Thumbdown;
 import com.teamdragon.dragonmoney.app.domain.thumb.entity.Thumbup;
 import com.teamdragon.dragonmoney.app.domain.thumb.respository.ThumbdownRepository;
 import com.teamdragon.dragonmoney.app.domain.thumb.respository.ThumbupRepository;
+import com.teamdragon.dragonmoney.app.domain.information.information.house.price.service.HousePriceService;
 import lombok.RequiredArgsConstructor;
 
-import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -38,6 +38,7 @@ public class StubService {
     private final ThumbupRepository thumbupRepository;
     private final ReplyRepository replyRepository;
     private final ThumbdownRepository thumbdownRepository;
+    private final HousePriceService housePriceService;
 
     private final String MEMBER_IMAGE_URL = "https://preview.free3d.com/img/2018/03/2269226802687772611/8mk0tyu6.jpg";
     private final String POSTS_IMAGE_URL = "https://cdn.dribbble.com/userupload/2585189/file/original-83a7c6bde4d8c033d208318966e913d7.png?compress=1&resize=752x";
@@ -47,6 +48,10 @@ public class StubService {
     private final int IMAGE_NUMBER_IN_POSTS = 3;
     private final int COMMENT_NUMBER_IN_POSTS = 20;
     private final int REPLY_NUMBER_IN_COMMENT = 20;
+
+    public void makeHousePriceData() {
+        housePriceService.collectPriceByAreas();
+    }
 
     public List<Member> makeMembers(){
         ArrayList<Member> members = new ArrayList<>();
