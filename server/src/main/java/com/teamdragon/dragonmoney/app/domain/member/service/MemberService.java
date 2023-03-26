@@ -94,8 +94,6 @@ public class MemberService {
                 .build();
         deletedMember.deletedMemberChangedState(deleteResult);
 
-
-
         return memberRepository.save(deletedMember);
     }
 
