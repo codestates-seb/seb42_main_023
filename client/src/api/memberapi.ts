@@ -44,10 +44,7 @@ export const membersApi = apiSlice
 export const membersPostListApi = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
     getMemberPostList: builder.query({
-      query: ({ query, page }) => `members/${query}/posts?page=${page}`,
-    }),
-    getMemberBookmark: builder.query({
-      query: ({ query, page }) => `members/${query}/posts?page=${page}`,
+      query: ({ query, page }) => `members/${query}?page=${page}`,
     }),
   }),
 });

@@ -18,7 +18,7 @@ export const postListApi = apiSlice.injectEndpoints({
 // 주간인기글 API
 export const weeklyPopularApi = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
-    getPostList: builder.query({
+    getWeekPostList: builder.query({
       query: ({ endpoint }) => `posts/${endpoint}`,
     }),
   }),
