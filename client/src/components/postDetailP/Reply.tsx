@@ -22,10 +22,12 @@ import {
   setIsOpenReport,
   setReportType,
   setDeleteType,
+  setSelectedMember,
 } from '../../slices/postSlice';
 import { timeSince } from '../mainP/Timecalculator';
 import { setCommentId } from '../../slices/commentSlice';
 import _ from 'lodash';
+import { membersApi } from '../../api/memberapi';
 
 const Reply: React.FC<ReplyProps> = ({ replyInfo, idx }: ReplyProps) => {
   const replyEditInput = useRef<HTMLInputElement>(null);
@@ -41,6 +43,7 @@ const Reply: React.FC<ReplyProps> = ({ replyInfo, idx }: ReplyProps) => {
   const commentId = 'comment' in state && state.comment?.commentId;
   const replyId = 'reply' in state && state.reply?.replyId;
   const page = ('reply' in state && state.reply?.page) || 1;
+  const selectedMember = 'post' in state ? state.post.selectedMember : null;
 
   // 답글
   const replyQuery = repliesApi.useGetReplyQuery({ commentId, page });
@@ -61,6 +64,10 @@ const Reply: React.FC<ReplyProps> = ({ replyInfo, idx }: ReplyProps) => {
   const [addThumbDown] = addThumbDownMutation;
   const removeThumbDownMutation = repliesApi.useRemoveThumbDownMutation();
   const [removeThumbDown] = removeThumbDownMutation;
+
+  //  멤버 정보 조회
+  const memeberQuery = membersApi.useGetMemberQuery({ name: selectedMember });
+
   // 답글 수정 여부
   const replyIsEdit =
     replyInfo.createdAt !== replyInfo.modifiedAt ? true : false;
@@ -151,6 +158,7 @@ const Reply: React.FC<ReplyProps> = ({ replyInfo, idx }: ReplyProps) => {
     ) {
       dispatch(setIsOpenIntro(state.reply.isOpeneIntro));
       dispatch(setReplyId(Number(event.target.dataset.replyid)));
+      dispatch(setSelectedMember(event.target.id));
       console.log('userName', event.target.id);
     }
   };
@@ -196,7 +204,9 @@ const Reply: React.FC<ReplyProps> = ({ replyInfo, idx }: ReplyProps) => {
                   <li className="intro-nickname">{replyInfo.memberName}</li>
                 </ul>
               </IntroInfo>
-              <label className="introduction">{replyInfo.content}</label>
+              <label className="introduction">
+                {memeberQuery.data?.intro || '소개 내용이 없습니다.'}
+              </label>
               <div className="intro-moreInfo">더보기 》</div>
             </IntorductionContainer>
           ) : null}
