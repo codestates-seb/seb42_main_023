@@ -44,9 +44,6 @@ const baseQueryWithReauth = async (args: any, api: any, extraOptions: any) => {
     result?.error?.status === 401 &&
     (result?.error?.data as ErrorResHeader)?.message === 'Access token expired'
   ) {
-    console.log('detect error');
-
-    // Send a POST request to the server to get a new access token
     const name = localStorage.getItem('name');
 
     const refreshResult = await baseQuery(
@@ -61,16 +58,16 @@ const baseQueryWithReauth = async (args: any, api: any, extraOptions: any) => {
       extraOptions,
     );
 
-    // response headers로 온 새로운 access token을 쿠키에 저장하기
+    // response headers로 온 새로운 access token에 접근하기
     const headers = refreshResult?.meta?.response?.headers;
-    if (headers) {
-      const accessToken = headers?.get('Authorization');
-      Cookies.set('Authorization', accessToken!);
+    const accessToken = headers?.get('Authorization');
 
-      // 새로운 accessToken으로 다시 api 요청하기
+    // accessToken이 있다면 쿠키에 저장하고 다시 api 요청하기
+    if (accessToken) {
+      Cookies.set('Authorization', accessToken!);
       result = await baseQuery(args, api, extraOptions);
     } else {
-      //만약 새롭게 acces token 발급이 안된다면 로그아웃 시키기.
+      //만약 refresh token도 만료되어 acces token이 없다면 로그아웃 시키기.
       Cookies.remove('Authorization');
       Cookies.remove('Refresh');
       localStorage.clear();

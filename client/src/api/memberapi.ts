@@ -12,9 +12,8 @@ export const membersApi = apiSlice
         },
       }),
       //회원탈퇴//
-      //TODO : Unauthorized 401
       deleteMember: builder.mutation({
-        query: ({ name }) => {
+        query: (name) => {
           return {
             url: `members/${name}`,
             method: 'DELETE',
@@ -57,3 +56,5 @@ export const membersCommentsListApi = apiSlice.injectEndpoints({
     }),
   }),
 });
+
+export const { useDeleteMemberMutation } = membersApi;
