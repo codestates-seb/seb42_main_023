@@ -4,7 +4,8 @@ import lombok.Getter;
 
 @Getter
 public enum ValidFailExceptionCode {
-
+    INVALID_LOCATION(400, null, "Invalid location value"),
+    INVALID_STATE(400, null, "Invalid state value"),
     ORDER_BY_NOT_VALID(400, null, "Not valid orderby value");
 
     private final int status;

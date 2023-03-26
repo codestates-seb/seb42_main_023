@@ -1,13 +1,16 @@
 package com.teamdragon.dragonmoney.app.stub;
 
+import com.teamdragon.dragonmoney.app.domain.information.information.house.happyhouse.dto.HappyHouseApiDto;
+import com.teamdragon.dragonmoney.app.domain.information.information.house.happyhouse.service.HappyHouseService;
 import lombok.RequiredArgsConstructor;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.List;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -77,8 +80,14 @@ public class TestController {
     }
 
     @PostMapping("/stub/api/price")
-    public ResponseEntity<?> testPrice() {
+    public ResponseEntity<?> priceMakeTest() {
         stubService.makeHousePriceData();
+        return new ResponseEntity<>(HttpStatus.CREATED);
+    }
+
+    @PostMapping("/stub/api/happy")
+    public ResponseEntity<?> happyMakeTest() {
+        stubService.makeHappyHouseData();
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 }

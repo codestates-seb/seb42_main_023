@@ -2,6 +2,7 @@ package com.teamdragon.dragonmoney.app.global.advice;
 
 import com.teamdragon.dragonmoney.app.global.exception.AuthLogicException;
 import com.teamdragon.dragonmoney.app.global.exception.BusinessLogicException;
+import com.teamdragon.dragonmoney.app.global.exception.ValidFailException;
 import com.teamdragon.dragonmoney.app.global.response.ErrorResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -42,6 +43,15 @@ public class GlobalExceptionAdvice {
         return response;
     }
 
+    // ValidFailException : 커스텀 유효성검사예외 발생시
+    @ExceptionHandler
+    public ResponseEntity handleValidFailException(ValidFailException e) {
+        final ErrorResponse response = ErrorResponse.of(e.getExceptionCode());
+
+        return new ResponseEntity<>(response,
+                HttpStatus.valueOf(e.getExceptionCode().getStatus()));
+    }
+
     // 요청 포멧 문제로 인해 HttpMessageNotReadableException 발생 시
     @ExceptionHandler
     @ResponseStatus(HttpStatus.BAD_REQUEST)
@@ -62,7 +72,7 @@ public class GlobalExceptionAdvice {
                 HttpStatus.valueOf(e.getExceptionCode().getStatus()));
     }
 
-    // BusinessLogicException 발생시
+    // AuthLogicException 발생시
     @ExceptionHandler
     public ResponseEntity handleAuthLogicException(AuthLogicException e) {
         final ErrorResponse response = ErrorResponse.of(e.getExceptionCode());

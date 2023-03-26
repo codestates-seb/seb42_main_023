@@ -2,6 +2,7 @@ package com.teamdragon.dragonmoney.app.global.response;
 
 import com.teamdragon.dragonmoney.app.global.exception.AuthExceptionCode;
 import com.teamdragon.dragonmoney.app.global.exception.BusinessExceptionCode;
+import com.teamdragon.dragonmoney.app.global.exception.ValidFailExceptionCode;
 import lombok.Getter;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.BindingResult;
@@ -47,6 +48,11 @@ public class ErrorResponse {
 
     // 인증관련 예외
     public static ErrorResponse of(AuthExceptionCode exceptionCode) {
+        return new ErrorResponse(exceptionCode.getStatus(), exceptionCode.getDetailedCode(), exceptionCode.getMessage());
+    }
+
+    // 검증 실패 예외
+    public static ErrorResponse of(ValidFailExceptionCode exceptionCode) {
         return new ErrorResponse(exceptionCode.getStatus(), exceptionCode.getDetailedCode(), exceptionCode.getMessage());
     }
 
