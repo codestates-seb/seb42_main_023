@@ -20,6 +20,7 @@ const postSlice = createSlice({
     remainImg: undefined,
     addedImg: [],
     isOpeneIntro: false,
+    selectedMember: undefined,
   },
   reducers: {
     // 게시물 좋아요
@@ -93,9 +94,12 @@ const postSlice = createSlice({
     setIsOpenIntro: (state, action: PayloadAction<boolean>): void => {
       state.isOpeneIntro = !state.isOpeneIntro;
     },
+    // 남아있는 이미지
+    setSelectedMember: (state, action: PayloadAction<string>): void => {
+      (state.selectedMember as unknown) = action.payload;
+    },
   },
 });
-
 export default postSlice;
 export const {
   setLike,
@@ -115,4 +119,5 @@ export const {
   setTotalmg,
   setAddedImg,
   setIsOpenIntro,
+  setSelectedMember,
 } = postSlice.actions;
