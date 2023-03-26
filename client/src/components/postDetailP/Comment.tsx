@@ -15,6 +15,7 @@ import {
   setIsOpenReport,
   setReportType,
   setDeleteType,
+  setSelectedMember,
 } from '../../slices/postSlice';
 import {
   PostStateType,
@@ -35,6 +36,7 @@ import {
   setTotalReplies,
 } from '../../slices/replySlice';
 import { timeSince } from '../mainP/Timecalculator';
+import { membersApi } from '../../api/memberapi';
 
 const Comment: React.FC = () => {
   const [page] = useState<number>(1);
@@ -50,9 +52,10 @@ const Comment: React.FC = () => {
   const params = useParams();
   const postId = params.postId;
   const commentId = 'comment' in state && state.comment?.commentId;
+  const selectedMember = 'post' in state ? state.post.selectedMember : null;
+
   // 댓글 조회
   const commentQuery = commentsApi.useGetCommentQuery({ postId, page });
-  const comentSucccess = commentQuery.isSuccess;
 
   // 댓글 업데이트
   const commentMutation = commentsApi.useUpdateCommentMutation();
@@ -62,6 +65,9 @@ const Comment: React.FC = () => {
   const replyQuery = repliesApi.useGetReplyQuery({ commentId, page });
   const { isSuccess, data, refetch } = replyQuery;
   const contentEditInput = useRef<HTMLInputElement>(null);
+
+  //  멤버 정보 조회
+  const memeberQuery = membersApi.useGetMemberQuery({ name: selectedMember });
 
   // 댓글 좋아요 추가, 삭제
   const addThumbUpMutation = commentsApi.useAddThumbUpMutation();
@@ -189,6 +195,7 @@ const Comment: React.FC = () => {
     ) {
       dispatch(setIsOpenIntro(state.comment.isOpeneIntro));
       dispatch(setCommentId(Number(event.target.dataset.commentid)));
+      dispatch(setSelectedMember(event.target.id));
       console.log('userName', event.target.id);
     }
   };
@@ -235,7 +242,11 @@ const Comment: React.FC = () => {
                 onClick={outClickIntroHandler}
               >
                 <ul className="content-info">
-                  <li className="image" onClick={IntroHandler}>
+                  <li
+                    className="image"
+                    data-memberName={comment?.memberName}
+                    onClick={IntroHandler}
+                  >
                     <img
                       src={comment.memberImage}
                       id={comment.memberName}
@@ -257,7 +268,9 @@ const Comment: React.FC = () => {
                           </li>
                         </ul>
                       </IntroInfo>
-                      <label className="introduction">{comment.content}</label>
+                      <label className="introduction">
+                        {memeberQuery.data?.intro || '소개 내용이 없습니다.'}
+                      </label>
                       <div className="intro-moreInfo">더보기 》</div>
                     </IntorductionContainer>
                   ) : null}

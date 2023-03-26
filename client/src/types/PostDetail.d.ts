@@ -20,6 +20,7 @@ export interface PostStateType {
     isOpeneIntro: boolean;
     addedImg: unknown;
     remainImg: unknown;
+    selectedMember: unknown;
   };
 }
 
