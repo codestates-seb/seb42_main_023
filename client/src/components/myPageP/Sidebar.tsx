@@ -18,7 +18,7 @@ function Sidebar() {
   //작성한 글 요청핸들러
   const getMemberPost = () => {
     dispatch(setFilter('작성한 글'));
-    dispatch(setPostQuery(memberName + '/posts'));
+    dispatch(setPostQuery(`${memberName}/posts`));
   };
   //작성한 댓글 요청핸들러
   const getMemberComments = () => {
@@ -38,7 +38,7 @@ function Sidebar() {
   //북마크 요청핸들러
   const getMemberBookmark = () => {
     dispatch(setFilter('북마크'));
-    dispatch(setPostQuery(memberName + '/bookmark'));
+    dispatch(setPostQuery(`${memberName}/bookmark`));
   };
 
   useEffect(() => {
