@@ -236,10 +236,10 @@ public class PostsRepositoryImpl implements PostsRepositoryCustom {
         List<Posts> content = queryFactory
                 .selectFrom(posts)
                 .distinct()
-                .leftJoin(posts.writer, member).fetchJoin()
+                .leftJoin(posts.writer, member)
                 .leftJoin(posts.postsTags, postsTag)
                 .leftJoin(postsTag.tag, tag)
-                .where(posts.state.eq(Posts.State.ACTIVE), posts.writer.name.eq(memberName))
+                .where(posts.state.notIn(Posts.State.DELETED), posts.writer.name.eq(memberName))
                 .orderBy(orders)
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
@@ -262,7 +262,7 @@ public class PostsRepositoryImpl implements PostsRepositoryCustom {
                 .from(thumbup)
                 .join(thumbup.parentPosts, posts)
                 .join(thumbup.member, member)
-                .where(posts.state.eq(Posts.State.ACTIVE), posts.writer.name.eq(memberName))
+                .where(posts.state.notIn(Posts.State.DELETED), posts.writer.name.eq(memberName))
                 .orderBy(orders)
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
@@ -285,7 +285,7 @@ public class PostsRepositoryImpl implements PostsRepositoryCustom {
                 .from(bookmark)
                 .join(bookmark.posts, posts)
                 .join(bookmark.member, member)
-                .where(posts.state.eq(Posts.State.ACTIVE), posts.writer.name.eq(memberName))
+                .where(posts.state.notIn(Posts.State.DELETED), posts.writer.name.eq(memberName))
                 .orderBy(orders)
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
@@ -304,7 +304,7 @@ public class PostsRepositoryImpl implements PostsRepositoryCustom {
         Long memberPostsCount = queryFactory
                 .select(posts.count())
                 .from(posts)
-                .where(posts.state.eq(Posts.State.ACTIVE), posts.writer.name.eq(memberName))
+                .where(posts.state.notIn(Posts.State.DELETED), posts.writer.name.eq(memberName))
                 .fetchOne();
         return memberPostsCount;
     }
@@ -315,8 +315,8 @@ public class PostsRepositoryImpl implements PostsRepositoryCustom {
         Long memberPostsCount = queryFactory
                 .select(thumbup.count())
                 .from(thumbup)
-                .where(thumbup.parentPosts.state.eq(Posts.State.ACTIVE))
-                .where(thumbup.member.name.eq(memberName), thumbup.parentPosts.id.isNotNull())
+                .join(thumbup.parentPosts, posts)
+                .where(posts.state.notIn(Posts.State.DELETED), thumbup.member.name.eq(memberName), thumbup.parentPosts.id.isNotNull())
                 .fetchOne();
         return memberPostsCount;
     }
@@ -327,7 +327,8 @@ public class PostsRepositoryImpl implements PostsRepositoryCustom {
         Long memberBookmarkPostsCount = queryFactory
                 .select(posts.count())
                 .from(bookmark)
-                .where(bookmark.posts.state.eq(Posts.State.ACTIVE), bookmark.member.name.eq(memberName))
+                .join(bookmark.posts, posts)
+                .where(posts.state.notIn(Posts.State.DELETED), posts.writer.name.eq(memberName))
                 .fetchOne();
         return memberBookmarkPostsCount;
     }
