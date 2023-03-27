@@ -50,7 +50,15 @@ const reportOption = [
 ];
 
 const PostDetail: React.FC = () => {
+  const [isLike, setIsLike] = useState<boolean>();
+  const [isDislike, setIsDislike] = useState<boolean>();
+  const [isBookmark, setBookmark] = useState<boolean>();
+  const [like, setLike] = useState<number>();
+  const [dislike, setDislike] = useState<number>();
+  const [views, setViews] = useState<number>();
+  const [commentCnt, setCommentCnt] = useState<number>();
   const [checkedElement, setCheckedElement] = useState(-1);
+
   const handleSelectChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.target instanceof HTMLInputElement) {
       setCheckedElement(Number(event.target.value));
@@ -77,7 +85,7 @@ const PostDetail: React.FC = () => {
 
   const navigate = useNavigate();
   const params = useParams();
-  const postId = params.postId;
+  const postId = Number(params.postId);
   const commentId = 'comment' in state ? state.comment?.commentId : null;
   const replyId = 'reply' in state ? state.reply?.replyId : null;
   const reportReason = 'post' in state ? state.post.reportOption : null;
@@ -88,34 +96,33 @@ const PostDetail: React.FC = () => {
   // 게시글 조회 및 추가
   const postDetailQuery = postsApi.useGetPostQuery({ postId });
   const { data, isSuccess } = postDetailQuery;
-  const memberName = data?.memberName;
-  const postMutation = postsApi.useDeletePostMutation();
-  const [deletePost] = postMutation;
+  const [deletePost] = postsApi.useDeletePostMutation();
+  // const [deletePost] = postMutation;
   // 게시글 좋아요 추가, 삭제
-  const addThumbUpMutation = postsApi.useAddThumbUpMutation();
-  const [addThumbUp] = addThumbUpMutation;
-  const removeThumbUpMutation = postsApi.useRemoveThumbUpMutation();
-  const [removeThumbUp] = removeThumbUpMutation;
+  const [addThumbUp] = postsApi.useAddThumbUpMutation();
+  // const [addThumbUp] = addThumbUpMutation;
+  const [removeThumbUp] = postsApi.useRemoveThumbUpMutation();
+  // const [removeThumbUp] = removeThumbUpMutation;
   // 게시글 싫어요  추가, 삭제
-  const addThumbDownMutation = postsApi.useAddThumbDownMutation();
-  const [addThumbDown] = addThumbDownMutation;
-  const removeThumbDownMutation = postsApi.useRemoveThumbDownMutation();
-  const [removeThumbDown] = removeThumbDownMutation;
+  const [addThumbDown] = postsApi.useAddThumbDownMutation();
+  // const [addThumbDown] = addThumbDownMutation;
+  const [removeThumbDown] = postsApi.useRemoveThumbDownMutation();
+  // const [removeThumbDown] = removeThumbDownMutation;
   // 북마크 추가, 삭제
-  const addBookmarkMutaion = postsApi.useAddBookmarkMutation();
-  const [addBookmark] = addBookmarkMutaion;
-  const removeBookmarkMutaion = postsApi.useRemoveBookmarkMutation();
-  const [removeBookmark] = removeBookmarkMutaion;
+  const [addBookmark] = postsApi.useAddBookmarkMutation();
+  // const [addBookmark] = addBookmarkMutaion;
+  const [removeBookmark] = postsApi.useRemoveBookmarkMutation();
+  // const [removeBookmark] = removeBookmarkMutaion;
 
   // 댓글 삭제
-  const commentMutation = commentsApi.useDeleteCommentMutation();
-  const [deleteComment] = commentMutation;
+  const [deleteComment] = commentsApi.useDeleteCommentMutation();
+  // const [deleteComment] = commentMutation;
   // 답글 삭제
-  const replyMutation = repliesApi.useDeleteReplyMutation();
-  const [deleteReply] = replyMutation;
+  const [deleteReply] = repliesApi.useDeleteReplyMutation();
+  // const [deleteReply] = replyMutation;
   // 신고 추가
-  const reportMutation = reportApi.usePostReportMutation();
-  const [sendReport] = reportMutation;
+  const [sendReport] = reportApi.usePostReportMutation();
+  // const [sendReport] = reportMutation;
   //  멤버 정보 조회
   const memeberQuery = membersApi.useGetMemberQuery({ name: selectedMember });
 
@@ -128,29 +135,55 @@ const PostDetail: React.FC = () => {
   const isOpenReplyIntro = 'reply' in state && state?.reply.isOpeneIntro;
   //파싱된 데이터
   const parsedData = parse(String(data?.content));
+  // 게시글 서버 데이터 저장
+  //TODO 데이터 받아서 로컬 스테이트로 저장 ( 댓글, 좋아요, 싫어요, 북마크)
+  useEffect(() => {
+    if (isSuccess) setIsLike(data?.isThumbup);
+    if (isSuccess) setIsDislike(data?.isThumbdown);
+    if (isSuccess) setLike(data?.thumbupCount);
+    if (isSuccess) setDislike(data?.thumbDownCount);
+    if (isSuccess) setBookmark(data?.isBookmarked);
+    if (isSuccess) setViews(data?.viewCount);
+    if (isSuccess) setCommentCnt(data?.commentCount);
+  }, [data]);
+
+  console.log('isLlike', isLike);
+  console.log('dislike', isDislike);
+  console.log('like', like);
+  console.log('dislike', dislike);
+  console.log('bookmark', isBookmark);
+  console.log('views', views);
+  console.log('commentCnt', commentCnt);
 
   // 좋아요 클릭 함수
   const changeLiikeHandler = (): void => {
     // 좋아요만 있는 경우
-    if (data?.isThumbup && !data?.isThumbdown) {
-      console.log('좋아요 삭제');
+    if (isLike && !isDislike) {
+      console.log('왜 안찍히지', postId);
       removeThumbUp({ postId });
-
+      setIsLike(false);
+      setLike((prev) => prev! - 1);
       return;
     }
     // 싫어요만 있는 경우
-    if (!data?.isThumbup && data?.isThumbdown) {
-      console.log('싫어요 삭제 후 좋아요 추가');
+    if (!isLike && isDislike) {
       removeThumbDown({ postId });
+      setIsDislike(false);
+      setDislike((prev) => prev! - 1);
       setTimeout(() => {
         addThumbUp({ postId });
+        setIsLike(true);
+        setLike((prev) => prev! + 1);
       }, 500);
       return;
     }
     // 둘 다 없는 경우
-    if (!data?.isThumbdown && !data?.isThumbdown) {
+    if (!isLike && !isDislike) {
       console.log('좋아요 추가');
+
       addThumbUp({ postId });
+      setIsLike(true);
+      setLike((prev) => prev! + 1);
       return;
     }
   };
@@ -158,36 +191,46 @@ const PostDetail: React.FC = () => {
   // 싫어요 클릭 함수
   const changeDislikeHandler = (): void => {
     // 좋아요만 있는 경우
-    if (data?.isThumbup && !data?.isThumbdown) {
+    if (isLike && !isDislike) {
       // 좋아요 제거, 싫어요 추가
       console.log('좋아요 삭제 후 싫어요 추가');
       removeThumbUp({ postId });
+      setIsLike(false);
+      setLike((prev) => prev! - 1);
       setTimeout(() => {
         addThumbDown({ postId });
+        setIsDislike(true);
+        setDislike((prev) => prev! + 1);
       }, 500);
       return;
     }
     // 싫어요만 있는 경우
-    if (!data?.isThumbup && data?.isThumbdown) {
+    if (!isLike && isDislike) {
       // 싫어요 제거
       console.log('싫어요 삭제');
       removeThumbDown({ postId });
+      setIsDislike(false);
+      setDislike((prev) => prev! - 1);
       return;
     }
     // 둘 다 없는 경우
-    if (!data?.isThumbup && !data?.isThumbdown) {
+    if (!isLike && !isDislike) {
       // 싫어요 추가
       console.log('싫어요 추가');
       addThumbDown({ postId });
+      setIsDislike(true);
+      setDislike((prev) => prev! + 1);
       return;
     }
   };
   // 북마크 클릭 함수
   const changeBookmarkHandler = (): void => {
-    if (data?.isBookmarked) {
-      removeBookmark({ memberName, postId });
+    if (isBookmark) {
+      setBookmark(false);
+      removeBookmark({ loginUserName, postId });
     } else {
-      addBookmark({ memberName, postId });
+      setBookmark(true);
+      addBookmark({ loginUserName, postId });
     }
   };
 
@@ -211,6 +254,7 @@ const PostDetail: React.FC = () => {
       confirmDeleteHandler();
       console.log('post delete');
       navigate('/');
+      location.reload();
     }
     // 댓글 삭제 로직
     if ('post' in state && state.post?.deleteType === '댓글') {
@@ -374,7 +418,7 @@ const PostDetail: React.FC = () => {
             <div className="select">
               {reportOption.map((option, idx) => {
                 return (
-                  <div key={idx}>
+                  <div key={option}>
                     <input
                       type="radio"
                       id={option}
@@ -458,16 +502,16 @@ const PostDetail: React.FC = () => {
               <TimeIcon />
               <li className="created-time">{time} 전</li>
               <ViewIcon />
-              <li className="views">{data?.viewCount}</li>
+              <li className="views">{views}</li>
               <CommentIcon checked={true} />
-              <li className="comments">{data?.commentCount}</li>
+              <li className="comments">{commentCnt}</li>
               <button
                 className="bookmark"
                 onClick={_.debounce(() => {
                   changeBookmarkHandler();
                 }, 1500)}
               >
-                <BookmarkIcon checked={data?.isBookmarked} />
+                <BookmarkIcon checked={isBookmark!} />
               </button>
               <DropdownButton memberName={data?.memberName}></DropdownButton>
             </ul>
@@ -481,20 +525,27 @@ const PostDetail: React.FC = () => {
                   changeLiikeHandler();
                 }, 1500)}
               >
-                <LikeIcon checked={isSuccess && data?.isThumbup} />
+                {/* <LikeIcon checked={isSuccess && data?.isThumbup} /> */}
+                <LikeIcon checked={isLike!} />
               </button>
-              <li className="likes">{isSuccess && data?.thumbupCount}</li>
+              {/* <li className="likes">{isSuccess && data?.thumbupCount}</li> */}
+              <li className="likes">{like!}</li>
               <button
                 onClick={_.debounce(() => {
                   changeDislikeHandler();
                 }, 1500)}
               >
-                <DislikeIcon checked={isSuccess && data?.isThumbdown} />
+                {/* <DislikeIcon checked={isSuccess && data?.isThumbdown} /> */}
+                <DislikeIcon checked={isSuccess && isDislike!} />
               </button>
-              <li className="dislikes">{isSuccess && data?.thumbDownCount}</li>
+              {/* <li className="dislikes">{isSuccess && data?.thumbDownCount}</li> */}
+              <li className="dislikes">{isSuccess && dislike!}</li>
             </ul>
-            <CommentInput></CommentInput>
-            <Comment></Comment>
+            <CommentInput
+              commentCnt={commentCnt!}
+              setCommentCnt={setCommentCnt!}
+            ></CommentInput>
+            <Comment commentCnt={commentCnt!}></Comment>
           </PostContent>
         </PostContainer>
         <RecommendedPostContainer>

@@ -11,7 +11,7 @@ import mypageSlice from '../slices/mypageSlice';
 import nicknameSlice from '../slices/nicknameSlice';
 import { repliesApi } from '../api/replyApi';
 import surveySlice from '../slices/surveySlice';
-import { postsApi, recomendedPostsApi } from '../api/postApi';
+import { postsApi, recommendedPostsApi } from '../api/postApi';
 import { commentsApi } from '../api/commentApi';
 import { nicknameApi } from '../api/nicknameApi';
 import { tempTokenApi } from '../api/tempTokenAPi';
@@ -38,7 +38,7 @@ const store = configureStore({
     [postsApi.reducerPath]: postsApi.reducer,
     [commentsApi.reducerPath]: commentsApi.reducer,
     [repliesApi.reducerPath]: repliesApi.reducer,
-    [recomendedPostsApi.reducerPath]: recomendedPostsApi.reducer,
+    [recommendedPostsApi.reducerPath]: recommendedPostsApi.reducer,
     [nicknameApi.reducerPath]: nicknameApi.reducer,
     [tempTokenApi.reducerPath]: tempTokenApi.reducer,
     [apiSlice.reducerPath]: apiSlice.reducer,
@@ -49,7 +49,7 @@ const store = configureStore({
       .concat(postsApi.middleware)
       .concat(commentsApi.middleware)
       .concat(repliesApi.middleware)
-      .concat(recomendedPostsApi.middleware)
+      .concat(recommendedPostsApi.middleware)
       .concat(nicknameApi.middleware)
       .concat(tempTokenApi.middleware)
       .concat(happyHouseApi.middleware)

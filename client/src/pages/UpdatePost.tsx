@@ -74,7 +74,6 @@ const UpdatePost: React.FC = () => {
       setTimeout(() => {
         location.reload();
       }, 1500);
-      window.location.reload();
     } else {
       if (state.validation.titleErr !== '' || state.postInput.title === '') {
         alert('제목을 다시 확인해 주세요.');
