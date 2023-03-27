@@ -42,8 +42,11 @@ public class PostsController {
         Member loginMember = memberService.findMember(principal.getName());
         // 이미지 처리
         PostsDto.CreatePostsImagesReq saveImages = postsDto.getSaveImages();
-        List<Image> removedImages
-                = imageMapper.postImageDtoListToImageList(saveImages.getRemovedImages());
+        List<Image> removedImages = null;
+        if(saveImages != null) {
+            removedImages = imageMapper.postImageDtoListToImageList(saveImages.getRemovedImages());
+        }
+
         // Posts 처리
         Posts posts = postsMapper.postDtoToPosts(postsDto);
         Posts savePosts = postsService.savePosts(loginMember, posts, removedImages);

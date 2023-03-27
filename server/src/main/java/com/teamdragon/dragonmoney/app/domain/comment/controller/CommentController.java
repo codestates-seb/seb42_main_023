@@ -50,10 +50,15 @@ public class CommentController {
                                                                      @Valid @Positive @PathVariable("post-id") Long postsId,
                                                                      @Valid @Positive @RequestParam int page,
                                                                      @Valid @NotBlank @RequestParam String orderby) {
-        Comment.OrderBy orderBy = checkOrderBy(orderby);
-        Member loginMember = memberService.findMember(principal.getName());
+        Long loginMemberId = null;
+        if (principal != null) {
+            Member loginMember = memberService.findMember(principal.getName());
+            loginMemberId = loginMember.getId();
+        }
 
-        Page<CommentDto.CommentListElement> commentList = commentService.findCommentList(page, postsId, orderBy, loginMember.getId());
+        Comment.OrderBy orderBy = checkOrderBy(orderby);
+
+        Page<CommentDto.CommentListElement> commentList = commentService.findCommentList(page, postsId, orderBy, loginMemberId);
         CommentDto.CommentListRes response = new CommentDto.CommentListRes(commentList, orderby);
 
         return new ResponseEntity<>(response, HttpStatus.OK);

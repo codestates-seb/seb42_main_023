@@ -50,10 +50,15 @@ public class ReplyController {
                                                                      @Valid @Positive @PathVariable("comment-id") Long commentId,
                                                                      @Valid @Positive @RequestParam int page,
                                                                      @Valid @NotBlank @RequestParam String orderby) {
-        Reply.OrderBy orderBy = checkOrderBy(orderby);
-        Member loginMember = memberService.findMember(principal.getName());
+        Long loginMemberId = null;
+        if (principal != null) {
+            Member loginMember = memberService.findMember(principal.getName());
+            loginMemberId = loginMember.getId();
+        }
 
-        Page<ReplyDto.ReplyListElement> replyList = replyService.findReplyList(page, commentId, orderBy, loginMember.getId());
+        Reply.OrderBy orderBy = checkOrderBy(orderby);
+
+        Page<ReplyDto.ReplyListElement> replyList = replyService.findReplyList(page, commentId, orderBy, loginMemberId);
         ReplyDto.ReplyListRes response = new ReplyDto.ReplyListRes(replyList, orderby);
 
         return new ResponseEntity<>(response, HttpStatus.OK);

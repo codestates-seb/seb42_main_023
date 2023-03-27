@@ -126,8 +126,13 @@ public class ReportRepositoryImpl implements ReportRepositoryCustom{
             List<Report> content = queryFactory
                     .selectFrom(report)
                     .distinct()
+                    .leftJoin(report.targetPosts, posts).fetchJoin()
+                    .leftJoin(report.targetComment, comment).fetchJoin()
+                    .leftJoin(report.targetReply, reply).fetchJoin()
                     .where(report.handleState.eq(handledState))
-                    .where(activePost(), activeComment(), activeReply())
+                    .where(report.targetPosts.state.eq(Posts.State.ACTIVE)
+                            .or(report.targetComment.state.eq(Comment.State.ACTIVE))
+                                    .or(report.targetReply.state.eq(Reply.State.ACTIVE)))
                     .offset(pageable.getOffset())
                     .limit(pageable.getPageSize())
                     .fetch();
