@@ -4,7 +4,6 @@ import { useAppDispatch, useAppSelector } from '../../hooks';
 import { setFilter } from '../../slices/mypageSlice';
 import { SidebarBtn } from '../common/Btn';
 import { membersApi } from '../../api/memberapi';
-import { setPostQuery, setCommentQuery } from '../../slices/headerSlice';
 
 function Sidebar() {
   const dispatch = useAppDispatch();
@@ -18,27 +17,22 @@ function Sidebar() {
   //작성한 글 요청핸들러
   const getMemberPost = () => {
     dispatch(setFilter('작성한 글'));
-    dispatch(setPostQuery(`${memberName}/posts`));
   };
   //작성한 댓글 요청핸들러
   const getMemberComments = () => {
     dispatch(setFilter('작성한 댓글'));
-    dispatch(setCommentQuery(memberName));
   };
   //작성한 좋아요한 글 요청핸들러
   const getMemberLikePost = () => {
     dispatch(setFilter('좋아요한 글'));
-    dispatch(setPostQuery(`${memberName}/thumbup/posts`));
   };
   //좋아요한 댓글 요청핸들러
   const getMemberLikeComments = () => {
     dispatch(setFilter('좋아요한 댓글'));
-    dispatch(setCommentQuery(`${memberName}/thumbup`));
   };
   //북마크 요청핸들러
   const getMemberBookmark = () => {
     dispatch(setFilter('북마크'));
-    dispatch(setPostQuery(`${memberName}/bookmark`));
   };
 
   useEffect(() => {

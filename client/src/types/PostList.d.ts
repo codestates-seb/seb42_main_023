@@ -13,3 +13,18 @@ export interface PostListItem {
   viewCount: number;
   thumbupCount: number;
 }
+export interface CommentType {
+  commentId: number;
+  memberName: string;
+  memberImage: string;
+  createdAt: string;
+  modifiedAt: string;
+  isModified: boolean;
+  replyCount: number;
+  thumbupCount: number;
+  thumbdownCount: number; //thumbDownCount
+  isThumbup: boolean;
+  isThumbdown: boolean;
+  length: number;
+  comment: string; //content
+}

@@ -1,19 +1,39 @@
 import React, { useRef } from 'react';
 import styled from 'styled-components';
 import { repliesApi } from '../../api/replyApi';
-import { useAppDispatch } from '../../hooks';
+import { useAppDispatch, useAppSelector } from '../../hooks';
 import { setCommentId } from '../../slices/commentSlice';
 import { addReplyEdit, setReply } from '../../slices/replySlice';
 import { CommentProps } from '../../types/PostDetail';
+import { commentsApi } from '../../api/commentApi';
+import { useParams } from 'react-router-dom';
+import {
+  PostStateType,
+  ReplyStateType,
+  CommentStateType,
+} from '../../types/PostDetail';
 
 const ReplyInput: React.FC<CommentProps> = ({ commentInfo }: CommentProps) => {
   const replyRef = useRef<HTMLInputElement>(null);
   const dispatch = useAppDispatch();
+  const state = useAppSelector(
+    (
+      state: PostStateType | ReplyStateType | CommentStateType,
+    ): PostStateType | ReplyStateType | CommentStateType => {
+      return state;
+    },
+  );
+  const params = useParams();
+  const postId = params.postId;
   const commentId = commentInfo.commentId;
+  const page = 'comment' in state && state.comment?.page;
 
   const replyMutation = repliesApi.useSetReplyMutation();
   const setReplys = replyMutation[0];
 
+  //댓글
+  const commentQuery = commentsApi.useGetCommentQuery({ postId, page });
+  const { refetch } = commentQuery;
   // 답글 추가
   const addReplyHandler = async () => {
     console.log('commentId', commentId);
@@ -24,6 +44,7 @@ const ReplyInput: React.FC<CommentProps> = ({ commentInfo }: CommentProps) => {
     });
     dispatch(addReplyEdit(false));
     replyRef.current!.value = '';
+    refetch();
   };
 
   const valueCheck = (event: React.ChangeEvent<HTMLInputElement>): void => {
