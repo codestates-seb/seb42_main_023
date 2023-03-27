@@ -104,11 +104,11 @@ const ReportList: React.FC<Props> = ({
                         </HandleBtn>
                       </td>
                       <td>
-                        <HandleBtn
+                        <DeleteBtn
                           onClick={() => deleteReportHanlder(item.reportId)}
                         >
                           삭제하기
-                        </HandleBtn>
+                        </DeleteBtn>
                       </td>
                     </React.Fragment>
                   ) : null}
@@ -172,16 +172,23 @@ const TargetFilter = styled.div`
 
 // 신고글 리스트
 const Table = styled.table`
+  border-collapse: collapse;
   > thead > tr > th {
     font-size: 14px;
     font-weight: 600;
+    height: 30px;
+    border-bottom: 1px solid var(--border-color);
   }
 
   > tbody > tr {
     text-align: center;
-    height: 30px;
+    height: 35px;
+    border-bottom: 1px solid var(--border-color);
     &.row-even {
       background-color: #f8f8f8;
+    }
+    &:hover {
+      background-color: aliceblue;
     }
     > td {
       font-size: 14px;
@@ -192,4 +199,10 @@ const Table = styled.table`
 const HandleBtn = styled(WhiteBtn)`
   font-size: 13px;
   padding: 3px;
+  color: var(--hover-font-gray-color);
+  border: 1px solid #234e75;
+`;
+
+const DeleteBtn = styled(HandleBtn)`
+  border: 1px solid var(--error-red-color);
 `;
