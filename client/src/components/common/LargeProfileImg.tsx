@@ -5,11 +5,7 @@ const LargeProfileImg = ({ url }: { url: string }) => {
   const navigate = useNavigate();
   return (
     <Cover onClick={() => navigate('/mypage')}>
-      <Item
-        src={
-          'https://preview.free3d.com/img/2018/03/2269226802687772611/8mk0tyu6.jpg'
-        }
-      />
+      <Item src={url} />
     </Cover>
   );
 };

@@ -12,9 +12,8 @@ export const membersApi = apiSlice
         },
       }),
       //회원탈퇴//
-      //TODO : Unauthorized 401
       deleteMember: builder.mutation({
-        query: ({ name }) => {
+        query: (name) => {
           return {
             url: `members/${name}`,
             method: 'DELETE',
@@ -44,7 +43,7 @@ export const membersApi = apiSlice
 export const membersPostListApi = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
     getMemberPostList: builder.query({
-      query: ({ query, page }) => `members/${query}/posts?page=${page}`,
+      query: ({ query, page }) => `members/${query}?page=${page}`,
     }),
   }),
 });
@@ -57,3 +56,5 @@ export const membersCommentsListApi = apiSlice.injectEndpoints({
     }),
   }),
 });
+
+export const { useDeleteMemberMutation } = membersApi;

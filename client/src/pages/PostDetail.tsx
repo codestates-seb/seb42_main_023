@@ -19,6 +19,7 @@ import {
   setIsOpenFilter,
   setReportOption,
   setIsOpenIntro,
+  setSelectedMember,
 } from '../slices/postSlice';
 import { setReportErr } from '../slices/validationSlice';
 import { useAppDispatch, useAppSelector } from '../hooks';
@@ -47,10 +48,6 @@ const reportOption = [
   '도배',
   '기타',
 ];
-
-window.addEventListener('hashchange', () =>
-  console.log('test asdasdasdasdasdasdasdas'),
-);
 
 const PostDetail: React.FC = () => {
   const [checkedElement, setCheckedElement] = useState(-1);
@@ -85,6 +82,7 @@ const PostDetail: React.FC = () => {
   const replyId = 'reply' in state ? state.reply?.replyId : null;
   const reportReason = 'post' in state ? state.post.reportOption : null;
   const reportErr = 'validation' in state ? state.validation.reportErr : null;
+  const selectedMember = 'post' in state ? state.post.selectedMember : null;
   const loginUserName = window.localStorage.getItem('name');
 
   // 게시글 조회 및 추가
@@ -108,6 +106,7 @@ const PostDetail: React.FC = () => {
   const [addBookmark] = addBookmarkMutaion;
   const removeBookmarkMutaion = postsApi.useRemoveBookmarkMutation();
   const [removeBookmark] = removeBookmarkMutaion;
+
   // 댓글 삭제
   const commentMutation = commentsApi.useDeleteCommentMutation();
   const [deleteComment] = commentMutation;
@@ -118,7 +117,8 @@ const PostDetail: React.FC = () => {
   const reportMutation = reportApi.usePostReportMutation();
   const [sendReport] = reportMutation;
   //  멤버 정보 조회
-  const memeberQuery = membersApi.useGetMemberQuery({ name: memberName });
+  const memeberQuery = membersApi.useGetMemberQuery({ name: selectedMember });
+
   // 시간 계산
   const time = timeSince(isSuccess && data?.createdAt);
   // 게시글 수정 여부
@@ -128,7 +128,6 @@ const PostDetail: React.FC = () => {
   const isOpenReplyIntro = 'reply' in state && state?.reply.isOpeneIntro;
   //파싱된 데이터
   const parsedData = parse(String(data?.content));
-  console.log(parsedData);
 
   // 좋아요 클릭 함수
   const changeLiikeHandler = (): void => {
@@ -331,8 +330,14 @@ const PostDetail: React.FC = () => {
   }을 정말 삭제하시겠습니까?`;
 
   const IntroHandler = (event: React.MouseEvent<HTMLElement>) => {
-    if ('post' in state && event.target instanceof HTMLElement) {
+    if (
+      !isOpenCommentIntro &&
+      !isOpenReplyIntro &&
+      'post' in state &&
+      event.target instanceof HTMLElement
+    ) {
       dispatch(setIsOpenIntro(state.post?.isOpeneIntro));
+      dispatch(setSelectedMember(event.target.id));
     }
   };
 
@@ -421,13 +426,13 @@ const PostDetail: React.FC = () => {
       <Container onClick={handleClickOutside}>
         <PostContainer onClick={outClickIntroHandler}>
           <div className="post-title">
-            <h1>{isSuccess && data?.title}</h1>
+            <h1>{data?.title}</h1>
             {isEdit ? <p>(수정됨)</p> : null}
           </div>
           <PostInfo>
             <ul className="post-info">
               <li className="image" onClick={IntroHandler}>
-                <img src={isSuccess && data?.memberImage}></img>
+                <img src={data?.memberImage} id={data?.memberName}></img>
               </li>
               {isSuccess &&
               'post' in state &&
@@ -437,12 +442,14 @@ const PostDetail: React.FC = () => {
                   <IntroInfo>
                     <ul className="intro-content-info">
                       <li className="image">
-                        <img src={data?.memberImage} id=""></img>
+                        <img src={data?.memberImage}></img>
                       </li>
                       <li className="intro-nickname">{data?.memberName}</li>
                     </ul>
                   </IntroInfo>
-                  <label className="introduction">{data?.title}</label>
+                  <label className="introduction">
+                    {memeberQuery.data?.intro || '소개 내용이 없습니다.'}
+                  </label>
                   <div className="intro-moreInfo">더보기 》</div>
                 </IntorductionContainer>
               ) : null}
@@ -458,7 +465,7 @@ const PostDetail: React.FC = () => {
                 className="bookmark"
                 onClick={_.debounce(() => {
                   changeBookmarkHandler();
-                }, 500)}
+                }, 1500)}
               >
                 <BookmarkIcon checked={data?.isBookmarked} />
               </button>
@@ -472,7 +479,7 @@ const PostDetail: React.FC = () => {
               <button
                 onClick={_.debounce(() => {
                   changeLiikeHandler();
-                }, 500)}
+                }, 1500)}
               >
                 <LikeIcon checked={isSuccess && data?.isThumbup} />
               </button>
@@ -480,7 +487,7 @@ const PostDetail: React.FC = () => {
               <button
                 onClick={_.debounce(() => {
                   changeDislikeHandler();
-                }, 500)}
+                }, 1500)}
               >
                 <DislikeIcon checked={isSuccess && data?.isThumbdown} />
               </button>
@@ -509,8 +516,10 @@ const Container = styled.div<any>`
   position: relative;
   width: 100%;
   height: 100%;
-  max-height: 1000px;
   overflow: scroll;
+  img {
+    max-width: 720px;
+  }
 `;
 // Post 컨테이너
 const PostContainer = styled.div`

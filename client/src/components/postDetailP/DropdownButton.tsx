@@ -10,7 +10,6 @@ import {
   setReportType,
 } from '../../slices/postSlice';
 import { useNavigate, useParams } from 'react-router-dom';
-import { PostStateType } from '../../types/PostDetail';
 
 interface Props {
   memberName: string;
@@ -31,7 +30,7 @@ const DropdownButton = ({ memberName }: Props) => {
 
   // 삭제 확인 모달창
   const confirmDeleteHandler = (): void => {
-    dispatch(setIsOpenDelete((state as PostStateType).post.isOpenDelete));
+    dispatch(setIsOpenDelete('post' in state && state.post.isOpenDelete));
   };
 
   const typeChecker = (event: React.MouseEvent<HTMLElement>) => {
@@ -42,7 +41,7 @@ const DropdownButton = ({ memberName }: Props) => {
 
   // 신고 모달창 오픈
   const reportHandler = (): void => {
-    dispatch(setIsOpenReport((state as PostStateType).post.isOpenReport));
+    dispatch(setIsOpenReport('post' in state && state.post?.isOpenReport));
   };
 
   // Select option에 따른 로직
@@ -51,7 +50,10 @@ const DropdownButton = ({ memberName }: Props) => {
       dispatch(setReportType('post'));
       reportHandler();
     }
-    if (option === '수정하기') navigate(`/posts/update/${postId}`);
+    if (option === '수정하기') {
+      navigate(`/posts/update/${postId}`);
+      window.location.reload();
+    }
     if (option === '삭제하기') confirmDeleteHandler();
   };
 

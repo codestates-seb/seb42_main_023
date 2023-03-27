@@ -1,7 +1,7 @@
-import React, { KeyboardEvent } from 'react';
+import React, { KeyboardEvent, useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { useAppDispatch, useAppSelector } from '../../hooks';
-import { setTagContent, setTag } from '../../slices/postInputSlice';
+import { setTag, setTagContent } from '../../slices/postInputSlice';
 import { setTagErr } from '../../slices/validationSlice';
 import Tag from '../common/Tag';
 import { postsApi } from '../../api/postApi';
@@ -22,16 +22,19 @@ const TagInput: React.FC = () => {
     dispatch(setTagContent(event.target.value));
   };
   const params = useParams();
-  const postId = Number(params.postId);
-  console.log('postId', postId);
-
+  const postId = params.postId;
   const postQuery = postsApi.useGetPostQuery({ postId });
   const { data } = postQuery;
-  console.log('data', data);
+  const tags = data?.tags;
+
   //  테그 추가
   const addTagHandler = (event: KeyboardEvent<HTMLInputElement>): void => {
     const tag: Array<string> = state.postInput.tag;
     const tagContent = state.postInput.tagContent;
+
+    // data?.tags.map((tag: string) => {
+    //   dispatch(setTag(tag));
+    // });
 
     // 유효성 검사
     if (event.key === 'Enter' && event.nativeEvent.isComposing === false) {
@@ -80,7 +83,7 @@ const TagInput: React.FC = () => {
             value={state.postInput.tagContent}
           ></Input>
           <TagConatiner>
-            {state.postInput.tag.map((tag, idx) => {
+            {state.postInput.tag?.map((tag, idx) => {
               return <Tag key={idx} content={tag}></Tag>;
             })}
           </TagConatiner>
@@ -96,7 +99,7 @@ const TagInput: React.FC = () => {
           ></Input>
           <Error>{state.validation.tagErr}</Error>
           <TagConatiner>
-            {state.postInput.tag.map((tag, idx) => {
+            {state.postInput.tag?.map((tag: string, idx: number) => {
               return <Tag key={idx} content={tag}></Tag>;
             })}
           </TagConatiner>

@@ -6,7 +6,14 @@ function PostBtn() {
   const navigate = useNavigate();
   return (
     <>
-      <Btn onClick={() => navigate('/posts/create')}>글쓰기</Btn>
+      <Btn
+        onClick={() => {
+          navigate('/posts/create');
+          location.reload();
+        }}
+      >
+        글쓰기
+      </Btn>
     </>
   );
 }

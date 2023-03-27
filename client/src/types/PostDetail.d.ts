@@ -19,6 +19,8 @@ export interface PostStateType {
     totalImg: unknown;
     isOpeneIntro: boolean;
     addedImg: unknown;
+    remainImg: unknown;
+    selectedMember: unknown;
   };
 }
 
@@ -31,6 +33,7 @@ export interface CommentStateType {
     isEdit: Array<boolean>;
     isOpeneIntro: boolean;
     page: number;
+    comments: Array<object>;
   };
 }
 
@@ -123,6 +126,7 @@ export interface CommentProps {
 export interface ReplyProps {
   replyInfo: ReplyType;
   idx: number;
+  replyPage: number;
 }
 
 export interface OnClick {

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import styled from 'styled-components';
 import TitleInput from '../components/createPostP/TitleInput';
 import BodyInput from '../components/createPostP/BodyInput';
@@ -8,19 +8,23 @@ import { useNavigate } from 'react-router-dom';
 import { useAppSelector } from '../hooks';
 import { postsApi } from '../api/postApi';
 import _ from 'lodash';
+import axios from 'axios';
+import Cookies from 'js-cookie';
 
+const url = process.env.REACT_APP_SERVER_ADDRESS + '/images';
 const CreatePost: React.FC = () => {
   const navigate = useNavigate();
   const state = useAppSelector((state) => state);
   const [createPost] = postsApi.useSetPostMutation();
-  const titleValue = state.postInput.title;
-  const bodyValue = state.postInput.body;
-  const addedImg = state.post.addedImg;
-  const removedImg = state.post.removedImg;
-  const tag = state.postInput.tag;
+  const titleValue = state.postInput?.title;
+  const bodyValue = state.postInput?.body;
+  const addedImg = state.post?.addedImg;
+  const removedImg = state.post?.removedImg;
+  const tag = state.postInput?.tag;
   const tagNames = tag.map((tagName) => {
     return { tagName };
   });
+  const accsessToken = Cookies.get('Authorization');
 
   const reqBody = {
     saveImages: {
@@ -29,10 +33,48 @@ const CreatePost: React.FC = () => {
     },
     title: titleValue,
     content: bodyValue,
-    tags: tagNames,
+    tagNames: tagNames,
+  };
+
+  const deletedImg = {
+    removedImages: removedImg,
   };
 
   console.log('reqBody', reqBody);
+  console.log('deletedImg', deletedImg);
+  const preventClose = (e: BeforeUnloadEvent) => {
+    e.preventDefault();
+    axios.delete(url, {
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: accsessToken,
+      },
+      withCredentials: true,
+      data: deletedImg,
+    });
+  };
+
+  useEffect(() => {
+    (() => {
+      window.addEventListener('beforeunload', preventClose);
+    })();
+
+    return () => {
+      window.removeEventListener('beforeunload', preventClose);
+    };
+  }, []);
+
+  const deleteImg = () => {
+    axios.delete(url, {
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: accsessToken,
+      },
+      withCredentials: true,
+      data: deletedImg,
+    });
+  };
+
   const addPostHandler = (): void => {
     if (
       state.postInput.title !== '' &&
@@ -43,7 +85,10 @@ const CreatePost: React.FC = () => {
       state.validation.tagErr === ''
     ) {
       createPost(reqBody);
-      alert('게시글이 생성되었습니다.');
+      navigate('/');
+      setTimeout(() => {
+        location.reload();
+      }, 1500);
     } else {
       if (state.validation.titleErr !== '' || !state.postInput.title.length) {
         alert('제목을 다시 확인해 주세요.');
@@ -71,7 +116,15 @@ const CreatePost: React.FC = () => {
       <TagInput></TagInput>
 
       <BtnContainer>
-        <CancelBtn onClick={cancelAddHandler}>취소</CancelBtn>
+        <CancelBtn
+          onClick={() => {
+            //.TODO
+            deleteImg();
+            cancelAddHandler();
+          }}
+        >
+          취소
+        </CancelBtn>
         <PostBtn onClick={addPostHandler}>작성</PostBtn>
       </BtnContainer>
     </Container>
