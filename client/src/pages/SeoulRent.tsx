@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import { MainContainer } from './RecommendLoan';
 import NavRealEstate from '../components/common/NavRealEstate';
@@ -8,23 +8,34 @@ import ImageMapper from 'react-img-mapper';
 import { CustomArea, AreaEvent } from 'react-img-mapper/dist/types';
 import Tooltip from '../components/seoulRentP/Tooltip';
 import { seoulrentApi } from '../api/seoulrentApi';
-
+interface StyleProps {
+  left: number;
+  top: number;
+}
 function SeoulRent() {
   const seoulrentquery = seoulrentApi.useGetSeoulRentListQuery({
     query: '',
   });
   const { data, isSuccess } = seoulrentquery;
-  const [tooltipPosition, setTooltipPosition] = useState({ x: 0, y: 0 });
-  const [hoveredArea, setHoveredArea] = useState('');
+  const [x, setX] = useState('');
+  const [y, setY] = useState('');
+  const [clickedArea, setClickedArea] = useState('');
+  const [msg, setMsg] = useState('');
 
-  const enterArea = (area: CustomArea, e: AreaEvent) => {
-    if (area.id !== undefined) {
-      // const x = e.pageX;
-      // const y = e.pageY;
-      // setTooltipPosition({ x, y });
-      setHoveredArea(area.id);
-      console.log(hoveredArea);
-    }
+  useEffect(() => {
+    console.log(x, y, clickedArea + 'text');
+  }, [x, y]);
+
+  const moveOnArea = (area: CustomArea, evt: AreaEvent) => {
+    const coords = { x: evt.nativeEvent.clientX, y: evt.nativeEvent.clientY };
+    console.log(
+      `You moved on ${area.shape} ${area.id} at coords ${JSON.stringify(
+        coords,
+      )} !`,
+    );
+    setX(coords['x']);
+    setY(coords['Y']);
+    setClickedArea(area.id as string);
   };
   return (
     <MainContent>
@@ -35,15 +46,13 @@ function SeoulRent() {
           map={AREAS_MAP}
           width={730}
           height={530}
-          onMouseEnter={(area, idx, e) => enterArea(area, e)}
+          onMouseUp={(area, _, evt) => moveOnArea(area, evt)}
         />
-        {/* {hoveredArea && (
-          <Tooltip
-            x={tooltipPosition.x}
-            y={tooltipPosition.y}
-            location={hoveredArea}
-          />
-        )} */}
+        {clickedArea && (
+          <TooltipWrap left={x} top={y}>
+            <div>{clickedArea}</div>
+          </TooltipWrap>
+        )}
       </div>
     </MainContent>
   );
@@ -58,4 +67,15 @@ const MainContent = styled(MainContainer)`
     justify-content: center;
     padding: 30px;
   }
+`;
+const TooltipWrap = styled.div<StyleProps>`
+  position: absolute;
+  background-color: blue;
+  border: 1px solid black;
+  width: 100px;
+  height: 100px;
+  padding: 10px;
+  left: ${(props) => props.left};
+  top: ${(props) => props.top};
+  z-index: 99;
 `;
