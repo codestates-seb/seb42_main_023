@@ -7,8 +7,13 @@ import { AREAS_MAP, Seoulrent } from '../../src/components/seoulRentP/map';
 import ImageMapper from 'react-img-mapper';
 import { CustomArea, AreaEvent } from 'react-img-mapper/dist/types';
 import Tooltip from '../components/seoulRentP/Tooltip';
+import { seoulrentApi } from '../api/seoulrentApi';
 
 function SeoulRent() {
+  const seoulrentquery = seoulrentApi.useGetSeoulRentListQuery({
+    query: '',
+  });
+  const { data, isSuccess } = seoulrentquery;
   const [tooltipPosition, setTooltipPosition] = useState({ x: 0, y: 0 });
   const [hoveredArea, setHoveredArea] = useState('');
 
@@ -17,8 +22,8 @@ function SeoulRent() {
       // const x = e.pageX;
       // const y = e.pageY;
       // setTooltipPosition({ x, y });
-      // setHoveredArea(area.id);
-      // console.log(hoveredArea);
+      setHoveredArea(area.id);
+      console.log(hoveredArea);
     }
   };
   return (
@@ -31,7 +36,6 @@ function SeoulRent() {
           width={730}
           height={530}
           onMouseEnter={(area, idx, e) => enterArea(area, e)}
-          onMouseDown={(area, idx, e) => enterArea(area, e)}
         />
         {/* {hoveredArea && (
           <Tooltip

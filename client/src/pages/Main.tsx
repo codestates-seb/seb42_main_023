@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import PostList from '../components/mainP/PostList';
 import DropdownButton from '../components/mainP/DropdownButton';
@@ -23,7 +23,12 @@ const Main = () => {
     orderby: orderby,
     search: searchQuery,
   });
-  const { data, isSuccess } = postListquery;
+  const { data, isSuccess, refetch } = postListquery;
+
+  //TODO: refetch
+  useEffect(() => {
+    refetch();
+  }, []);
 
   return (
     <>
