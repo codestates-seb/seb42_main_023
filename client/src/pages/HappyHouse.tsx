@@ -29,8 +29,6 @@ const HappyHouse: React.FC = () => {
     location: location,
   });
 
-  const houseList = data.houseList ?? [];
-
   const filterByStateHandler = (state: string) => {
     if (state === 'all') {
       setState('all');
@@ -145,7 +143,7 @@ const HappyHouse: React.FC = () => {
           </thead>
           <tbody>
             {isSuccess &&
-              houseList.map((house: House) => {
+              data.houseList.map((house: House) => {
                 return (
                   <tr key={house.houseId}>
                     <td>{house.noticeState}</td>
@@ -163,7 +161,7 @@ const HappyHouse: React.FC = () => {
               })}
           </tbody>
         </Table>
-        {isSuccess && houseList.length > 0 && (
+        {isSuccess && data.houseList.length > 0 && (
           <Pagination
             pageInfo={data.pageInfo}
             pageOffset={pageOffset}
@@ -221,7 +219,7 @@ const Filter = styled.div`
       width: 80px;
       height: 35px;
       border: 1px solid var(--border-color);
-      background-color: #f9f6f6;
+      background-color: #f4f4f4;
       cursor: pointer;
       &.current {
         background-color: var(--point-blue-color);
@@ -248,6 +246,7 @@ const Filter = styled.div`
 // 공고 리스트
 const Table = styled.table`
   width: 100%;
+  border-collapse: collapse;
   > thead > tr > th {
     font-size: 15px;
     font-weight: 600;
@@ -257,13 +256,18 @@ const Table = styled.table`
 
   > tbody > tr {
     text-align: center;
-    height: 35px;
+    height: 50px;
+    border-bottom: 1px solid var(--border-color);
+    &:hover {
+      background-color: #f4f4f4;
+    }
     > td {
       font-size: 14px;
     }
   }
 `;
 
+// '보기'버튼
 const SeeDetailBtn = styled(WhiteBtn)`
   width: 40px;
   height: 20px;
