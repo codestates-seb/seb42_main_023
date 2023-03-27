@@ -3,11 +3,7 @@ import styled from 'styled-components';
 import { useNavigate } from 'react-router-dom';
 import { membersApi } from '../../api/memberapi';
 import { useAppSelector, useAppDispatch } from '../../hooks';
-import {
-  setMemberName,
-  setPostQuery,
-  setCommentQuery,
-} from '../../slices/headerSlice';
+import { setMemberName } from '../../slices/headerSlice';
 import Cookies from 'js-cookie';
 
 const MediumProfileImg = () => {
@@ -19,8 +15,6 @@ const MediumProfileImg = () => {
 
   const clickmemberHandler = () => {
     if (auth !== undefined && loginUser) {
-      dispatch(setPostQuery(loginUser + '/posts'));
-      dispatch(setCommentQuery(loginUser));
       dispatch(setMemberName(loginUser));
       navigate('/mypage');
     }

@@ -42,8 +42,17 @@ export const membersApi = apiSlice
 // 회원과 관련된 게시글 리스트
 export const membersPostListApi = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
+    //내가 쓴 글
     getMemberPostList: builder.query({
-      query: ({ query, page }) => `members/${query}?page=${page}`,
+      query: ({ name, page }) => `members/${name}/posts?page=${page}`,
+    }),
+    //내가 좋아요한 글
+    getMemberLikePostList: builder.query({
+      query: ({ name, page }) => `members/${name}/thumbup/posts?page=${page}`,
+    }),
+    //내가 북마크한 글
+    getBookmarkPostList: builder.query({
+      query: ({ name, page }) => `members/${name}/bookmark?page=${page}`,
     }),
   }),
 });
@@ -51,8 +60,11 @@ export const membersPostListApi = apiSlice.injectEndpoints({
 export const membersCommentsListApi = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
     getCommentsList: builder.query({
-      query: ({ commentQuery, page }) =>
-        `members/${commentQuery}/comments?page=${page}`,
+      query: ({ name, page }) => `members/${name}/comments?page=${page}`,
+    }),
+    getLikeCommentsList: builder.query({
+      query: ({ name, page }) =>
+        `members/${name}/thumbup/comments?page=${page}`,
     }),
   }),
 });

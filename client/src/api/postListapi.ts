@@ -1,4 +1,3 @@
-import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 import { apiSlice } from './apiSlice';
 
 // 커뮤니티&명예의전당&검색 게시글 API
