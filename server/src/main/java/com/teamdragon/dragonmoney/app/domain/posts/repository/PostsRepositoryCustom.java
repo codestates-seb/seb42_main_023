@@ -39,6 +39,6 @@ public interface PostsRepositoryCustom {
     Page<Posts> findThumbUpPostsListByMemberName(String memberName, Pageable pageable);
     Page<Posts> findBookmarkPostsListByMemberName(String memberName, Pageable pageable);
 
-    // 회원 탈퇴로 인한 댓글 삭제
-    void deletedPostsByDeletedMember(Member member, DeleteResult deleteResult);
+    // 회원 탈퇴로 인한 게시글 삭제
+    List<Posts> findPostsByDeletedMember(String memberName);
 }

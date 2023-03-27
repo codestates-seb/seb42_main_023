@@ -259,9 +259,9 @@ public class PostsDto {
             for (PostsTag postsTag : posts.getPostsTags()) {
                    tags.add(postsTag.getTag().getName());
             }
-            this.isBookmarked = isBookmarked != null;
-            this.isThumbup = isThumbup != null;
-            this.isThumbdown = isThumbdown != null;
+            this.isBookmarked = (isBookmarked != null);
+            this.isThumbup = (isThumbup != null);
+            this.isThumbdown = (isThumbdown != null);
         }
     }
 }
