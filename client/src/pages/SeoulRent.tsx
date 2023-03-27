@@ -6,8 +6,8 @@ import Seoulmap from '../assets/mapbg.svg';
 import { AREAS_MAP, Seoulrent } from '../../src/components/seoulRentP/map';
 import ImageMapper from 'react-img-mapper';
 import { CustomArea, AreaEvent } from 'react-img-mapper/dist/types';
-import Tooltip from '../components/seoulRentP/Tooltip';
 import { seoulrentApi } from '../api/seoulrentApi';
+import { Link } from 'react-router-dom';
 interface StyleProps {
   left: number;
   top: number;
@@ -53,6 +53,19 @@ function SeoulRent() {
         {clickedArea && (
           <TooltipWrap left={tooltipPosition.x} top={tooltipPosition.y}>
             <div>{clickedArea}</div>
+            <div>
+              <span>전세 </span>
+              {}
+            </div>
+            <div className="lastdiv">
+              <span>월세 </span>
+              {}
+            </div>
+            <div>
+              <Link className="link" to="/happyhouse">
+                {'행복주택'}
+              </Link>
+            </div>
           </TooltipWrap>
         )}
       </div>
@@ -72,13 +85,28 @@ const MainContent = styled(MainContainer)`
 `;
 const TooltipWrap = styled.div<StyleProps>`
   position: absolute;
-  background-color: blue;
-  border: 1px solid black;
-  width: 100px;
-  height: 100px;
-  padding: 10px;
+  background-color: #fff;
+  border: 1px solid var(--border-color);
+  width: 120px;
+  height: 124px;
+  padding: 14px;
+  border-radius: 10px;
+  box-shadow: 4px 4px 8px rgba(0, 0, 0, 0.15);
 
-  left: ${(props) => props.left}px;
-  top: ${(props) => props.top}px;
+  left: ${(props) => props.left - 46}px;
+  top: ${(props) => props.top - 60}px;
   z-index: 99;
+  .link {
+    display: block;
+    height: 20px;
+    :hover {
+      color: var(--point-blue-color);
+    }
+  }
+  span {
+    color: var(--point-blue-color);
+  }
+  div {
+    margin-bottom: 4px;
+  }
 `;
