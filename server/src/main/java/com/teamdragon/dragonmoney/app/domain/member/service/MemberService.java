@@ -94,12 +94,11 @@ public class MemberService {
     //회원 탈퇴
     public Member deleteMember(String name) {
 
-        Member member = findMember(name);
+//        Member member = findMember(name);
 
-        postsService.removePostsBtDeletedMember(member);
-        commentService.removeCommentByDeletedMember(member);
-        replyService.removeReplyByDeletedMember(member);
-
+//        postsService.removePostsBtDeletedMember(name);
+//        commentService.removeCommentByDeletedMember(member);
+//        replyService.removeReplyByDeletedMember(member);
 
         Member deletedMember = findVerifiedMemberName(name);
 

@@ -131,7 +131,7 @@ public class CommentRepositoryImpl implements CommentRepositoryCustom {
                 .from(thumbup)
                 .leftJoin(thumbup.parentComment, comment)
                 .leftJoin(thumbup.member, member)
-                .where(comment.state.notIn(Comment.State.DELETED), comment.writer.name.eq(memberName))
+                .where(comment.state.notIn(Comment.State.DELETED))
                 .orderBy(orders)
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())

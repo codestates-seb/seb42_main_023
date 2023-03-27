@@ -262,7 +262,7 @@ public class PostsRepositoryImpl implements PostsRepositoryCustom {
                 .from(thumbup)
                 .join(thumbup.parentPosts, posts)
                 .join(thumbup.member, member)
-                .where(posts.state.notIn(Posts.State.DELETED), posts.writer.name.eq(memberName))
+                .where(posts.state.notIn(Posts.State.DELETED))
                 .orderBy(orders)
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
@@ -298,14 +298,14 @@ public class PostsRepositoryImpl implements PostsRepositoryCustom {
         return PageableExecutionUtils.getPage(content, pageable, countQuery::fetchOne);
     }
 
-    // 회원 탈퇴로 인한 게시글 삭제
-    @Override
-    public void deletedPostsByDeletedMember(Member member, DeleteResult deleteResult) {
-        queryFactory
-                .update(posts)
-                .set(posts.state, Posts.State.DELETED)
-                .where(posts.writer.eq(member))
-                .execute();
+    // 회원 탈퇴 시 작성한 게시글 조회
+    public List<Posts> findPostsByDeletedMember(String memberName) {
+        return queryFactory
+                .select(posts).distinct()
+                .from(posts)
+                .leftJoin(posts.writer, member).fetchJoin()
+                .where(posts.state.eq(Posts.State.ACTIVE), posts.writer.name.eq(memberName))
+                .fetch();
     }
 
     // 특정 회원이 쓴 글 개수 조회

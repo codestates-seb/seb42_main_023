@@ -127,9 +127,6 @@ public class ReportRepositoryImpl implements ReportRepositoryCustom{
                     .selectFrom(report)
                     .distinct()
                     .where(report.handleState.eq(handledState))
-//                    .where(report.targetPosts.state.eq(Posts.State.ACTIVE))
-//                    .where(report.targetComment.state.eq(Comment.State.ACTIVE))
-//                    .where(report.targetReply.state.eq(Reply.State.ACTIVE))
                     .where(activePost(), activeComment(), activeReply())
                     .offset(pageable.getOffset())
                     .limit(pageable.getPageSize())
@@ -144,7 +141,7 @@ public class ReportRepositoryImpl implements ReportRepositoryCustom{
     }
 
     private BooleanExpression activePost() {
-        if (!report.targetPosts.state.equals(Posts.State.ACTIVE)) {
+        if (report.targetPosts.state.equals(Posts.State.ACTIVE)) {
             return report.targetPosts.state.eq(Posts.State.ACTIVE);
         }
         return null;

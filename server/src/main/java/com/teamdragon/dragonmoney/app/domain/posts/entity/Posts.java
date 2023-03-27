@@ -188,11 +188,10 @@ public class Posts extends BaseTimeEntity implements ThumbCountable {
     }
 
     public void changeStateToDeleted(DeleteResult deleteResult){
-        this.state = State.DELETED;
         if(deleteResult.getDeleteReason() == DeleteResult.Reason.DELETED_BY_REPORT) {
-            this.state = Posts.State.REPORTED;
+            this.state = State.REPORTED;
         } else {
-            this.state = Posts.State.DELETED;
+            this.state = State.DELETED;
         }
         this.deleteResult = deleteResult;
     }
