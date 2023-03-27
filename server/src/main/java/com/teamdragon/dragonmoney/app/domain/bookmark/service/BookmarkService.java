@@ -36,12 +36,21 @@ public class BookmarkService {
         return bookmarkRepository.save(bookmark);
     }
 
-    // 북마크 삭제
-    public void removeBookmark(String memberName, Long postsId) {
+    // 북마크 중복 조회
+    public void checkBookmark(String memberName, Long postsId) {
         Member member = memberService.findMember(memberName);
         Long memberId = member.getId();
 
-        Bookmark bookmark = findBookmark(memberId, postsId);
+        Optional<Bookmark> bookmark = bookmarkRepository.findByMember_IdAndPosts_Id(memberId, postsId);
+
+        if(bookmark.isEmpty()){
+            createBookmark(memberName,postsId);
+        }
+    }
+
+    // 북마크 삭제
+    public void removeBookmark(String memberName, Long postsId) {
+        Bookmark bookmark = findBookmark(memberName, postsId);
         Posts posts = bookmark.getPosts();
         postsService.minusBookmarkCount(posts);
 
@@ -49,7 +58,10 @@ public class BookmarkService {
     }
 
     // 북마크 조회
-    private Bookmark findBookmark(Long memberId, Long postsId) {
+    private Bookmark findBookmark(String memberName, Long postsId) {
+        Member member = memberService.findMember(memberName);
+        Long memberId = member.getId();
+
         Optional<Bookmark> bookmark = bookmarkRepository.findByMember_IdAndPosts_Id(memberId, postsId);
 
         return bookmark

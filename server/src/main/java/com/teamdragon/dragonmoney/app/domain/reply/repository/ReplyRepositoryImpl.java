@@ -7,10 +7,9 @@ import com.querydsl.core.types.Projections;
 import com.querydsl.jpa.JPAExpressions;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
-import com.teamdragon.dragonmoney.app.domain.comment.dto.CommentDto;
-import com.teamdragon.dragonmoney.app.domain.comment.entity.QComment;
+import com.teamdragon.dragonmoney.app.domain.delete.entity.DeleteResult;
+import com.teamdragon.dragonmoney.app.domain.member.entity.Member;
 import com.teamdragon.dragonmoney.app.domain.reply.dto.ReplyDto;
-import com.teamdragon.dragonmoney.app.domain.reply.entity.QReply;
 import com.teamdragon.dragonmoney.app.domain.reply.entity.Reply;
 import com.teamdragon.dragonmoney.app.global.pagenation.QueryDslUtil;
 import lombok.RequiredArgsConstructor;
@@ -18,13 +17,10 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.support.PageableExecutionUtils;
 
-import javax.persistence.EntityManager;
-
 import java.util.List;
 
 import static com.teamdragon.dragonmoney.app.domain.comment.entity.QComment.comment;
 import static com.teamdragon.dragonmoney.app.domain.member.entity.QMember.member;
-import static com.teamdragon.dragonmoney.app.domain.posts.entity.QPosts.posts;
 import static com.teamdragon.dragonmoney.app.domain.reply.entity.QReply.reply;
 import static com.teamdragon.dragonmoney.app.domain.thumb.entity.QThumbdown.thumbdown;
 import static com.teamdragon.dragonmoney.app.domain.thumb.entity.QThumbup.thumbup;
@@ -102,6 +98,16 @@ public class ReplyRepositoryImpl implements ReplyRepositoryCustom{
                 .where(reply.comment.id.eq(commentId));
 
         return PageableExecutionUtils.getPage(content, pageable, countQuery::fetchOne);
+    }
+
+    // 회원 탈퇴로 인한 답글 삭제
+    @Override
+    public void deletedReplyByDeletedMember(Member member, DeleteResult deleteResult) {
+        queryFactory
+                .update(reply)
+                .set(reply.state, Reply.State.DELETED)
+                .where(reply.writer.eq(member))
+                .execute();
     }
 
     private OrderSpecifier[] getAllOrderSpecifiers(Pageable pageable, Path path) {

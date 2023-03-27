@@ -18,7 +18,7 @@ public class BookmarkController {
     @PostMapping("/members/{member-name}/bookmark/posts/{post-id}")
     public ResponseEntity postBookmark(@PathVariable("member-name") String memberName,
                                        @PathVariable("post-id") Long postsId) {
-        bookmarkService.createBookmark(memberName,postsId);
+        bookmarkService.checkBookmark(memberName, postsId);
 
         BookmarkDto response = new BookmarkDto();
         response.setIsBookmarked(true);

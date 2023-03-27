@@ -80,6 +80,15 @@ public class ReplyService implements ThumbCountService {
         replyRepository.save(reply);
     }
 
+    // 회원 탈퇴로 인한 답글 삭제
+    public void removeReplyByDeletedMember(Member member) {
+        DeleteResult deleteResult = DeleteResult.builder()
+                .deleteReason(DeleteResult.Reason.DELETED_BY_MEMBER_REMOVE)
+                .build();
+
+        replyRepository.deletedReplyByDeletedMember(member, deleteResult);
+    }
+
     // 수정
     public Reply updateReply(Member loginMember, Long replyId, Reply updateReply) {
         Reply originalReply = checkOwner(loginMember, replyId);

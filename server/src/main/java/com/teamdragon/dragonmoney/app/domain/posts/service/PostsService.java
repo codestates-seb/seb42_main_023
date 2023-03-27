@@ -121,6 +121,15 @@ public class PostsService implements ThumbCountService {
         postsRepository.save(posts);
     }
 
+    // 회원 탈퇴로 인한 삭제
+    public void removePostsBtDeletedMember(Member member) {
+        DeleteResult deleteResult = DeleteResult.builder()
+                .deleteReason(DeleteResult.Reason.DELETED_BY_MEMBER_REMOVE)
+                .build();
+
+        postsRepository.deletedPostsByDeletedMember(member, deleteResult);
+    }
+
     // 게시글 수정
     public Posts updatePosts(Member loginMember, Long postsId, Posts updatePosts, List<Image> removedImages){
         Posts originalPosts = checkOwner(loginMember, postsId);
