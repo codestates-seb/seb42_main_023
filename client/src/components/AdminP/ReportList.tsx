@@ -187,9 +187,6 @@ const Table = styled.table`
     &.row-even {
       background-color: #f8f8f8;
     }
-    &:hover {
-      background-color: aliceblue;
-    }
     > td {
       font-size: 14px;
     }
