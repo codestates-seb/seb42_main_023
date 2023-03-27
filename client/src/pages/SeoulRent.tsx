@@ -16,15 +16,16 @@ function SeoulRent() {
   const seoulrentquery = seoulrentApi.useGetSeoulRentListQuery({
     query: '',
   });
+  const [tooltipPosition, setTooltipPosition] = useState({ x: 0, y: 0 });
   const { data, isSuccess } = seoulrentquery;
-  const [x, setX] = useState('');
-  const [y, setY] = useState('');
+  // const [x, setX] = useState(0);
+  // const [y, setY] = useState(0);
   const [clickedArea, setClickedArea] = useState('');
   const [msg, setMsg] = useState('');
 
-  useEffect(() => {
-    console.log(x, y, clickedArea + 'text');
-  }, [x, y]);
+  // useEffect(() => {
+  //   console.log(x, y, clickedArea + 'text');
+  // }, [x, y]);
 
   const moveOnArea = (area: CustomArea, evt: AreaEvent) => {
     const coords = { x: evt.nativeEvent.clientX, y: evt.nativeEvent.clientY };
@@ -33,8 +34,9 @@ function SeoulRent() {
         coords,
       )} !`,
     );
-    setX(coords['x']);
-    setY(coords['Y']);
+    setTooltipPosition(coords);
+    // setX(coords.x);
+    // setY(coords.y);
     setClickedArea(area.id as string);
   };
   return (
@@ -49,7 +51,7 @@ function SeoulRent() {
           onMouseUp={(area, _, evt) => moveOnArea(area, evt)}
         />
         {clickedArea && (
-          <TooltipWrap left={x} top={y}>
+          <TooltipWrap left={tooltipPosition.x} top={tooltipPosition.y}>
             <div>{clickedArea}</div>
           </TooltipWrap>
         )}
@@ -75,7 +77,8 @@ const TooltipWrap = styled.div<StyleProps>`
   width: 100px;
   height: 100px;
   padding: 10px;
-  left: ${(props) => props.left};
-  top: ${(props) => props.top};
+
+  left: ${(props) => props.left}px;
+  top: ${(props) => props.top}px;
   z-index: 99;
 `;
