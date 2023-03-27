@@ -5,8 +5,12 @@ import { commentsApi } from '../../api/commentApi';
 import { postsApi } from '../../api/postApi';
 import { useAppDispatch, useAppSelector } from '../../hooks';
 import { addCommentEdit, setComment } from '../../slices/commentSlice';
+import { CommentInputProps } from '../../types/PostDetail';
 
-const CommentInput: React.FC = () => {
+const CommentInput: React.FC<CommentInputProps> = ({
+  setCommentCnt,
+  commentCnt,
+}: CommentInputProps) => {
   const commentRef = useRef<HTMLInputElement>(null);
   const dispatch = useAppDispatch();
   const state = useAppSelector((state) => {
@@ -14,8 +18,6 @@ const CommentInput: React.FC = () => {
   });
   const params = useParams();
   const postId = params.postId;
-  const postQuery = postsApi.useGetPostQuery({ postId });
-  const { refetch } = postQuery;
 
   // 댓글 추가 mutation
   const commetMutation = commentsApi.useSetCommentMutation();
@@ -27,8 +29,10 @@ const CommentInput: React.FC = () => {
       postId: postId,
       content: commentRef.current?.value,
     });
+    //TODO 댓글 추가시 댓글 개수 1 증가
+    setCommentCnt(commentCnt + 1);
     dispatch(addCommentEdit(false));
-    refetch();
+
     commentRef.current!.value = '';
   };
 
@@ -45,7 +49,8 @@ const CommentInput: React.FC = () => {
 
   return (
     <CommentInputContainer>
-      <h1>댓글 {postQuery.data?.commentCount}개 </h1>
+      <h1>댓글 {commentCnt}개 </h1>
+      {/* <h1>댓글 {postQuery.data?.commentCount}개 </h1> */}
       <Input
         type="text"
         placeholder="댓글을 남겨 주세요"

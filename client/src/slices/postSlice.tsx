@@ -6,7 +6,6 @@ const postSlice = createSlice({
     isLike: false,
     isDislike: false,
     isBookmark: false,
-    views: undefined,
     reommendPosts: undefined,
     postDetail: undefined,
     deleteType: undefined,
@@ -38,11 +37,6 @@ const postSlice = createSlice({
     setBookmark: (state, action: PayloadAction<boolean>): void => {
       console.log(action.payload);
       state.isBookmark = !state.isBookmark;
-    },
-    // 게시물 조회수
-    setViews: (state, action: PayloadAction<number>): void => {
-      console.log(action.payload);
-      (state.views as unknown) = action.payload;
     },
     // 추천 게시물
     setRecommendPosts: (state, action: PayloadAction<object>): void => {
@@ -111,7 +105,6 @@ export const {
   setLike,
   setDislike,
   setBookmark,
-  setViews,
   setRecommendPosts,
   setPostDetail,
   setDeleteType,
