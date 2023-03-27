@@ -93,6 +93,7 @@ export interface CommentType {
   memberImage: string;
   createdAt: string;
   modifiedAt: string;
+  isDeleted: boolean;
   isModified: boolean;
   replyCount: number;
   thumbupCount: number;
