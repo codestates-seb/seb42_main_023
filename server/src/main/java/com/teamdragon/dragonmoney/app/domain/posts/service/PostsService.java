@@ -138,9 +138,10 @@ public class PostsService implements ThumbCountService {
         // 이미지 처리
         imageService.removeImages(loginMember, removedImages);
         // 태그 처리
-        List<PostsTag> newPostsTags = updateTags(updatePosts, originalPosts);
-        for (PostsTag newPostsTag : newPostsTags) {
-            originalPosts.addPostsTag(newPostsTag);
+        List<PostsTag> postsTags = updateTags(updatePosts, originalPosts);
+        if (postsTags != null) {
+            originalPosts.addPostsTags(postsTags);
+            postsTagRepository.saveAll(postsTags);
         }
         // 추가된 이미지 : 이미지 추가
         List<Image> newImages = imageService.findImages(updatePosts.getImages());
@@ -241,7 +242,7 @@ public class PostsService implements ThumbCountService {
     }
 
     // PostsTag 획득
-    private List<PostsTag> getPostsTags(List<String> tagNames) {
+    public List<PostsTag> getPostsTags(List<String> tagNames) {
         List<Tag> tags = saveTags(tagNames);
         // PostsTag 설정
         List<PostsTag> postsTags = new ArrayList<>();
@@ -252,36 +253,45 @@ public class PostsService implements ThumbCountService {
     }
 
     // update 로 인한 태그 삭제 및 추가 처리
-    private List<PostsTag> updateTags(Posts updatePosts, Posts originalPosts) {
+    public List<PostsTag> updateTags(Posts updatePosts, Posts originalPosts) {
         List<String> updateTagNames = updatePosts.getTagNames();
         List<String> originalTagNames = originalPosts.getTagNames();
 
-        List<String> newTagNames = new ArrayList<>();
-        List<String> removedTagNames = new ArrayList<>();
-
-        for (String updateTagName : updateTagNames) {
-            if (!originalTagNames.contains(updateTagName)) {
-                newTagNames.add(updateTagName);
+        if (originalTagNames.isEmpty() && updateTagNames.isEmpty()) {
+            return null;
+        } else if (!originalTagNames.isEmpty() && updateTagNames.isEmpty()) {
+            postsTagRepository.deleteAllByPostsIdAndTagName(originalPosts.getId(), originalTagNames);
+            originalPosts.removeAllPostsTag();
+            return null;
+        } else if (originalTagNames.isEmpty() && !updateTagNames.isEmpty()) {
+            return getPostsTags(updateTagNames);
+        } else {
+            List<String> newTagNames = new ArrayList<>();
+            List<String> removedTagNames = new ArrayList<>();
+            for (String updateTagName : updateTagNames) {
+                if (!originalTagNames.contains(updateTagName)) {
+                    newTagNames.add(updateTagName);
+                }
             }
-        }
-        for (String originalTagName : originalTagNames) {
-            if (!updateTagNames.contains(originalTagName)) {
-                removedTagNames.add(originalTagName);
+            for (String originalTagName : originalTagNames) {
+                if (!updateTagNames.contains(originalTagName)) {
+                    removedTagNames.add(originalTagName);
+                }
             }
+            postsTagRepository.deleteAllByPostsIdAndTagName(originalPosts.getId(), removedTagNames);
+            return getPostsTags(newTagNames);
         }
-        postsTagRepository.deleteAllByPostsIdAndTagName(originalPosts.getId(), removedTagNames);
-        return getPostsTags(newTagNames);
     }
 
     // 조회수 증가
-    private void plusViewCount(Long postsId) {
+    public void plusViewCount(Long postsId) {
         Posts findPosts = findVerifyPostsById(postsId);
         findPosts.plusViewCount();
         postsRepository.save(findPosts);
     }
 
     // 작성자 확인
-    private Posts checkOwner(Member loginMember, Long postsId) {
+    public Posts checkOwner(Member loginMember, Long postsId) {
         Posts findPosts = findVerifyPostsById(postsId);
         if (!findPosts.getWriter().getId().equals(loginMember.getId())) {
             throw new AuthLogicException(AuthExceptionCode.AUTHORIZED_FAIL);
@@ -290,12 +300,12 @@ public class PostsService implements ThumbCountService {
     }
 
     // Tags 조회 및 저장
-    private List<Tag> saveTags(List<String> tagNames) {
+    public List<Tag> saveTags(List<String> tagNames) {
         return tagService.saveListTag(tagNames);
     }
 
     // 유효한 Posts 조회
-    private Posts findVerifyPostsById(Long postsId) {
+    public Posts findVerifyPostsById(Long postsId) {
         Optional<Posts> findPosts = postsRepository.findById(postsId);
         if (findPosts.isEmpty()) {
             throw new BusinessLogicException(BusinessExceptionCode.POSTS_NOT_FOUND);

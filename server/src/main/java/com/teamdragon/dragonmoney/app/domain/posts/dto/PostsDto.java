@@ -12,6 +12,7 @@ import org.hibernate.validator.constraints.Length;
 import org.springframework.data.domain.Page;
 
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Positive;
 import java.time.LocalDateTime;

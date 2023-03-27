@@ -54,6 +54,9 @@ public class ImageService {
 
     // 이미지들 검색
     public List<Image> findImages(List<Image> images) {
+        if (images == null || images.isEmpty()) {
+            return null;
+        }
         List<Long> imageIds = images.stream()
                 .map(Image::getId)
                 .collect(Collectors.toList());
@@ -65,19 +68,19 @@ public class ImageService {
         if (removeImages == null || removeImages.isEmpty()) {
             return;
         }
-        List<Long> imageIds = removeImages.stream().map(i -> i.getId()).collect(Collectors.toList());
+        List<Long> imageIds = removeImages.stream().map(Image::getId).collect(Collectors.toList());
         List<Image> findImages = imageRepository.findAllByIdsAndMemberId(imageIds, loginMember.getId());
         if (findImages.isEmpty()) {
             return;
         }
-        // 클라우드 복수 이미지 삭제
-        removeImagesFromCloud(findImages);
         // DB 삭제
         removeImageFromDB(findImages);
+        // 클라우드 복수 이미지 삭제
+        removeImagesFromCloud(findImages);
     }
 
     // 복수 이미지 삭제 : DB
-    private void removeImageFromDB(List<Image> removeImages) {
+    public void removeImageFromDB(List<Image> removeImages) {
         List<Long> imageIds = removeImages.stream()
                 .map(Image::getId)
                 .collect(Collectors.toList());
@@ -85,7 +88,7 @@ public class ImageService {
     }
 
     // 복수 이미지 삭제 : 클라우드
-    private void removeImagesFromCloud(List<Image> removeImages) {
+    public void removeImagesFromCloud(List<Image> removeImages) {
         List<String> deleteFileNames = removeImages.stream()
                 .map(Image::getFileName)
                 .collect(Collectors.toList());
