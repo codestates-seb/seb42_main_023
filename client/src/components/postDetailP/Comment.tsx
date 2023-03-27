@@ -377,7 +377,8 @@ const Comment: React.FC = () => {
                   ></input>
                 ) : (
                   <div className="content">
-                    {comment.content} {commentIsEdit ? '(수정됨)' : null}
+                    {comment.isDeleted ? '신고된 댓글입니다.' : comment.content}
+                    {commentIsEdit ? '(수정됨)' : null}
                   </div>
                 )}
                 <ReplyBtn
