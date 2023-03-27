@@ -12,7 +12,7 @@ import { Itemside, Info, Tag } from './PostList';
 import { PostListItem } from '../../types/PostList';
 
 function WeeklyPopular() {
-  const weeklyPopularquery = weeklyPopularApi.useGetPostListQuery({
+  const weeklyPopularquery = weeklyPopularApi.useGetWeekPostListQuery({
     endpoint: 'weekly-popular',
   });
   const { data, isSuccess } = weeklyPopularquery;

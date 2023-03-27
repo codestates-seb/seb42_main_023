@@ -18,14 +18,15 @@ const baseQuery = fetchBaseQuery({
 const baseQueryWithReauth = async (args: any, api: any, extraOptions: any) => {
   let result = await baseQuery(args, api, extraOptions);
 
-  // 접근 권한이 없는 경우 (일반 유저가 관리자 페이지로 들어갔을때)
-  console.log('result:', result);
-  console.log(' result?.error?.status:', result?.error?.status);
-  // ! console.log('message:', result?.error?.data?.message);
+  type ErrorResHeader = {
+    status: number;
+    message: string;
+  };
 
+  // 접근 권한이 없는 경우 (일반 유저가 관리자 페이지로 들어갔을때)
   if (
     result?.error?.status === 403 &&
-    result.meta?.response?.headers.get('message') === 'User unauthorized'
+    (result?.error?.data as ErrorResHeader)?.message === 'User unauthorized'
   ) {
     alert('접근할 수 없는 페이지입니다.');
   }
@@ -33,22 +34,16 @@ const baseQueryWithReauth = async (args: any, api: any, extraOptions: any) => {
   // 기타 인증과정 오류 발생 (내가 쓴 글이 아닌데 삭제나 수정할때)
   if (
     result?.error?.status === 403 &&
-    result.meta?.response?.headers.get('message') === 'Authorized Fail'
+    (result?.error?.data as ErrorResHeader)?.message === 'Authorized Fail'
   ) {
     alert('요청을 수행할 수 없습니다.');
   }
 
   // access token이 만료되었다는 status와 메세지를 받으면, 새로운 access token 발급을 위해 refresh token 보내기
   if (
-    result?.error?.status === 401
-    // result.meta?.response?.headers.get('message') === 'Authorized Fail'
+    result?.error?.status === 401 &&
+    (result?.error?.data as ErrorResHeader)?.message === 'Access token expired'
   ) {
-    console.log('detect error');
-
-    // !Send a POST request to the server to get a new access token
-    //! 테스트 전에 에러 메세지 가져올 수 있는거 알아보기
-    // const refreshResult = await baseQuery(arg, api, extraOptions);
-    // console.log('refreshResult', refreshResult);
     const name = localStorage.getItem('name');
 
     const refreshResult = await baseQuery(
@@ -63,16 +58,16 @@ const baseQueryWithReauth = async (args: any, api: any, extraOptions: any) => {
       extraOptions,
     );
 
-    // response headers로 온 새로운 access token을 쿠키에 저장하기
+    // response headers로 온 새로운 access token에 접근하기
     const headers = refreshResult?.meta?.response?.headers;
-    if (headers) {
-      const accessToken = headers?.get('Authorization');
-      Cookies.set('Authorization', accessToken!);
+    const accessToken = headers?.get('Authorization');
 
-      // 새로운 accessToken으로 다시 api 요청하기
+    // accessToken이 있다면 쿠키에 저장하고 다시 api 요청하기
+    if (accessToken) {
+      Cookies.set('Authorization', accessToken!);
       result = await baseQuery(args, api, extraOptions);
     } else {
-      //만약 새롭게 acces token 발급이 안된다면 로그아웃 시키기.
+      //만약 refresh token도 만료되어 acces token이 없다면 로그아웃 시키기.
       Cookies.remove('Authorization');
       Cookies.remove('Refresh');
       localStorage.clear();

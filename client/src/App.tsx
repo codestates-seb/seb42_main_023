@@ -18,6 +18,7 @@ import MyPage from './pages/MyPage';
 import SeoulRent from './pages/SeoulRent';
 import ReportsStandBy from './pages/ReportsStandBy';
 import ReportsDeleted from './pages/ReportsDeleted';
+import AccountRecovery from './pages/AccountRecovery';
 
 const App: React.FC = () => {
   return (
@@ -42,6 +43,7 @@ const App: React.FC = () => {
               <Route path="/seoulrent" element={<SeoulRent />} />
               <Route path="/reports/standby" element={<ReportsStandBy />} />
               <Route path="/reports/deleted" element={<ReportsDeleted />} />
+              <Route path="/recovery" element={<AccountRecovery />} />
             </Routes>
           </main>
           <Footer />
