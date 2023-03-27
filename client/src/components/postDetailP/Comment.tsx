@@ -29,6 +29,7 @@ import {
   isEdit,
   setIsEdit,
   setIsOpenIntro,
+  setCommentCnt,
 } from '../../slices/commentSlice';
 import {
   isOpened,
@@ -38,8 +39,11 @@ import {
 import { timeSince } from '../mainP/Timecalculator';
 import { membersApi } from '../../api/memberapi';
 import { postsApi } from '../../api/postApi';
+import { CommentInputProps } from '../../types/PostDetail';
 
-const Comment: React.FC = () => {
+const Comment: React.FC<Partial<CommentInputProps>> = ({
+  commentCnt,
+}: Partial<CommentInputProps>) => {
   const dispatch = useAppDispatch();
   const state = useAppSelector(
     (
@@ -57,8 +61,6 @@ const Comment: React.FC = () => {
   const commentId = 'comment' in state && state.comment?.commentId;
   const selectedMember = 'post' in state ? state.post.selectedMember : null;
 
-  // 게시글 조회
-  const postQuery = postsApi.useGetPostQuery({ postId });
   // 댓글 조회
   const commentQuery = commentsApi.useGetCommentQuery({ postId, page });
 
@@ -68,7 +70,6 @@ const Comment: React.FC = () => {
 
   // 답글 조회
   const [replyPage, setReplyPage] = useState<number>(1);
-  console.log('replyPage', replyPage);
   const replyQuery = repliesApi.useGetReplyQuery({ commentId, replyPage });
   const { isSuccess, data } = replyQuery;
   const contentEditInput = useRef<HTMLInputElement>(null);
@@ -221,7 +222,6 @@ const Comment: React.FC = () => {
     dispatch(setTotalReplies(replyQuery.data?.replies || []));
   }, [data]);
 
-  //TODO
   const minusCommentPage = () => {
     if (page >= 2) {
       window.scrollTo(0, 500);
@@ -238,8 +238,6 @@ const Comment: React.FC = () => {
     }
   };
   const plusReplyPage = () => {
-    console.log(replyPage);
-    console.log('aaaaaaaa', replyQuery.data.replies);
     setReplyPage((prev) => prev + 1);
   };
   return (
@@ -493,8 +491,7 @@ const Comment: React.FC = () => {
             《 이전 댓글
           </button>
         ) : null}
-        {postQuery.data?.commentCount > 10 &&
-        postQuery.data?.commentCount / 10 > page ? (
+        {commentCnt! > 10 && commentCnt! / 10 > page ? (
           <button id="moreInfo" onClick={plusCommentPage}>
             댓글 더보기 》
           </button>
