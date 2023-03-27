@@ -1,26 +1,23 @@
 import React, { useRef, useEffect } from 'react';
 import styled from 'styled-components';
-import { useAppDispatch, useAppSelector } from '../../hooks';
-import { setFilter } from '../../slices/mypageSlice';
-import { SidebarBtn } from '../common/Btn';
-import { membersApi } from '../../api/memberapi';
+import { useAppDispatch } from '../../hooks';
 import { setDeleteAccountOpen } from '../../slices/mypageSlice';
+import { useDeleteMemberMutation } from '../../api/memberapi';
 import { BlueBtn, WhiteBtn } from '../../components/common/Btn';
-import axios from 'axios';
 import Cookies from 'js-cookie';
 
 function DeleteModal() {
   const dispatch = useAppDispatch();
   const modalRef = useRef<HTMLDivElement>(null);
-
-  const removeMemberMutaion = membersApi.useDeleteMemberMutation();
-  const [removeMember] = removeMemberMutaion;
+  // TODO: 아래 코드를 옮겨주세요 (20 ~ 21번째 줄)
+  const name = localStorage.getItem('name');
+  const [deleteMember] = useDeleteMemberMutation();
 
   const DeleteAccounthandler = () => {
+    // TODO: 아래 코드를 옮겨주세요 (30 ~ 34번째 줄)
+    deleteMember(name);
     Cookies.remove('Authorization');
     Cookies.remove('Refresh');
-    const name = localStorage.getItem('name');
-    removeMember({ name });
     localStorage.clear();
     window.location.href = '/';
   };

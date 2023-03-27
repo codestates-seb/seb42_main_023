@@ -7,26 +7,59 @@ import { BlueBtn, WhiteBtn } from '../components/common/Btn';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useAppDispatch, useAppSelector } from '../hooks';
 import { postsApi } from '../api/postApi';
-import { setBody, setTag, setTitle } from '../slices/postInputSlice';
+import _ from 'lodash';
+import { setBody, setTitle } from '../slices/postInputSlice';
+import Cookies from 'js-cookie';
+import axios from 'axios';
 
+const url = process.env.REACT_APP_SERVER_ADDRESS + '/images';
 const UpdatePost: React.FC = () => {
   const dispatch = useAppDispatch();
   const state = useAppSelector((state) => state);
   const navigate = useNavigate();
   const params = useParams();
   const postId = Number(params.postId);
+  const [updatePost] = postsApi.useUpdatePostMutation();
   const postQuery = postsApi.useGetPostQuery({ postId });
   const { data } = postQuery;
   const title = data?.title;
   const body = data?.content;
-  const tag = data?.tags;
+  const titleValue = state.postInput?.title;
+  const bodyValue = state.postInput?.body;
+  const addedImg = state.post?.addedImg;
+  const removedImg = state.post?.removedImg || [];
+  const remainImg = state.post?.remainImg;
+  const tag = state.postInput?.tag;
+  const tagNames = tag.map((tagName) => {
+    return { tagName };
+  });
+  const accsessToken = Cookies.get('Authorization');
 
   useEffect(() => {
     dispatch(setTitle(title));
     dispatch(setBody(body));
-    dispatch(setTag(tag));
   }, [body]);
 
+  const remain = _.differenceBy(remainImg!, removedImg!, 'imageId');
+  const reqBody = {
+    postId: postId,
+    saveImages: {
+      remainImages: remain || [],
+      addedImages: addedImg || [],
+      removedImages: removedImg || [],
+    },
+    title: titleValue,
+    content: bodyValue,
+    tagNames: tagNames,
+  };
+
+  const deletedImg = {
+    removedImages: removedImg,
+  };
+
+  console.log('remain', remain);
+  console.log('reqBody', reqBody);
+  console.log('deletedImg', deletedImg);
   const addPostHandler = (): void => {
     if (
       state.postInput.title !== '' &&
@@ -36,8 +69,12 @@ const UpdatePost: React.FC = () => {
       state.validation.bodyErr === '' &&
       state.validation.tagErr === ''
     ) {
-      alert('게시글이 수정되었습니다.');
-      navigate(`posts/${postId}`);
+      updatePost(reqBody);
+      navigate('/');
+      setTimeout(() => {
+        location.reload();
+      }, 1500);
+      window.location.reload();
     } else {
       if (state.validation.titleErr !== '' || state.postInput.title === '') {
         alert('제목을 다시 확인해 주세요.');
@@ -53,8 +90,43 @@ const UpdatePost: React.FC = () => {
       }
     }
   };
+
+  const preventClose = (e: BeforeUnloadEvent) => {
+    e.preventDefault();
+    axios.delete(url, {
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: accsessToken,
+      },
+      withCredentials: true,
+      data: deletedImg,
+    });
+  };
+
+  useEffect(() => {
+    (() => {
+      window.addEventListener('beforeunload', preventClose);
+    })();
+
+    return () => {
+      window.removeEventListener('beforeunload', preventClose);
+    };
+  }, []);
+
+  const deleteImg = () => {
+    axios.delete(url, {
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: accsessToken,
+      },
+      withCredentials: true,
+      data: deletedImg,
+    });
+  };
+
   const cancelAddHandler = (): void => {
     navigate('/');
+    location.reload();
   };
 
   return (
@@ -64,7 +136,15 @@ const UpdatePost: React.FC = () => {
       <TagInput></TagInput>
 
       <BtnContainer>
-        <CancleBtn onClick={cancelAddHandler}>취소</CancleBtn>
+        <CancleBtn
+          onClick={() => {
+            //.TODO
+            deleteImg();
+            cancelAddHandler();
+          }}
+        >
+          취소
+        </CancleBtn>
         <PostBtn onClick={addPostHandler}>수정</PostBtn>
       </BtnContainer>
     </Container>

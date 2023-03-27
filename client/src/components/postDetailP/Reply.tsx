@@ -22,10 +22,12 @@ import {
   setIsOpenReport,
   setReportType,
   setDeleteType,
+  setSelectedMember,
 } from '../../slices/postSlice';
 import { timeSince } from '../mainP/Timecalculator';
 import { setCommentId } from '../../slices/commentSlice';
 import _ from 'lodash';
+import { membersApi } from '../../api/memberapi';
 
 const Reply: React.FC<ReplyProps> = ({ replyInfo, idx }: ReplyProps) => {
   const replyEditInput = useRef<HTMLInputElement>(null);
@@ -41,6 +43,7 @@ const Reply: React.FC<ReplyProps> = ({ replyInfo, idx }: ReplyProps) => {
   const commentId = 'comment' in state && state.comment?.commentId;
   const replyId = 'reply' in state && state.reply?.replyId;
   const page = ('reply' in state && state.reply?.page) || 1;
+  const selectedMember = 'post' in state ? state.post.selectedMember : null;
 
   // 답글
   const replyQuery = repliesApi.useGetReplyQuery({ commentId, page });
@@ -62,6 +65,12 @@ const Reply: React.FC<ReplyProps> = ({ replyInfo, idx }: ReplyProps) => {
   const removeThumbDownMutation = repliesApi.useRemoveThumbDownMutation();
   const [removeThumbDown] = removeThumbDownMutation;
 
+  //  멤버 정보 조회
+  const memeberQuery = membersApi.useGetMemberQuery({ name: selectedMember });
+
+  // 답글 수정 여부
+  const replyIsEdit =
+    replyInfo.createdAt !== replyInfo.modifiedAt ? true : false;
   // 답글 좋아요 클릭 함수
   const ReplyLiikeHandler = (reply: ReplyType): void => {
     const replyId = reply.replyId;
@@ -139,7 +148,6 @@ const Reply: React.FC<ReplyProps> = ({ replyInfo, idx }: ReplyProps) => {
     }
   };
 
-  //TODO
   // 소개 페이지 오픈
   const IntroHandler = (event: React.MouseEvent<HTMLElement>) => {
     if (
@@ -150,6 +158,7 @@ const Reply: React.FC<ReplyProps> = ({ replyInfo, idx }: ReplyProps) => {
     ) {
       dispatch(setIsOpenIntro(state.reply.isOpeneIntro));
       dispatch(setReplyId(Number(event.target.dataset.replyid)));
+      dispatch(setSelectedMember(event.target.id));
       console.log('userName', event.target.id);
     }
   };
@@ -163,9 +172,14 @@ const Reply: React.FC<ReplyProps> = ({ replyInfo, idx }: ReplyProps) => {
   };
   // 시간 계산
   const time = timeSince(replyInfo.createdAt);
-  // 답글 수정 여부
-  const replyIsEdit =
-    replyInfo.createdAt !== replyInfo.modifiedAt ? true : false;
+  const enterHandler = (
+    event: React.KeyboardEvent<HTMLInputElement>,
+    fun: object,
+  ): void => {
+    if (!replyEditInput.current?.value) return;
+    if (event.key === 'Enter') {
+    }
+  };
   return (
     <ReplyContainer>
       <ReplyInfo key={replyInfo.replyId}>
@@ -190,7 +204,9 @@ const Reply: React.FC<ReplyProps> = ({ replyInfo, idx }: ReplyProps) => {
                   <li className="intro-nickname">{replyInfo.memberName}</li>
                 </ul>
               </IntroInfo>
-              <label className="introduction">{replyInfo.content}</label>
+              <label className="introduction">
+                {memeberQuery.data?.intro || '소개 내용이 없습니다.'}
+              </label>
               <div className="intro-moreInfo">더보기 》</div>
             </IntorductionContainer>
           ) : null}
@@ -208,7 +224,7 @@ const Reply: React.FC<ReplyProps> = ({ replyInfo, idx }: ReplyProps) => {
                 display:
                   loginUserName === replyInfo?.memberName ? 'block' : 'none',
               }}
-              onClick={(): void => {
+              onClick={(event): void => {
                 if (!replyEditInput.current?.value) {
                   dispatch(setIsEdit(idx));
                   return;
@@ -242,6 +258,12 @@ const Reply: React.FC<ReplyProps> = ({ replyInfo, idx }: ReplyProps) => {
             <li
               className="reply-delete"
               id="답글"
+              style={{
+                margin:
+                  loginUserName === replyInfo?.memberName
+                    ? '3px 119px 0 5px'
+                    : '3px 195px 0 5px',
+              }}
               onClick={(event: React.MouseEvent<HTMLElement>) => {
                 dispatch(setReplyId(replyInfo.replyId));
                 deleteTypeChecker(event);
@@ -257,10 +279,8 @@ const Reply: React.FC<ReplyProps> = ({ replyInfo, idx }: ReplyProps) => {
             data-category="reply"
             data-replyId={String(replyInfo.replyId)}
             style={{
-              margin:
-                loginUserName === replyInfo?.memberName
-                  ? '3px 110px 0 5px'
-                  : '3px 195px 0 5px',
+              display:
+                loginUserName === replyInfo?.memberName ? 'none' : 'block',
             }}
             onClick={(event): void => {
               dispatch(
