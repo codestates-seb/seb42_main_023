@@ -486,6 +486,7 @@ const Comment: React.FC = () => {
             );
           },
         )}
+
       <div className="commentPageContainer">
         {page !== 1 ? (
           <button id="moreInfo" onClick={minusCommentPage}>
