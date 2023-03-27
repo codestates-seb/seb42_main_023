@@ -123,11 +123,16 @@ public class PostsService implements ThumbCountService {
 
     // 회원 탈퇴로 인한 삭제
     public void removePostsBtDeletedMember(String memberName) {
-        List<Posts> posts = postsRepository.findPostsByDeletedMember(memberName);
-
         DeleteResult deleteResult = DeleteResult.builder()
                 .deleteReason(DeleteResult.Reason.DELETED_BY_MEMBER_REMOVE)
                 .build();
+
+        List<Posts> posts = postsRepository.findPostsByDeletedMember(memberName);
+        for(Posts addDeletedResultByPosts : posts) {
+            addDeletedResultByPosts.changeStateToDeleted(deleteResult);
+        }
+
+        postsRepository.saveAll(posts);
     }
 
     // 게시글 수정
