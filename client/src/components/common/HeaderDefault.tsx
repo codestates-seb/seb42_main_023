@@ -10,12 +10,7 @@ import PostBtn from './PostBtn';
 import MediumProfileImg from './MediumProfileImg';
 import HeaderNav from './HeaderNav';
 import { MdManageAccounts } from 'react-icons/md';
-import {
-  setPostQuery,
-  setCommentQuery,
-  setMemberName,
-  setMemberImg,
-} from '../../slices/headerSlice';
+import { setMemberName, setMemberImg } from '../../slices/headerSlice';
 import Cookies from 'js-cookie';
 
 function HeaderDefault() {

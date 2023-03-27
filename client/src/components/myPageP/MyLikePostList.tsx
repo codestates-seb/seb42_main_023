@@ -12,16 +12,17 @@ import { timeSince } from '../mainP/Timecalculator';
 import Pagination from '../common/Pagination';
 import { PostListItem } from '../../types/PostList';
 
-function MyPostList() {
+function MyLikePostList() {
   const [pageOffset, setPageOffset] = useState(0);
   const [currentPage, setCurrentPage] = useState(1);
   const { memberName } = useAppSelector(({ header }) => header);
 
-  const membersPostListquery = membersPostListApi.useGetMemberPostListQuery({
-    name: memberName,
-    page: currentPage,
-  });
-  const { data, isSuccess, refetch } = membersPostListquery;
+  const membersLikePostListquery =
+    membersPostListApi.useGetMemberLikePostListQuery({
+      name: memberName,
+      page: currentPage,
+    });
+  const { data, isSuccess, refetch } = membersLikePostListquery;
 
   useEffect(() => {
     refetch();
@@ -90,7 +91,7 @@ function MyPostList() {
   );
 }
 
-export default MyPostList;
+export default MyLikePostList;
 
 const List = styled.ul`
   width: 100%;
