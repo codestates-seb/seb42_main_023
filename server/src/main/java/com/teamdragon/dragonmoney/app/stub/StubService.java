@@ -63,7 +63,7 @@ public class StubService {
         ArrayList<Member> members = new ArrayList<>();
         for (int i = 0; i < MEMBER_NUMBER; i++) {
             Member member = Member.builder()
-                    .name("memberName" + 1)
+                    .name("memberName" + i)
                     .profileImage(MEMBER_IMAGE_URL)
                     .email("email" + i + "@email.com")
                     .build();

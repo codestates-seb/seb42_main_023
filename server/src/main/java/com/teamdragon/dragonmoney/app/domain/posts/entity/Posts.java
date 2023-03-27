@@ -145,6 +145,10 @@ public class Posts extends BaseTimeEntity implements ThumbCountable {
         this.commentCount = 0L;
     }
 
+    public void removeAllPostsTag() {
+        this.postsTags = new ArrayList<>();
+    }
+
     @Override
     public ThumbDto getThumbCount() {
         return new ThumbDto(this.thumbupCount, this.thumbdownCount);
@@ -165,6 +169,12 @@ public class Posts extends BaseTimeEntity implements ThumbCountable {
         this.images.add(image);
         if (image.getPosts() != this) {
             image.includedThisPosts(this);
+        }
+    }
+
+    public void addPostsTags(List<PostsTag> postsTags) {
+        for (PostsTag postsTag : postsTags) {
+            this.addPostsTag(postsTag);
         }
     }
 

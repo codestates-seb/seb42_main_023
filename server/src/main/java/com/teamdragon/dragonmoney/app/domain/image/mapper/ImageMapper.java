@@ -15,15 +15,19 @@ public interface ImageMapper {
     @Mapping(source = "id", target = "imageId")
     @Mapping(source = "fileName", target = "imageName")
     ImageDto.ImageResponse imageToImageResponse(Image image);
-    @Mapping(source = "id", target = "imageId")
-    @Mapping(source = "fileName", target = "imageName")
+
+    @Mapping(source = "imageId", target = "id")
+    @Mapping(source = "imageName", target = "fileName")
     List<Image> postImageDtoListToImageList(List<PostsDto.ImageDto> imageDtos);
-    @Mapping(source = "id", target = "imageId")
-    @Mapping(source = "fileName", target = "imageName")
+
+    @Mapping(source = "imageId", target = "id")
+    @Mapping(source = "imageName", target = "fileName")
     List<Image> imageDtoListToImageList(List<ImageDto.ImageReqDto> imageDtos);
+
     @Mapping(source = "imageId", target = "id")
     @Mapping(source = "imageName", target = "fileName")
     Image imageDtoToImage(PostsDto.ImageDto imageDto);
+
     @Mapping(source = "imageId", target = "id")
     @Mapping(source = "imageName", target = "fileName")
     Image imageDtoToImage(ImageDto.ImageReqDto imageDto);
