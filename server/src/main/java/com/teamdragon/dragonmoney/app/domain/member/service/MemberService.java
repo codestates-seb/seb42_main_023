@@ -141,4 +141,11 @@ public class MemberService {
             throw new AuthLogicException(AuthExceptionCode.USER_UNAUTHORIZED);
         }
     }
+
+    // 북마크의 uri 멤버와 로그인 멤버 비교
+    public void bookmarkMemberCompareLoginMember(String loginMember, String uriMember) {
+        if(!loginMember.equals(uriMember)) {
+            throw new BusinessLogicException(BusinessExceptionCode.BAD_REQUEST);
+        }
+    }
 }

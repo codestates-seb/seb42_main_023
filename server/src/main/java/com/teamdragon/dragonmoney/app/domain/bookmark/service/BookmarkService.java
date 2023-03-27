@@ -22,9 +22,19 @@ public class BookmarkService {
     private final PostsService postsService;
     private final BookmarkRepository bookmarkRepository;
 
+    // 북마크 중복 조회
+    public void checkBookmark(Member member, Long postsId) {
+        Long memberId = member.getId();
+
+        Optional<Bookmark> bookmark = bookmarkRepository.findByMember_IdAndPosts_Id(memberId, postsId);
+
+        if(bookmark.isEmpty()){
+            createBookmark(member,postsId);
+        }
+    }
+
     // 북마크 저장
-    public Bookmark createBookmark(String memberName, Long postsId) {
-        Member member = memberService.findMember(memberName);
+    public Bookmark createBookmark(Member member, Long postsId) {
         Posts posts = postsService.findOne(postsId);
         posts.plusBookmarkCount();
 
@@ -36,21 +46,9 @@ public class BookmarkService {
         return bookmarkRepository.save(bookmark);
     }
 
-    // 북마크 중복 조회
-    public void checkBookmark(String memberName, Long postsId) {
-        Member member = memberService.findMember(memberName);
-        Long memberId = member.getId();
-
-        Optional<Bookmark> bookmark = bookmarkRepository.findByMember_IdAndPosts_Id(memberId, postsId);
-
-        if(bookmark.isEmpty()){
-            createBookmark(memberName,postsId);
-        }
-    }
-
     // 북마크 삭제
-    public void removeBookmark(String memberName, Long postsId) {
-        Bookmark bookmark = findBookmark(memberName, postsId);
+    public void removeBookmark(Member member, Long postsId) {
+        Bookmark bookmark = findBookmark(member, postsId);
         Posts posts = bookmark.getPosts();
         postsService.minusBookmarkCount(posts);
 
@@ -58,8 +56,7 @@ public class BookmarkService {
     }
 
     // 북마크 조회
-    private Bookmark findBookmark(String memberName, Long postsId) {
-        Member member = memberService.findMember(memberName);
+    private Bookmark findBookmark(Member member, Long postsId) {
         Long memberId = member.getId();
 
         Optional<Bookmark> bookmark = bookmarkRepository.findByMember_IdAndPosts_Id(memberId, postsId);
