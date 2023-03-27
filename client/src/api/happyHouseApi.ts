@@ -6,20 +6,8 @@ export const happyHouseApi = createApi({
   baseQuery: fetchBaseQuery({ baseUrl: process.env.REACT_APP_SERVER_ADDRESS }),
   endpoints: (builder) => ({
     getHappyHouse: builder.query({
-      query: ({ page, status, location }) =>
-        `recruit/happy-house?page=${page}&status=${status}&location=${location}`,
-      // Only have one cache entry because the arg always maps to one string
-      serializeQueryArgs: ({ endpointName }) => {
-        return endpointName;
-      },
-      // Always merge incoming data to the cache entry
-      merge: (currentCache, newItems) => {
-        currentCache.results.push(...newItems.results);
-      },
-      // Refetch when the page arg changes
-      forceRefetch({ currentArg, previousArg }) {
-        return currentArg !== previousArg;
-      },
+      query: ({ page, state, location }) =>
+        `recruit/happy-house?page=${page}&state=${state}&location=${location}`,
     }),
   }),
 });
