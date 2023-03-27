@@ -10,7 +10,6 @@ import {
   setReportType,
 } from '../../slices/postSlice';
 import { useNavigate, useParams } from 'react-router-dom';
-import { PostStateType } from '../../types/PostDetail';
 
 interface Props {
   memberName: string;

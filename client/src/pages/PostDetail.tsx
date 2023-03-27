@@ -106,7 +106,7 @@ const PostDetail: React.FC = () => {
   const [addBookmark] = addBookmarkMutaion;
   const removeBookmarkMutaion = postsApi.useRemoveBookmarkMutation();
   const [removeBookmark] = removeBookmarkMutaion;
-  console.log('removeBook', removeBookmarkMutaion);
+
   // 댓글 삭제
   const commentMutation = commentsApi.useDeleteCommentMutation();
   const [deleteComment] = commentMutation;
