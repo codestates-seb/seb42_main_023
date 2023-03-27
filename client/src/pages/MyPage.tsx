@@ -1,11 +1,39 @@
 import React from 'react';
+import styled from 'styled-components';
+import Profile from '../components/myPageP/Profile';
+import MyPostList from '../components/myPageP/MyPostList';
+import MyCommentList from '../components/myPageP/MyCommentList';
+import Sidebar from '../components/myPageP/Sidebar';
+import { useAppSelector } from '../hooks';
+import DeleteModal from '../components/myPageP/DeleteModal';
 
 function MyPage() {
-  return <div></div>;
+  const { filter, deleteAccountOpen } = useAppSelector(({ mypage }) => mypage);
+
+  return (
+    <MyPageWrap>
+      {deleteAccountOpen && <DeleteModal />}
+      <Profile />
+      <Content>
+        <Sidebar />
+        {(filter === '작성한 글' ||
+          filter === '좋아요한 글' ||
+          filter === '북마크') && <MyPostList />}
+        {(filter === '작성한 댓글' || filter === '좋아요한 댓글') && (
+          <MyCommentList />
+        )}
+      </Content>
+    </MyPageWrap>
+  );
 }
 
 export default MyPage;
-
-//TODO: remove cookies when logging out.
-// cookies.remove('accessToken')
-// cookies.remove('refreshToken')
+const MyPageWrap = styled.div`
+  display: flex;
+  flex-direction: column;
+`;
+const Content = styled.div`
+  display: flex;
+  width: 100%;
+  height: 1040px;
+`;

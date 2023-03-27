@@ -1,22 +1,39 @@
-import React, { useState, useRef } from 'react';
+import React, { useRef, useEffect } from 'react';
 import styled from 'styled-components';
 import { BsFillCaretDownFill } from 'react-icons/bs';
+import { useAppDispatch, useAppSelector } from '../../hooks';
+import { setFilter, setFilterOpen, setOrderby } from '../../slices/mainSlice';
+import { setCurrentPage } from '../../slices/mainSlice';
 
 const DropdownButton = () => {
-  const [selectedOption, setSelectedOption] = useState('최신순');
-  const [isOpen, setIsOpen] = useState(false);
+  const dispatch = useAppDispatch();
+  const { filter, filterOpen } = useAppSelector(({ main }) => main);
   const dropdownRef = useRef<HTMLDivElement>(null);
-  const options = ['최신순', '좋아요순', '조회순'];
+  const options: ['최신순', '좋아요순', '조회순'] = [
+    '최신순',
+    '좋아요순',
+    '조회순',
+  ];
 
-  const handleSelect = (option: string) => {
-    setSelectedOption(option);
-    //query login
-    // onSelect(option);
-    setIsOpen(false);
+  const handleSelect = (option: '최신순' | '좋아요순' | '조회순') => {
+    dispatch(setFilter(option));
+    dispatch(setFilterOpen(false));
+    if (option === '최신순') {
+      dispatch(setCurrentPage(1));
+      dispatch(setOrderby('latest'));
+    }
+    if (option === '좋아요순') {
+      dispatch(setCurrentPage(1));
+      dispatch(setOrderby('thumbup'));
+    }
+    if (option === '조회순') {
+      dispatch(setCurrentPage(1));
+      dispatch(setOrderby('view-count'));
+    }
   };
 
   const handleToggle = () => {
-    setIsOpen(!isOpen);
+    dispatch(setFilterOpen(!filterOpen));
   };
 
   const handleClickOutside = (event: MouseEvent) => {
@@ -24,11 +41,11 @@ const DropdownButton = () => {
       dropdownRef.current &&
       !dropdownRef.current.contains(event.target as Node)
     ) {
-      setIsOpen(false);
+      dispatch(setFilterOpen(false));
     }
   };
 
-  React.useEffect(() => {
+  useEffect(() => {
     document.addEventListener('mousedown', handleClickOutside);
     return () => {
       document.removeEventListener('mousedown', handleClickOutside);
@@ -38,10 +55,10 @@ const DropdownButton = () => {
   return (
     <Dropdown ref={dropdownRef}>
       <Button onClick={handleToggle}>
-        {selectedOption}
+        {filter}
         <BsFillCaretDownFill />
       </Button>
-      {isOpen && (
+      {filterOpen && (
         <List>
           {options.map((option) => (
             <ListItem key={option} onClick={() => handleSelect(option)}>

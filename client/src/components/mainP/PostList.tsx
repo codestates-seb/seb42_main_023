@@ -1,33 +1,65 @@
 import React from 'react';
-import Post from './Post';
-import axios from 'axios';
-import { useEffect, useState } from 'react';
-import type { PostItem } from './Post';
 import styled from 'styled-components';
+import WeeklyPopular from './WeeklyPopular';
+import { useAppSelector } from '../../hooks';
+import LikeIcon from '../../assets/common/LikeIcon';
+import TimeIcon from '../../assets/common/TimeIcon';
+import ViewIcon from '../../assets/common/ViewIcon';
+import Thumnail from '../common/Thumbnail';
+import { TagItem } from '../common/Tag';
+import { Link } from 'react-router-dom';
+import { postListApi } from '../../api/postListapi';
+import { timeSince } from '../mainP/Timecalculator';
+import { PostListItem } from '../../types/PostList';
 
-function PostList() {
-  const [data, setData] = useState<PostItem[]>([]);
+interface Props {
+  posts: PostListItem[];
+  currentPage: number;
+}
 
-  useEffect(() => {
-    //post list 불러오기
-    axios
-      .get(
-        'https://main-project-d9049-default-rtdb.asia-southeast1.firebasedatabase.app/POST.json',
-      )
-      .then((response) => {
-        setData(response.data);
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-  }, []);
+function PostList({ posts, currentPage }: Props) {
+  const { postSetting } = useAppSelector(({ main }) => main);
   return (
     <List>
-      {data &&
-        data.map((post) => {
-          //TODO: key값 수정하기
-          return <Post key={post.writer_id} post={post} />;
-        })}
+      {postSetting === '' && currentPage === 1 && <WeeklyPopular />}
+      {posts.map((post: PostListItem) => {
+        return (
+          <Item key={post.postId}>
+            <div>
+              <Link to={`/posts/${post.postId}`}>
+                <Thumnail content={post.imgUrl} />
+              </Link>
+            </div>
+            <div>
+              <Link to={`/posts/${post.postId}`}>
+                <h1>{post.title}</h1>
+              </Link>
+              <Itemside>
+                <div>
+                  {post.tags.map((tag, idx) => (
+                    <Tag key={idx}>{tag.tagName}</Tag>
+                  ))}
+                </div>
+                <Info>
+                  <span>{post.memberName}</span>
+                  <span>
+                    <TimeIcon />
+                    {timeSince(post.createdAt)}
+                  </span>
+                  <span>
+                    <ViewIcon />
+                    {post.viewCount}
+                  </span>
+                  <span>
+                    <LikeIcon checked={false} />
+                    {post.thumbupCount}
+                  </span>
+                </Info>
+              </Itemside>
+            </div>
+          </Item>
+        );
+      })}
     </List>
   );
 }
@@ -35,3 +67,40 @@ function PostList() {
 export default PostList;
 
 const List = styled.ul``;
+export const Item = styled.li`
+  height: 100px;
+  border-bottom: 1px solid var(--border-color);
+  box-sizing: border-box;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 0 10px;
+  h1 {
+    font-size: 20px;
+    margin-bottom: 4px;
+  }
+  > div:nth-child(2) {
+    flex-grow: 1;
+  }
+`;
+export const Itemside = styled.div`
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  > div {
+    display: flex;
+  }
+`;
+export const Info = styled.div`
+  span {
+    color: var(--sub-font-color);
+    font-size: var(--sub-font-size);
+    margin-left: 20px;
+    flex-direction: row;
+    display: flex;
+    align-items: center;
+  }
+`;
+export const Tag = styled(TagItem)`
+  padding: 4px 10px;
+`;

@@ -1,20 +1,42 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import styled from 'styled-components';
 import { useNavigate, useLocation } from 'react-router-dom';
-import { useAppSelector } from '../../hooks';
+import { useAppSelector, useAppDispatch } from '../../hooks';
 import Logo from '../../assets/Logo.png';
 import LoginBtn from './LoginBtn';
 import SearchBar from './SearchBar';
 import SearchBtn from './SearchToggle';
 import PostBtn from './PostBtn';
 import MediumProfileImg from './MediumProfileImg';
-import { NavBtn, NavBtnClicked } from '../common/Btn';
+import HeaderNav from './HeaderNav';
+import { MdManageAccounts } from 'react-icons/md';
+import {
+  setPostQuery,
+  setCommentQuery,
+  setMemberName,
+  setMemberImg,
+} from '../../slices/headerSlice';
+import Cookies from 'js-cookie';
 
 function HeaderDefault() {
   const navigate = useNavigate();
-  const state = useAppSelector((state) => state);
+  const header = useAppSelector(({ header }) => header);
   const { pathname } = useLocation();
-  return state.header.search ? (
+  const dispatch = useAppDispatch();
+  const auth = Cookies.get('Authorization');
+  const adim = localStorage.getItem('role');
+
+  //TODO: 로그인시 유저데이터 저장
+  useEffect(() => {
+    if (auth !== undefined) {
+      const memberImg = localStorage.getItem('picture');
+
+      if (memberImg) {
+        dispatch(setMemberImg(memberImg));
+      }
+    }
+  }, []);
+  return header.search ? (
     <SearchHead>
       <SearchBar />
     </SearchHead>
@@ -24,41 +46,23 @@ function HeaderDefault() {
         <Main onClick={() => navigate('/')}>
           <img src={Logo} height={30}></img>
         </Main>
-        <nav>
-          {['/seoulrent', '/recommendloan', '/happyhouse'].includes(
-            pathname,
-          ) ? (
-            <NavBtnClicked onClick={() => navigate('/happyhouse')}>
-              집구하기
-            </NavBtnClicked>
-          ) : (
-            <NavBtn onClick={() => navigate('/happyhouse')}>집구하기</NavBtn>
-          )}
-          {['/stock'].includes(pathname) ? (
-            <NavBtnClicked onClick={() => navigate('/')}>
-              뜨는주식
-            </NavBtnClicked>
-          ) : (
-            <NavBtn onClick={() => navigate('/')}>뜨는주식</NavBtn>
-          )}
-          {['/calculator'].includes(pathname) ? (
-            <NavBtnClicked onClick={() => navigate('/')}>
-              세금계산기
-            </NavBtnClicked>
-          ) : (
-            <NavBtn onClick={() => navigate('/')}>세금계산기</NavBtn>
-          )}
-        </nav>
+        <HeaderNav />
         <Btns>
           {pathname === '/' && <SearchBtn />}
-          {state.header.login ? (
+          {auth === undefined && <LoginBtn />}
+          {auth !== undefined && adim !== 'ADMIN' && (
             <>
               <PostBtn /> <MediumProfileImg />
             </>
-          ) : (
-            <>
-              <LoginBtn />
-            </>
+          )}
+          {auth !== undefined && adim === 'ADMIN' && (
+            <Adminwrap>
+              <PostBtn />
+              <MediumProfileImg />
+              <button onClick={() => navigate('reports/standby')}>
+                <MdManageAccounts size={30} />
+              </button>
+            </Adminwrap>
           )}
         </Btns>
       </div>
@@ -108,4 +112,19 @@ const SearchHead = styled.header`
 `;
 const Btns = styled.div`
   display: flex;
+  button {
+    margin-left: 10px;
+    svg {
+      width: 30px;
+      :hover {
+        transition: 0.3s;
+        color: var(--hover-font-gray-color);
+      }
+    }
+  }
+`;
+const Adminwrap = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
 `;

@@ -1,4 +1,4 @@
-import React, { useMemo, useRef } from 'react';
+import React, { useEffect, useMemo, useRef } from 'react';
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
 import axios from 'axios';
@@ -6,11 +6,45 @@ import styled from 'styled-components';
 import { useAppDispatch, useAppSelector } from '../../hooks';
 import { setBody } from '../../slices/postInputSlice';
 import { setBodyErr } from '../../slices/validationSlice';
+import { postsApi } from '../../api/postApi';
+import { useParams } from 'react-router-dom';
+import {
+  setCurrentImg,
+  setRemovedImg,
+  setAddedImg,
+  setRemaindImg,
+  setTotalmg,
+} from '../../slices/postSlice';
+import _ from 'lodash';
+import Cookies from 'js-cookie';
 
+interface ImgObj {
+  imagedId: number;
+  imageName: string;
+}
+
+const url = process.env.REACT_APP_SERVER_ADDRESS + '/images';
 const BodyInput: React.FC = () => {
   const dispatch = useAppDispatch();
   const quillRef = useRef<ReactQuill>();
   const state = useAppSelector((state) => state);
+  const params = useParams();
+  const postId = Number(params.postId);
+  const postQuery = postsApi.useGetPostQuery({ postId });
+  const { data } = postQuery;
+  const bodyValue = state.postInput?.body;
+  const addedImg = state.post?.addedImg;
+  const removedImg = state.post?.removedImg;
+  const totalImg = state.post?.totalImg;
+  const remainImg = data?.images;
+  const accsessToken = Cookies.get('Authorization');
+
+  console.log('remainImg', remainImg);
+  //TODO 받아온 body 데이터에서 이미지를 추출해서 remainImage, addedImages, removedImages를 요청 바디에 보내줘야함
+  // 초기 이미지, 추가한 이미지, 제거한 이미지
+  // 전체 이미지 = 초기 이미지 + 추가한 이미지
+  // 제거한 이미지 = 전채 이미지에서 현재 이미지 제외
+  const img: Array<any> = _.cloneDeep(totalImg!);
 
   //  문자열을 HTML 요소로 변환
   const stringToHTML = function (str: string): HTMLElement {
@@ -20,9 +54,23 @@ const BodyInput: React.FC = () => {
   };
 
   // 본문 value 확인
-  function valueCheck(content: string): void {
-    dispatch(setBody(content));
+  function valueCheck(): void {
+    dispatch(setBody(quillRef?.current?.value as string));
     validationTest();
+  }
+
+  // 본문 이미지 확인
+  function imageCheck(): void {
+    // 이미지 처리
+    const pattern =
+      /((?<=<img..........................................................)(.*?)(?=.>))/gi;
+    const currentImg = bodyValue.match(pattern)!;
+    const removedImg = totalImg?.filter((obj: ImgObj) => {
+      return !currentImg?.includes(obj.imageName);
+    });
+
+    dispatch(setCurrentImg(currentImg));
+    dispatch(setRemovedImg(_.uniqBy(removedImg!, 'imageId')));
   }
 
   // 유효성 검사
@@ -41,37 +89,66 @@ const BodyInput: React.FC = () => {
     }
   };
 
+  //  본문 내용이 바뀔 때 마다 이미지 체크
+  useEffect(() => {
+    (remainImg as Array<object>)?.map((el: object) => {
+      dispatch(setTotalmg(el));
+    });
+    if ((removedImg! as Array<object>)?.length === 0 && totalImg) {
+      dispatch(setRemaindImg(_.uniqBy(totalImg!, 'imageId')));
+    }
+    if ((removedImg! as Array<object>)?.length !== 0) {
+      console.log(
+        'testasdasdasdas',
+        _.differenceBy(remainImg, removedImg!, 'imageId'),
+      );
+
+      // dispatch(
+      //   setRemaindImg(_.differenceBy(remainImg, removedImg!, 'imageId')),
+      // );
+    }
+    if (bodyValue) imageCheck();
+  }, [bodyValue]);
+
   // 에디터 이미지 핸들러
   const imageHandler = (): void => {
-    // 이미지를 저장할  DOM 생성
     const input = document.createElement('input');
     input.setAttribute('type', 'file');
     input.setAttribute('accept', 'image/*');
     input.click();
-    // input이 클릭되면 파일 선택창이 나타난다.
-
-    // input에 변화가 생길 경우  이미지를 선택
     input.addEventListener('change', async () => {
       const file = input.files![0];
-
-      // multer에 맞는 형식으로 데이터 가공
-      // 백엔드에 사항에 맞게 수정 필요
       const formData = new FormData();
-      formData.append('img', file);
+      formData.append('image', file);
       console.log('formData', formData);
-
+      console.log('url', url);
       try {
-        // 백엔드 multer라우터에 이미지를 보낸다.
-        const result = await axios.post('http://localhost:4100/img', formData);
-        console.log('성공 시, 백엔드가 보내주는 데이터', result.data.url);
-        const IMG_URL = result.data.url;
+        const result = await axios.post(url, formData, {
+          headers: {
+            'Content-Type': 'multipart/form-data',
+            Authorization: accsessToken,
+          },
+          withCredentials: true,
+        });
 
-        // 에디터 객체
+        const { data } = result;
+        console.log('resData', data);
+        const { imageId, imageName } = data;
+
+        const ImgUrl = process.env.REACT_APP_S3_ADDRESS + '/' + imageName;
+        console.log('ImgUrl', ImgUrl);
+        const imgObj = {
+          imageId,
+          imageName,
+        };
+        console.log('imgObj', imgObj);
+        dispatch(setAddedImg(imgObj));
+        dispatch(setTotalmg(imgObj));
+        // img!.push(imgObj);
         const editor = quillRef.current!.getEditor();
-
-        // 현재 에디터 커서 위치값 추적 및 이미지 삽입
         const range = editor.getSelection();
-        editor.insertEmbed(range!.index, 'image', IMG_URL);
+
+        editor.insertEmbed(range!.index, 'image', ImgUrl);
       } catch (error) {
         console.log(error);
       }
@@ -134,7 +211,7 @@ const BodyInput: React.FC = () => {
               }}
               theme="snow"
               placeholder="게시글 내용을 입력하세요."
-              value={state.postInput.body}
+              value={state?.postInput.body}
               onChange={valueCheck}
               modules={modules}
               formats={formats}
@@ -153,7 +230,7 @@ const BodyInput: React.FC = () => {
               }}
               theme="snow"
               placeholder="게시글 내용을 입력하세요."
-              value={state.postInput.body}
+              value={state?.postInput.body}
               onChange={valueCheck}
               modules={modules}
               formats={formats}

@@ -3,33 +3,32 @@ import styled from 'styled-components';
 import { BsDot } from 'react-icons/bs';
 import { Link } from 'react-router-dom';
 import { PostType } from '../../types/PostDetail';
-import { recomendedPostsApi } from '../../api/api';
+import { recomendedPostsApi } from '../../api/postApi';
 
 const RecommendedPost: React.FC = () => {
   const recommendPostsQuery = recomendedPostsApi.useGetRomendedPostsQuery({
     recommend: 'recommend',
   });
-  const { data, isSuccess } = recommendPostsQuery;
+  const { data } = recommendPostsQuery;
+
   return (
     <RecommendedPostContainer>
       <ul>
-        {isSuccess &&
-          data.map((post: Partial<PostType>) => {
-            console.log('testet', data);
-            const url = `/posts/${post.postId}`;
-            return (
-              <li key={post.postId}>
-                <p>
-                  <Link to={url}>
-                    <h1>
-                      <BsDot></BsDot>
-                      {post.title}
-                    </h1>
-                  </Link>
-                </p>
-              </li>
-            );
-          })}
+        {data?.recommends.map((post: Partial<PostType>) => {
+          const url = `/posts/${post.postId}`;
+          return (
+            <li key={post.postId}>
+              <p>
+                <Link to={url}>
+                  <h1>
+                    <BsDot></BsDot>
+                    {post.title}
+                  </h1>
+                </Link>
+              </p>
+            </li>
+          );
+        })}
       </ul>
     </RecommendedPostContainer>
   );
@@ -46,6 +45,7 @@ const RecommendedPostContainer = styled.div`
   li p {
     margin: 15px 0 15px 0;
     width: 250px;
+    height: 25px;
     font-size: 19px;
     text-overflow: ellipsis;
     overflow: hidden;

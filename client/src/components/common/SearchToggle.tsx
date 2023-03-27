@@ -2,18 +2,34 @@ import React from 'react';
 import { useAppDispatch, useAppSelector } from '../../hooks';
 import { setSearch } from '../../slices/headerSlice';
 import { SearchBtn, ClickSearchBtn } from './Btn';
+import { setPostSetting } from '../../slices/mainSlice';
+import {
+  setInput,
+  setSearchQuery,
+  deleteAllSarchTag,
+} from '../../slices/headerSlice';
 
 function Search() {
   const dispatch = useAppDispatch();
-  const header = useAppSelector(({ header }) => header);
+  const { search } = useAppSelector(({ header }) => header);
+  const cancleSearchHandler = () => {
+    console.log('검색닫기');
+    dispatch(setInput(''));
+    dispatch(deleteAllSarchTag());
+    dispatch(setSearchQuery(''));
+    dispatch(setPostSetting(''));
+    dispatch(setSearch(!search));
+  };
   return (
     <>
-      {header.search ? (
-        <ClickSearchBtn onClick={() => dispatch(setSearch(!header.search))}>
-          검색취소
-        </ClickSearchBtn>
+      {search ? (
+        <ClickSearchBtn onClick={cancleSearchHandler}>검색취소</ClickSearchBtn>
       ) : (
-        <SearchBtn onClick={() => dispatch(setSearch(!header.search))}>
+        <SearchBtn
+          onClick={() => {
+            dispatch(setSearch(!search));
+          }}
+        >
           검색
         </SearchBtn>
       )}
