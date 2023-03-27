@@ -22,8 +22,14 @@ function Profile() {
   const membersQuery = membersApi.useGetMemberQuery({
     name: memberName,
   });
-  const { data, isSuccess } = membersQuery;
+  const { data, isSuccess, refetch } = membersQuery;
   const auth = Cookies.get('Authorization');
+
+  //회원정보에 들어올 때마다 데이터 업데이트
+  //TODO:refetch 요청 추가
+  useEffect(() => {
+    refetch();
+  }, []);
 
   //자기소개 input토글
   const EditOpenHandler = () => {

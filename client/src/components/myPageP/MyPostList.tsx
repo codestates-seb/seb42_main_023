@@ -36,25 +36,32 @@ function MyPostList() {
   const [currentPage, setCurrentPage] = useState(1);
   const { filter } = useAppSelector(({ mypage }) => mypage);
   const { query } = useAppSelector(({ header }) => header);
+
+  //마이페이지를 불러 올때 전역 state에서 query를 받아서 api 엔드포인트로 전달
   const membersPostListquery = membersPostListApi.useGetMemberPostListQuery({
     query: query,
     page: currentPage,
   });
-  const { data, isSuccess } = membersPostListquery;
+  const { data, isSuccess, refetch } = membersPostListquery;
 
   //북마크 삭제하기
   const memberName = localStorage.getItem('name');
   const removeBookmarkMutaion = postsApi.useRemoveBookmarkMutation();
   const [removeBookmark] = removeBookmarkMutaion;
   // 북마크 클릭 함수
-  //TODO: 클릭이벤트 미발생 에러
   const deleteBookmarkHandler = (
     e: React.MouseEvent<HTMLButtonElement>,
   ): void => {
     console.log('delete bookmark');
     const postId = e.currentTarget.value;
     removeBookmark({ memberName, postId });
+    //TODO: refetch요청 추가
+    refetch();
   };
+
+  useEffect(() => {
+    refetch();
+  }, []);
 
   if (!isSuccess) {
     return <div>Loading...</div>;
