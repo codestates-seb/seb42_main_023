@@ -101,7 +101,7 @@ public class MyPageDto {
         public MyPagePostsListElement(Posts posts) {
             this.postId = posts.getId();
             if (posts.getState() == Posts.State.ACTIVE) {
-                this.title = posts.getContent();
+                this.title = posts.getTitle();
             } else {
                 this.title = posts.getState().getMessage();
             }

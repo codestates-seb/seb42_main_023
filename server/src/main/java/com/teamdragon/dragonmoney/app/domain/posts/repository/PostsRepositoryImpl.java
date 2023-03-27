@@ -7,6 +7,7 @@ import com.querydsl.jpa.JPQLQuery;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.teamdragon.dragonmoney.app.domain.delete.entity.DeleteResult;
+import com.teamdragon.dragonmoney.app.domain.member.entity.Member;
 import com.teamdragon.dragonmoney.app.domain.posts.dto.PostsDto;
 import com.teamdragon.dragonmoney.app.domain.posts.entity.Posts;
 import com.teamdragon.dragonmoney.app.global.pagenation.QueryDslUtil;
@@ -295,6 +296,16 @@ public class PostsRepositoryImpl implements PostsRepositoryCustom {
                 .where(posts.state.eq(Posts.State.ACTIVE), posts.writer.name.eq(memberName));
 
         return PageableExecutionUtils.getPage(content, pageable, countQuery::fetchOne);
+    }
+
+    // 회원 탈퇴로 인한 게시글 삭제
+    @Override
+    public void deletedPostsByDeletedMember(Member member, DeleteResult deleteResult) {
+        queryFactory
+                .update(posts)
+                .set(posts.state, Posts.State.DELETED)
+                .where(posts.writer.eq(member))
+                .execute();
     }
 
     // 특정 회원이 쓴 글 개수 조회

@@ -1,5 +1,7 @@
 package com.teamdragon.dragonmoney.app.domain.posts.repository;
 
+import com.teamdragon.dragonmoney.app.domain.delete.entity.DeleteResult;
+import com.teamdragon.dragonmoney.app.domain.member.entity.Member;
 import com.teamdragon.dragonmoney.app.domain.posts.dto.PostsDto;
 import com.teamdragon.dragonmoney.app.domain.posts.entity.Posts;
 import org.springframework.data.domain.Page;
@@ -36,4 +38,7 @@ public interface PostsRepositoryCustom {
     Long findMemberBookmarkPostsCount(String memberName);
     Page<Posts> findThumbUpPostsListByMemberName(String memberName, Pageable pageable);
     Page<Posts> findBookmarkPostsListByMemberName(String memberName, Pageable pageable);
+
+    // 회원 탈퇴로 인한 댓글 삭제
+    void deletedPostsByDeletedMember(Member member, DeleteResult deleteResult);
 }
