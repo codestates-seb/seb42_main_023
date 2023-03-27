@@ -49,10 +49,6 @@ const reportOption = [
   '기타',
 ];
 
-window.addEventListener('hashchange', () =>
-  console.log('test asdasdasdasdasdasdasdas'),
-);
-
 const PostDetail: React.FC = () => {
   const [checkedElement, setCheckedElement] = useState(-1);
   const handleSelectChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -465,7 +461,12 @@ const PostDetail: React.FC = () => {
               <li className="views">{data?.viewCount}</li>
               <CommentIcon checked={true} />
               <li className="comments">{data?.commentCount}</li>
-              <button className="bookmark" onClick={changeBookmarkHandler}>
+              <button
+                className="bookmark"
+                onClick={_.debounce(() => {
+                  changeBookmarkHandler();
+                }, 1500)}
+              >
                 <BookmarkIcon checked={data?.isBookmarked} />
               </button>
               <DropdownButton memberName={data?.memberName}></DropdownButton>
@@ -478,7 +479,7 @@ const PostDetail: React.FC = () => {
               <button
                 onClick={_.debounce(() => {
                   changeLiikeHandler();
-                }, 500)}
+                }, 1500)}
               >
                 <LikeIcon checked={isSuccess && data?.isThumbup} />
               </button>
@@ -486,7 +487,7 @@ const PostDetail: React.FC = () => {
               <button
                 onClick={_.debounce(() => {
                   changeDislikeHandler();
-                }, 500)}
+                }, 1500)}
               >
                 <DislikeIcon checked={isSuccess && data?.isThumbdown} />
               </button>
@@ -515,7 +516,6 @@ const Container = styled.div<any>`
   position: relative;
   width: 100%;
   height: 100%;
-  max-height: 1000px;
   overflow: scroll;
   img {
     max-width: 720px;
