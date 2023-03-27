@@ -11,13 +11,13 @@ import { PostListWrap } from './MyPostList';
 import Pagination from '../common/Pagination';
 import { CommentType } from '../../types/PostList';
 
-const MyCommentList = () => {
+const MylikeCommentList = () => {
   const [pageOffset, setPageOffset] = useState(0);
   const [currentPage, setCurrentPage] = useState(1);
 
   const { memberName } = useAppSelector(({ header }) => header);
   const membersCommentsListquery =
-    membersCommentsListApi.useGetCommentsListQuery({
+    membersCommentsListApi.useGetLikeCommentsListQuery({
       name: memberName,
       page: currentPage,
     });
@@ -71,7 +71,7 @@ const MyCommentList = () => {
     </PostListWrap>
   );
 };
-export default MyCommentList;
+export default MylikeCommentList;
 const List = styled.ul`
   width: 100%;
   overflow: scroll;

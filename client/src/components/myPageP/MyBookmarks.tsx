@@ -8,20 +8,23 @@ import Thumnail from '../common/Thumbnail';
 import { TagItem } from '../common/Tag';
 import { Link } from 'react-router-dom';
 import { membersPostListApi } from '../../api/memberapi';
+import { postsApi } from '../../api/postApi';
 import { timeSince } from '../mainP/Timecalculator';
 import Pagination from '../common/Pagination';
+import { FaBookmark } from 'react-icons/fa';
 import { PostListItem } from '../../types/PostList';
 
-function MyPostList() {
+function MyBookmarks() {
   const [pageOffset, setPageOffset] = useState(0);
   const [currentPage, setCurrentPage] = useState(1);
   const { memberName } = useAppSelector(({ header }) => header);
 
-  const membersPostListquery = membersPostListApi.useGetMemberPostListQuery({
-    name: memberName,
-    page: currentPage,
-  });
-  const { data, isSuccess, refetch } = membersPostListquery;
+  const membersBookmarkListquery =
+    membersPostListApi.useGetBookmarkPostListQuery({
+      name: memberName,
+      page: currentPage,
+    });
+  const { data, isSuccess, refetch } = membersBookmarkListquery;
 
   useEffect(() => {
     refetch();
@@ -90,7 +93,7 @@ function MyPostList() {
   );
 }
 
-export default MyPostList;
+export default MyBookmarks;
 
 const List = styled.ul`
   width: 100%;
