@@ -299,6 +299,7 @@ public class PostsRepositoryImpl implements PostsRepositoryCustom {
     }
 
     // 회원 탈퇴 시 작성한 게시글 조회
+    @Override
     public List<Posts> findPostsByDeletedMember(String memberName) {
         return queryFactory
                 .select(posts).distinct()

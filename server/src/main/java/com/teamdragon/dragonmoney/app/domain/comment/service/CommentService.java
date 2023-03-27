@@ -86,12 +86,17 @@ public class CommentService implements ThumbCountService {
     }
 
     // 회원 탈퇴로 인한 댓글 삭제
-    public void removeCommentByDeletedMember(Member member) {
+    public void removeCommentByDeletedMember(String memberName) {
         DeleteResult deleteResult = DeleteResult.builder()
                 .deleteReason(DeleteResult.Reason.DELETED_BY_MEMBER_REMOVE)
                 .build();
 
-        commentRepository.deletedCommentByDeletedMember(member, deleteResult);
+        List<Comment> comments = commentRepository.findCommentByDeletedMember(memberName);
+        for(Comment addDeletedResultByComment : comments) {
+            addDeletedResultByComment.changeStateToDeleted(deleteResult);
+        }
+
+        commentRepository.saveAll(comments);
     }
 
     // 수정

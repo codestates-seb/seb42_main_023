@@ -153,7 +153,7 @@ public class MemberController {
         finderService.findVerifiedMemberByName(name);
         memberService.checkLoginMember(principal.getName(), name);
 
-        memberService.deleteMember(name);
+        memberService.deleteMember(principal.getName());
         return ResponseEntity.status(HttpStatus.OK).build();
     }
 

@@ -9,8 +9,6 @@ import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.teamdragon.dragonmoney.app.domain.comment.dto.CommentDto;
 import com.teamdragon.dragonmoney.app.domain.comment.entity.Comment;
-import com.teamdragon.dragonmoney.app.domain.delete.entity.DeleteResult;
-import com.teamdragon.dragonmoney.app.domain.member.entity.Member;
 import com.teamdragon.dragonmoney.app.global.pagenation.QueryDslUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -144,14 +142,15 @@ public class CommentRepositoryImpl implements CommentRepositoryCustom {
         return PageableExecutionUtils.getPage(content, pageable, countQuery::fetchOne);
     }
 
-    // 회원 탈퇴로 인한 댓글 삭제
+    // 회원 탈퇴 시 작성한 게시글 조회
     @Override
-    public void deletedCommentByDeletedMember(Member member, DeleteResult deleteResult) {
-        queryFactory
-                .update(comment)
-                .set(comment.state, Comment.State.DELETED)
-                .where(comment.writer.eq(member))
-                .execute();
+    public List<Comment> findCommentByDeletedMember(String memberName) {
+        return queryFactory
+                .select(comment).distinct()
+                .from(comment)
+                .leftJoin(comment.writer, member).fetchJoin()
+                .where(comment.state.eq(Comment.State.ACTIVE), comment.writer.name.eq(memberName))
+                .fetch();
     }
 
     // 특정 회원이 쓴 댓글 개수 조회

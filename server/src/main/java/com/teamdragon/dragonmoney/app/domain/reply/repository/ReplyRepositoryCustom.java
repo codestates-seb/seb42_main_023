@@ -1,10 +1,11 @@
 package com.teamdragon.dragonmoney.app.domain.reply.repository;
 
-import com.teamdragon.dragonmoney.app.domain.delete.entity.DeleteResult;
-import com.teamdragon.dragonmoney.app.domain.member.entity.Member;
 import com.teamdragon.dragonmoney.app.domain.reply.dto.ReplyDto;
+import com.teamdragon.dragonmoney.app.domain.reply.entity.Reply;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+
+import java.util.List;
 
 public interface ReplyRepositoryCustom {
 
@@ -14,5 +15,5 @@ public interface ReplyRepositoryCustom {
     Page<ReplyDto.ReplyListElement> findReplyListByPageAndMemberId(Pageable pageable, Long commentId, Long loginMemberId);
 
     // 회원 탈퇴로 인한 답글 삭제
-    void deletedReplyByDeletedMember(Member member, DeleteResult deleteResult);
+    List<Reply> findReplyByDeletedMember(String memberName);
 }

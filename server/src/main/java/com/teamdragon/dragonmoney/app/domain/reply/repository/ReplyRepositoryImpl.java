@@ -7,8 +7,6 @@ import com.querydsl.core.types.Projections;
 import com.querydsl.jpa.JPAExpressions;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
-import com.teamdragon.dragonmoney.app.domain.delete.entity.DeleteResult;
-import com.teamdragon.dragonmoney.app.domain.member.entity.Member;
 import com.teamdragon.dragonmoney.app.domain.reply.dto.ReplyDto;
 import com.teamdragon.dragonmoney.app.domain.reply.entity.Reply;
 import com.teamdragon.dragonmoney.app.global.pagenation.QueryDslUtil;
@@ -100,14 +98,15 @@ public class ReplyRepositoryImpl implements ReplyRepositoryCustom{
         return PageableExecutionUtils.getPage(content, pageable, countQuery::fetchOne);
     }
 
-    // 회원 탈퇴로 인한 답글 삭제
+    // 회원 탈퇴 시 작성한 답글 조회
     @Override
-    public void deletedReplyByDeletedMember(Member member, DeleteResult deleteResult) {
-        queryFactory
-                .update(reply)
-                .set(reply.state, Reply.State.DELETED)
-                .where(reply.writer.eq(member))
-                .execute();
+    public List<Reply> findReplyByDeletedMember(String memberName) {
+        return queryFactory
+                .select(reply).distinct()
+                .from(reply)
+                .leftJoin(reply.writer, member).fetchJoin()
+                .where(reply.state.eq(Reply.State.ACTIVE), reply.writer.name.eq(memberName))
+                .fetch();
     }
 
     private OrderSpecifier[] getAllOrderSpecifiers(Pageable pageable, Path path) {
