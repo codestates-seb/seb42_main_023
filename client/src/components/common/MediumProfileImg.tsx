@@ -19,7 +19,7 @@ const MediumProfileImg = () => {
 
   const clickmemberHandler = () => {
     if (auth !== undefined && loginUser) {
-      dispatch(setPostQuery(loginUser));
+      dispatch(setPostQuery(loginUser + '/posts'));
       dispatch(setCommentQuery(loginUser));
       dispatch(setMemberName(loginUser));
       navigate('/mypage');

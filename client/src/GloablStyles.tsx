@@ -11,6 +11,7 @@ const GlobalStyles = createGlobalStyle`
         --sub-font-color: #94969b;
         --point-blue-color: #0069CA;
         --hover-point-blue-color :#0275e1;
+        --map-background-color:#F3F9FE;
         --point-font-color: #fff;
         --hover-button-color:#f9f6f6;
         --error-red-color: #CA0000;
