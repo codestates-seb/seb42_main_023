@@ -14,7 +14,6 @@ const CommentInput: React.FC = () => {
   });
   const params = useParams();
   const postId = params.postId;
-  const page = 'comment' in state && state.comment?.page;
   const postQuery = postsApi.useGetPostQuery({ postId });
   const { refetch } = postQuery;
 
