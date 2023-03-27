@@ -9,16 +9,11 @@ import headerSlice from '../slices/headerSlice';
 import mainSlice from '../slices/mainSlice';
 import mypageSlice from '../slices/mypageSlice';
 import nicknameSlice from '../slices/nicknameSlice';
-import { repliesApi } from '../api/replyApi';
 import surveySlice from '../slices/surveySlice';
-import { commentsApi } from '../api/commentApi';
 import { nicknameApi } from '../api/nicknameApi';
 import { tempTokenApi } from '../api/tempTokenAPi';
 import reportSlice from '../slices/reportSlice';
 import { apiSlice } from '../api/apiSlice';
-import { happyHouseApi } from '../api/happyHouseApi';
-import { recommendedPostsApi } from '../api/recommendPostApi';
-import { postsApi } from '../api/postApi';
 
 const store = configureStore({
   reducer: {
