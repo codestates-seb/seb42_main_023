@@ -1,4 +1,4 @@
-import React, { useRef } from 'react';
+import React, { useRef, useState } from 'react';
 import { useAppDispatch, useAppSelector } from '../../hooks';
 import styled from 'styled-components';
 import DislikeIcon from '../../assets/common/DislikeIcon';
@@ -29,7 +29,11 @@ import { setCommentId } from '../../slices/commentSlice';
 import _ from 'lodash';
 import { membersApi } from '../../api/memberapi';
 
-const Reply: React.FC<ReplyProps> = ({ replyInfo, idx }: ReplyProps) => {
+const Reply: React.FC<ReplyProps> = ({
+  replyInfo,
+  idx,
+  replyPage,
+}: ReplyProps) => {
   const replyEditInput = useRef<HTMLInputElement>(null);
   const dispatch = useAppDispatch();
   const state = useAppSelector(
@@ -39,14 +43,15 @@ const Reply: React.FC<ReplyProps> = ({ replyInfo, idx }: ReplyProps) => {
       return state;
     },
   );
+
   const loginUserName = window.localStorage.getItem('name');
   const commentId = 'comment' in state && state.comment?.commentId;
   const replyId = 'reply' in state && state.reply?.replyId;
-  const page = ('reply' in state && state.reply?.page) || 1;
+
   const selectedMember = 'post' in state ? state.post.selectedMember : null;
 
   // 답글
-  const replyQuery = repliesApi.useGetReplyQuery({ commentId, page });
+  const replyQuery = repliesApi.useGetReplyQuery({ commentId, replyPage });
   const replySucccess = replyQuery.isSuccess;
   const replyMutation = repliesApi.useUpdataReplyMutation();
   const [updateMutation] = replyMutation;
@@ -180,6 +185,7 @@ const Reply: React.FC<ReplyProps> = ({ replyInfo, idx }: ReplyProps) => {
     if (event.key === 'Enter') {
     }
   };
+
   return (
     <ReplyContainer>
       <ReplyInfo key={replyInfo.replyId}>
@@ -401,6 +407,17 @@ const ReplyContainer = styled.div`
     width: 30px;
     font-size: 16px;
     margin: 3px 15px 0 15px;
+  }
+  .pageContainer {
+    display: flex;
+    justify-content: flex-start;
+  }
+  #moreInfo {
+    margin: 50px 0 0 50px;
+    text-align: left;
+    font-size: 18px;
+    font-weight: 450;
+    cursor: pointer;
   }
 `;
 // TODO Intro
