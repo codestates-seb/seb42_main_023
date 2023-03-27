@@ -15,6 +15,7 @@ import {
   setIsOpenReport,
   setReportType,
   setDeleteType,
+  setSelectedMember,
 } from '../../slices/postSlice';
 import {
   PostStateType,
@@ -35,6 +36,7 @@ import {
   setTotalReplies,
 } from '../../slices/replySlice';
 import { timeSince } from '../mainP/Timecalculator';
+import { membersApi } from '../../api/memberapi';
 
 const Comment: React.FC = () => {
   const [page] = useState<number>(1);
@@ -50,9 +52,10 @@ const Comment: React.FC = () => {
   const params = useParams();
   const postId = params.postId;
   const commentId = 'comment' in state && state.comment?.commentId;
+  const selectedMember = 'post' in state ? state.post.selectedMember : null;
+
   // 댓글 조회
   const commentQuery = commentsApi.useGetCommentQuery({ postId, page });
-  const comentSucccess = commentQuery.isSuccess;
 
   // 댓글 업데이트
   const commentMutation = commentsApi.useUpdateCommentMutation();
@@ -62,6 +65,9 @@ const Comment: React.FC = () => {
   const replyQuery = repliesApi.useGetReplyQuery({ commentId, page });
   const { isSuccess, data, refetch } = replyQuery;
   const contentEditInput = useRef<HTMLInputElement>(null);
+
+  //  멤버 정보 조회
+  const memeberQuery = membersApi.useGetMemberQuery({ name: selectedMember });
 
   // 댓글 좋아요 추가, 삭제
   const addThumbUpMutation = commentsApi.useAddThumbUpMutation();
@@ -79,7 +85,6 @@ const Comment: React.FC = () => {
   const isOpePostIntro = 'post' in state && state?.post.isOpeneIntro;
 
   // 유저 정보 조회
-  //TODO 유저 정보 조회 API 참조
   // 답글 Open 여부 확인을 위한 배열 생성
   if (
     commentQuery.isSuccess &&
@@ -104,7 +109,6 @@ const Comment: React.FC = () => {
     );
     dispatch(isEdit(edit as Array<boolean>));
   }
-  //TODO
   // 댓글 좋아요 클릭 함수
   const commentLiikeHandler = (comment: CommentType): void => {
     const commentId = comment.commentId;
@@ -191,6 +195,7 @@ const Comment: React.FC = () => {
     ) {
       dispatch(setIsOpenIntro(state.comment.isOpeneIntro));
       dispatch(setCommentId(Number(event.target.dataset.commentid)));
+      dispatch(setSelectedMember(event.target.id));
       console.log('userName', event.target.id);
     }
   };
@@ -237,7 +242,11 @@ const Comment: React.FC = () => {
                 onClick={outClickIntroHandler}
               >
                 <ul className="content-info">
-                  <li className="image" onClick={IntroHandler}>
+                  <li
+                    className="image"
+                    data-memberName={comment?.memberName}
+                    onClick={IntroHandler}
+                  >
                     <img
                       src={comment.memberImage}
                       id={comment.memberName}
@@ -259,7 +268,9 @@ const Comment: React.FC = () => {
                           </li>
                         </ul>
                       </IntroInfo>
-                      <label className="introduction">{comment.content}</label>
+                      <label className="introduction">
+                        {memeberQuery.data?.intro || '소개 내용이 없습니다.'}
+                      </label>
                       <div className="intro-moreInfo">더보기 》</div>
                     </IntorductionContainer>
                   ) : null}
@@ -315,6 +326,12 @@ const Comment: React.FC = () => {
                   {loginUserName === comment.memberName ? (
                     <li
                       className="comment-delete"
+                      style={{
+                        margin:
+                          loginUserName === comment?.memberName
+                            ? '3px 165px 0 5px'
+                            : '3px 195px 0 5px',
+                      }}
                       id="댓글"
                       onClick={(event: React.MouseEvent<HTMLElement>): void => {
                         dispatch(setCommentId(comment.commentId));
@@ -331,6 +348,11 @@ const Comment: React.FC = () => {
                     data-category="comment"
                     data-commentId={String(comment.commentId)}
                     style={{
+                      display:
+                        loginUserName === comment?.memberName
+                          ? 'none'
+                          : 'block',
+
                       margin:
                         loginUserName === comment?.memberName
                           ? '3px 148px 0 5px'
@@ -392,7 +414,6 @@ const Comment: React.FC = () => {
                   답글
                 </ReplyBtn>
               </CommentContent>
-              {/* {isSuccess && 'reply' in state && state.reply.isOpened[idx] ? ( */}
               {'reply' in state && isSuccess && state.reply?.isOpened[idx] ? (
                 <ReplyContainer>
                   <ReplyInput commentInfo={comment}></ReplyInput>

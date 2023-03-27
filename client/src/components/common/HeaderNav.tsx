@@ -9,7 +9,7 @@ function HeaderNav() {
   const { pathname } = useLocation();
   return (
     <nav>
-      {['/seoulrent', '/recommendloan', '/happyhouse'].includes(pathname) ? (
+      {['/seoulrent', '/recommendedloan', '/happyhouse'].includes(pathname) ? (
         <NavBtnClicked onClick={() => navigate('/happyhouse')}>
           집구하기
         </NavBtnClicked>

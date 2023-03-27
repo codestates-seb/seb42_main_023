@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import styled from 'styled-components';
 import PostList from '../components/mainP/PostList';
 import DropdownButton from '../components/mainP/DropdownButton';
@@ -6,7 +6,7 @@ import { AiOutlineTrophy } from 'react-icons/ai';
 import { NavBtn } from '../components/common/Btn';
 import { useAppDispatch, useAppSelector } from '../hooks';
 import { postListApi } from '../api/postListapi';
-import { setPostSetting, setCurrentPage } from '../slices/mainSlice';
+import { setPostSetting } from '../slices/mainSlice';
 import Pagenation from '../components/common/Pagination';
 
 const Main = () => {

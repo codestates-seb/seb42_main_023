@@ -6,6 +6,7 @@ import { useEffect, useState, useRef } from 'react';
 import { useAppDispatch, useAppSelector } from '../hooks';
 import { setNicknameErr } from '../slices/nicknameSlice';
 import { usePostNicknameMutation } from '../api/nicknameApi';
+import { MainContainer, FormContainer } from '../components/common/Container';
 
 const SetNickname: React.FC = () => {
   // Tools
@@ -52,50 +53,25 @@ const SetNickname: React.FC = () => {
   };
 
   return (
-    <>
-      <NicknameFormMain>
-        <NicknameForm>
-          <div>Logo</div>
-          <NicknameInput>
-            <label htmlFor="nickname">닉네임</label>
-            <input
-              id="nickname"
-              placeholder="커뮤니티에서 사용할 닉네임을 작성해주세요"
-              ref={nicknameRef}
-            />
-            <p>{nicknameErr}</p>
-          </NicknameInput>
-          <SignupBtn onClick={setNicknameHandler}>가입하기</SignupBtn>
-        </NicknameForm>
-      </NicknameFormMain>
-    </>
+    <MainContainer>
+      <FormContainer>
+        <div>Logo</div>
+        <NicknameInput>
+          <label htmlFor="nickname">닉네임</label>
+          <input
+            id="nickname"
+            placeholder="커뮤니티에서 사용할 닉네임을 작성해주세요"
+            ref={nicknameRef}
+          />
+          <p>{nicknameErr}</p>
+        </NicknameInput>
+        <SignupBtn onClick={setNicknameHandler}>가입하기</SignupBtn>
+      </FormContainer>
+    </MainContainer>
   );
 };
 
 export default SetNickname;
-
-// 메인 전체
-const NicknameFormMain = styled.div`
-  width: 100%;
-  height: 100%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-`;
-
-// 닉네임 폼
-const NicknameForm = styled.div`
-  width: 503px;
-  height: 426px;
-  margin: auto;
-  background-color: #fcfcfc;
-  border: 2px solid #f4f4f4;
-  border-radius: 5px;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-around;
-  align-items: center;
-`;
 
 // 닉네임 입력 label과 input 컨테이너
 const NicknameInput = styled.div`
