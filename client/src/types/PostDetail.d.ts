@@ -6,6 +6,7 @@ export interface PostStateType {
     isLike: boolean;
     isDislike: boolean;
     isBookmark: boolean;
+    views: unknown;
     reommendPosts: unknown;
     postDetail: unknown;
     deleteType: unknown;
