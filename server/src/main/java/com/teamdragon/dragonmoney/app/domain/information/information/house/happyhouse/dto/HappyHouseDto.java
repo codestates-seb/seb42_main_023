@@ -41,6 +41,7 @@ public class HappyHouseDto {
     public static class HappyHouseElement {
         private Long houseId;
         private LocalDateTime inquiryDate;
+        private String noticeDetailKind;
         private String noticeState;
         private String location;
         private String title;
@@ -52,6 +53,7 @@ public class HappyHouseDto {
         public HappyHouseElement(HappyHouse happyHouse) {
             this.houseId = happyHouse.getId();
             this.inquiryDate = happyHouse.getInquiryDate();
+            this.noticeDetailKind = happyHouse.getNoticeDetailKind();
             this.noticeState = happyHouse.getNoticeState();
             this.location = happyHouse.getLocation();
             this.title = happyHouse.getNoticeTitle();
