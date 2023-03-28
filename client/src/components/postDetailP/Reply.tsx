@@ -323,7 +323,11 @@ const Reply: React.FC<Partial<ReplyProps & ReportProps>> = ({
               reportTypeChecker(event);
             }}
           >
-            신고
+            {replyInfo?.content === '삭제된 댓글입니다.'
+              ? null
+              : replyInfo?.content === '신고된 댓글입니다.'
+              ? null
+              : '신고'}
           </li>
           <button
             onClick={_.debounce(() => {
