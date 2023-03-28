@@ -11,6 +11,7 @@ interface House {
   inquiryDate: string;
   noticeState: string;
   location: string;
+  noticeDetailKind: string;
   title: string;
   url: string;
   noticeStartDay: string;
@@ -54,15 +55,19 @@ const HappyHouse: React.FC = () => {
       <NavRealEstate />
       <div className="content-container">
         <Title>
-          <h1>행복주택공고</h1>
-          <h2>
-            <AiFillHome /> 행복주택이란?
-          </h2>
-          <p>
-            청년(19세~39세)·신혼부부·대학생 등 젊은계층의 주거불안 해소를 위해
-            국가 재정과 주택도시기금을 지원받아 <br /> 대중교통이 편리하고
-            직주근접이 가능한 부지에 주변시세보다 저렴하게공급하는 공공임대주택
-          </p>
+          <h1>청년들을 위한 임대 · 행복주택공고</h1>
+          <p>공공기관이 공급하는 임대주택 모집공고를 검색하실 수 있습니다.</p>
+          <div>
+            <h2>
+              <AiFillHome /> 행복주택이란?
+            </h2>
+            <p>
+              청년(19세~39세)·신혼부부·대학생 등 젊은계층의 주거불안 해소를 위해
+              국가 재정과 주택도시기금을 지원받아 <br /> 대중교통이 편리하고
+              직주근접이 가능한 부지에 주변시세보다 저렴하게 공급하는
+              공공임대주택입니다.
+            </p>
+          </div>
         </Title>
         {isSuccess && (
           <div className="total-items">
@@ -135,6 +140,7 @@ const HappyHouse: React.FC = () => {
             <tr>
               <th>상태</th>
               <th>지역</th>
+              <th>유형</th>
               <th>공고명</th>
               <th>상세보기</th>
               <th>공고게시일</th>
@@ -148,6 +154,7 @@ const HappyHouse: React.FC = () => {
                   <tr key={house.houseId}>
                     <td>{house.noticeState}</td>
                     <td>{house.location}</td>
+                    <td>{house.noticeDetailKind}</td>
                     <td>{house.title}</td>
                     <td>
                       <SeeDetailBtn onClick={() => window.open(house.url)}>
@@ -198,13 +205,24 @@ const Title = styled.div`
   margin-bottom: 40px;
   > h1 {
     font-size: 23px;
+    margin-bottom: 5px;
+  }
+
+  > p {
+    color: #5c5c5c;
+    font-size: 14px;
     margin-bottom: 20px;
   }
 
-  > h2 {
-    font-size: 16px;
-    font-weight: 700;
-    margin-bottom: 6px;
+  > div {
+    > h2 {
+      font-size: 16px;
+      font-weight: 700;
+      margin-bottom: 5px;
+    }
+    > p {
+      font-size: 14px;
+    }
   }
 `;
 
