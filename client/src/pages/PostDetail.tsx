@@ -719,10 +719,11 @@ const DeleteModal = styled.div`
   display: flex;
   flex-direction: column;
   justify-content: space-around;
+  position: fixed;
+  top: 15%;
   align-items: center;
   width: 550px;
   height: 290px;
-  position: absolute;
   top: 300px;
   background-color: #ffffff;
   border: solid 1px #d4d4d4;
@@ -750,11 +751,11 @@ const ReportModal = styled.div`
   display: flex;
   flex-direction: column;
   justify-content: space-around;
+  position: fixed;
+  top: 15%;
   align-items: center;
   width: 550px;
   height: 650px;
-  position: absolute;
-  top: 100px;
   background-color: #ffffff;
   border: solid 1px #d4d4d4;
   border-radius: 5px;
@@ -812,8 +813,6 @@ const ReportModal = styled.div`
     display: none;
   }
 `;
-
-//TODO Intro
 const IntorductionContainer = styled.div`
   display: flex;
   flex-direction: column;
