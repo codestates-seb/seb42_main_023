@@ -28,12 +28,13 @@ public class Image {
     @Column(length = 200)
     private String url;
 
-    @Column(length = 100)
+    @Column(length = 100, unique = true)
     private String fileName;
 
     @Column(length = 10)
     private String extension;
 
+    @Column(length = 20)
     @Enumerated(value = EnumType.STRING)
     private State state;
 

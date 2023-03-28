@@ -21,7 +21,6 @@ import java.io.IOException;
 import java.net.URI;
 import java.util.*;
 
-@Slf4j
 @Component
 public class OAuth2MemberHandler extends SimpleUrlAuthenticationSuccessHandler {
     private final JwtTokenizer jwtTokenizer;
@@ -74,21 +73,21 @@ public class OAuth2MemberHandler extends SimpleUrlAuthenticationSuccessHandler {
         }
     }
 
-    //닉네임 중복 검사 페이지로 리다이렉트(uri에 uuid를 담아서 보낸다.)
+    // 닉네임 중복 검사 페이지로 리다이렉트
     private void redirectNameCheckPage(HttpServletRequest request, HttpServletResponse response, String tempName) throws IOException {
         String uri = createCheckNameURI(tempName).toString();
 
         getRedirectStrategy().sendRedirect(request, response, uri);
     }
 
-    //임시 토큰을 줄 페이지로 리다이렉트
+    // 임시 토큰을 줄 페이지로 리다이렉트
     private void redirectForTempAccessToken(HttpServletRequest request, HttpServletResponse response, String tempAccessToken, List<String> authorities) throws IOException {
         String uri = createTempAccessTokenURI(tempAccessToken).toString();
 
         getRedirectStrategy().sendRedirect(request, response, uri);
     }
 
-    //임시 토큰을 줄 페이지로 리다이렉트
+    // 임시 토큰을 줄 페이지로 리다이렉트
     private void redirectForComeBackMember(HttpServletRequest request, HttpServletResponse response, String tempAccessToken, List<String> authorities) throws IOException {
         String uri = deletedMemberComebackURI(tempAccessToken).toString();
 

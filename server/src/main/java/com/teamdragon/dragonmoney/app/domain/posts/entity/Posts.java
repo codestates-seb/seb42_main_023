@@ -18,7 +18,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-// @ToString
 @Getter
 @NoArgsConstructor
 @Entity
@@ -64,7 +63,7 @@ public class Posts extends BaseTimeEntity implements ThumbCountable {
     @OneToMany(mappedBy = "posts")
     private List<Comment> comments = new ArrayList<>();
 
-    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
     @JoinColumn(name = "DELETE_RESULT_ID")
     private DeleteResult deleteResult;
 

@@ -61,6 +61,7 @@ public class SecurityConfiguration {
                         .antMatchers(HttpMethod.DELETE, "/members/*/bookmark/**").hasRole("USER")
 
                         .antMatchers(HttpMethod.POST, "/images").hasRole("USER")
+                        .antMatchers(HttpMethod.DELETE, "/images").hasRole("USER")
                         .antMatchers(HttpMethod.POST, "/posts").hasRole("USER")
                         .antMatchers(HttpMethod.PATCH, "/posts/*").hasRole("USER")
                         .antMatchers(HttpMethod.GET, "/posts").permitAll()

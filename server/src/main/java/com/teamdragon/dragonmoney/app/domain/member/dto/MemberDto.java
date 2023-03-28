@@ -9,32 +9,9 @@ import javax.validation.constraints.Size;
 
 public class MemberDto {
 
-    // oauth2 회원 등록을 대신할 임시 로직
+    // 회원 가입
     @Getter
-    public static class PostTemp {
-        @NotBlank
-        @Size(min = 2, max = 30)
-        @Pattern(regexp = "^[0-9A-Za-z가-힣]{2,30}$",
-                message = "숫자, 영어, 한글이 포함된 2글자 이상 8글자 이하 이름만 사용 가능합니다.")
-        private String name;
-        @NotBlank
-        @Size(max = 100)
-        private String email;
-        @NotBlank
-        @Size(max = 250)
-        private String profileImage;
-
-        @Builder
-        public PostTemp(String name, String email, String profileImage) {
-            this.name = name;
-            this.email = email;
-            this.profileImage = profileImage;
-        }
-    }
-
-    // 회원가입(닉네임 중복 확인)
-    @Getter
-    public static class Post {
+    public static class DuplicatedReq {
         @NotNull(message = "내용을 입력해주세요.")
         @NotBlank(message = "공백은 불가능합니다.")
         @Size(min = 2, max = 30)
@@ -44,25 +21,43 @@ public class MemberDto {
 
         @NotNull
         private String tempName;
+
+        public DuplicatedReq(String name, String tempName) {
+            this.name = name;
+            this.tempName = tempName;
+        }
+    }
+
+    // 닉네임 중복 검사 및 회원 가입 결과
+    @Getter
+    public static class DuplicatedRes {
+        private Boolean useable;
+
+        public DuplicatedRes(Boolean useable) {
+            this.useable = useable;
+        }
     }
 
     // 회원 수정
     @Getter
-    public static class Patch {
+    public static class PatchReq {
         @NotNull(message = "내용을 입력해주세요.")
         @NotBlank(message = "공백은 불가능합니다.")
         @Size(max = 500, message = "60글자 이내로 작성 가능합니다.")
         private String intro;
+
+        public PatchReq(String intro) {
+            this.intro = intro;
+        }
     }
 
-    @Setter
-    public static class duplicatedPost {
-        private Boolean useable;
-    }
-
-    @Setter
+    // 자기소개 수정
     @Getter
     public static class IntroResponse {
         private String intro;
+
+        public IntroResponse(String intro) {
+            this.intro = intro;
+        }
     }
 }

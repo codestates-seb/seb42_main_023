@@ -29,7 +29,7 @@ public class TagService {
 
     // 태그 저장
     private Tag saveTag(String tagName){
-        Optional<Tag> findTag = findTag(tagName); // 기존 태그 조회
+        Optional<Tag> findTag = findTag(tagName);
         if (findTag.isPresent()) {
             return findTag.get();
         }

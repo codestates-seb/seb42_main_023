@@ -28,6 +28,7 @@ public class ReplyRepositoryImpl implements ReplyRepositoryCustom{
 
     private final JPAQueryFactory queryFactory;
 
+    // 목록 조회 : 미로그인
     @Override
     public Page<ReplyDto.ReplyListElement> findReplyListByPage(Pageable pageable, Long commentId) {
         OrderSpecifier[] orders = getAllOrderSpecifiers(pageable, reply);
@@ -58,6 +59,7 @@ public class ReplyRepositoryImpl implements ReplyRepositoryCustom{
         return PageableExecutionUtils.getPage(content, pageable, countQuery::fetchOne);
     }
 
+    // 목록 조회 : 로그인
     @Override
     public Page<ReplyDto.ReplyListElement> findReplyListByPageAndMemberId(Pageable pageable, Long commentId, Long loginMemberId) {
         OrderSpecifier[] orders = getAllOrderSpecifiers(pageable, reply);

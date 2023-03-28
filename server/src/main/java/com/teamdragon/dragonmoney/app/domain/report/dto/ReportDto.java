@@ -2,8 +2,10 @@ package com.teamdragon.dragonmoney.app.domain.report.dto;
 
 import com.teamdragon.dragonmoney.app.domain.report.entity.Report;
 import com.teamdragon.dragonmoney.app.global.pagenation.PageInfo;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import org.springframework.data.domain.Page;
 
 import javax.validation.constraints.NotNull;
@@ -13,28 +15,38 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public class ReportDto {
+
     // 신고 등록 요청 Dto
     @Getter
+    @NoArgsConstructor
     public static class ReportPostReq {
         @NotNull
         @Size(max = 40)
         private String reportReason;
-
         @NotNull
         @Size(min = 2, max = 120)
         private String description;
-
         @NotNull
         @Size(max = 10)
         private String targetType;
-
         private Long postId;
-
         private Long commentId;
-
         private Long replyId;
-
+        @NotNull
         private String reporterName;
+
+        @Builder
+        public ReportPostReq(String reportReason, String description,
+                             String targetType, Long postId, Long commentId,
+                             Long replyId, String reporterName) {
+            this.reportReason = reportReason;
+            this.description = description;
+            this.targetType = targetType;
+            this.postId = postId;
+            this.commentId = commentId;
+            this.replyId = replyId;
+            this.reporterName = reporterName;
+        }
     }
 
     // 신고 등록 응답 Dto

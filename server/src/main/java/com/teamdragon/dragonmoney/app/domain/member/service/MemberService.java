@@ -17,9 +17,9 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.Optional;
 
-@Service
-@Transactional
 @RequiredArgsConstructor
+@Transactional
+@Service
 public class MemberService {
     private final MemberRepository memberRepository;
     private final PostsService postsService;
@@ -27,7 +27,7 @@ public class MemberService {
     private final ReplyService replyService;
     private final String OAUTH2_KIND = "google";
 
-    //oauth2 로그인 할 때 존재하는 회원인지 판별
+    // oAuth2 로그인 할 때 존재하는 회원인지 판별
     public Boolean checkOAuthMemberName(String email) {
         Optional<Member> optionalNameDuplicateCheck
                 = memberRepository.findByNameDuplicateCheckAndEmailAndOauthkind(true, email, OAUTH2_KIND);
@@ -38,46 +38,37 @@ public class MemberService {
         return false;
     }
 
-    //조회한 이메일을 통해 이름 가져오기
-    public String getNameBySearchEmail(String email) {
-        Optional<Member> getMember = memberRepository.findByNameDuplicateCheckAndEmailAndOauthkind(true, email, OAUTH2_KIND);
-        String name = getMember.get().getName();
-
-        return name;
-    }
-
-    //OAuth2 신규 회원 정보 저장
+    // OAuth2 신규 회원 정보 저장
     public Member saveMember(String oauthKind, String picture, String tempName, String email, List<String> authorities) {
         Member member = Member.builder()
                 .oauthkind(oauthKind)
                 .nameDuplicateCheck(false)
                 .profileImage(picture)
                 .state(Member.MemberState.ACTIVE)
-                .memberRoles(authorities)
+                .roles(authorities)
                 .tempName(tempName)
                 .email(email)
                 .build();
         return memberRepository.save(member);
     }
 
-    //닉네임 중복 확인하는 페이지에서 중복 확인
+    // 닉네임 중복 확인
     public Boolean duplicatedName(String name) {
         Optional<Member> memberOptional = memberRepository.findByName(name);
 
         return memberOptional.isEmpty();
     }
 
-    //uuid를 통해 회원 조회 및 이름 수정
+    // 회원 조회 및 이름 수정
     public Member updateMemberName(String tempName, String name) {
 
         Member memberOptional = findVerifiedMemberTempName(tempName);
-        memberOptional.setName(name);
-        memberOptional.setNameDuplicateCheck(true);
+        memberOptional.saveMemberName(name, true);
 
         return memberRepository.save(memberOptional);
     }
 
-    //마이 페이지 자기소개 수정
+    // 마이 페이지 자기소개 수정
     public Member updateMemberIntro(String name, Member member) {
         Member updatedMember = findVerifiedMemberName(name);
         updatedMember.updatedMemberIntro(member.getIntro());
@@ -86,12 +77,7 @@ public class MemberService {
         return memberRepository.save(updatedMember);
     }
 
-    //특정 회원 정보 가져오기
-    public Member findMember(String name) {
-        return findVerifiedMemberName(name);
-    }
-
-    //회원 탈퇴
+    // 회원 탈퇴
     public Member deleteMember(String name) {
         postsService.removePostsBtDeletedMember(name);
         commentService.removeCommentByDeletedMember(name);
@@ -107,14 +93,13 @@ public class MemberService {
         return memberRepository.save(deletedMember);
     }
 
-    //회원 이름을 통해 회원 존재의 유무 확인
-    public Member findVerifiedMemberName(String name) {
-        Optional<Member> optionalAnswer = memberRepository.findByName(name);
-
-        return optionalAnswer
-                .orElseThrow( () -> new BusinessLogicException(BusinessExceptionCode.USER_NOT_FOUND));
+    // 특정 회원 정보 가져오기
+    public Member findMember(String name) {
+        return findVerifiedMemberName(name);
     }
 
+
+    // 임시 닉네임으로 회원 조회
     public Member findVerifiedMemberTempName(String tempName) {
         Optional<Member> optionalMember = memberRepository.findByTempName(tempName);
 
@@ -122,6 +107,7 @@ public class MemberService {
                 .orElseThrow( () -> new BusinessLogicException(BusinessExceptionCode.USER_NOT_FOUND));
     }
 
+    // 탈퇴한 회원 재 가입시 존재하는 회원인지 판별
     public Boolean checkDeletedName(String email) {
         Optional<Member> optionalDeletedCheck
                 = memberRepository.findByEmailAndOauthkindAndState(email, OAUTH2_KIND, Member.MemberState.DELETED);
@@ -130,6 +116,22 @@ public class MemberService {
             return true;
 
         return false;
+    }
+
+    // 조회한 이메일을 통해 이름 가져오기
+    public String getNameBySearchEmail(String email) {
+        Optional<Member> getMember = memberRepository.findByNameDuplicateCheckAndEmailAndOauthkind(true, email, OAUTH2_KIND);
+        String name = getMember.get().getName();
+
+        return name;
+    }
+
+    // 회원 이름을 통해 회원 존재의 유무 확인
+    public Member findVerifiedMemberName(String name) {
+        Optional<Member> optionalAnswer = memberRepository.findByName(name);
+
+        return optionalAnswer
+                .orElseThrow( () -> new BusinessLogicException(BusinessExceptionCode.USER_NOT_FOUND));
     }
 
     // 작성자 확인

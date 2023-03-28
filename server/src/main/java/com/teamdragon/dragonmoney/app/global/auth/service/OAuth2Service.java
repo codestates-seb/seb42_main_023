@@ -31,7 +31,7 @@ public class OAuth2Service {
     private final MemberService memberService;
     private final FinderService finderService;
 
-    //Temp Access Token 발급
+    // Temp Access Token 발급
     public String delegateTempAccessToken(String name) {
         Map<String, Object> claims = new HashMap<>();
         claims.put("name", name);
@@ -46,11 +46,11 @@ public class OAuth2Service {
         return accessToken;
     }
 
-    //Access Token 발급
+    // Access Token 발급
     public String delegateAccessToken(String tempAccessToken) {
         Member member = findMemberByTempAccessToken(tempAccessToken);
         String name = member.getName();
-        List<String> roles = member.getMemberRoles();
+        List<String> roles = member.getRoles();
 
         Map<String, Object> claims = new HashMap<>();
         claims.put("name", name);
@@ -69,7 +69,7 @@ public class OAuth2Service {
     // AccessToken 재발급
     public String delegateAccessTokenAgain(String memberName) {
         Member member = finderService.findVerifiedMemberByName(memberName);
-        List<String> roles = member.getMemberRoles();
+        List<String> roles = member.getRoles();
 
         Map<String, Object> claims = new HashMap<>();
         claims.put("name", memberName);
@@ -85,7 +85,7 @@ public class OAuth2Service {
         return accessToken;
     }
 
-    //RefreshToken 발급
+    // RefreshToken 발급
     public String delegateRefreshToken(String tempAccessToken) {
         Member member = findMemberByTempAccessToken(tempAccessToken);
         String name = member.getName();
@@ -128,7 +128,7 @@ public class OAuth2Service {
         }
     }
 
-    //Resresh Token 파싱
+    // Resresh Token 파싱
     public Map<String, Object> refreshTokenGetMemberName(HttpServletRequest request) {
         String jws = request.getHeader("Refresh");
         String base64EncodedSecretKey = jwtTokenizer.encodeBase64SecretKey(jwtTokenizer.getSecretKey());
@@ -137,12 +137,12 @@ public class OAuth2Service {
         return claims;
     }
 
-    //로그인 정보 찾기
+    // 로그인 정보 찾기
     public LoginResponseDto findLoginMember(String tempAccessToken) {
         Member member = findMemberByTempAccessToken(tempAccessToken);
         String name = member.getName();
         String picture = member.getProfileImage();
-        List<String> roles = member.getMemberRoles();
+        List<String> roles = member.getRoles();
         String role = roles.get(0);
 
         LoginResponseDto loginResponseDto = new LoginResponseDto();

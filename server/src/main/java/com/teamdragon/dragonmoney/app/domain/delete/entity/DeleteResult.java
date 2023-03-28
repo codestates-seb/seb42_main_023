@@ -11,6 +11,7 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Entity
 @Getter
@@ -25,18 +26,18 @@ public class DeleteResult {
     @Column
     private LocalDateTime deletedAt;
 
-    @Column
+    @Column(length = 100)
     @Enumerated(value = EnumType.STRING)
     private Reason deleteReason;
 
-    @OneToOne(fetch = FetchType.LAZY, mappedBy = "deleteResult")
-    private Posts posts;
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "deleteResult")
+    private List<Posts> posts;
 
-    @OneToOne(fetch = FetchType.LAZY, mappedBy = "deleteResult")
-    private Comment comment;
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "deleteResult")
+    private List<Comment> comment;
 
-    @OneToOne(fetch = FetchType.LAZY, mappedBy = "deleteResult")
-    private Reply reply;
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "deleteResult")
+    private List<Reply> reply;
 
     @Builder
     public DeleteResult(Reason deleteReason) {

@@ -2,6 +2,7 @@ package com.teamdragon.dragonmoney.app.domain.comment.dto;
 
 import com.teamdragon.dragonmoney.app.domain.comment.entity.Comment;
 import com.teamdragon.dragonmoney.app.global.pagenation.PageInfo;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import org.hibernate.validator.constraints.Length;
 import org.springframework.data.domain.Page;
@@ -12,6 +13,7 @@ import java.util.List;
 
 public class CommentDto {
     @Getter
+    @AllArgsConstructor
     public static class CreateReq {
         @NotBlank
         @Length(max=1000)
@@ -19,6 +21,7 @@ public class CommentDto {
     }
 
     @Getter
+    @AllArgsConstructor
     public static class UpdateReq {
         @NotBlank
         @Length(max=1000)

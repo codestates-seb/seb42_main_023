@@ -18,7 +18,6 @@ import java.util.Optional;
 @RequiredArgsConstructor
 @Service
 public class BookmarkService {
-    private final MemberService memberService;
     private final PostsService postsService;
     private final BookmarkRepository bookmarkRepository;
 

@@ -11,7 +11,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Getter
-@Setter
 @NoArgsConstructor
 @Entity
 public class Member extends BaseTimeEntity {
@@ -20,7 +19,6 @@ public class Member extends BaseTimeEntity {
     private Long id;
 
     @Column
-    @Setter
     private Boolean nameDuplicateCheck;
 
     @Column(name = "PROFILE_IMAGE", nullable = false, length = 300)
@@ -29,7 +27,7 @@ public class Member extends BaseTimeEntity {
     @Column(length = 1700)
     private String intro;
 
-    @Column
+    @Column(length = 150, unique = true)
     private String tempName;
 
     @Column
@@ -39,23 +37,22 @@ public class Member extends BaseTimeEntity {
     @Column(length = 100, nullable = false)
     private String email;
 
-    @Setter
-    @Column(length = 30)
+    @Column(length = 30, unique = true)
     private String name;
 
-    @Column(length = 10, name = "OAUTH_KIND")
+    @Column(length = 20, name = "OAUTH_KIND")
     private String oauthkind;
 
-    @Column(length = 20)
+    @Column(length = 40)
     @Enumerated(value = EnumType.STRING)
     private MemberState state;
 
-    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
     @JoinColumn(name = "DELETE_RESULT_ID")
     private DeleteResult deleteResult;
 
     @ElementCollection(fetch = FetchType.EAGER)
-    private List<String> memberRoles = new ArrayList<>();
+    private List<String> roles = new ArrayList<>();
 
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "REFRESH_TOKEN_ID")
@@ -65,7 +62,7 @@ public class Member extends BaseTimeEntity {
     public Member(Long id, Boolean nameDuplicateCheck, String profileImage,
                   String intro, String tempName, String tempAccessToken,
                   String email, String name, String oauthkind, MemberState state,
-                  DeleteResult deleteResult, List<String> memberRoles) {
+                  DeleteResult deleteResult, List<String> roles) {
         this.id = id;
         this.nameDuplicateCheck = nameDuplicateCheck;
         this.profileImage = profileImage;
@@ -77,7 +74,7 @@ public class Member extends BaseTimeEntity {
         this.oauthkind = oauthkind;
         this.state = state;
         this.deleteResult = deleteResult;
-        this.memberRoles = memberRoles;
+        this.roles = roles;
     }
 
     public static enum MemberState {
@@ -90,6 +87,11 @@ public class Member extends BaseTimeEntity {
         MemberState(String state) {
             this.state = state;
         }
+    }
+
+    public void saveMemberName(String memberName, Boolean nameDuplicateCheck) {
+        this.name = memberName;
+        this.nameDuplicateCheck = nameDuplicateCheck;
     }
 
     public void saveTempAccessToken(String tempAccessToken) {

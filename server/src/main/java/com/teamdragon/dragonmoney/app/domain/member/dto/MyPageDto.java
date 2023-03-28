@@ -68,7 +68,7 @@ public class MyPageDto {
     }
 
 
-    // 회원이 작성한 글 응답 데이터(+페이지 정보)
+    // 회원이 작성한 글 응답 데이터 (+페이지 정보)
     @Getter
     public static class MyPageMemberPostsListRes {
         private PageInfo pageInfo;
@@ -124,7 +124,7 @@ public class MyPageDto {
     }
 
 
-    // 회원이 작성한 댓글 응답 데이터(+페이지 정보)
+    // 회원이 작성한 댓글 응답 데이터 (+페이지 정보)
     @Getter
     public static class MyPageMemberCommentListRes {
         private PageInfo pageInfo;

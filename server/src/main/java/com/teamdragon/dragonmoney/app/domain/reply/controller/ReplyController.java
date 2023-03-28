@@ -1,7 +1,5 @@
 package com.teamdragon.dragonmoney.app.domain.reply.controller;
 
-import com.teamdragon.dragonmoney.app.domain.comment.dto.CommentDto;
-import com.teamdragon.dragonmoney.app.domain.comment.entity.Comment;
 import com.teamdragon.dragonmoney.app.domain.member.entity.Member;
 import com.teamdragon.dragonmoney.app.domain.member.service.MemberService;
 import com.teamdragon.dragonmoney.app.domain.reply.dto.ReplyDto;
@@ -15,6 +13,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -23,6 +22,7 @@ import javax.validation.constraints.Positive;
 import java.security.Principal;
 
 @RequiredArgsConstructor
+@Validated
 @RestController
 public class ReplyController {
 

@@ -12,7 +12,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.util.Arrays;
 import java.util.List;
 
 @RequiredArgsConstructor
@@ -25,7 +24,7 @@ public class S3Service {
     private final AmazonS3 amazonS3;
 
     // 이미지 업로드
-    public String uploadFile(MultipartFile multipartFile, String ext, String fullFileName) throws IOException {
+    public String uploadFile(MultipartFile multipartFile, String ext, String fullFileName){
         try {
             ObjectMetadata objectMetadata = getObjectMetadata(ext, multipartFile.getSize());
             // 업로드
@@ -38,6 +37,9 @@ public class S3Service {
             e.printStackTrace();
             throw new BusinessLogicException(BusinessExceptionCode.IMAGE_UPLOAD_FAIL);
         } catch (SdkClientException e) {
+            e.printStackTrace();
+            throw new BusinessLogicException(BusinessExceptionCode.IMAGE_UPLOAD_FAIL);
+        } catch (IOException e) {
             e.printStackTrace();
             throw new BusinessLogicException(BusinessExceptionCode.IMAGE_UPLOAD_FAIL);
         }

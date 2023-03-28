@@ -4,7 +4,6 @@ import com.teamdragon.dragonmoney.app.domain.category.entity.Category;
 import com.teamdragon.dragonmoney.app.domain.category.repository.CategoryRepository;
 import com.teamdragon.dragonmoney.app.global.exception.BusinessExceptionCode;
 import com.teamdragon.dragonmoney.app.global.exception.BusinessLogicException;
-import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
@@ -16,9 +15,11 @@ public class CategoryService {
 
     public CategoryService(CategoryRepository categoryRepository) {
         this.categoryRepository = categoryRepository;
-        categoryRepository.save(new Category("firstCategoryTitle", "firstCategoryContent"));
+        Optional<Category> findCategory = categoryRepository.findById(1L);
+        if(findCategory.isEmpty()) {
+            categoryRepository.save(new Category("firstCategoryTitle", "firstCategoryContent"));
+        }
     }
-
 
     // 카테고리 단일 조회 : id
     public Category findCategoryById(Long categoryId) {
