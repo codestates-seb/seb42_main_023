@@ -28,11 +28,13 @@ export interface CommentStateType {
   comment: {
     isCommentLike: boolean;
     isCommentDislike: boolean;
+    commentCnt: unknown;
     commentValue: string;
     commentId: unknown;
     isEdit: Array<boolean>;
     isOpeneIntro: boolean;
     page: number;
+    comments: Array<object>;
   };
 }
 
@@ -92,6 +94,7 @@ export interface CommentType {
   memberImage: string;
   createdAt: string;
   modifiedAt: string;
+  isDeleted: boolean;
   isModified: boolean;
   replyCount: number;
   thumbupCount: number;
@@ -124,6 +127,12 @@ export interface CommentProps {
 export interface ReplyProps {
   replyInfo: ReplyType;
   idx: number;
+  replyPage: number;
+}
+
+export interface CommentInputProps {
+  setCommentCnt: (cnt: number) => void;
+  commentCnt: number;
 }
 
 export interface OnClick {

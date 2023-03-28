@@ -37,9 +37,11 @@ import {
 } from '../../slices/replySlice';
 import { timeSince } from '../mainP/Timecalculator';
 import { membersApi } from '../../api/memberapi';
+import { CommentInputProps } from '../../types/PostDetail';
 
-const Comment: React.FC = () => {
-  const [page] = useState<number>(1);
+const Comment: React.FC<Partial<CommentInputProps>> = ({
+  commentCnt,
+}: Partial<CommentInputProps>) => {
   const dispatch = useAppDispatch();
   const state = useAppSelector(
     (
@@ -48,6 +50,9 @@ const Comment: React.FC = () => {
       return state;
     },
   );
+
+  const [page, setPage] = useState<number>(1);
+
   const loginUserName = window.localStorage.getItem('name');
   const params = useParams();
   const postId = params.postId;
@@ -62,8 +67,9 @@ const Comment: React.FC = () => {
   const [updateMutation] = commentMutation;
 
   // 답글 조회
-  const replyQuery = repliesApi.useGetReplyQuery({ commentId, page });
-  const { isSuccess, data, refetch } = replyQuery;
+  const [replyPage, setReplyPage] = useState<number>(1);
+  const replyQuery = repliesApi.useGetReplyQuery({ commentId, replyPage });
+  const { isSuccess, data } = replyQuery;
   const contentEditInput = useRef<HTMLInputElement>(null);
 
   //  멤버 정보 조회
@@ -89,7 +95,7 @@ const Comment: React.FC = () => {
   if (
     commentQuery.isSuccess &&
     'reply' in state &&
-    state.reply.isOpened === undefined
+    state.reply?.isOpened === undefined
   ) {
     const open = Array.from(
       { length: commentQuery.data?.comments?.length },
@@ -211,228 +217,284 @@ const Comment: React.FC = () => {
 
   useEffect(() => {
     // 답글 데이터가 변경될 때마다 총 답글 데이터 반영
-    console.log(replyQuery.data);
     dispatch(setTotalReplies(replyQuery.data?.replies || []));
   }, [data]);
+
+  const minusCommentPage = () => {
+    if (page >= 2) {
+      window.scrollTo(0, 500);
+      setPage((prev) => (prev = prev - 1));
+    }
+  };
+  const plusCommentPage = () => {
+    window.scrollTo(0, 500);
+    setPage((prev) => prev + 1);
+  };
+  const minusReplyPage = () => {
+    if (replyPage >= 2) {
+      setReplyPage((prev) => (prev = prev - 1));
+    }
+  };
+  const plusReplyPage = () => {
+    setReplyPage((prev) => prev + 1);
+  };
   return (
     <CommentContainer>
       {commentQuery.data &&
-        commentQuery.data.comments.map((comment: CommentType, idx: number) => {
-          const filtered: Array<ReplyType> =
-            'reply' in state &&
-            state.reply.totalReplies &&
-            (
-              _.uniqBy(
-                'reply' in state && state.reply.totalReplies,
-                'replyId',
-              ) as Array<object>
-            ).filter((reply: Partial<ReplyType>) => {
-              return reply.commentId === comment.commentId;
-            });
-          // 시간 계산
-          const time = timeSince(comment.createdAt);
-          // 답글 수정 여부
-          const commentIsEdit =
-            comment.modifiedAt !== comment.createdAt ? true : false;
+        commentQuery.data?.comments?.map(
+          (comment: CommentType, idx: number) => {
+            const filtered: Array<ReplyType> =
+              'reply' in state &&
+              state.reply.totalReplies &&
+              (
+                _.uniqBy(
+                  'reply' in state && state.reply.totalReplies,
+                  'replyId',
+                ) as Array<object>
+              ).filter((reply: Partial<ReplyType>) => {
+                return reply.commentId === comment.commentId;
+              });
+            // 시간 계산
+            const time = timeSince(comment.createdAt);
+            // 답글 수정 여부
+            const commentIsEdit =
+              comment.modifiedAt !== comment.createdAt ? true : false;
 
-          return (
-            <>
-              <CommentInfo
-                key={comment.commentId}
-                onClick={outClickIntroHandler}
-              >
-                <ul className="content-info">
-                  <li
-                    className="image"
-                    data-memberName={comment?.memberName}
-                    onClick={IntroHandler}
-                  >
-                    <img
-                      src={comment.memberImage}
-                      id={comment.memberName}
-                      data-img={comment.memberImage}
-                      data-commentId={comment.commentId}
-                    ></img>
-                  </li>
-                  {'comment' in state &&
-                  state.comment.isOpeneIntro &&
-                  comment?.commentId === state.comment?.commentId ? (
-                    <IntorductionContainer>
-                      <IntroInfo>
-                        <ul className="intro-content-info">
-                          <li className="image">
-                            <img src={comment.memberImage} id=""></img>
-                          </li>
-                          <li className="intro-nickname">
-                            {comment.memberName}
-                          </li>
-                        </ul>
-                      </IntroInfo>
-                      <label className="introduction">
-                        {memeberQuery.data?.intro || '소개 내용이 없습니다.'}
-                      </label>
-                      <div className="intro-moreInfo">더보기 》</div>
-                    </IntorductionContainer>
-                  ) : null}
-
-                  <li className="nickname">{comment.memberName}</li>
-                  <TimeIcon />
-
-                  <li className="created-time">{time} 전</li>
-
-                  {'comment' in state &&
-                  state?.comment.isEdit !== undefined &&
-                  state.comment.isEdit[idx] ? (
+            return (
+              <>
+                <CommentInfo
+                  key={comment?.commentId}
+                  onClick={outClickIntroHandler}
+                >
+                  <ul className="content-info">
                     <li
-                      className="comment-update"
-                      id="edit"
+                      className="image"
+                      onClick={IntroHandler}
+                      data-memberName={comment?.memberName}
+                    >
+                      <img
+                        src={comment.memberImage}
+                        id={comment.memberName}
+                        data-img={comment.memberImage}
+                        data-commentId={comment.commentId}
+                      ></img>
+                    </li>
+                    {'comment' in state &&
+                    state.comment.isOpeneIntro &&
+                    comment?.commentId === state.comment?.commentId ? (
+                      <IntorductionContainer>
+                        <IntroInfo>
+                          <ul className="intro-content-info">
+                            <li className="image">
+                              <img src={comment.memberImage} id=""></img>
+                            </li>
+                            <li className="intro-nickname">
+                              {comment.memberName}
+                            </li>
+                          </ul>
+                        </IntroInfo>
+                        <label className="introduction">
+                          {memeberQuery.data?.intro || '소개 내용이 없습니다.'}
+                        </label>
+                        <div className="intro-moreInfo"> 더보기 》</div>
+                      </IntorductionContainer>
+                    ) : null}
+
+                    <li className="nickname">{comment.memberName}</li>
+                    <TimeIcon />
+
+                    <li className="created-time">{time} 전</li>
+
+                    {'comment' in state &&
+                    state?.comment.isEdit !== undefined &&
+                    state.comment.isEdit[idx] ? (
+                      <li
+                        className="comment-update"
+                        id="edit"
+                        style={{
+                          display:
+                            loginUserName === comment?.memberName
+                              ? 'block'
+                              : 'none',
+                        }}
+                        onClick={(): void => {
+                          if (!contentEditInput.current?.value) {
+                            dispatch(setIsEdit(idx));
+                            return;
+                          }
+                          dispatch(setIsEdit(idx));
+                          updateMutation({
+                            postId: postId,
+                            commentId: comment.commentId,
+                            content: contentEditInput.current?.value,
+                          });
+                        }}
+                      >
+                        변경
+                      </li>
+                    ) : (
+                      <li
+                        className="comment-update"
+                        style={{
+                          display:
+                            loginUserName == comment?.memberName
+                              ? 'block'
+                              : 'none',
+                        }}
+                        onClick={(): void => {
+                          dispatch(setIsEdit(idx));
+                        }}
+                      >
+                        수정
+                      </li>
+                    )}
+                    {loginUserName === comment.memberName ? (
+                      <li
+                        className="comment-delete"
+                        style={{
+                          margin:
+                            loginUserName === comment?.memberName
+                              ? '3px 165px 0 5px'
+                              : '3px 195px 0 5px',
+                        }}
+                        id="댓글"
+                        onClick={(
+                          event: React.MouseEvent<HTMLElement>,
+                        ): void => {
+                          dispatch(setCommentId(comment.commentId));
+                          deleteTypeChecker(event);
+                          confirmDeleteHandler();
+                        }}
+                      >
+                        삭제
+                      </li>
+                    ) : null}
+
+                    <li
+                      className="comment-report"
+                      data-category="comment"
+                      data-commentId={String(comment.commentId)}
                       style={{
                         display:
                           loginUserName === comment?.memberName
-                            ? 'block'
-                            : 'none',
-                      }}
-                      onClick={(): void => {
-                        if (!contentEditInput.current?.value) {
-                          dispatch(setIsEdit(idx));
-                          return;
-                        }
-                        dispatch(setIsEdit(idx));
-                        updateMutation({
-                          postId: postId,
-                          commentId: comment.commentId,
-                          content: contentEditInput.current?.value,
-                        });
-                      }}
-                    >
-                      변경
-                    </li>
-                  ) : (
-                    <li
-                      className="comment-update"
-                      style={{
-                        display:
-                          loginUserName == comment?.memberName
-                            ? 'block'
-                            : 'none',
-                      }}
-                      onClick={(): void => {
-                        dispatch(setIsEdit(idx));
-                      }}
-                    >
-                      수정
-                    </li>
-                  )}
-                  {loginUserName === comment.memberName ? (
-                    <li
-                      className="comment-delete"
-                      style={{
+                            ? 'none'
+                            : 'block',
+
                         margin:
                           loginUserName === comment?.memberName
-                            ? '3px 165px 0 5px'
-                            : '3px 195px 0 5px',
+                            ? '3px 148px 0 5px'
+                            : '3px 228px 0 5px',
                       }}
-                      id="댓글"
-                      onClick={(event: React.MouseEvent<HTMLElement>): void => {
-                        dispatch(setCommentId(comment.commentId));
-                        deleteTypeChecker(event);
-                        confirmDeleteHandler();
+                      onClick={(event): void => {
+                        dispatch(
+                          setIsOpenReport(
+                            'post' in state && state.post.isOpenReport,
+                          ),
+                        );
+                        reportTypeChecker(event);
                       }}
                     >
-                      삭제
+                      신고
                     </li>
-                  ) : null}
-
-                  <li
-                    className="comment-report"
-                    data-category="comment"
-                    data-commentId={String(comment.commentId)}
-                    style={{
-                      display:
-                        loginUserName === comment?.memberName
-                          ? 'none'
-                          : 'block',
-
-                      margin:
-                        loginUserName === comment?.memberName
-                          ? '3px 148px 0 5px'
-                          : '3px 228px 0 5px',
+                    <button
+                      onClick={_.debounce(() => {
+                        commentLiikeHandler(comment);
+                      }, 500)}
+                    >
+                      <LikeIcon checked={comment.isThumbup} />
+                    </button>
+                    <li className="comment-likes">{comment.thumbupCount}</li>
+                    <button
+                      onClick={_.debounce(() => {
+                        commentDislikeHandler(comment);
+                      }, 500)}
+                    >
+                      <DislikeIcon checked={comment.isThumbdown} />
+                    </button>
+                    <li className="comment-dislikes">
+                      {comment.thumbDownCount}
+                    </li>
+                  </ul>
+                </CommentInfo>
+                <CommentContent>
+                  {'comment' in state &&
+                  state.comment.isEdit !== undefined &&
+                  state.comment.isEdit[idx] ? (
+                    // 댓글 수정 시 생기는 INPUT
+                    <input
+                      className="edit-content"
+                      placeholder={comment.content}
+                      ref={contentEditInput}
+                    ></input>
+                  ) : (
+                    <div className="content">
+                      {comment.isDeleted
+                        ? '신고된 댓글입니다.'
+                        : comment.content}
+                      {commentIsEdit ? '(수정됨)' : null}
+                    </div>
+                  )}
+                  <ReplyBtn
+                    onClick={(): void => {
+                      if ('comment' in state && state.comment.isOpeneIntro) {
+                        dispatch(setIsOpenIntro(false));
+                      }
+                      dispatch(setCommentId(comment.commentId));
+                      dispatch(setIsOpened(idx));
                     }}
-                    onClick={(event): void => {
-                      dispatch(
-                        setIsOpenReport(
-                          'post' in state && state.post.isOpenReport,
-                        ),
-                      );
-                      reportTypeChecker(event);
-                    }}
                   >
-                    신고
-                  </li>
-                  <button
-                    onClick={_.debounce(() => {
-                      commentLiikeHandler(comment);
-                    }, 500)}
-                  >
-                    <LikeIcon checked={comment.isThumbup} />
-                  </button>
-                  <li className="comment-likes">{comment.thumbupCount}</li>
-                  <button
-                    onClick={_.debounce(() => {
-                      commentDislikeHandler(comment);
-                    }, 500)}
-                  >
-                    <DislikeIcon checked={comment.isThumbdown} />
-                  </button>
-                  <li className="comment-dislikes">{comment.thumbDownCount}</li>
-                </ul>
-              </CommentInfo>
-              <CommentContent>
-                {'comment' in state &&
-                state.comment.isEdit !== undefined &&
-                state.comment.isEdit[idx] ? (
-                  // 댓글 수정 시 생기는 INPUT
-                  <input
-                    className="edit-content"
-                    placeholder={comment.content}
-                    ref={contentEditInput}
-                  ></input>
-                ) : (
-                  <div className="content">
-                    {comment.content} {commentIsEdit ? '(수정됨)' : null}
-                  </div>
-                )}
-                <ReplyBtn
-                  onClick={(): void => {
-                    if ('comment' in state && state.comment.isOpeneIntro) {
-                      dispatch(setIsOpenIntro(false));
-                    }
-                    dispatch(setCommentId(comment.commentId));
-                    dispatch(setIsOpened(idx));
-                  }}
-                >
-                  답글
-                </ReplyBtn>
-              </CommentContent>
-              {'reply' in state && isSuccess && state.reply?.isOpened[idx] ? (
-                <ReplyContainer>
-                  <ReplyInput commentInfo={comment}></ReplyInput>
-                  {filtered?.map((reply: ReplyType, idx: number) => {
-                    return (
-                      <>
-                        <Reply
-                          key={reply.replyId}
-                          replyInfo={reply}
-                          idx={idx}
-                        ></Reply>
-                      </>
-                    );
-                  })}
-                </ReplyContainer>
-              ) : null}
-            </>
-          );
-        })}
+                    답글 {comment.replyCount ? comment.replyCount : ''}
+                  </ReplyBtn>
+                </CommentContent>
+                {'reply' in state && isSuccess && state.reply?.isOpened[idx] ? (
+                  <>
+                    <ReplyContainer>
+                      <ReplyInput commentInfo={comment}></ReplyInput>
+                      {filtered?.map((reply: ReplyType, idx: number) => {
+                        return (
+                          <>
+                            <Reply
+                              key={reply.replyId}
+                              replyInfo={reply}
+                              idx={idx}
+                              replyPage={replyPage}
+                            ></Reply>
+                          </>
+                        );
+                      })}
+                    </ReplyContainer>
+                    <div className="replyPageContainer">
+                      {replyPage !== 1 ? (
+                        <button id="moreInfo" onClick={minusReplyPage}>
+                          《 이전 답글
+                        </button>
+                      ) : null}
+                      {comment.replyCount > 10 &&
+                      comment.replyCount / 10 > replyPage ? (
+                        <button id="moreInfo" onClick={plusReplyPage}>
+                          답글 더보기 》
+                        </button>
+                      ) : null}
+                    </div>
+                  </>
+                ) : null}
+              </>
+            );
+          },
+        )}
+
+      <div className="commentPageContainer">
+        {page !== 1 ? (
+          <button id="moreInfo" onClick={minusCommentPage}>
+            《 이전 댓글
+          </button>
+        ) : null}
+        {commentCnt! > 10 && commentCnt! / 10 > page ? (
+          <button id="moreInfo" onClick={plusCommentPage}>
+            댓글 더보기 》
+          </button>
+        ) : null}
+      </div>
     </CommentContainer>
   );
 };
@@ -444,7 +506,6 @@ const CommentContainer = styled.div`
   flex-direction: column;
   width: 720px;
   height: auto;
-
   h1 {
     font-size: 24px;
     font-weight: 400;
@@ -514,6 +575,23 @@ const CommentContainer = styled.div`
   .image {
     position: relative;
     z-index: 1;
+  }
+  .replyPageContainer {
+    margin: 0 0 0 40px;
+    display: flex;
+    justify-content: flex-start;
+  }
+  .commentPageContainer {
+    display: flex;
+    justify-content: flex-start;
+  }
+  #moreInfo {
+    margin: 20px 0 0 50px;
+    text-align: left;
+    font-size: 18px;
+    font-weight: 600;
+    color: #0069ca;
+    cursor: pointer;
   }
 `;
 

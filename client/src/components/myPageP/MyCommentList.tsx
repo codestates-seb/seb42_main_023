@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import { useAppSelector } from '../../hooks';
 import { FaRegThumbsDown } from 'react-icons/fa';
@@ -9,33 +9,24 @@ import { membersCommentsListApi } from '../../api/memberapi';
 import { timeSince } from '../mainP/Timecalculator';
 import { PostListWrap } from './MyPostList';
 import Pagination from '../common/Pagination';
+import { CommentType } from '../../types/PostList';
 
 const MyCommentList = () => {
   const [pageOffset, setPageOffset] = useState(0);
   const [currentPage, setCurrentPage] = useState(1);
 
-  const { commentQuery } = useAppSelector(({ header }) => header);
+  const { memberName } = useAppSelector(({ header }) => header);
   const membersCommentsListquery =
     membersCommentsListApi.useGetCommentsListQuery({
-      commentQuery: commentQuery,
+      name: memberName,
       page: currentPage,
     });
-  const { data, isSuccess } = membersCommentsListquery;
-  interface CommentType {
-    commentId: number;
-    memberName: string;
-    memberImage: string;
-    createdAt: string;
-    modifiedAt: string;
-    isModified: boolean;
-    replyCount: number;
-    thumbupCount: number;
-    thumbdownCount: number; //thumbDownCount
-    isThumbup: boolean;
-    isThumbdown: boolean;
-    length: number;
-    comment: string; //content
-  }
+  const { data, isSuccess, refetch } = membersCommentsListquery;
+
+  useEffect(() => {
+    refetch();
+  }, []);
+
   if (!isSuccess) {
     return <div>Loading...</div>;
   }
@@ -46,7 +37,11 @@ const MyCommentList = () => {
           data.comments.map((item: CommentType) => {
             return (
               <li key={item.commentId}>
-                <div>{item.comment}</div>
+                {item.comment === '신고된 댓글입니다.' ? (
+                  <div style={{ color: '#94969b' }}>{item.comment}</div>
+                ) : (
+                  <div>{item.comment}</div>
+                )}
                 <CommentInfo>
                   <span>
                     <TimeIcon />

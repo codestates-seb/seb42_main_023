@@ -10,6 +10,7 @@ const commentSlice = createSlice({
     isEdit: undefined,
     isOpeneIntro: false,
     page: 1,
+    commentCnt: undefined,
   },
   reducers: {
     // 댓글 좋아요
@@ -50,6 +51,10 @@ const commentSlice = createSlice({
     setPage: (state): void => {
       state.page = state.page + 1;
     },
+    // edit 댓글 추가
+    setCommentCnt: (state, action: PayloadAction<number>): void => {
+      (state.commentCnt as unknown) = action.payload;
+    },
   },
 });
 
@@ -64,4 +69,5 @@ export const {
   addCommentEdit,
   setIsOpenIntro,
   setPage,
+  setCommentCnt,
 } = commentSlice.actions;

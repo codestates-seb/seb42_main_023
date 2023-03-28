@@ -1,0 +1,117 @@
+buildscript {
+	ext {
+		queryDslVersion = "5.0.0"
+	}
+}
+
+plugins {
+	id 'java'
+	id 'org.springframework.boot' version '2.7.9'
+	id 'io.spring.dependency-management' version '1.0.15.RELEASE'
+	id "org.asciidoctor.jvm.convert" version "3.3.2"
+	id "com.ewerk.gradle.plugins.querydsl" version "1.0.10"
+}
+
+group = 'com.teamdragon'
+version = '0.0.1-SNAPSHOT'
+sourceCompatibility = '11'
+
+jar {
+    enabled = false
+}
+
+configurations {
+	asciidoctorExt
+	compileOnly {
+		extendsFrom annotationProcessor
+	}
+}
+
+repositories {
+	mavenCentral()
+}
+
+ext {
+	set('snippetsDir', file("build/generated-snippets"))
+}
+
+dependencies {
+	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+	implementation 'org.springframework.boot:spring-boot-starter-security'
+	implementation 'org.springframework.boot:spring-boot-starter-validation'
+	implementation 'org.springframework.boot:spring-boot-starter-web'
+	implementation 'org.springframework.boot:spring-boot-starter-oauth2-client'
+	implementation 'org.springframework.cloud:spring-cloud-starter-aws:2.2.6.RELEASE'
+	// 맵스트럭트
+	implementation 'org.mapstruct:mapstruct:1.5.1.Final'
+	// 맵스트럭트 - 롬복 호환을 위한 의존성
+	implementation 'org.projectlombok:lombok-mapstruct-binding:0.2.0'
+
+	//querydsl 추가
+	implementation "com.querydsl:querydsl-jpa:${queryDslVersion}"
+	annotationProcessor "com.querydsl:querydsl-apt:${queryDslVersion}"
+
+	annotationProcessor 'org.mapstruct:mapstruct-processor:1.5.1.Final'
+	annotationProcessor 'org.projectlombok:lombok'
+	annotationProcessor 'org.projectlombok:lombok-mapstruct-binding:0.2.0'
+
+	compileOnly 'org.projectlombok:lombok'
+	runtimeOnly 'com.h2database:h2'
+	runtimeOnly 'com.mysql:mysql-connector-j'
+
+	implementation 'com.google.code.gson:gson'
+
+	// JWT 기능을 위한 jjwt 라이브러리 추가
+	implementation 'io.jsonwebtoken:jjwt-api:0.11.5'
+	runtimeOnly 'io.jsonwebtoken:jjwt-impl:0.11.5'
+	runtimeOnly	'io.jsonwebtoken:jjwt-jackson:0.11.5'
+
+	asciidoctorExt 'org.springframework.restdocs:spring-restdocs-asciidoctor'
+	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+	testImplementation 'org.springframework.restdocs:spring-restdocs-mockmvc'
+	testImplementation 'org.springframework.security:spring-security-test'
+}
+
+test {
+	outputs.dir snippetsDir
+	useJUnitPlatform()
+}
+
+// querydsl 파일 경로 설정
+def querydslDir = "$buildDir/generated/querydsl"
+
+// querydsl 설정
+querydsl {
+	jpa = true
+	querydslSourcesDir = querydslDir
+}
+// querydsl 설정
+configurations {
+	querydsl.extendsFrom compileClasspath
+}
+// querydsl 설정
+compileQuerydsl {
+	options.annotationProcessorPath = configurations.querydsl
+}
+// querydsl 설정
+sourceSets {
+	main.java.srcDir querydslDir
+}
+
+// rest docs 설정
+ext {
+	snippetsDir = file('build/generated-snippets')
+}
+
+// rest docs 설정
+test {
+	useJUnitPlatform()
+	outputs.dir snippetsDir
+}
+
+// rest docs 설정
+asciidoctor {
+	inputs.dir snippetsDir
+	configurations 'asciidoctorExt'
+	dependsOn test
+}

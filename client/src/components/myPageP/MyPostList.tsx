@@ -8,53 +8,24 @@ import Thumnail from '../common/Thumbnail';
 import { TagItem } from '../common/Tag';
 import { Link } from 'react-router-dom';
 import { membersPostListApi } from '../../api/memberapi';
-import { postsApi } from '../../api/postApi';
 import { timeSince } from '../mainP/Timecalculator';
 import Pagination from '../common/Pagination';
-import { FaBookmark } from 'react-icons/fa';
-import Cookies from 'js-cookie';
-
-export interface Tags {
-  id: number;
-  tagName: string;
-}
-
-export interface PostItem {
-  postId: number;
-  imgUrl: string;
-  title: string;
-  tags: Tags[];
-  memberName: string;
-  createdAt: string;
-  modified_at: string;
-  viewCount: number;
-  thumbupCount: number;
-}
+import { PostListItem } from '../../types/PostList';
 
 function MyPostList() {
   const [pageOffset, setPageOffset] = useState(0);
   const [currentPage, setCurrentPage] = useState(1);
-  const { filter } = useAppSelector(({ mypage }) => mypage);
-  const { query } = useAppSelector(({ header }) => header);
+  const { memberName } = useAppSelector(({ header }) => header);
+
   const membersPostListquery = membersPostListApi.useGetMemberPostListQuery({
-    query: query,
+    name: memberName,
     page: currentPage,
   });
-  const { data, isSuccess } = membersPostListquery;
+  const { data, isSuccess, refetch } = membersPostListquery;
 
-  //북마크 삭제하기
-  const memberName = localStorage.getItem('name');
-  const removeBookmarkMutaion = postsApi.useRemoveBookmarkMutation();
-  const [removeBookmark] = removeBookmarkMutaion;
-  // 북마크 클릭 함수
-  //TODO: 클릭이벤트 미발생 에러
-  const deleteBookmarkHandler = (
-    e: React.MouseEvent<HTMLButtonElement>,
-  ): void => {
-    console.log('delete bookmark');
-    const postId = e.currentTarget.value;
-    removeBookmark({ memberName, postId });
-  };
+  useEffect(() => {
+    refetch();
+  }, []);
 
   if (!isSuccess) {
     return <div>Loading...</div>;
@@ -64,7 +35,7 @@ function MyPostList() {
     <PostListWrap>
       <List>
         {isSuccess &&
-          data.posts.map((post: PostItem) => {
+          data.posts.map((post: PostListItem) => {
             return (
               <Item key={post.postId}>
                 <div>
@@ -73,9 +44,13 @@ function MyPostList() {
                   </Link>
                 </div>
                 <div>
-                  <Link to={`/posts/${post.postId}`}>
-                    <h1>{post.title}</h1>
-                  </Link>
+                  {post.title === '신고된 게시글입니다.' ? (
+                    <h1 style={{ color: '#94969b' }}>{post.title}</h1>
+                  ) : (
+                    <Link to={`/posts/${post.postId}`}>
+                      <h1>{post.title}</h1>
+                    </Link>
+                  )}
                   <Itemside>
                     <div>
                       {post.tags.map((tag, idx) => (
@@ -99,15 +74,6 @@ function MyPostList() {
                     </Info>
                   </Itemside>
                 </div>
-                {filter === '북마크' && isSuccess && (
-                  <Bookmark
-                    className="bookmark"
-                    value={post.postId}
-                    onClick={deleteBookmarkHandler}
-                  >
-                    <FaBookmark />
-                  </Bookmark>
-                )}
               </Item>
             );
           })}

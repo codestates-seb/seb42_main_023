@@ -4,7 +4,7 @@ import Cookies from 'js-cookie';
 const url = process.env.REACT_APP_SERVER_ADDRESS;
 
 // 추천 게시물글 API
-export const recomendedPostsApi = createApi({
+export const recommendedPostsApi = createApi({
   reducerPath: 'recomendedPostsApi',
   baseQuery: fetchBaseQuery({
     baseUrl: url,
@@ -84,7 +84,6 @@ export const postsApi = createApi({
           method: 'DELETE',
         };
       },
-      invalidatesTags: [{ type: 'Post', id: 'post' }],
     }),
     // 게시글 좋아요 추가
     addThumbUp: builder.mutation({
@@ -94,7 +93,6 @@ export const postsApi = createApi({
           method: 'POST',
         };
       },
-      invalidatesTags: [{ type: 'Post', id: 'post' }],
     }),
     // 게시글 좋아요 제거
     removeThumbUp: builder.mutation({
@@ -104,7 +102,6 @@ export const postsApi = createApi({
           method: 'DELETE',
         };
       },
-      invalidatesTags: [{ type: 'Post', id: 'post' }],
     }),
     // 게시글 싫어요  추가
     addThumbDown: builder.mutation({
@@ -114,7 +111,6 @@ export const postsApi = createApi({
           method: 'POST',
         };
       },
-      invalidatesTags: [{ type: 'Post', id: 'post' }],
     }),
     // 게시글 싫어요 제거
     removeThumbDown: builder.mutation({
@@ -124,28 +120,25 @@ export const postsApi = createApi({
           method: 'DELETE',
         };
       },
-      invalidatesTags: [{ type: 'Post', id: 'post' }],
     }),
     // 북마크 추가
     addBookmark: builder.mutation({
-      query: ({ memberName, postId }) => {
+      query: ({ loginUserName, postId }) => {
         return {
-          url: `members/${memberName}/bookmark/posts/${postId}`,
+          url: `members/${loginUserName}/bookmark/posts/${postId}`,
           method: 'POST',
         };
       },
-      invalidatesTags: [{ type: 'Post', id: 'post' }],
     }),
 
     // 북마크 제거
     removeBookmark: builder.mutation({
-      query: ({ memberName, postId }) => {
+      query: ({ loginUserName, postId }) => {
         return {
-          url: `members/${memberName}/bookmark/posts/${postId}`,
+          url: `members/${loginUserName}/bookmark/posts/${postId}`,
           method: 'DELETE',
         };
       },
-      invalidatesTags: [{ type: 'Post', id: 'post' }],
     }),
   }),
 });

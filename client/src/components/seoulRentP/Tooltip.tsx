@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 
 interface Props {
@@ -12,10 +12,12 @@ interface StyleProps {
 }
 
 const Tooltip = ({ x, y, location }: Props) => {
-  //   const [tooltipData, setTooltipData] = useState(null);
+  useEffect(() => {
+    console.log(x, y, location + 'text');
+  }, []);
   return (
     <TooltipWrap left={x} top={y}>
-      <div>test</div>
+      <div>{location}</div>
     </TooltipWrap>
   );
 };
@@ -24,11 +26,12 @@ export default Tooltip;
 
 const TooltipWrap = styled.div<StyleProps>`
   position: absolute;
-  background-color: white;
+  background-color: blue;
   border: 1px solid black;
   width: 100px;
   height: 100px;
   padding: 10px;
-  left: ${({ left }) => left};
-  top: ${({ top }) => top};
+  left: ${(props) => props.left};
+  top: ${(props) => props.top};
+  z-index: 99;
 `;
