@@ -1,7 +1,5 @@
 package com.teamdragon.dragonmoney.app.domain.posts.repository;
 
-import com.teamdragon.dragonmoney.app.domain.delete.entity.DeleteResult;
-import com.teamdragon.dragonmoney.app.domain.member.entity.Member;
 import com.teamdragon.dragonmoney.app.domain.posts.dto.PostsDto;
 import com.teamdragon.dragonmoney.app.domain.posts.entity.Posts;
 import org.springframework.data.domain.Page;

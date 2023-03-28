@@ -6,8 +6,6 @@ import com.querydsl.jpa.JPAExpressions;
 import com.querydsl.jpa.JPQLQuery;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
-import com.teamdragon.dragonmoney.app.domain.delete.entity.DeleteResult;
-import com.teamdragon.dragonmoney.app.domain.member.entity.Member;
 import com.teamdragon.dragonmoney.app.domain.posts.dto.PostsDto;
 import com.teamdragon.dragonmoney.app.domain.posts.entity.Posts;
 import com.teamdragon.dragonmoney.app.global.pagenation.QueryDslUtil;
@@ -236,9 +234,9 @@ public class PostsRepositoryImpl implements PostsRepositoryCustom {
         List<Posts> content = queryFactory
                 .selectFrom(posts)
                 .distinct()
-                .leftJoin(posts.writer, member)
-                .leftJoin(posts.postsTags, postsTag)
-                .leftJoin(postsTag.tag, tag)
+                .leftJoin(posts.writer, member).fetchJoin()
+                .leftJoin(posts.postsTags, postsTag).fetchJoin()
+                .leftJoin(postsTag.tag, tag).fetchJoin()
                 .where(posts.state.notIn(Posts.State.DELETED), posts.writer.name.eq(memberName))
                 .orderBy(orders)
                 .offset(pageable.getOffset())
@@ -247,7 +245,7 @@ public class PostsRepositoryImpl implements PostsRepositoryCustom {
         JPAQuery<Long> countQuery = queryFactory
                 .select(posts.count())
                 .from(posts)
-                .where(posts.state.eq(Posts.State.ACTIVE), posts.writer.name.eq(memberName));
+                .where(posts.state.notIn(Posts.State.DELETED), posts.writer.name.eq(memberName));
 
         return PageableExecutionUtils.getPage(content, pageable, countQuery::fetchOne);
     }
@@ -270,7 +268,7 @@ public class PostsRepositoryImpl implements PostsRepositoryCustom {
         JPAQuery<Long> countQuery = queryFactory
                 .select(posts.count())
                 .from(posts)
-                .where(posts.state.eq(Posts.State.ACTIVE), posts.writer.name.eq(memberName));
+                .where(posts.state.notIn(Posts.State.DELETED));
 
         return PageableExecutionUtils.getPage(content, pageable, countQuery::fetchOne);
     }
@@ -293,7 +291,7 @@ public class PostsRepositoryImpl implements PostsRepositoryCustom {
         JPAQuery<Long> countQuery = queryFactory
                 .select(posts.count())
                 .from(posts)
-                .where(posts.state.eq(Posts.State.ACTIVE), posts.writer.name.eq(memberName));
+                .where(posts.state.notIn(Posts.State.DELETED), bookmark.member.name.eq(memberName));
 
         return PageableExecutionUtils.getPage(content, pageable, countQuery::fetchOne);
     }

@@ -16,6 +16,10 @@ public class ReplyDto {
         @NotBlank
         @Length(max=1000)
         private String content;
+
+        public CreateReq(String content) {
+            this.content = content;
+        }
     }
 
     @Getter
@@ -23,6 +27,10 @@ public class ReplyDto {
         @NotBlank
         @Length(max=1000)
         private String content;
+
+        public UpdateReq(String content) {
+            this.content = content;
+        }
     }
 
     @Getter

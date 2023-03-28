@@ -43,7 +43,7 @@ public class Comment extends BaseTimeEntity implements ThumbCountable {
     @Enumerated(value = EnumType.STRING)
     private Comment.State state;
 
-    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
     @JoinColumn(name = "DELETE_RESULT_ID")
     private DeleteResult deleteResult;
 

@@ -1,19 +1,19 @@
 package com.teamdragon.dragonmoney.app.domain.information.information.house.price.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import lombok.Data;
+import lombok.Getter;
 
 import java.util.List;
 
 public class SeoulApiDto {
 
-    @Data
+    @Getter
     public static class HousePricePackage {
         @JsonProperty("tbLnOpendataRentV")
         private PriceApiPackage apiPackage;
     }
 
-    @Data
+    @Getter
     public static class PriceApiPackage {
         @JsonProperty("list_total_count")
         private Long listTotalCount;
@@ -23,7 +23,7 @@ public class SeoulApiDto {
         private List<PriceElement> row;
     }
 
-    @Data
+    @Getter
     public static class PriceApiResult {
         @JsonProperty("CODE")
         private String code;
@@ -31,7 +31,7 @@ public class SeoulApiDto {
         private String message;
     }
 
-    @Data
+    @Getter
     public static class PriceElement {
         @JsonProperty("SGG_CD")
         private Integer areaCode;

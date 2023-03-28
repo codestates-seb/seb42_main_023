@@ -19,13 +19,13 @@ public class Report {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column
+    @Column(length = 40)
     private String reportReason;
 
-    @Column
+    @Column(length = 1200)
     private String description;
 
-    @Column
+    @Column(length = 10)
     private String targetType;
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -47,7 +47,7 @@ public class Report {
     @Column
     private LocalDateTime reportedAt;
 
-    @Column
+    @Column(length = 20)
     @Enumerated(value = EnumType.STRING)
     private State handleState;
 
@@ -82,10 +82,9 @@ public class Report {
     }
 
     @Builder
-    public Report(Long id, String reportReason, String description, String targetType,
+    public Report(String reportReason, String description, String targetType,
                   Comment targetComment, Reply targetReply, Posts targetPosts, Member reporter,
                   LocalDateTime reportedAt, State handleState, LocalDateTime handledAt) {
-        this.id = id;
         this.reportReason = reportReason;
         this.description = description;
         this.targetType = targetType;

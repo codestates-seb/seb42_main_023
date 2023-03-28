@@ -5,6 +5,7 @@ import com.teamdragon.dragonmoney.app.domain.posts.entity.Posts;
 import com.teamdragon.dragonmoney.app.domain.posts.entity.PostsTag;
 import com.teamdragon.dragonmoney.app.domain.tag.dto.TagDto;
 import com.teamdragon.dragonmoney.app.global.pagenation.PageInfo;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -12,9 +13,9 @@ import org.hibernate.validator.constraints.Length;
 import org.springframework.data.domain.Page;
 
 import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Positive;
+import javax.validation.constraints.Size;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -25,6 +26,7 @@ import static com.teamdragon.dragonmoney.app.domain.image.dto.ImageDto.*;
 public class PostsDto {
 
     @Getter
+    @NoArgsConstructor
     public static class CreateReq {
         private CreatePostsImagesReq saveImages;
         @NotBlank
@@ -33,10 +35,21 @@ public class PostsDto {
         @NotBlank
         @Length(min=10, max=30000)
         private String content;
+        @Size(max = 5)
         private List<TagDto.TagName> tagNames;
+
+        @Builder
+        public CreateReq(CreatePostsImagesReq saveImages, String title,
+                         String content, List<TagDto.TagName> tagNames) {
+            this.saveImages = saveImages;
+            this.title = title;
+            this.content = content;
+            this.tagNames = tagNames;
+        }
     }
 
     @Getter
+    @NoArgsConstructor
     public static class UpdateReq {
         private UpdatePostsImagesReq saveImages;
         @NotBlank
@@ -45,23 +58,45 @@ public class PostsDto {
         @NotBlank
         @Length(min=10, max=30000)
         private String content;
+        @Size(max = 5)
         private List<TagDto.TagName> tagNames;
+
+        @Builder
+        public UpdateReq(UpdatePostsImagesReq saveImages, String title,
+                         String content, List<TagDto.TagName> tagNames) {
+            this.saveImages = saveImages;
+            this.title = title;
+            this.content = content;
+            this.tagNames = tagNames;
+        }
     }
 
     @Getter
+    @AllArgsConstructor
     public static class CreatePostsImagesReq {
         private List<ImageDto> addedImages;
         private List<ImageDto> removedImages;
     }
 
     @Getter
+    @NoArgsConstructor
     public static class UpdatePostsImagesReq {
         private List<ImageDto> remainImages;
         private List<ImageDto> addedImages;
         private List<ImageDto> removedImages;
+
+        @Builder
+        public UpdatePostsImagesReq(List<ImageDto> remainImages,
+                                    List<ImageDto> addedImages,
+                                    List<ImageDto> removedImages) {
+            this.remainImages = remainImages;
+            this.addedImages = addedImages;
+            this.removedImages = removedImages;
+        }
     }
 
     @Getter
+    @AllArgsConstructor
     public static class ImageDto {
         @NotNull
         @Positive

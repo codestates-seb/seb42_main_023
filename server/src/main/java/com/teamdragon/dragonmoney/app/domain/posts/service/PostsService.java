@@ -46,7 +46,6 @@ public class PostsService implements ThumbCountService {
     private final ImageService imageService;
 
     private final int PAGE_ELEMENT_SIZE = 10;
-    // 현재 운영에 사용되는 카테고리는 1개 이다.
     private final Long CURRENT_CATEGORY_ID = 1L;
 
     // 게시글 생성

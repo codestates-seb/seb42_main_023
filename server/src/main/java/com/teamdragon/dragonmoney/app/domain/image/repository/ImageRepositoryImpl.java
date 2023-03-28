@@ -2,7 +2,6 @@ package com.teamdragon.dragonmoney.app.domain.image.repository;
 
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.teamdragon.dragonmoney.app.domain.image.entity.Image;
-import com.teamdragon.dragonmoney.app.domain.posts.entity.Posts;
 import lombok.RequiredArgsConstructor;
 
 import java.util.List;
@@ -28,14 +27,6 @@ public class ImageRepositoryImpl implements ImageRepositoryCustom{
                 .where(image.id.in(imageIds))
                 .where(image.uploader.id.eq(memberId))
                 .fetch();
-    }
-
-    @Override
-    public void updatePostsByIds(List<Long> imageIds, Posts posts) {
-        queryFactory
-                .update(image)
-                .set(image.posts, posts)
-                .where(image.id.in(imageIds));
     }
 
     @Override

@@ -7,20 +7,15 @@ import com.teamdragon.dragonmoney.app.domain.member.entity.Member;
 import com.teamdragon.dragonmoney.app.global.exception.BusinessExceptionCode;
 import com.teamdragon.dragonmoney.app.global.exception.BusinessLogicException;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
-@Slf4j
 @RequiredArgsConstructor
 @Transactional
 @Service
@@ -97,13 +92,9 @@ public class ImageService {
 
     // 이미지 업로드 : 클라우드
     private String uploadImageToCloud(MultipartFile multipartFile, String ext, String storeFileName)  {
-        try {
-            String url = s3Service.uploadFile(multipartFile, ext, storeFileName);
-            return url;
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return null;
+        String url = s3Service.uploadFile(multipartFile, ext, storeFileName);
+
+        return url;
     }
 
     // 이미지 저장 : DB

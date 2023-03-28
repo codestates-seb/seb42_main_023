@@ -1,13 +1,10 @@
 package com.teamdragon.dragonmoney.app.global.auth.controller;
 
-import com.teamdragon.dragonmoney.app.domain.member.service.MemberService;
 import com.teamdragon.dragonmoney.app.global.auth.dto.LoginResponseDto;
 import com.teamdragon.dragonmoney.app.global.auth.dto.TempAccessTokenDto;
 import com.teamdragon.dragonmoney.app.global.auth.service.OAuth2Service;
 import com.teamdragon.dragonmoney.app.global.exception.AuthExceptionCode;
 import com.teamdragon.dragonmoney.app.global.exception.AuthLogicException;
-import io.jsonwebtoken.ExpiredJwtException;
-import io.jsonwebtoken.security.SignatureException;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -18,7 +15,6 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
-import java.util.Map;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -45,7 +41,7 @@ public class OAuth2Controller {
                 .body(response);
     }
 
-    //정식 토큰 발급
+    // 정식 토큰 발급
     @PostMapping("/auth/callback/google")
     public ResponseEntity getToken(@Valid @RequestBody TempAccessTokenDto tempAccessTokenDto) {
         String accessToken = "Bearer " + oAuth2Service.delegateAccessToken(tempAccessTokenDto.getTempAccessToken());
@@ -59,7 +55,7 @@ public class OAuth2Controller {
                 .body(response);
     }
 
-    //Refresh Token으로 Access Token 재발급
+    // Refresh Token으로 Access Token 재발급
     @PostMapping("/auth/refresh/{member-name}")
     public ResponseEntity issuedRefreshToken(@PathVariable("member-name") String name,
                                              HttpServletRequest request) {

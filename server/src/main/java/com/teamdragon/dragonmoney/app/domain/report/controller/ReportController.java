@@ -4,19 +4,18 @@ import com.teamdragon.dragonmoney.app.domain.report.dto.ReportDto;
 import com.teamdragon.dragonmoney.app.domain.report.entity.Report;
 import com.teamdragon.dragonmoney.app.domain.report.service.ReportService;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import javax.validation.constraints.Positive;
 
-@Slf4j
-@CrossOrigin
 @RequestMapping("/reports")
 @RequiredArgsConstructor
+@Validated
 @RestController
 public class ReportController {
     private final ReportService reportService;
@@ -27,12 +26,12 @@ public class ReportController {
         Report saveReport = reportService.saveReport(newReport);
         ReportDto.ReportPostRes response = new ReportDto.ReportPostRes(saveReport.getId());
 
-        return ResponseEntity.status(HttpStatus.OK).body(response);
+        return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
     // 신고 세부 내용 조회
     @GetMapping("/{report-id}")
-    public ResponseEntity getReport(@PathVariable("report-id") Long reportId) {
+    public ResponseEntity getReport(@Valid @Positive @PathVariable("report-id") Long reportId) {
         ReportDto.ReportDetailRes response = reportService.findReport(reportId);
 
         return ResponseEntity.status(HttpStatus.OK).body(response);
@@ -60,7 +59,7 @@ public class ReportController {
 
     // 신고 대상 상태를 처리로 변경
     @DeleteMapping("/{report-id}")
-    public ResponseEntity deleteReport(@PathVariable("report-id") @Positive Long reportId) {
+    public ResponseEntity deleteReport(@Valid @Positive @PathVariable("report-id") Long reportId) {
         reportService.removeReport(reportId);
         ReportDto.ReportPostRes response = new ReportDto.ReportPostRes(reportId);
 

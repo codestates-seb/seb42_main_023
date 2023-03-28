@@ -1,7 +1,7 @@
 package com.teamdragon.dragonmoney.app.domain.popular.service;
 
-import com.teamdragon.dragonmoney.app.domain.popular.entity.BestAwards;
 import com.teamdragon.dragonmoney.app.domain.popular.repository.BestAwardsRepository;
+import com.teamdragon.dragonmoney.app.domain.popular.entity.BestAwards;
 import com.teamdragon.dragonmoney.app.domain.posts.entity.Posts;
 import com.teamdragon.dragonmoney.app.domain.posts.repository.PostsRepository;
 import lombok.Getter;

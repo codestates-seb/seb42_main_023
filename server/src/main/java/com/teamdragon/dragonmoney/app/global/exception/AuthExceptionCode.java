@@ -14,7 +14,7 @@ public enum AuthExceptionCode {
     USER_UNAUTHORIZED(403, null, "User unauthorized");
 
     private final int status;
-    private final Integer detailedCode; // detaildCode : 01-유효하지 않은 토큰, 02-토큰만료
+    private final Integer detailedCode;
     private final String message;
 
     AuthExceptionCode(int statusCode, Integer detailedCode, String message) {
