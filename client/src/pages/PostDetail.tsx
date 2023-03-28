@@ -386,11 +386,26 @@ const PostDetail: React.FC = () => {
   };
 
   useEffect(() => {
-    dispatch(setIsOpenReport(false));
-    dispatch(setIsOpenFilter(true));
-    dispatch(setIsOpenIntro(true));
-    dispatch(setIsOpenDelete(true));
-  }, [params]);
+    // dispatch(setIsOpenReport('post' in state && !state.post?.isOpenReport));
+    // dispatch(setIsOpenFilter('post' in state && !state.post?.isOpenFilter));
+    // dispatch(setIsOpenIntro('post' in state && !state.post?.isOpeneIntro));
+    // dispatch(setIsOpenDelete('post' in state && !state.post?.isOpenDelete));
+    if ('post' in state) {
+      console.log('afdsadfdsafsadfasdfasfdasfas');
+      if (state.post.isOpenDelete) dispatch(setIsOpenDelete(true));
+      if (state.post.isOpenReport) dispatch(setIsOpenReport(true));
+      if (state.post.isOpenFilter) dispatch(setIsOpenFilter(true));
+      if (state.post.isOpeneIntro) dispatch(setIsOpenIntro(true));
+    }
+    return () => {
+      if ('post' in state) {
+        if (state.post.isOpenDelete) dispatch(setIsOpenDelete(true));
+        if (state.post.isOpenReport) dispatch(setIsOpenReport(true));
+        if (state.post.isOpenFilter) dispatch(setIsOpenFilter(true));
+        if (state.post.isOpeneIntro) dispatch(setIsOpenIntro(true));
+      }
+    };
+  }, []);
 
   return (
     <>

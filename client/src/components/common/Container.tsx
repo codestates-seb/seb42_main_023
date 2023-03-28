@@ -21,6 +21,6 @@ export const FormContainer = styled.div`
   align-items: center;
   > p {
     color: #5c5c5c;
-    font-size: 12px;
+    font-size: 14px;
   }
 `;

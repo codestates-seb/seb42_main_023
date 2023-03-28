@@ -1,6 +1,5 @@
 import React from 'react';
 import styled from 'styled-components';
-import NavRealEstate from '../components/common/NavRealEstate';
 import Intro from '../components/recommendLoan/Intro';
 import Question from '../components/recommendLoan/Question';
 import Result from '../components/recommendLoan/Result';
@@ -50,8 +49,7 @@ export const MainContainer = styled.div`
   > .content-container {
     border: 1px solid #d4d4d4;
     background-color: #f8f8f8;
-    margin-left: 20px;
-    width: calc(100% - 160px);
+    width: 100%;
     height: 600px;
     padding: 20px;
     display: flex;

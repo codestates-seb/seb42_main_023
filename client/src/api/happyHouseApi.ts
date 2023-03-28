@@ -1,9 +1,7 @@
-import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
+import { apiSlice } from './apiSlice';
 
 // 행복주택 리스트 get 요청 (WIP)
-export const happyHouseApi = createApi({
-  reducerPath: 'happyHouseApi',
-  baseQuery: fetchBaseQuery({ baseUrl: process.env.REACT_APP_SERVER_ADDRESS }),
+export const happyHouseApi = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
     getHappyHouse: builder.query({
       query: ({ page, state, location }) =>
