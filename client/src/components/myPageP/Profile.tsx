@@ -4,13 +4,8 @@ import LargeProfileImg from '../common/LargeProfileImg';
 import { BsPencil } from 'react-icons/bs';
 import DropdownButton from './DropdownButton';
 import ProfileEdit from './ProfileEdit';
-import { IconBtn } from '../common/Btn';
 import { useAppDispatch, useAppSelector } from '../../hooks';
-import {
-  setEditOpen,
-  setEditWidth,
-  setContent,
-} from '../../slices/mypageSlice';
+import { setEditOpen, setContent } from '../../slices/mypageSlice';
 import { membersApi } from '../../api/memberapi';
 import Cookies from 'js-cookie';
 
@@ -24,9 +19,9 @@ function Profile() {
   });
   const { data, isSuccess, refetch } = membersQuery;
   const auth = Cookies.get('Authorization');
+  const loginuser = Cookies.get('name');
 
   //회원정보에 들어올 때마다 데이터 업데이트
-  //TODO:refetch 요청 추가
   useEffect(() => {
     refetch();
   }, []);
@@ -34,8 +29,10 @@ function Profile() {
   //자기소개 input토글
   const EditOpenHandler = () => {
     dispatch(setContent(data.member.intro));
-    dispatch(setEditWidth((divRef.current?.offsetWidth as number) + 30));
     dispatch(setEditOpen(!EditOpen));
+    if (divRef.current !== null) {
+      divRef.current.focus();
+    }
   };
   //자기소개 수정
   const updateMemberMutaion = membersApi.useUpdateMemberMutation();
@@ -56,6 +53,7 @@ function Profile() {
             <h1>
               {data.member.memberName}
               {auth !== undefined &&
+                data.member.memberName === loginuser &&
                 (EditOpen ? (
                   <button onClick={submitHandler}>수정완료</button>
                 ) : (
@@ -72,7 +70,9 @@ function Profile() {
           )}
         </article>
       </div>
-      {auth !== undefined && <DropdownButton />}
+      {auth !== undefined && data.member.memberName === loginuser && (
+        <DropdownButton />
+      )}
     </ProfileWrap>
   );
 }
@@ -85,10 +85,10 @@ const ProfileWrap = styled.div`
   position: relative;
   border-bottom: 1px solid var(--border-color);
   article {
-    display: flex;
     flex-direction: column;
     justify-content: center;
     margin-left: 30px;
+    margin-top: 30px;
     h1 {
       font-weight: 600;
       font-size: 20px;

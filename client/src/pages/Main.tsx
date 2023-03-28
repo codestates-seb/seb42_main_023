@@ -26,7 +26,6 @@ const Main = () => {
   });
   const { data, isSuccess, refetch } = postListquery;
 
-  //TODO: refetch
   useEffect(() => {
     refetch();
   }, []);

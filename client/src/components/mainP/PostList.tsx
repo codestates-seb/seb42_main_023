@@ -2,15 +2,14 @@ import React from 'react';
 import styled from 'styled-components';
 import WeeklyPopular from './WeeklyPopular';
 import { useAppSelector } from '../../hooks';
-import LikeIcon from '../../assets/common/LikeIcon';
 import TimeIcon from '../../assets/common/TimeIcon';
 import ViewIcon from '../../assets/common/ViewIcon';
 import Thumnail from '../common/Thumbnail';
 import { TagItem } from '../common/Tag';
 import { Link } from 'react-router-dom';
-import { postListApi } from '../../api/postListapi';
 import { timeSince } from '../mainP/Timecalculator';
 import { PostListItem } from '../../types/PostList';
+import { FaRegThumbsUp } from 'react-icons/fa';
 
 interface Props {
   posts: PostListItem[];
@@ -51,7 +50,7 @@ function PostList({ posts, currentPage }: Props) {
                     {post.viewCount}
                   </span>
                   <span>
-                    <LikeIcon checked={false} />
+                    <FaRegThumbsUp size={13} />
                     {post.thumbupCount}
                   </span>
                 </Info>

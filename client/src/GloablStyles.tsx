@@ -1,5 +1,4 @@
 import { createGlobalStyle } from 'styled-components';
-import { useLocation } from 'react-router-dom';
 
 const GlobalStyles = createGlobalStyle`
       :root {

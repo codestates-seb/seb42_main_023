@@ -10,6 +10,7 @@ import { weeklyPopularApi } from '../../api/postListapi';
 import { timeSince } from '../mainP/Timecalculator';
 import { Itemside, Info, Tag } from './PostList';
 import { PostListItem } from '../../types/PostList';
+import { FaRegThumbsUp } from 'react-icons/fa';
 
 function WeeklyPopular() {
   const weeklyPopularquery = weeklyPopularApi.useGetWeekPostListQuery({
@@ -55,7 +56,7 @@ function WeeklyPopular() {
                       {post.viewCount}
                     </span>
                     <span>
-                      <LikeIcon checked={false} />
+                      <FaRegThumbsUp size={13} />
                       {post.thumbupCount}
                     </span>
                   </Info>

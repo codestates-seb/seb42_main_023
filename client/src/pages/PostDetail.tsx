@@ -22,6 +22,7 @@ import {
   setSelectedMember,
 } from '../slices/postSlice';
 import { setReportErr } from '../slices/validationSlice';
+import { setMemberName } from '../slices/headerSlice';
 import { useAppDispatch, useAppSelector } from '../hooks';
 import {
   PostStateType,
@@ -509,7 +510,15 @@ const PostDetail: React.FC = () => {
                   <label className="introduction">
                     {memeberQuery.data?.intro || '소개 내용이 없습니다.'}
                   </label>
-                  <div className="intro-moreInfo">더보기 》</div>
+                  <button
+                    className="intro-moreInfo"
+                    onClick={() => {
+                      dispatch(setMemberName(data?.memberName));
+                      navigate('/mypage');
+                    }}
+                  >
+                    더보기 》
+                  </button>
                 </IntorductionContainer>
               ) : null}
 
@@ -520,14 +529,14 @@ const PostDetail: React.FC = () => {
               <li className="views">{views}</li>
               <CommentIcon checked={true} />
               <li className="comments">{commentCnt}</li>
-              <button
+              <Bookmark
                 className="bookmark"
                 onClick={_.debounce(() => {
                   changeBookmarkHandler();
                 }, 1500)}
               >
                 <BookmarkIcon checked={isBookmark!} />
-              </button>
+              </Bookmark>
               <DropdownButton memberName={data?.memberName}></DropdownButton>
             </ul>
           </PostInfo>
@@ -593,7 +602,6 @@ const PostContainer = styled.div`
   flex-direction: column;
   width: 1100px;
   height: 100%;
-  padding: 75px 50px 75px 15px;
 
   .post-title {
     display: flex;
@@ -609,9 +617,9 @@ const PostContainer = styled.div`
     }
   }
   h1 {
-    font-size: 24px;
-    font-weight: bold;
+    font-size: 16px;
     margin-bottom: 15px;
+    font-weight: 600;
   }
   .post-info {
     width: 720px;
@@ -626,45 +634,40 @@ const PostContainer = styled.div`
   .nickname {
     max-width: 130px;
     width: 130px;
-    text-align: center;
+    text-align: left;
     font-size: 16px;
-    margin: 2px 15px 0 2px;
+    margin: 0 15px 0 2px;
   }
   .created-time {
     width: 75px;
-    font-size: 16px;
-    margin: 3px 30px 0 5px;
+    font-size: 12px;
+    margin: 3px 8px 0 5px;
+    color: var(--sub-font-color);
   }
   .views {
     width: 40px;
-    font-size: 16px;
-    margin: 1px 15px 0 5px;
+    font-size: 12px;
+    margin: 1px 8px 0 5px;
+    color: var(--sub-font-color);
   }
   .comments {
     width: 40px;
-    font-size: 16px;
-    margin: 1px 200px 0 5px;
+    font-size: 12px;
+    margin: 1px 222px 0 5px;
+    color: var(--sub-font-color);
   }
-  .bookmark {
-    margin: 1px 20px 0 5px;
-  }
-
   .image {
-    display: flex;
-    justify-content: center;
     width: 30px;
     height: 30px;
-    margin: 0 5px 0 15px;
   }
   .image img {
-    width: 35px;
-    height: 35px;
+    width: 20px;
+    height: 20px;
     border-radius: 100px;
-  }
-  button {
-    background-color: white;
+    transform: translateY(6px);
   }
 `;
+const Bookmark = styled.button``;
 // Post 정보
 const PostInfo = styled.div`
   display: flex;
@@ -686,11 +689,13 @@ const PostContent = styled.div`
 
   .likes {
     font-size: 16px;
-    margin: 0 15px 0 15px;
+    margin: 0 15px;
+    color: var(--point-blue-color);
   }
   .dislikes {
     font-size: 16px;
-    margin: 0 15px 0 15px;
+    margin: 0 15px;
+    color: var(--error-red-color);
   }
 `;
 
@@ -700,7 +705,6 @@ const RecommendedPostContainer = styled.div`
   justify-content: center;
   width: 100%;
   height: 100%;
-  padding-top: 80px;
 
   .recommended-post {
     display: flex;
@@ -709,7 +713,7 @@ const RecommendedPostContainer = styled.div`
     width: 315px;
     height: 440px;
     background-color: white;
-    border: 2px solid #d4d4d4;
+    border: 1px solid #d4d4d4;
   }
 `;
 
