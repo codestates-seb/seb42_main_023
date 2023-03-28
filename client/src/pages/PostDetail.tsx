@@ -58,6 +58,16 @@ const PostDetail: React.FC = () => {
   const [views, setViews] = useState<number>();
   const [commentCnt, setCommentCnt] = useState<number>();
   const [checkedElement, setCheckedElement] = useState(-1);
+  // 신고, 삭제, 소개
+  const [isOpenReport, setIsOpenReport] = useState<boolean>(false);
+  const [reportType, setReportType] = useState<string>('');
+  const [isOpenReportErr, setIsOpenReportErr] = useState<boolean>(false);
+  const [isOpenFilter, setIsOpenFilter] = useState<boolean>(false);
+  const [isOpenDelete, setIsOpenDelete] = useState<boolean>(false);
+  const [deleteType, setDeleteType] = useState<string>('');
+  const [isOpenIntro, setIsOpenIntro] = useState<boolean>(false);
+  const [isOpenCommentIntro, setIsOpenCommentIntro] = useState<boolean>(false);
+  const [isOpenReplyIntro, setIsOpenReplyIntro] = useState<boolean>(false);
 
   const handleSelectChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.target instanceof HTMLInputElement) {
@@ -97,32 +107,22 @@ const PostDetail: React.FC = () => {
   const postDetailQuery = postsApi.useGetPostQuery({ postId });
   const { data, isSuccess } = postDetailQuery;
   const [deletePost] = postsApi.useDeletePostMutation();
-  // const [deletePost] = postMutation;
   // 게시글 좋아요 추가, 삭제
   const [addThumbUp] = postsApi.useAddThumbUpMutation();
-  // const [addThumbUp] = addThumbUpMutation;
   const [removeThumbUp] = postsApi.useRemoveThumbUpMutation();
-  // const [removeThumbUp] = removeThumbUpMutation;
   // 게시글 싫어요  추가, 삭제
   const [addThumbDown] = postsApi.useAddThumbDownMutation();
-  // const [addThumbDown] = addThumbDownMutation;
   const [removeThumbDown] = postsApi.useRemoveThumbDownMutation();
-  // const [removeThumbDown] = removeThumbDownMutation;
   // 북마크 추가, 삭제
   const [addBookmark] = postsApi.useAddBookmarkMutation();
-  // const [addBookmark] = addBookmarkMutaion;
   const [removeBookmark] = postsApi.useRemoveBookmarkMutation();
-  // const [removeBookmark] = removeBookmarkMutaion;
 
   // 댓글 삭제
   const [deleteComment] = commentsApi.useDeleteCommentMutation();
-  // const [deleteComment] = commentMutation;
   // 답글 삭제
   const [deleteReply] = repliesApi.useDeleteReplyMutation();
-  // const [deleteReply] = replyMutation;
   // 신고 추가
   const [sendReport] = reportApi.usePostReportMutation();
-  // const [sendReport] = reportMutation;
   //  멤버 정보 조회
   const memeberQuery = membersApi.useGetMemberQuery({ name: selectedMember });
 
@@ -131,8 +131,9 @@ const PostDetail: React.FC = () => {
   // 게시글 수정 여부
   const isEdit = data?.modifiedAt !== data?.createdAt ? true : false;
   // 댓글, 답글 작성자 소개페이지 오픈 여부
-  const isOpenCommentIntro = 'comment' in state && state?.comment.isOpeneIntro;
-  const isOpenReplyIntro = 'reply' in state && state?.reply.isOpeneIntro;
+  //TODO 프롭스로 내려줘야함
+  // const isOpenCommentIntro = 'comment' in state && state?.comment.isOpeneIntro;
+  // const isOpenReplyIntro = 'reply' in state && state?.reply.isOpeneIntro;
   //파싱된 데이터
   const parsedData = parse(String(data?.content));
   // 게시글 서버 데이터 저장
@@ -147,13 +148,13 @@ const PostDetail: React.FC = () => {
     if (isSuccess) setCommentCnt(data?.commentCount);
   }, [data]);
 
-  console.log('isLlike', isLike);
-  console.log('dislike', isDislike);
-  console.log('like', like);
-  console.log('dislike', dislike);
-  console.log('bookmark', isBookmark);
-  console.log('views', views);
-  console.log('commentCnt', commentCnt);
+  // console.log('isLlike', isLike);
+  // console.log('dislike', isDislike);
+  // console.log('like', like);
+  // console.log('dislike', dislike);
+  // console.log('bookmark', isBookmark);
+  // console.log('views', views);
+  // console.log('commentCnt', commentCnt);
 
   // 좋아요 클릭 함수
   const changeLiikeHandler = (): void => {
@@ -180,7 +181,6 @@ const PostDetail: React.FC = () => {
     // 둘 다 없는 경우
     if (!isLike && !isDislike) {
       console.log('좋아요 추가');
-
       addThumbUp({ postId });
       setIsLike(true);
       setLike((prev) => prev! + 1);
@@ -234,22 +234,28 @@ const PostDetail: React.FC = () => {
     }
   };
 
+  // TODO
   // 삭제 확인 모달창 오픈
   const confirmDeleteHandler = (): void => {
-    if ('post' in state) {
-      dispatch(setIsOpenDelete(state.post?.isOpenDelete));
-    }
+    // if ('post' in state) {
+    //   dispatch(setIsOpenDelete(state.post?.isOpenDelete));
+    // }
+    setIsOpenDelete(!isOpenDelete);
   };
   // 신고 모달창 오픈
   const reportHandler = (): void => {
-    if ('post' in state) {
-      dispatch(setIsOpenReport(state.post?.isOpenReport));
-    }
+    // if ('post' in state) {
+    //   dispatch(setIsOpenReport(state.post?.isOpenReport));
+    // }
+    setIsOpenReport(!isOpenReport);
+    console.log('isOpenReport', isOpenReport);
   };
+
   // 데이터 삭제(게시글, 댓글, 답글)
   const deleteData = (): void => {
     // 게시글 삭제 로직
-    if ('post' in state && state.post?.deleteType === '게시글') {
+    // if ('post' in state && state.post?.deleteType === '게시글') {
+    if (deleteType === '게시글') {
       deletePost({ postId });
       confirmDeleteHandler();
       console.log('post delete');
@@ -257,13 +263,15 @@ const PostDetail: React.FC = () => {
       location.reload();
     }
     // 댓글 삭제 로직
-    if ('post' in state && state.post?.deleteType === '댓글') {
+    // if ('post' in state && state.post?.deleteType === '댓글') {
+    if (deleteType === '댓글') {
       deleteComment({ commentId });
       confirmDeleteHandler();
       console.log('comment delete');
     }
     // 답글 삭제 로직
-    if ('post' in state && state.post?.deleteType === '답글') {
+    // if ('post' in state && state.post?.deleteType === '댓글') {
+    if (deleteType === '답글') {
       deleteReply({ replyId });
       confirmDeleteHandler();
       console.log('reply delete');
@@ -272,20 +280,28 @@ const PostDetail: React.FC = () => {
 
   // 드롭다운 클로즈
   const handleClickOutside = (event: MouseEvent) => {
-    if ('post' in state && state.post?.isOpenFilter) {
-      dispatch(setIsOpenFilter(false));
+    // if ('post' in state && state.post?.isOpenFilter) {
+    //   dispatch(setIsOpenFilter(false));
+    // }
+    if (isOpenFilter) {
+      setIsOpenFilter(!isOpenIntro);
     }
   };
 
   const outClickIntroHandler = (event: React.MouseEvent<HTMLElement>) => {
     if (
-      'post' in state &&
-      state.post?.isOpeneIntro &&
+      // 'post' in state &&
+      // state.post?.isOpeneIntro &&
+      // !isOpenReplyIntro &&
+      // !isOpenCommentIntro &&
+      // event.target instanceof HTMLElement
+      isOpenIntro &&
       !isOpenReplyIntro &&
       !isOpenCommentIntro &&
       event.target instanceof HTMLElement
     ) {
-      dispatch(setIsOpenIntro(false));
+      // dispatch(setIsOpenIntro(false));
+      setIsOpenFilter(false);
     }
   };
 
@@ -309,8 +325,10 @@ const PostDetail: React.FC = () => {
         .unwrap()
         .then((res) => console.log('res in report:', res))
         .catch((err: any) => console.log('err in report:', err));
-      dispatch(setIsOpenReport('post' in state && state.post?.isOpenReport));
-      dispatch(setReportErr(''));
+      // dispatch(setIsOpenReport('post' in state && state.post?.isOpenReport));
+      // dispatch(setReportErr(''));
+      setIsOpenReport(isOpenReportErr);
+      setReportErr('');
       setCheckedElement(-1);
       alert('신고가 접수 되었습니다.');
     }
@@ -326,8 +344,10 @@ const PostDetail: React.FC = () => {
         replyId: null,
         reporterName: loginUserName,
       });
-      dispatch(setIsOpenReport('post' in state && state.post?.isOpenReport));
-      dispatch(setReportErr(''));
+      // dispatch(setIsOpenReport('post' in state && state.post?.isOpenReport));
+      // dispatch(setReportErr(''));
+      setIsOpenReport(isOpenReportErr);
+      setReportErr('');
       setCheckedElement(-1);
       alert('신고가 접수 되었습니다.');
     }
@@ -343,8 +363,10 @@ const PostDetail: React.FC = () => {
         replyId: replyId,
         reporterName: loginUserName,
       });
-      dispatch(setIsOpenReport('post' in state && state.post?.isOpenReport));
-      dispatch(setReportErr(''));
+      // dispatch(setIsOpenReport('post' in state && state.post?.isOpenReport));
+      // dispatch(setReportErr(''));
+      setIsOpenReport(isOpenReportErr);
+      setReportErr('');
       setCheckedElement(-1);
       alert('신고가 접수 되었습니다.');
     }
@@ -353,17 +375,23 @@ const PostDetail: React.FC = () => {
   //  신고 유효성 검사
   const validationTest = (): void => {
     const reportValue = reportTextRef.current?.value;
-    if ('post' in state && !state.post?.reportOption) {
-      dispatch(setReportErr('신고 이유를 선택해 주세요'));
+    // if ('post' in state && !state.post?.reportOption) {
+    //   dispatch(setReportErr('신고 이유를 선택해 주세요'));
+    // }
+    if (!reportOption) {
+      setReportErr('신고 이유를 선택해 주세요');
     }
     if (reportValue?.length === 0) {
-      dispatch(setReportErr('신고 내용을 작성해 주세요.'));
+      // dispatch(setReportErr('신고 내용을 작성해 주세요.'));
+      setReportErr('신고 내용을 작성해 주세요.');
     }
     if (reportValue) {
       if (reportValue.length < 10 || reportValue.length > 40) {
-        dispatch(setReportErr('제목은 10자 이상 40자 이하로 작성해주세요.'));
+        // dispatch(setReportErr('제목은 10자 이상 40자 이하로 작성해주세요.'));
+        setReportErr('제목은 10자 이상 40자 이하로 작성해주세요.');
       } else {
-        dispatch(setReportErr(''));
+        // dispatch(setReportErr(''));
+        setReportErr('');
       }
     }
   };
@@ -374,27 +402,39 @@ const PostDetail: React.FC = () => {
   }을 정말 삭제하시겠습니까?`;
 
   const IntroHandler = (event: React.MouseEvent<HTMLElement>) => {
+    // if (
+    //   !isOpenCommentIntro &&
+    //   !isOpenReplyIntro &&
+    //   'post' in state &&
+    //   event.target instanceof HTMLElement
+    // ) {
+    //   dispatch(setIsOpenIntro(state.post?.isOpeneIntro));
+    //   dispatch(setSelectedMember(event.target.id));
+    // }
     if (
       !isOpenCommentIntro &&
       !isOpenReplyIntro &&
-      'post' in state &&
       event.target instanceof HTMLElement
     ) {
-      dispatch(setIsOpenIntro(state.post?.isOpeneIntro));
+      setIsOpenIntro(isOpenIntro);
       dispatch(setSelectedMember(event.target.id));
     }
   };
 
   useEffect(() => {
-    dispatch(setIsOpenReport(false));
-    dispatch(setIsOpenFilter(true));
-    dispatch(setIsOpenIntro(true));
-    dispatch(setIsOpenDelete(true));
+    // dispatch(setIsOpenReport(false));
+    // dispatch(setIsOpenFilter(true));
+    // dispatch(setIsOpenIntro(true));
+    // dispatch(setIsOpenDelete(true));
+    // setIsOpenReport(false);
+    // setIsOpenFilter(false);
+    // setIsOpenIntro(false);
+    // setIsOpenDelete(false);
   }, [params]);
 
   return (
     <>
-      {'post' in state && state.post?.isOpenDelete ? (
+      {isOpenDelete ? (
         <ModalContainer>
           <DeleteModal>
             <div onClick={confirmDeleteHandler}> </div>
@@ -408,7 +448,7 @@ const PostDetail: React.FC = () => {
         </ModalContainer>
       ) : null}
 
-      {'post' in state && state.post?.isOpenReport ? (
+      {isOpenReport ? (
         <ModalContainer>
           <ReportModal>
             <div className="report">신고</div>
@@ -449,8 +489,10 @@ const PostDetail: React.FC = () => {
               <CancelBtn
                 onClick={(): void => {
                   setCheckedElement(-1);
-                  dispatch(setReportOption(''));
-                  dispatch(setReportErr(''));
+                  // dispatch(setReportOption(''));
+                  // dispatch(setReportErr(''));
+                  setReportOption('');
+                  setReportErr('');
                   reportHandler();
                 }}
               >
@@ -478,10 +520,7 @@ const PostDetail: React.FC = () => {
               <li className="image" onClick={IntroHandler}>
                 <img src={data?.memberImage} id={data?.memberName}></img>
               </li>
-              {isSuccess &&
-              'post' in state &&
-              state?.post.isOpeneIntro &&
-              state.post.isOpeneIntro ? (
+              {isSuccess && isOpenIntro && isOpenIntro ? (
                 <IntorductionContainer>
                   <IntroInfo>
                     <ul className="intro-content-info">

@@ -52,7 +52,6 @@ const Comment: React.FC<Partial<CommentInputProps>> = ({
   );
 
   const [page, setPage] = useState<number>(1);
-
   const loginUserName = window.localStorage.getItem('name');
   const params = useParams();
   const postId = params.postId;
@@ -428,10 +427,8 @@ const Comment: React.FC<Partial<CommentInputProps>> = ({
                     ></input>
                   ) : (
                     <div className="content">
-                      {comment.isDeleted
-                        ? '신고된 댓글입니다.'
-                        : comment.content}
-                      {commentIsEdit ? '(수정됨)' : null}
+                      {comment.content}
+                      {commentIsEdit && !comment.isDeleted ? '(수정됨)' : null}
                     </div>
                   )}
                   <ReplyBtn
