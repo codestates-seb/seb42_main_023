@@ -16,7 +16,7 @@ import { nicknameApi } from '../api/nicknameApi';
 import { tempTokenApi } from '../api/tempTokenAPi';
 import reportSlice from '../slices/reportSlice';
 import { apiSlice } from '../api/apiSlice';
-import { happyHouseApi } from '../api/happyHouseApi';
+import { repliesApi } from '../api/replyApi';
 
 const store = configureStore({
   reducer: {
@@ -41,7 +41,6 @@ const store = configureStore({
     [nicknameApi.reducerPath]: nicknameApi.reducer,
     [tempTokenApi.reducerPath]: tempTokenApi.reducer,
     [apiSlice.reducerPath]: apiSlice.reducer,
-    [happyHouseApi.reducerPath]: happyHouseApi.reducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware()
