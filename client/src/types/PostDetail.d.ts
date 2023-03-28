@@ -6,7 +6,6 @@ export interface PostStateType {
     isLike: boolean;
     isDislike: boolean;
     isBookmark: boolean;
-    views: unknown;
     reommendPosts: unknown;
     postDetail: unknown;
     deleteType: unknown;
@@ -29,6 +28,7 @@ export interface CommentStateType {
   comment: {
     isCommentLike: boolean;
     isCommentDislike: boolean;
+    commentCnt: unknown;
     commentValue: string;
     commentId: unknown;
     isEdit: Array<boolean>;
@@ -128,6 +128,11 @@ export interface ReplyProps {
   replyInfo: ReplyType;
   idx: number;
   replyPage: number;
+}
+
+export interface CommentInputProps {
+  setCommentCnt: (cnt: number) => void;
+  commentCnt: number;
 }
 
 export interface OnClick {

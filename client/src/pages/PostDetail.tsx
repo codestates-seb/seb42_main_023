@@ -56,7 +56,9 @@ const PostDetail: React.FC = () => {
   const [like, setLike] = useState<number>();
   const [dislike, setDislike] = useState<number>();
   const [views, setViews] = useState<number>();
+  const [commentCnt, setCommentCnt] = useState<number>();
   const [checkedElement, setCheckedElement] = useState(-1);
+
   const handleSelectChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.target instanceof HTMLInputElement) {
       setCheckedElement(Number(event.target.value));
@@ -94,7 +96,6 @@ const PostDetail: React.FC = () => {
   // 게시글 조회 및 추가
   const postDetailQuery = postsApi.useGetPostQuery({ postId });
   const { data, isSuccess } = postDetailQuery;
-  const memberName = data?.memberName;
   const [deletePost] = postsApi.useDeletePostMutation();
   // const [deletePost] = postMutation;
   // 게시글 좋아요 추가, 삭제
@@ -143,6 +144,7 @@ const PostDetail: React.FC = () => {
     if (isSuccess) setDislike(data?.thumbDownCount);
     if (isSuccess) setBookmark(data?.isBookmarked);
     if (isSuccess) setViews(data?.viewCount);
+    if (isSuccess) setCommentCnt(data?.commentCount);
   }, [data]);
 
   console.log('isLlike', isLike);
@@ -151,6 +153,7 @@ const PostDetail: React.FC = () => {
   console.log('dislike', dislike);
   console.log('bookmark', isBookmark);
   console.log('views', views);
+  console.log('commentCnt', commentCnt);
 
   // 좋아요 클릭 함수
   const changeLiikeHandler = (): void => {
@@ -178,8 +181,7 @@ const PostDetail: React.FC = () => {
     if (!isLike && !isDislike) {
       console.log('좋아요 추가');
 
-      console.log('왜 안찍히지', postId);
-      addThumbUp(postId);
+      addThumbUp({ postId });
       setIsLike(true);
       setLike((prev) => prev! + 1);
       return;
@@ -192,11 +194,11 @@ const PostDetail: React.FC = () => {
     if (isLike && !isDislike) {
       // 좋아요 제거, 싫어요 추가
       console.log('좋아요 삭제 후 싫어요 추가');
-      removeThumbUp(postId);
+      removeThumbUp({ postId });
       setIsLike(false);
       setLike((prev) => prev! - 1);
       setTimeout(() => {
-        addThumbDown(postId);
+        addThumbDown({ postId });
         setIsDislike(true);
         setDislike((prev) => prev! + 1);
       }, 500);
@@ -206,7 +208,7 @@ const PostDetail: React.FC = () => {
     if (!isLike && isDislike) {
       // 싫어요 제거
       console.log('싫어요 삭제');
-      removeThumbDown(postId);
+      removeThumbDown({ postId });
       setIsDislike(false);
       setDislike((prev) => prev! - 1);
       return;
@@ -215,7 +217,7 @@ const PostDetail: React.FC = () => {
     if (!isLike && !isDislike) {
       // 싫어요 추가
       console.log('싫어요 추가');
-      addThumbDown(postId);
+      addThumbDown({ postId });
       setIsDislike(true);
       setDislike((prev) => prev! + 1);
       return;
@@ -225,10 +227,10 @@ const PostDetail: React.FC = () => {
   const changeBookmarkHandler = (): void => {
     if (isBookmark) {
       setBookmark(false);
-      removeBookmark({ memberName, postId });
+      removeBookmark({ loginUserName, postId });
     } else {
       setBookmark(true);
-      addBookmark({ memberName, postId });
+      addBookmark({ loginUserName, postId });
     }
   };
 
@@ -252,6 +254,7 @@ const PostDetail: React.FC = () => {
       confirmDeleteHandler();
       console.log('post delete');
       navigate('/');
+      location.reload();
     }
     // 댓글 삭제 로직
     if ('post' in state && state.post?.deleteType === '댓글') {
@@ -501,7 +504,7 @@ const PostDetail: React.FC = () => {
               <ViewIcon />
               <li className="views">{views}</li>
               <CommentIcon checked={true} />
-              <li className="comments">{data?.commentCount}</li>
+              <li className="comments">{commentCnt}</li>
               <button
                 className="bookmark"
                 onClick={_.debounce(() => {
@@ -538,8 +541,11 @@ const PostDetail: React.FC = () => {
               {/* <li className="dislikes">{isSuccess && data?.thumbDownCount}</li> */}
               <li className="dislikes">{isSuccess && dislike!}</li>
             </ul>
-            <CommentInput></CommentInput>
-            <Comment></Comment>
+            <CommentInput
+              commentCnt={commentCnt!}
+              setCommentCnt={setCommentCnt!}
+            ></CommentInput>
+            <Comment commentCnt={commentCnt!}></Comment>
           </PostContent>
         </PostContainer>
         <RecommendedPostContainer>
