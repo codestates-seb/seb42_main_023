@@ -1,6 +1,6 @@
-package com.teamdragon.dragonmoney.app.domain.information.information.house.happyhouse.repository;
+package com.teamdragon.dragonmoney.app.domain.information.house.happyhouse.repository;
 
-import com.teamdragon.dragonmoney.app.domain.information.information.house.happyhouse.entity.HappyHouse;
+import com.teamdragon.dragonmoney.app.domain.information.house.happyhouse.entity.HappyHouse;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.time.LocalDateTime;

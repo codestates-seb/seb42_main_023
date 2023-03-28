@@ -1,9 +1,6 @@
-package com.teamdragon.dragonmoney.app.domain.information.information.house.happyhouse.dto;
+package com.teamdragon.dragonmoney.app.domain.information.house.happyhouse.dto;
 
-import com.teamdragon.dragonmoney.app.domain.information.information.house.happyhouse.entity.HappyHouse;
-import com.teamdragon.dragonmoney.app.domain.information.information.house.price.entity.HousePrice;
-import com.teamdragon.dragonmoney.app.domain.posts.dto.PostsDto;
-import com.teamdragon.dragonmoney.app.domain.posts.entity.Posts;
+import com.teamdragon.dragonmoney.app.domain.information.house.happyhouse.entity.HappyHouse;
 import com.teamdragon.dragonmoney.app.global.pagenation.PageInfo;
 import lombok.Getter;
 import org.springframework.data.domain.Page;

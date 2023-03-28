@@ -4,7 +4,7 @@ import com.teamdragon.dragonmoney.app.domain.comment.entity.Comment;
 import com.teamdragon.dragonmoney.app.domain.comment.repository.CommentRepository;
 import com.teamdragon.dragonmoney.app.domain.image.entity.Image;
 import com.teamdragon.dragonmoney.app.domain.image.repository.ImageRepository;
-import com.teamdragon.dragonmoney.app.domain.information.information.house.happyhouse.service.HappyHouseService;
+import com.teamdragon.dragonmoney.app.domain.information.house.happyhouse.service.HappyHouseService;
 import com.teamdragon.dragonmoney.app.domain.member.entity.Member;
 import com.teamdragon.dragonmoney.app.domain.member.repository.MemberRepository;
 import com.teamdragon.dragonmoney.app.domain.popular.entity.BestAwards;
@@ -19,7 +19,7 @@ import com.teamdragon.dragonmoney.app.domain.thumb.entity.Thumbdown;
 import com.teamdragon.dragonmoney.app.domain.thumb.entity.Thumbup;
 import com.teamdragon.dragonmoney.app.domain.thumb.respository.ThumbdownRepository;
 import com.teamdragon.dragonmoney.app.domain.thumb.respository.ThumbupRepository;
-import com.teamdragon.dragonmoney.app.domain.information.information.house.price.service.HousePriceService;
+import com.teamdragon.dragonmoney.app.domain.information.house.price.service.HousePriceService;
 import lombok.RequiredArgsConstructor;
 
 import org.springframework.stereotype.Service;

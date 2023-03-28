@@ -1,9 +1,9 @@
-package com.teamdragon.dragonmoney.app.domain.information.information.house.price.service;
+package com.teamdragon.dragonmoney.app.domain.information.house.price.service;
 
-import com.teamdragon.dragonmoney.app.domain.information.information.house.price.dto.HousePriceDto;
-import com.teamdragon.dragonmoney.app.domain.information.information.house.price.dto.SeoulApiDto;
-import com.teamdragon.dragonmoney.app.domain.information.information.house.price.entity.HousePrice;
-import com.teamdragon.dragonmoney.app.domain.information.information.house.price.repository.HousePriceRepository;
+import com.teamdragon.dragonmoney.app.domain.information.house.price.dto.HousePriceDto;
+import com.teamdragon.dragonmoney.app.domain.information.house.price.repository.HousePriceRepository;
+import com.teamdragon.dragonmoney.app.domain.information.house.price.dto.SeoulApiDto;
+import com.teamdragon.dragonmoney.app.domain.information.house.price.entity.HousePrice;
 import com.teamdragon.dragonmoney.app.global.exception.ApiLogicException;
 import com.teamdragon.dragonmoney.app.global.exception.ApiLogicExceptionCode;
 import lombok.Getter;

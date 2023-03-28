@@ -1,8 +1,8 @@
-package com.teamdragon.dragonmoney.app.domain.information.information.house.price.controller;
+package com.teamdragon.dragonmoney.app.domain.information.house.price.controller;
 
-import com.teamdragon.dragonmoney.app.domain.information.information.house.price.dto.HousePriceDto;
-import com.teamdragon.dragonmoney.app.domain.information.information.house.price.entity.HousePrice;
-import com.teamdragon.dragonmoney.app.domain.information.information.house.price.service.HousePriceService;
+import com.teamdragon.dragonmoney.app.domain.information.house.price.dto.HousePriceDto;
+import com.teamdragon.dragonmoney.app.domain.information.house.price.entity.HousePrice;
+import com.teamdragon.dragonmoney.app.domain.information.house.price.service.HousePriceService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

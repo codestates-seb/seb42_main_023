@@ -1,6 +1,7 @@
 package com.teamdragon.dragonmoney.app.domain.tag.dto;
 
 import com.teamdragon.dragonmoney.app.domain.tag.entity.Tag;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.validator.constraints.Length;
@@ -11,6 +12,7 @@ import javax.validation.constraints.Pattern;
 public class TagDto {
     @Getter
     @NoArgsConstructor
+    @AllArgsConstructor
     public static class TagName {
         @Pattern(regexp = "^[0-9a-zA-Zㄱ-ㅎ가-힣 ]*$")
         @NotBlank

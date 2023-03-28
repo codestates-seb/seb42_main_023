@@ -24,7 +24,6 @@ public class ImageDto {
     }
 
     @Getter
-    @Setter
     @AllArgsConstructor
     public static class ImageResponse {
         private Long imageId;

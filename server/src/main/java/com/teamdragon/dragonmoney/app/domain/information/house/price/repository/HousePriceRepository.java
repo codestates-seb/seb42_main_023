@@ -1,6 +1,6 @@
-package com.teamdragon.dragonmoney.app.domain.information.information.house.price.repository;
+package com.teamdragon.dragonmoney.app.domain.information.house.price.repository;
 
-import com.teamdragon.dragonmoney.app.domain.information.information.house.price.entity.HousePrice;
+import com.teamdragon.dragonmoney.app.domain.information.house.price.entity.HousePrice;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;

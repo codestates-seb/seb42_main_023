@@ -73,6 +73,7 @@ public class PostsDto {
 
     @Getter
     @AllArgsConstructor
+    @NoArgsConstructor
     public static class CreatePostsImagesReq {
         private List<ImageDto> addedImages;
         private List<ImageDto> removedImages;
@@ -97,6 +98,7 @@ public class PostsDto {
 
     @Getter
     @AllArgsConstructor
+    @NoArgsConstructor
     public static class ImageDto {
         @NotNull
         @Positive
