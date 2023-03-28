@@ -113,7 +113,7 @@ test {
 // rest docs 설정
 asciidoctor {
 	inputs.dir snippetsDir
-	configurations 'asciidoctorExtensions'
+	configurations 'asciidoctorExt'
 	dependsOn test
 }
 
