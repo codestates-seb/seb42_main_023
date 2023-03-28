@@ -5,7 +5,6 @@ import { useAppDispatch, useAppSelector } from '../../hooks';
 import { setCommentId } from '../../slices/commentSlice';
 import { addReplyEdit, setReply } from '../../slices/replySlice';
 import { CommentProps } from '../../types/PostDetail';
-import { commentsApi } from '../../api/commentApi';
 import { useParams } from 'react-router-dom';
 import {
   PostStateType,
@@ -24,15 +23,10 @@ const ReplyInput: React.FC<CommentProps> = ({ commentInfo }: CommentProps) => {
     },
   );
   const params = useParams();
-  const postId = params.postId;
   const commentId = commentInfo.commentId;
-  const page = 'comment' in state && state.comment?.page;
 
   const replyMutation = repliesApi.useSetReplyMutation();
   const setReplys = replyMutation[0];
-
-  //댓글
-  // const commentQuery = commentsApi.useGetCommentQuery({ postId, page });
 
   // 답글 추가
   const addReplyHandler = async () => {

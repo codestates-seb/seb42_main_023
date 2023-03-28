@@ -3,12 +3,7 @@ import { useAppDispatch, useAppSelector } from '../../hooks';
 import styled from 'styled-components';
 import DislikeIcon from '../../assets/common/DislikeIcon';
 import LikeIcon from '../../assets/common/LikeIcon';
-import {
-  isEdit,
-  setIsEdit,
-  setReplyId,
-  setIsOpenIntro,
-} from '../../slices/replySlice';
+import { isEdit, setIsEdit, setReplyId } from '../../slices/replySlice';
 import {
   PostStateType,
   ReplyStateType,
@@ -23,6 +18,8 @@ import { timeSince } from '../mainP/Timecalculator';
 import { setCommentId } from '../../slices/commentSlice';
 import _ from 'lodash';
 import { membersApi } from '../../api/memberapi';
+import { useNavigate } from 'react-router-dom';
+import { setMemberName } from '../../slices/headerSlice';
 
 const Reply: React.FC<Partial<ReplyProps & ReportProps>> = ({
   replyInfo,
@@ -47,7 +44,7 @@ const Reply: React.FC<Partial<ReplyProps & ReportProps>> = ({
       return state;
     },
   );
-
+  const navigate = useNavigate();
   const loginUserName = window.localStorage.getItem('name');
   const commentId = 'comment' in state && state.comment?.commentId;
   const replyId = 'reply' in state && state.reply?.replyId;
@@ -159,16 +156,25 @@ const Reply: React.FC<Partial<ReplyProps & ReportProps>> = ({
 
   // 소개 페이지 오픈
   const IntroHandler = (event: React.MouseEvent<HTMLElement>) => {
+    event.stopPropagation();
+
     if (
       !isOpenPostIntro &&
       !isOpenCommentIntro &&
       'reply' in state &&
       event.target instanceof HTMLElement
     ) {
-      dispatch(setIsOpenIntro(state.reply.isOpeneIntro));
+      setIsOpenReplyIntro?.(!isReplyOpenIntro);
       dispatch(setReplyId(Number(event.target.dataset.replyid)));
       dispatch(setSelectedMember(event.target.id));
-      console.log('userName', event.target.id);
+    }
+  };
+
+  const outClickIntroHandler = (event: React.MouseEvent<HTMLElement>) => {
+    event.stopPropagation();
+    if (event.target instanceof HTMLElement) {
+      setIsOpenReplyIntro?.(false);
+      console.log(setIsOpenReplyIntro);
     }
   };
 
@@ -194,7 +200,7 @@ const Reply: React.FC<Partial<ReplyProps & ReportProps>> = ({
   };
 
   return (
-    <ReplyContainer>
+    <ReplyContainer onClick={outClickIntroHandler}>
       <ReplyInfo key={replyInfo?.replyId}>
         <ul className="reply-info">
           <li className="image" onClick={IntroHandler}>
@@ -206,7 +212,7 @@ const Reply: React.FC<Partial<ReplyProps & ReportProps>> = ({
             ></img>
           </li>
           {'reply' in state &&
-          state.reply.isOpeneIntro &&
+          isReplyOpenIntro &&
           replyInfo?.replyId === state.reply?.replyId ? (
             <IntorductionContainer onClick={IntroHandler}>
               <IntroInfo>
@@ -220,7 +226,16 @@ const Reply: React.FC<Partial<ReplyProps & ReportProps>> = ({
               <label className="introduction">
                 {memeberQuery.data?.intro || '소개 내용이 없습니다.'}
               </label>
-              <div className="intro-moreInfo">더보기 》</div>
+              <div
+                className="intro-moreInfo"
+                onClick={() => {
+                  dispatch(setMemberName(replyInfo.memberName));
+                  navigate('/mypage');
+                  scrollTo(0, 0);
+                }}
+              >
+                더보기 》
+              </div>
             </IntorductionContainer>
           ) : null}
 
@@ -440,7 +455,6 @@ const ReplyContainer = styled.div`
     cursor: pointer;
   }
 `;
-// TODO Intro
 const IntorductionContainer = styled.div`
   display: flex;
   flex-direction: column;
@@ -465,7 +479,7 @@ const IntorductionContainer = styled.div`
   .intro-moreInfo {
     font-size: 17x;
     color: gray;
-    width: 150px;
+    width: 100px;
     margin: 5px 0 0 165px;
     cursor: pointer;
   }

@@ -434,8 +434,6 @@ const PostDetail: React.FC = () => {
               <CancelBtn
                 onClick={(): void => {
                   setCheckedElement(-1);
-                  // dispatch(setReportOption(''));
-                  // dispatch(setReportErr(''));
                   setReportOption('');
                   setReportErr('');
                   reportHandler();
@@ -594,6 +592,7 @@ const PostContainer = styled.div`
     > h1 {
       font-size: 24px;
       font-weight: bold;
+      margin-bottom: 5px;
     }
     > p {
       font-size: 16px;
@@ -838,8 +837,8 @@ const IntorductionContainer = styled.div`
   .intro-moreInfo {
     font-size: 17x;
     color: gray;
-    width: 150px;
-    margin: 5px 0 0 165px;
+    width: 100px;
+    margin: 5px 0 0 135px;
     cursor: pointer;
   }
 `;

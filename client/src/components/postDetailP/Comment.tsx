@@ -29,6 +29,8 @@ import {
 import { timeSince } from '../mainP/Timecalculator';
 import { membersApi } from '../../api/memberapi';
 import { CommentInputProps } from '../../types/PostDetail';
+import { setMemberName } from '../../slices/headerSlice';
+import { useNavigate } from 'react-router';
 
 const Comment: React.FC<
   Partial<CommentInputProps & ReportProps & CommentProps>
@@ -41,7 +43,7 @@ const Comment: React.FC<
   setIsOpenCommentIntro,
   setIsOpenReplyIntro,
   isOpenDelete,
-  // isOpenIntro,
+  isOpenIntro,
   isCommentOpenIntro,
   isReplyOpenIntro,
 }: Partial<CommentInputProps & ReportProps & CommentProps>) => {
@@ -53,7 +55,7 @@ const Comment: React.FC<
       return state;
     },
   );
-
+  const navigate = useNavigate();
   const [page, setPage] = useState<number>(1);
 
   const loginUserName = window.localStorage.getItem('name');
@@ -192,7 +194,12 @@ const Comment: React.FC<
   };
   // 소개 페이지 오픈
   const IntroHandler = (event: React.MouseEvent<HTMLElement>) => {
-    if (event.target instanceof HTMLElement) {
+    event.stopPropagation();
+    if (
+      !isOpenIntro &&
+      !isReplyOpenIntro &&
+      event.target instanceof HTMLElement
+    ) {
       setIsOpenCommentIntro?.(!isCommentOpenIntro!);
       console.log('isOpenIntro', isCommentOpenIntro!);
       dispatch(setCommentId(Number(event.target.dataset.commentid)));
@@ -200,6 +207,7 @@ const Comment: React.FC<
     }
   };
   const outClickIntroHandler = (event: React.MouseEvent<HTMLElement>) => {
+    event.stopPropagation();
     if (event.target instanceof HTMLElement) {
       setIsOpenCommentIntro?.(false);
     }
@@ -229,7 +237,7 @@ const Comment: React.FC<
     setReplyPage((prev) => prev + 1);
   };
   return (
-    <CommentContainer>
+    <CommentContainer onClick={outClickIntroHandler}>
       {commentQuery.data &&
         commentQuery.data?.comments?.map(
           (comment: CommentType, idx: number) => {
@@ -269,12 +277,12 @@ const Comment: React.FC<
               <>
                 <CommentInfo key={comment?.commentId}>
                   <ul className="content-info">
-                    <li className="image" data-memberName={comment?.memberName}>
+                    <li className="image" data-membername={comment?.memberName}>
                       <img
                         src={comment.memberImage}
                         id={comment.memberName}
                         data-img={comment.memberImage}
-                        data-commentId={comment.commentId}
+                        data-commentid={comment.commentId}
                         onClick={IntroHandler}
                       ></img>
                     </li>
@@ -285,28 +293,37 @@ const Comment: React.FC<
                         <IntroInfo>
                           <ul className="intro-content-info">
                             <li className="image">
-                              <img src={comment.memberImage} id=""></img>
+                              <img src={comment?.memberImage} id=""></img>
                             </li>
                             <li className="intro-nickname">
-                              {comment.memberName}
+                              {comment?.memberName}
                             </li>
                           </ul>
                         </IntroInfo>
                         <label className="introduction">
                           {memeberQuery.data?.intro || '소개 내용이 없습니다.'}
                         </label>
-                        <div className="intro-moreInfo"> 더보기 》</div>
+                        <div
+                          className="intro-moreInfo"
+                          onClick={() => {
+                            dispatch(setMemberName(comment?.memberName));
+                            navigate('/mypage');
+                            scrollTo(0, 0);
+                          }}
+                        >
+                          더보기 》
+                        </div>
                       </IntorductionContainer>
                     ) : null}
 
-                    <li className="nickname">{comment.memberName}</li>
+                    <li className="nickname">{comment?.memberName}</li>
                     <TimeIcon />
 
                     <li className="created-time">{time} 전</li>
 
                     {'comment' in state &&
-                    state?.comment.isEdit !== undefined &&
-                    state.comment.isEdit[idx] ? (
+                    state.comment?.isEdit !== undefined &&
+                    state.comment?.isEdit[idx!] ? (
                       <li
                         className="comment-update"
                         id="edit"
@@ -319,7 +336,7 @@ const Comment: React.FC<
                         onClick={(): void => {
                           if (
                             !commentEditInput.current?.value &&
-                            comment.content !== '삭제된 댓글입니다.'
+                            comment?.content !== '삭제된 댓글입니다.'
                           ) {
                             dispatch(setIsEdit(idx));
                             return;
@@ -328,7 +345,7 @@ const Comment: React.FC<
                           dispatch(setIsEdit(idx));
                           updateMutation({
                             postId: postId,
-                            commentId: comment.commentId,
+                            commentId: comment?.commentId,
                             content: commentEditInput.current?.value,
                           });
                         }}
@@ -345,17 +362,17 @@ const Comment: React.FC<
                               : 'none',
                         }}
                         onClick={(): void => {
-                          if (comment.content !== '삭제된 댓글입니다.')
+                          if (comment?.content !== '삭제된 댓글입니다.')
                             dispatch(setIsEdit(idx));
                         }}
                       >
-                        {comment.content === '삭제된 댓글입니다.' ||
-                        comment.content === '신고된 댓글입니다.'
+                        {comment?.content === '삭제된 댓글입니다.' ||
+                        comment?.content === '신고된 댓글입니다.'
                           ? null
                           : '수정'}
                       </li>
                     )}
-                    {loginUserName === comment.memberName ? (
+                    {loginUserName === comment?.memberName ? (
                       <li
                         className="comment-delete"
                         style={{
@@ -368,7 +385,7 @@ const Comment: React.FC<
                         onClick={(
                           event: React.MouseEvent<HTMLElement>,
                         ): void => {
-                          dispatch(setCommentId(comment.commentId));
+                          dispatch(setCommentId(comment?.commentId));
                           deleteTypeChecker(event);
                           confirmDeleteHandler();
                         }}
@@ -383,7 +400,7 @@ const Comment: React.FC<
                     <li
                       className="comment-report"
                       data-category="comment"
-                      data-commentId={String(comment.commentId)}
+                      data-commentid={String(comment.commentId)}
                       style={{
                         display:
                           loginUserName === comment?.memberName
@@ -397,7 +414,6 @@ const Comment: React.FC<
                       }}
                       onClick={(event): void => {
                         setIsOpenReport?.(!isOpenReport!);
-                        console.log('as', isOpenReport);
                         reportTypeChecker(event);
                       }}
                     >
@@ -436,34 +452,42 @@ const Comment: React.FC<
                     ></input>
                   ) : (
                     <div className="content">
-                      {comment.content}
-                      {commentIsEdit && comment.content !== '삭제된 댓글입니다.'
+                      {comment?.content}
+                      {commentIsEdit &&
+                      comment?.content !== '삭제된 댓글입니다.'
                         ? '(수정됨)'
                         : commentIsEdit &&
-                          comment.content !== '신고된 댓글입니다.'
+                          comment?.content !== '신고된 댓글입니다.'
                         ? '(수정됨)'
                         : null}
                     </div>
                   )}
                   <ReplyBtn
                     onClick={(): void => {
-                      // 답글 눌릴 경우 그 이외 답글들 다 가리기
-                      const open = Array.from(
-                        { length: commentQuery.data?.comments?.length },
-                        (el) => (el = false),
-                      );
-                      dispatch(isOpened(open));
-
                       dispatch(setCommentId(comment.commentId));
-                      dispatch(setIsOpened(idx));
+                      // 답글 눌릴 경우 그 이외 답글들 다 가리기
+                      if (
+                        'comment' in state &&
+                        state.comment?.commentId !== comment?.commentId
+                      ) {
+                        const open = Array.from(
+                          { length: commentQuery.data?.comments?.length },
+                          (el) => (el = false),
+                        );
+                        dispatch(isOpened(open!));
+                      }
+                      dispatch(setIsOpened(idx!));
                     }}
                   >
-                    답글 {comment.replyCount ? comment.replyCount : ''}
+                    답글 {comment?.replyCount ? comment?.replyCount : ''}
                   </ReplyBtn>
                 </CommentContent>
                 {'reply' in state && isSuccess && state.reply?.isOpened[idx] ? (
                   <>
                     <ReplyContainer>
+                      {/* {comment.content !== '삭제된 댓글입니다.' ? (
+                        <ReplyInput commentInfo={comment}></ReplyInput>
+                      ) : null} */}
                       <ReplyInput commentInfo={comment}></ReplyInput>
                       {filtered?.map((reply: ReplyType, idx: number) => {
                         return (
@@ -641,7 +665,7 @@ const IntorductionContainer = styled.div`
   .intro-moreInfo {
     font-size: 17x;
     color: gray;
-    width: 150px;
+    width: 100px;
     margin: 5px 0 0 165px;
     cursor: pointer;
   }
