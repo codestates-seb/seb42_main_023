@@ -232,10 +232,11 @@ const Filter = styled.div`
     > select {
       border: 1px solid #d4d4d4;
       border-bottom: none;
-      width: 150px;
+      width: 130px;
       height: 30px;
       border-radius: 3px;
       margin-top: 5px;
+      padding-left: 10px;
       &:focus {
         outline: none;
       }
