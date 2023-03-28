@@ -417,9 +417,25 @@ const PostDetail: React.FC = () => {
                     />
 
                     {checkedElement === idx ? (
-                      <CheckedIcon width={30} height={30} />
+                      <button
+                        id={option}
+                        value={idx}
+                        onClick={() => {
+                          setCheckedElement(-1);
+                        }}
+                      >
+                        <CheckedIcon width={30} height={30} />
+                      </button>
                     ) : (
-                      <NoCheckedIcon width={30} height={30} />
+                      <button
+                        id={option}
+                        value={idx}
+                        onClick={() => {
+                          setCheckedElement(idx);
+                        }}
+                      >
+                        <NoCheckedIcon width={30} height={30} />
+                      </button>
                     )}
                     <label htmlFor={option}>{option}</label>
                   </div>
