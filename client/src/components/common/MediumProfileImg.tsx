@@ -31,8 +31,8 @@ const Item = styled.img`
   box-sizing: border-box;
   border-radius: 50%;
   object-fit: cover;
-  width: 50px;
-  height: 50px;
+  width: 34px;
+  height: 34px;
   cursor: pointer;
 
   transition: all 0.3s linear;
@@ -43,8 +43,8 @@ const Item = styled.img`
 const Btn = styled.button`
   margin-left: 10px;
   border-radius: 50%;
-  width: 50px;
-  height: 50px;
+  width: 34px;
+  height: 34px;
   background-color: #fff;
   overflow: hidden;
 `;

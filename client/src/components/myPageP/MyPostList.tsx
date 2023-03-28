@@ -1,16 +1,16 @@
 import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { useAppSelector } from '../../hooks';
-import LikeIcon from '../../assets/common/LikeIcon';
 import TimeIcon from '../../assets/common/TimeIcon';
 import ViewIcon from '../../assets/common/ViewIcon';
 import Thumnail from '../common/Thumbnail';
-import { TagItem } from '../common/Tag';
+import { Tag } from '../mainP/PostList';
 import { Link } from 'react-router-dom';
 import { membersPostListApi } from '../../api/memberapi';
 import { timeSince } from '../mainP/Timecalculator';
 import Pagination from '../common/Pagination';
 import { PostListItem } from '../../types/PostList';
+import { FaRegThumbsUp } from 'react-icons/fa';
 
 function MyPostList() {
   const [pageOffset, setPageOffset] = useState(0);
@@ -68,7 +68,7 @@ function MyPostList() {
                         {post.viewCount}
                       </span>
                       <span>
-                        <LikeIcon checked={false} />
+                        <FaRegThumbsUp size={13} />
                         {post.thumbupCount}
                       </span>
                     </Info>
@@ -78,7 +78,7 @@ function MyPostList() {
             );
           })}
       </List>
-      {isSuccess && (
+      {isSuccess && data.posts.length !== 0 && (
         <Pagination
           pageInfo={data.pageInfo}
           pageOffset={pageOffset}
@@ -129,20 +129,9 @@ export const Info = styled.div`
     align-items: center;
   }
 `;
-export const Tag = styled(TagItem)`
-  padding: 4px 10px;
-`;
+
 export const PostListWrap = styled.div`
   display: flex;
   flex-direction: column;
   width: 100%;
-`;
-const Bookmark = styled.button`
-  margin-left: 40px;
-  color: var(--sub-font-color);
-  svg {
-    :hover {
-      color: var(--hover-font-gray-color);
-    }
-  }
 `;

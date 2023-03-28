@@ -11,8 +11,9 @@ import { AiOutlineSearch } from 'react-icons/ai';
 import * as Styled from '../common/Tag';
 import { MdCancel } from 'react-icons/md';
 import SearchBtn from './SearchToggle';
-import { setPostSetting, setCurrentPage } from '../../slices/mainSlice';
+import { setPostSetting } from '../../slices/mainSlice';
 import { setSearchQuery } from '../../slices/headerSlice';
+import { useNavigate } from 'react-router-dom';
 
 interface Input {
   className: string;
@@ -25,6 +26,7 @@ const SearchBar: React.FC = () => {
   const dispatch = useAppDispatch();
   const header = useAppSelector(({ header }) => header);
   const valid = useAppSelector(({ validation }) => validation);
+  const navigation = useNavigate();
 
   //검색 인풋창 데이터 입력
   const valueCheck = (event: React.ChangeEvent<HTMLInputElement>): void => {
@@ -78,24 +80,22 @@ const SearchBar: React.FC = () => {
     if (input[0] === '#') {
       validation();
     } else {
+      dispatch(setPostSetting('/search'));
       //tag x keyword o
-      //TODO: 서버 수정 후 테스트
       if (tag.length === 0 && input.length !== 0) {
-        dispatch(setPostSetting('/search'));
         dispatch(setSearchQuery(`&keyword=${input}&tags=`));
       }
       //tag o keyword x
       if (tag.length !== 0 && input.length === 0) {
         const tagstring = tag.join();
-        dispatch(setPostSetting('/search'));
         dispatch(setSearchQuery(`&keyword=&tags=${tagstring}`));
       }
       //tag o keyword o
       if (tag.length !== 0 && input.length !== 0) {
         const tagstring = tag.join();
-        dispatch(setPostSetting('/search'));
         dispatch(setSearchQuery(`&keyword=${input}&tags=${tagstring}`));
       }
+      navigation('/search');
     }
   };
   //엔터로 검색
@@ -192,6 +192,12 @@ const Input = styled.input`
   width: 500px;
   border-radius: 40px;
   font-size: 14px;
+  box-sizing: border-box;
+  :focus {
+    outline: none;
+    border: none;
+    box-shadow: 0 0 3px var(--hover-point-blue-color);
+  }
 `;
 
 const Error = styled.div`
@@ -214,5 +220,5 @@ const Icon = styled.button`
 const Span = styled.span`
   color: #5c5c5c;
   font-size: 14px;
-  margin-left: 4px;
+  margin-left: 14px;
 `;

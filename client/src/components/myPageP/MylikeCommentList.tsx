@@ -34,6 +34,7 @@ const MylikeCommentList = () => {
     <PostListWrap>
       <List>
         {isSuccess &&
+          data.comments.length !== 0 &&
           data.comments.map((item: CommentType) => {
             return (
               <li key={item.commentId}>
@@ -60,7 +61,7 @@ const MylikeCommentList = () => {
             );
           })}
       </List>
-      {isSuccess && (
+      {isSuccess && data.comments.length !== 0 && (
         <Pagination
           pageInfo={data.pageInfo}
           pageOffset={pageOffset}

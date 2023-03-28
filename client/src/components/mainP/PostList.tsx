@@ -2,15 +2,14 @@ import React from 'react';
 import styled from 'styled-components';
 import WeeklyPopular from './WeeklyPopular';
 import { useAppSelector } from '../../hooks';
-import LikeIcon from '../../assets/common/LikeIcon';
 import TimeIcon from '../../assets/common/TimeIcon';
 import ViewIcon from '../../assets/common/ViewIcon';
 import Thumnail from '../common/Thumbnail';
 import { TagItem } from '../common/Tag';
 import { Link } from 'react-router-dom';
-import { postListApi } from '../../api/postListapi';
 import { timeSince } from '../mainP/Timecalculator';
 import { PostListItem } from '../../types/PostList';
+import { FaRegThumbsUp } from 'react-icons/fa';
 
 interface Props {
   posts: PostListItem[];
@@ -51,7 +50,7 @@ function PostList({ posts, currentPage }: Props) {
                     {post.viewCount}
                   </span>
                   <span>
-                    <LikeIcon checked={false} />
+                    <FaRegThumbsUp size={13} />
                     {post.thumbupCount}
                   </span>
                 </Info>
@@ -66,7 +65,10 @@ function PostList({ posts, currentPage }: Props) {
 
 export default PostList;
 
-const List = styled.ul``;
+const List = styled.ul`
+  margin-top: -2px;
+  border-top: 1px solid var(--border-color);
+`;
 export const Item = styled.li`
   height: 100px;
   border-bottom: 1px solid var(--border-color);
@@ -74,7 +76,7 @@ export const Item = styled.li`
   display: flex;
   justify-content: center;
   align-items: center;
-  padding: 0 10px;
+  padding: 0 30px;
   h1 {
     font-size: 20px;
     margin-bottom: 4px;
@@ -103,4 +105,8 @@ export const Info = styled.div`
 `;
 export const Tag = styled(TagItem)`
   padding: 4px 10px;
+  color: var(--point-blue-color);
+  font-size: 12px;
+  background-color: #fff;
+  border: 1px solid var(--point-blue-color);
 `;

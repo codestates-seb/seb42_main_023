@@ -102,7 +102,6 @@ const Button = styled.button`
   background-color: #fff;
   svg {
     margin-left: 2px;
-    transform: translateX(-50px) translateY(3px);
   }
 `;
 
