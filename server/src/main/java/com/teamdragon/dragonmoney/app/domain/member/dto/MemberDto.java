@@ -11,6 +11,7 @@ public class MemberDto {
 
     // 회원 가입
     @Getter
+    @NoArgsConstructor
     public static class DuplicatedReq {
         @NotNull(message = "내용을 입력해주세요.")
         @NotBlank(message = "공백은 불가능합니다.")
@@ -40,6 +41,7 @@ public class MemberDto {
 
     // 회원 수정
     @Getter
+    @NoArgsConstructor
     public static class PatchReq {
         @NotNull(message = "내용을 입력해주세요.")
         @NotBlank(message = "공백은 불가능합니다.")

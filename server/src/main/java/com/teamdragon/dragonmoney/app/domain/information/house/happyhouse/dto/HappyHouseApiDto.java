@@ -1,4 +1,4 @@
-package com.teamdragon.dragonmoney.app.domain.information.information.house.happyhouse.dto;
+package com.teamdragon.dragonmoney.app.domain.information.house.happyhouse.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;

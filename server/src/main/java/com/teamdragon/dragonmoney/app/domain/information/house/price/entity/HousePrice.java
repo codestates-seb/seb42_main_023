@@ -1,4 +1,4 @@
-package com.teamdragon.dragonmoney.app.domain.information.information.house.price.entity;
+package com.teamdragon.dragonmoney.app.domain.information.house.price.entity;
 
 import lombok.Builder;
 import lombok.Getter;

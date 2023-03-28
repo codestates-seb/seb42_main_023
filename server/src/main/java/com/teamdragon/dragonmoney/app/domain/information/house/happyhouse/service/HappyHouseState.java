@@ -1,4 +1,4 @@
-package com.teamdragon.dragonmoney.app.domain.information.information.house.happyhouse.service;
+package com.teamdragon.dragonmoney.app.domain.information.house.happyhouse.service;
 
 import lombok.Getter;
 

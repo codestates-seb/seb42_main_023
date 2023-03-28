@@ -1,14 +1,12 @@
-package com.teamdragon.dragonmoney.app.domain.information.information.house.happyhouse.repository;
+package com.teamdragon.dragonmoney.app.domain.information.house.happyhouse.repository;
 
 import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.core.types.Path;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
-import com.teamdragon.dragonmoney.app.domain.information.information.house.happyhouse.entity.HappyHouse;
-import com.teamdragon.dragonmoney.app.domain.information.information.house.happyhouse.entity.QHappyHouse;
-import com.teamdragon.dragonmoney.app.domain.information.information.house.happyhouse.service.HappyHouseAreaCode;
-import com.teamdragon.dragonmoney.app.domain.information.information.house.happyhouse.service.HappyHouseState;
-import com.teamdragon.dragonmoney.app.domain.posts.entity.Posts;
+import com.teamdragon.dragonmoney.app.domain.information.house.happyhouse.entity.HappyHouse;
+import com.teamdragon.dragonmoney.app.domain.information.house.happyhouse.service.HappyHouseAreaCode;
+import com.teamdragon.dragonmoney.app.domain.information.house.happyhouse.service.HappyHouseState;
 import com.teamdragon.dragonmoney.app.global.pagenation.QueryDslUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -17,7 +15,7 @@ import org.springframework.data.support.PageableExecutionUtils;
 
 import java.util.List;
 
-import static com.teamdragon.dragonmoney.app.domain.information.information.house.happyhouse.entity.QHappyHouse.*;
+import static com.teamdragon.dragonmoney.app.domain.information.house.happyhouse.entity.QHappyHouse.happyHouse;
 
 @RequiredArgsConstructor
 public class HappyHouseRepositoryImpl implements HappyHouseRepositoryCustom{

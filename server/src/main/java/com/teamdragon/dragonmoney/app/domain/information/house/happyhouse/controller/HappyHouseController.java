@@ -1,11 +1,10 @@
-package com.teamdragon.dragonmoney.app.domain.information.information.house.happyhouse.controller;
+package com.teamdragon.dragonmoney.app.domain.information.house.happyhouse.controller;
 
-import com.teamdragon.dragonmoney.app.domain.information.information.house.happyhouse.dto.HappyHouseDto;
-import com.teamdragon.dragonmoney.app.domain.information.information.house.happyhouse.entity.HappyHouse;
-import com.teamdragon.dragonmoney.app.domain.information.information.house.happyhouse.service.HappyHouseAreaCode;
-import com.teamdragon.dragonmoney.app.domain.information.information.house.happyhouse.service.HappyHouseService;
-import com.teamdragon.dragonmoney.app.domain.information.information.house.happyhouse.service.HappyHouseState;
-import com.teamdragon.dragonmoney.app.domain.posts.dto.PostsDto;
+import com.teamdragon.dragonmoney.app.domain.information.house.happyhouse.dto.HappyHouseDto;
+import com.teamdragon.dragonmoney.app.domain.information.house.happyhouse.entity.HappyHouse;
+import com.teamdragon.dragonmoney.app.domain.information.house.happyhouse.service.HappyHouseAreaCode;
+import com.teamdragon.dragonmoney.app.domain.information.house.happyhouse.service.HappyHouseService;
+import com.teamdragon.dragonmoney.app.domain.information.house.happyhouse.service.HappyHouseState;
 import com.teamdragon.dragonmoney.app.global.exception.ValidFailException;
 import com.teamdragon.dragonmoney.app.global.exception.ValidFailExceptionCode;
 import lombok.RequiredArgsConstructor;
@@ -31,8 +30,8 @@ public class HappyHouseController {
     // 목록 조회
     @GetMapping("/recruit/happy-house")
     public ResponseEntity<HappyHouseDto.HappyHouseListRes> getPostsList(@Valid @Positive @RequestParam int page,
-                                                              @Valid @NotBlank @RequestParam String location,
-                                                              @Valid @NotBlank @RequestParam String state) {
+                                                                        @Valid @NotBlank @RequestParam String location,
+                                                                        @Valid @NotBlank @RequestParam String state) {
         HappyHouseAreaCode locationEnum = checkLocation(location);
         HappyHouseState stateEnum = checkState(state);
         Page<HappyHouse> happyHouseList = happyHouseService.findHappyHouseList(page, locationEnum, stateEnum);

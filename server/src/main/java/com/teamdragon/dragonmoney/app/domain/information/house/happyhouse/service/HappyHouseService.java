@@ -1,8 +1,8 @@
-package com.teamdragon.dragonmoney.app.domain.information.information.house.happyhouse.service;
+package com.teamdragon.dragonmoney.app.domain.information.house.happyhouse.service;
 
-import com.teamdragon.dragonmoney.app.domain.information.information.house.happyhouse.dto.HappyHouseApiDto;
-import com.teamdragon.dragonmoney.app.domain.information.information.house.happyhouse.entity.HappyHouse;
-import com.teamdragon.dragonmoney.app.domain.information.information.house.happyhouse.repository.HappyHouseRepository;
+import com.teamdragon.dragonmoney.app.domain.information.house.happyhouse.dto.HappyHouseApiDto;
+import com.teamdragon.dragonmoney.app.domain.information.house.happyhouse.entity.HappyHouse;
+import com.teamdragon.dragonmoney.app.domain.information.house.happyhouse.repository.HappyHouseRepository;
 import lombok.RequiredArgsConstructor;
 import org.apache.http.HttpHeaders;
 import org.springframework.beans.factory.annotation.Value;
