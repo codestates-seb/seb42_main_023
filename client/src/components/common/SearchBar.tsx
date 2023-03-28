@@ -80,26 +80,22 @@ const SearchBar: React.FC = () => {
     if (input[0] === '#') {
       validation();
     } else {
+      dispatch(setPostSetting('/search'));
       //tag x keyword o
       if (tag.length === 0 && input.length !== 0) {
-        dispatch(setPostSetting('/search'));
         dispatch(setSearchQuery(`&keyword=${input}&tags=`));
-        navigation('/search');
       }
       //tag o keyword x
       if (tag.length !== 0 && input.length === 0) {
         const tagstring = tag.join();
-        dispatch(setPostSetting('/search'));
         dispatch(setSearchQuery(`&keyword=&tags=${tagstring}`));
-        navigation('/search');
       }
       //tag o keyword o
       if (tag.length !== 0 && input.length !== 0) {
         const tagstring = tag.join();
-        dispatch(setPostSetting('/search'));
         dispatch(setSearchQuery(`&keyword=${input}&tags=${tagstring}`));
-        navigation('/search');
       }
+      navigation('/search');
     }
   };
   //엔터로 검색

@@ -122,6 +122,7 @@ const Mention = styled.span`
   margin-top: 8px;
   color: var(--sub-font-color);
   padding-bottom: 70px;
+  font-weight: 300;
 `;
 const TooltipWrap = styled.div<StyleProps>`
   position: absolute;

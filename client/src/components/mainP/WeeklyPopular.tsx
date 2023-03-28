@@ -76,7 +76,7 @@ const Item = styled.li`
   display: flex;
   justify-content: center;
   align-items: center;
-  padding: 0 10px;
+  padding: 0 30px;
   h1 {
     font-size: 20px;
     margin-bottom: 4px;

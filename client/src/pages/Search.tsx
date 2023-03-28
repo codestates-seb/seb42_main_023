@@ -2,13 +2,9 @@ import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import PostList from '../components/mainP/PostList';
 import DropdownButton from '../components/mainP/DropdownButton';
-import { AiOutlineTrophy } from 'react-icons/ai';
-import { NavBtn } from '../components/common/Btn';
 import { useAppDispatch, useAppSelector } from '../hooks';
 import { postListApi } from '../api/postListapi';
-import { setPostSetting } from '../slices/mainSlice';
 import Pagenation from '../components/common/Pagination';
-import { RiMoneyDollarCircleLine } from 'react-icons/ri';
 import { AiOutlineExclamationCircle } from 'react-icons/ai';
 
 const Search = () => {
@@ -27,7 +23,6 @@ const Search = () => {
   });
   const { data, isSuccess, refetch } = postListquery;
 
-  //TODO: refetch
   useEffect(() => {
     refetch();
   }, []);
