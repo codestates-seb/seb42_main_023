@@ -43,15 +43,15 @@ const ReportReview: React.FC<Props> = ({ setIsReviewOpen }) => {
                   <th>신고대상</th>
                   <td>{data.targetType}</td>
                 </tr>
-                <tr className="row-even">
+                <tr>
                   <th>작성자</th>
                   <td>{data.writer}</td>
                 </tr>
-                <tr>
+                <tr className="row-even">
                   <th>신고자</th>
                   <td>{data.reporter}</td>
                 </tr>
-                <tr className="row-even">
+                <tr>
                   <th>사유</th>
                   <td>{data.description}</td>
                 </tr>
