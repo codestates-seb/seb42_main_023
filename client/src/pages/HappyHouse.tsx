@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import NavRealEstate from '../components/common/NavRealEstate';
 import styled from 'styled-components';
 import { AiFillHome } from 'react-icons/ai';
 import { WhiteBtn } from '../components/common/Btn';
@@ -52,7 +51,6 @@ const HappyHouse: React.FC = () => {
 
   return (
     <MainContainer>
-      <NavRealEstate />
       <div className="content-container">
         <Title>
           <h1>청년들을 위한 임대 · 행복주택공고</h1>
@@ -184,11 +182,9 @@ const HappyHouse: React.FC = () => {
 export default HappyHouse;
 
 const MainContainer = styled.div`
-  display: flex;
   > .content-container {
     border: 1px solid var(--border-color);
-    margin-left: 20px;
-    width: calc(100% - 160px);
+    width: 100%;
     height: 100%;
     padding: 20px;
     > .total-items {
