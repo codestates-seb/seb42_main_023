@@ -15,7 +15,7 @@ import org.springframework.data.support.PageableExecutionUtils;
 
 import java.util.List;
 
-import static com.teamdragon.dragonmoney.app.domain.informations.information.house.happyhouse.entity.QHappyHouse.*;
+import static com.teamdragon.dragonmoney.app.domain.information.house.happyhouse.entity.QHappyHouse.happyHouse;
 
 @RequiredArgsConstructor
 public class HappyHouseRepositoryImpl implements HappyHouseRepositoryCustom{
