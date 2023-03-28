@@ -103,6 +103,11 @@ export interface CommentType {
   isThumbdown: boolean;
   length: number;
   content: string;
+  isOpenIntro: boolean;
+  isCommentOpenIntro: boolean;
+  isReplyOpenIntro: boolean;
+  setIsOpenCommentIntro?: (bool: boolean) => void;
+  setIsOpenReplyIntro?: (bool: boolean) => void;
 }
 
 export interface ReplyType {
@@ -118,6 +123,11 @@ export interface ReplyType {
   isThumbup: boolean;
   isThumbdown: boolean;
   content: string;
+  //
+  // isOpenIntro: boolean;
+  // isCommentOpenIntro: boolean;
+  // isReplyOpenIntro: boolean;
+  // setIsOpenReplyIntro?: (bool: boolean) => void;
 }
 
 export interface CommentProps {
@@ -125,14 +135,40 @@ export interface CommentProps {
 }
 
 export interface ReplyProps {
+  key: number;
   replyInfo: ReplyType;
   idx: number;
   replyPage: number;
+  setIsOpenReport?: (bool: boolean) => void;
+  setIsOpenDelete?: (bool: boolean) => void;
+  // setIsOpenCommentIntro?: (bool: boolean) => void;
+  // setIsOpenReplyIntro?: (bool: boolean) => void;
+  setDeleteType?: (str: string) => void;
+  isOpenReport: boolean;
+  isOpenDelete: boolean;
+  // isOpenIntro: boolean;
+  // isCommentOpenIntro: boolean;
+  // isReplyOpenIntro: boolean;
 }
 
 export interface CommentInputProps {
   setCommentCnt: (cnt: number) => void;
   commentCnt: number;
+}
+
+export interface ReportProps {
+  setIsOpenReport?: (bool: boolean) => void;
+  setIsOpenDelete?: (bool: boolean) => void;
+  setDeleteType?: (str: string) => void;
+  isOpenIntro: boolean;
+  isOpenReport: boolean;
+  isOpenDelete: boolean;
+
+  isOpenIntro: boolean;
+  isCommentOpenIntro: boolean;
+  isReplyOpenIntro: boolean;
+  setIsOpenCommentIntro?: (bool: boolean) => void;
+  setIsOpenReplyIntro?: (bool: boolean) => void;
 }
 
 export interface OnClick {

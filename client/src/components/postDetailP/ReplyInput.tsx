@@ -32,8 +32,8 @@ const ReplyInput: React.FC<CommentProps> = ({ commentInfo }: CommentProps) => {
   const setReplys = replyMutation[0];
 
   //댓글
-  const commentQuery = commentsApi.useGetCommentQuery({ postId, page });
-  const { refetch } = commentQuery;
+  // const commentQuery = commentsApi.useGetCommentQuery({ postId, page });
+
   // 답글 추가
   const addReplyHandler = async () => {
     console.log('commentId', commentId);
@@ -44,7 +44,6 @@ const ReplyInput: React.FC<CommentProps> = ({ commentInfo }: CommentProps) => {
     });
     dispatch(addReplyEdit(false));
     replyRef.current!.value = '';
-    refetch();
   };
 
   const valueCheck = (event: React.ChangeEvent<HTMLInputElement>): void => {

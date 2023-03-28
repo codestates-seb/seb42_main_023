@@ -9,22 +9,27 @@ function HeaderNav() {
   const { pathname } = useLocation();
   return (
     <nav>
-      {['/seoulrent', '/recommendedloan', '/happyhouse'].includes(pathname) ? (
-        <NavBtnClicked onClick={() => navigate('/happyhouse')}>
-          집구하기
-        </NavBtnClicked>
+      {'/' === pathname ? (
+        <NavBtnClicked>커뮤니티</NavBtnClicked>
       ) : (
-        <NavBtn onClick={() => navigate('/happyhouse')}>집구하기</NavBtn>
+        <NavBtn onClick={() => navigate('/')}>커뮤니티</NavBtn>
       )}
-      {['/stock'].includes(pathname) ? (
-        <NavBtnClicked onClick={() => navigate('/')}>뜨는주식</NavBtnClicked>
+      {'/seoulrent' === pathname ? (
+        <NavBtnClicked>서울전월세평균</NavBtnClicked>
       ) : (
-        <NavBtn onClick={() => navigate('/')}>뜨는주식</NavBtn>
+        <NavBtn onClick={() => navigate('/seoulrent')}>서울전월세평균</NavBtn>
       )}
-      {['/calculator'].includes(pathname) ? (
-        <NavBtnClicked onClick={() => navigate('/')}>세금계산기</NavBtnClicked>
+      {'/recommendedloan' === pathname ? (
+        <NavBtnClicked>공공대출추천</NavBtnClicked>
       ) : (
-        <NavBtn onClick={() => navigate('/')}>세금계산기</NavBtn>
+        <NavBtn onClick={() => navigate('/recommendedloan')}>
+          공공대출추천
+        </NavBtn>
+      )}
+      {'/happyhouse' === pathname ? (
+        <NavBtnClicked>공공주택공고</NavBtnClicked>
+      ) : (
+        <NavBtn onClick={() => navigate('/happyhouse')}>공공주택공고</NavBtn>
       )}
     </nav>
   );

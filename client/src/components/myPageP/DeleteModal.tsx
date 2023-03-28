@@ -9,12 +9,10 @@ import Cookies from 'js-cookie';
 function DeleteModal() {
   const dispatch = useAppDispatch();
   const modalRef = useRef<HTMLDivElement>(null);
-  // TODO: 아래 코드를 옮겨주세요 (20 ~ 21번째 줄)
   const name = localStorage.getItem('name');
   const [deleteMember] = useDeleteMemberMutation();
 
   const DeleteAccounthandler = () => {
-    // TODO: 아래 코드를 옮겨주세요 (30 ~ 34번째 줄)
     deleteMember(name);
     Cookies.remove('Authorization');
     Cookies.remove('Refresh');

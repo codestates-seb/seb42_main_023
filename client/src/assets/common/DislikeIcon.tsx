@@ -10,12 +10,12 @@ function DislikeIcon({ checked }: Props) {
   return (
     <>
       {checked ? (
-        <FaThumbsDown style={{ cursor: 'pointer' }} size="12" color="#94969b" />
+        <FaThumbsDown style={{ cursor: 'pointer' }} size="16" color="#CA0000" />
       ) : (
         <FaRegThumbsDown
           style={{ cursor: 'pointer' }}
-          size="12"
-          color="#94969b"
+          size="16"
+          color="#CA0000"
         />
       )}
     </>

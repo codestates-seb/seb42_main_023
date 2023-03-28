@@ -81,10 +81,13 @@ const Button = styled.button`
   cursor: pointer;
   width: 78px;
   height: 40px;
-  background-color: #fff;
+  transform: translateY(-4px);
   svg {
     margin-left: 2px;
     transform: translateY(2px);
+  }
+  :hover {
+    color: var(--hover-font-gray-color);
   }
 `;
 

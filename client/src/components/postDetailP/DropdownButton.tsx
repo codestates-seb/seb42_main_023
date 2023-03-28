@@ -13,8 +13,20 @@ import { useNavigate, useParams } from 'react-router-dom';
 
 interface Props {
   memberName: string;
+  setIsOpenReport?: (bool: boolean) => void;
+  setIsOpenDelete: (bool: boolean) => void;
+  setDeleteType?: (str: string) => void;
+  isOpenReport: boolean;
+  isOpenDelete: boolean;
 }
-const DropdownButton = ({ memberName }: Props) => {
+const DropdownButton = ({
+  memberName,
+  setIsOpenReport,
+  setIsOpenDelete,
+  setDeleteType,
+  isOpenReport,
+  isOpenDelete,
+}: Props) => {
   const dispatch = useAppDispatch();
   const state = useAppSelector((state) => {
     return state;
@@ -30,18 +42,18 @@ const DropdownButton = ({ memberName }: Props) => {
 
   // 삭제 확인 모달창
   const confirmDeleteHandler = (): void => {
-    dispatch(setIsOpenDelete('post' in state && state.post.isOpenDelete));
+    setIsOpenDelete?.(!isOpenDelete!);
   };
 
   const typeChecker = (event: React.MouseEvent<HTMLElement>) => {
     if (event.target instanceof HTMLElement) {
-      dispatch(setDeleteType(event.target.id));
+      setDeleteType?.(event.target.id);
     }
   };
 
   // 신고 모달창 오픈
   const reportHandler = (): void => {
-    dispatch(setIsOpenReport('post' in state && state.post?.isOpenReport));
+    setIsOpenReport?.(!isOpenReport!);
   };
 
   // Select option에 따른 로직
@@ -102,7 +114,6 @@ const Button = styled.button`
   background-color: #fff;
   svg {
     margin-left: 2px;
-    transform: translateX(-50px) translateY(3px);
   }
 `;
 

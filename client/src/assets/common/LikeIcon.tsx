@@ -14,12 +14,12 @@ function LikeIcon({ checked }: Props) {
   return (
     <>
       {checked ? (
-        <FaThumbsUp style={{ cursor: 'pointer' }} size="12" color="#94969b" />
+        <FaThumbsUp style={{ cursor: 'pointer' }} size="16" color="#0069CA" />
       ) : (
         <FaRegThumbsUp
           style={{ cursor: 'pointer' }}
-          size="12"
-          color="#94969b"
+          size="16"
+          color="#0069CA"
         />
       )}
     </>

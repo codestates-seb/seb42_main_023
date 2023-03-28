@@ -20,11 +20,12 @@ function PostBtn() {
 
 export default PostBtn;
 const Btn = styled.button`
-  padding: 6px 20px;
+  padding: 4px 14px;
   box-sizing: border-box;
   border: 1px solid var(--border-color);
   background-color: #fff;
   margin-left: 4px;
+  font-size: 14px;
   :hover {
     background-color: var(--hover-button-color);
     transition: 0.3s;

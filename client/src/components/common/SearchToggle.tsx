@@ -1,29 +1,34 @@
 import React from 'react';
 import { useAppDispatch, useAppSelector } from '../../hooks';
 import { setSearch } from '../../slices/headerSlice';
-import { SearchBtn, ClickSearchBtn } from './Btn';
+import { SearchBtn } from './Btn';
 import { setPostSetting } from '../../slices/mainSlice';
 import {
   setInput,
   setSearchQuery,
   deleteAllSarchTag,
 } from '../../slices/headerSlice';
+import { GrClose } from 'react-icons/gr';
+import { useNavigate } from 'react-router-dom';
 
 function Search() {
+  const navigation = useNavigate();
   const dispatch = useAppDispatch();
   const { search } = useAppSelector(({ header }) => header);
   const cancleSearchHandler = () => {
-    console.log('검색닫기');
     dispatch(setInput(''));
     dispatch(deleteAllSarchTag());
     dispatch(setSearchQuery(''));
     dispatch(setPostSetting(''));
     dispatch(setSearch(!search));
+    navigation('/');
   };
   return (
     <>
       {search ? (
-        <ClickSearchBtn onClick={cancleSearchHandler}>검색취소</ClickSearchBtn>
+        <button onClick={cancleSearchHandler}>
+          <GrClose />
+        </button>
       ) : (
         <SearchBtn
           onClick={() => {

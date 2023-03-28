@@ -10,26 +10,17 @@ import TimeIcon from '../../assets/common/TimeIcon';
 import Reply from './Reply';
 import { repliesApi } from '../../api/replyApi';
 import { commentsApi } from '../../api/commentApi';
-import {
-  setIsOpenDelete,
-  setIsOpenReport,
-  setReportType,
-  setDeleteType,
-  setSelectedMember,
-} from '../../slices/postSlice';
+import { setReportType, setSelectedMember } from '../../slices/postSlice';
 import {
   PostStateType,
   CommentStateType,
   ReplyStateType,
   CommentType,
   ReplyType,
+  ReportProps,
+  CommentProps,
 } from '../../types/PostDetail';
-import {
-  setCommentId,
-  isEdit,
-  setIsEdit,
-  setIsOpenIntro,
-} from '../../slices/commentSlice';
+import { setCommentId, isEdit, setIsEdit } from '../../slices/commentSlice';
 import {
   isOpened,
   setIsOpened,
@@ -39,9 +30,21 @@ import { timeSince } from '../mainP/Timecalculator';
 import { membersApi } from '../../api/memberapi';
 import { CommentInputProps } from '../../types/PostDetail';
 
-const Comment: React.FC<Partial<CommentInputProps>> = ({
+const Comment: React.FC<
+  Partial<CommentInputProps & ReportProps & CommentProps>
+> = ({
   commentCnt,
-}: Partial<CommentInputProps>) => {
+  isOpenReport,
+  setIsOpenReport,
+  setIsOpenDelete,
+  setDeleteType,
+  setIsOpenCommentIntro,
+  setIsOpenReplyIntro,
+  isOpenDelete,
+  // isOpenIntro,
+  isCommentOpenIntro,
+  isReplyOpenIntro,
+}: Partial<CommentInputProps & ReportProps & CommentProps>) => {
   const dispatch = useAppDispatch();
   const state = useAppSelector(
     (
@@ -52,6 +55,7 @@ const Comment: React.FC<Partial<CommentInputProps>> = ({
   );
 
   const [page, setPage] = useState<number>(1);
+
   const loginUserName = window.localStorage.getItem('name');
   const params = useParams();
   const postId = params.postId;
@@ -69,7 +73,7 @@ const Comment: React.FC<Partial<CommentInputProps>> = ({
   const [replyPage, setReplyPage] = useState<number>(1);
   const replyQuery = repliesApi.useGetReplyQuery({ commentId, replyPage });
   const { isSuccess, data } = replyQuery;
-  const contentEditInput = useRef<HTMLInputElement>(null);
+  const commentEditInput = useRef<HTMLInputElement>(null);
 
   //  멤버 정보 조회
   const memeberQuery = membersApi.useGetMemberQuery({ name: selectedMember });
@@ -84,10 +88,6 @@ const Comment: React.FC<Partial<CommentInputProps>> = ({
   const [addThumbDown] = addThumbDownMutation;
   const removeThumbDownMutation = commentsApi.useRemoveThumbDownMutation();
   const [removeThumbDown] = removeThumbDownMutation;
-
-  // 게시글, 답글 작성자 소개페이지 오픈 여부
-  const isOpeReplyIntro = 'reply' in state && state?.reply.isOpeneIntro;
-  const isOpePostIntro = 'post' in state && state?.post.isOpeneIntro;
 
   // 유저 정보 조회
   // 답글 Open 여부 확인을 위한 배열 생성
@@ -173,13 +173,13 @@ const Comment: React.FC<Partial<CommentInputProps>> = ({
 
   // 삭제 확인 모달창
   const confirmDeleteHandler = (): void => {
-    dispatch(setIsOpenDelete((state as PostStateType).post.isOpenDelete));
+    setIsOpenDelete?.(!isOpenDelete!);
   };
 
   // 삭제 타입 확인
   const deleteTypeChecker = (event: React.MouseEvent<HTMLElement>): void => {
     if (event.target instanceof HTMLElement) {
-      dispatch(setDeleteType(event.target.id));
+      setDeleteType?.(event.target.id);
     }
   };
 
@@ -192,25 +192,16 @@ const Comment: React.FC<Partial<CommentInputProps>> = ({
   };
   // 소개 페이지 오픈
   const IntroHandler = (event: React.MouseEvent<HTMLElement>) => {
-    if (
-      !isOpePostIntro &&
-      !isOpeReplyIntro &&
-      'comment' in state &&
-      event.target instanceof HTMLElement
-    ) {
-      dispatch(setIsOpenIntro(state.comment.isOpeneIntro));
+    if (event.target instanceof HTMLElement) {
+      setIsOpenCommentIntro?.(!isCommentOpenIntro!);
+      console.log('isOpenIntro', isCommentOpenIntro!);
       dispatch(setCommentId(Number(event.target.dataset.commentid)));
       dispatch(setSelectedMember(event.target.id));
-      console.log('userName', event.target.id);
     }
   };
   const outClickIntroHandler = (event: React.MouseEvent<HTMLElement>) => {
-    if (
-      'comment' in state &&
-      state.comment.isOpeneIntro &&
-      event.target instanceof HTMLElement
-    ) {
-      dispatch(setIsOpenIntro(false));
+    if (event.target instanceof HTMLElement) {
+      setIsOpenCommentIntro?.(false);
     }
   };
 
@@ -254,32 +245,41 @@ const Comment: React.FC<Partial<CommentInputProps>> = ({
                 return reply.commentId === comment.commentId;
               });
             // 시간 계산
+
             const time = timeSince(comment.createdAt);
+            const enterHandler = (
+              event: React.KeyboardEvent<HTMLInputElement>,
+            ): void => {
+              if (!commentEditInput.current?.value) return;
+              if (event.key === 'Enter') {
+                dispatch(setIsEdit(idx));
+                updateMutation({
+                  postId: postId,
+                  commentId: comment.commentId,
+                  content: commentEditInput.current?.value,
+                });
+              }
+            };
+
             // 답글 수정 여부
             const commentIsEdit =
               comment.modifiedAt !== comment.createdAt ? true : false;
 
             return (
               <>
-                <CommentInfo
-                  key={comment?.commentId}
-                  onClick={outClickIntroHandler}
-                >
+                <CommentInfo key={comment?.commentId}>
                   <ul className="content-info">
-                    <li
-                      className="image"
-                      onClick={IntroHandler}
-                      data-memberName={comment?.memberName}
-                    >
+                    <li className="image" data-memberName={comment?.memberName}>
                       <img
                         src={comment.memberImage}
                         id={comment.memberName}
                         data-img={comment.memberImage}
                         data-commentId={comment.commentId}
+                        onClick={IntroHandler}
                       ></img>
                     </li>
                     {'comment' in state &&
-                    state.comment.isOpeneIntro &&
+                    isCommentOpenIntro! &&
                     comment?.commentId === state.comment?.commentId ? (
                       <IntorductionContainer>
                         <IntroInfo>
@@ -317,15 +317,19 @@ const Comment: React.FC<Partial<CommentInputProps>> = ({
                               : 'none',
                         }}
                         onClick={(): void => {
-                          if (!contentEditInput.current?.value) {
+                          if (
+                            !commentEditInput.current?.value &&
+                            comment.content !== '삭제된 댓글입니다.'
+                          ) {
                             dispatch(setIsEdit(idx));
                             return;
                           }
+
                           dispatch(setIsEdit(idx));
                           updateMutation({
                             postId: postId,
                             commentId: comment.commentId,
-                            content: contentEditInput.current?.value,
+                            content: commentEditInput.current?.value,
                           });
                         }}
                       >
@@ -341,10 +345,14 @@ const Comment: React.FC<Partial<CommentInputProps>> = ({
                               : 'none',
                         }}
                         onClick={(): void => {
-                          dispatch(setIsEdit(idx));
+                          if (comment.content !== '삭제된 댓글입니다.')
+                            dispatch(setIsEdit(idx));
                         }}
                       >
-                        수정
+                        {comment.content === '삭제된 댓글입니다.' ||
+                        comment.content === '신고된 댓글입니다.'
+                          ? null
+                          : '수정'}
                       </li>
                     )}
                     {loginUserName === comment.memberName ? (
@@ -365,7 +373,10 @@ const Comment: React.FC<Partial<CommentInputProps>> = ({
                           confirmDeleteHandler();
                         }}
                       >
-                        삭제
+                        {comment.content === '삭제된 댓글입니다.' ||
+                        comment.content === '신고된 댓글입니다.'
+                          ? null
+                          : '삭제'}
                       </li>
                     ) : null}
 
@@ -385,11 +396,8 @@ const Comment: React.FC<Partial<CommentInputProps>> = ({
                             : '3px 228px 0 5px',
                       }}
                       onClick={(event): void => {
-                        dispatch(
-                          setIsOpenReport(
-                            'post' in state && state.post.isOpenReport,
-                          ),
-                        );
+                        setIsOpenReport?.(!isOpenReport!);
+                        console.log('as', isOpenReport);
                         reportTypeChecker(event);
                       }}
                     >
@@ -423,19 +431,29 @@ const Comment: React.FC<Partial<CommentInputProps>> = ({
                     <input
                       className="edit-content"
                       placeholder={comment.content}
-                      ref={contentEditInput}
+                      ref={commentEditInput}
+                      onKeyDown={enterHandler}
                     ></input>
                   ) : (
                     <div className="content">
                       {comment.content}
-                      {commentIsEdit && !comment.isDeleted ? '(수정됨)' : null}
+                      {commentIsEdit && comment.content !== '삭제된 댓글입니다.'
+                        ? '(수정됨)'
+                        : commentIsEdit &&
+                          comment.content !== '신고된 댓글입니다.'
+                        ? '(수정됨)'
+                        : null}
                     </div>
                   )}
                   <ReplyBtn
                     onClick={(): void => {
-                      if ('comment' in state && state.comment.isOpeneIntro) {
-                        dispatch(setIsOpenIntro(false));
-                      }
+                      // 답글 눌릴 경우 그 이외 답글들 다 가리기
+                      const open = Array.from(
+                        { length: commentQuery.data?.comments?.length },
+                        (el) => (el = false),
+                      );
+                      dispatch(isOpened(open));
+
                       dispatch(setCommentId(comment.commentId));
                       dispatch(setIsOpened(idx));
                     }}
@@ -455,6 +473,13 @@ const Comment: React.FC<Partial<CommentInputProps>> = ({
                               replyInfo={reply}
                               idx={idx}
                               replyPage={replyPage}
+                              setIsOpenReport={setIsOpenReport!}
+                              setIsOpenDelete={setIsOpenDelete!}
+                              setIsOpenReplyIntro={setIsOpenReplyIntro!}
+                              setDeleteType={setDeleteType!}
+                              isOpenReport={isOpenReport!}
+                              isOpenDelete={isOpenDelete!}
+                              isReplyOpenIntro={isReplyOpenIntro!}
                             ></Reply>
                           </>
                         );

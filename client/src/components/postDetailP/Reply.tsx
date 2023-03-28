@@ -15,25 +15,29 @@ import {
   CommentStateType,
   ReplyProps,
   ReplyType,
+  ReportProps,
 } from '../../types/PostDetail';
 import { repliesApi } from '../../api/replyApi';
-import {
-  setIsOpenDelete,
-  setIsOpenReport,
-  setReportType,
-  setDeleteType,
-  setSelectedMember,
-} from '../../slices/postSlice';
+import { setReportType, setSelectedMember } from '../../slices/postSlice';
 import { timeSince } from '../mainP/Timecalculator';
 import { setCommentId } from '../../slices/commentSlice';
 import _ from 'lodash';
 import { membersApi } from '../../api/memberapi';
 
-const Reply: React.FC<ReplyProps> = ({
+const Reply: React.FC<Partial<ReplyProps & ReportProps>> = ({
   replyInfo,
   idx,
   replyPage,
-}: ReplyProps) => {
+  setIsOpenReport,
+  setIsOpenDelete,
+  setDeleteType,
+  isOpenReport,
+  isOpenDelete,
+  isOpenIntro,
+  isCommentOpenIntro,
+  isReplyOpenIntro,
+  setIsOpenReplyIntro,
+}: Partial<ReplyProps & ReportProps>) => {
   const replyEditInput = useRef<HTMLInputElement>(null);
   const dispatch = useAppDispatch();
   const state = useAppSelector(
@@ -75,7 +79,7 @@ const Reply: React.FC<ReplyProps> = ({
 
   // 답글 수정 여부
   const replyIsEdit =
-    replyInfo.createdAt !== replyInfo.modifiedAt ? true : false;
+    replyInfo?.createdAt !== replyInfo?.modifiedAt ? true : false;
   // 답글 좋아요 클릭 함수
   const ReplyLiikeHandler = (reply: ReplyType): void => {
     const replyId = reply.replyId;
@@ -144,12 +148,12 @@ const Reply: React.FC<ReplyProps> = ({
 
   // 삭제 확인 모달창
   const confirmDeleteHandler = (): void => {
-    dispatch(setIsOpenDelete((state as PostStateType).post.isOpenDelete));
+    setIsOpenDelete?.(!isOpenDelete!);
   };
 
   const deleteTypeChecker = (event: React.MouseEvent<HTMLElement>) => {
     if (event.target instanceof HTMLElement) {
-      dispatch(setDeleteType(event.target.id));
+      setDeleteType?.(event.target.id);
     }
   };
 
@@ -176,26 +180,29 @@ const Reply: React.FC<ReplyProps> = ({
     }
   };
   // 시간 계산
-  const time = timeSince(replyInfo.createdAt);
-  const enterHandler = (
-    event: React.KeyboardEvent<HTMLInputElement>,
-    fun: object,
-  ): void => {
+  const time = timeSince(replyInfo!.createdAt);
+
+  const enterHandler = (event: React.KeyboardEvent<HTMLInputElement>): void => {
     if (!replyEditInput.current?.value) return;
     if (event.key === 'Enter') {
+      dispatch(setIsEdit(idx!));
+      updateMutation({
+        replyId: replyInfo?.replyId,
+        content: replyEditInput.current?.value,
+      });
     }
   };
 
   return (
     <ReplyContainer>
-      <ReplyInfo key={replyInfo.replyId}>
+      <ReplyInfo key={replyInfo?.replyId}>
         <ul className="reply-info">
           <li className="image" onClick={IntroHandler}>
             <img
               src={replyInfo && replyInfo.memberImage}
-              id={replyInfo.memberName}
-              data-img={replyInfo.memberImage}
-              data-replyId={replyInfo.replyId}
+              id={replyInfo?.memberName}
+              data-img={replyInfo?.memberImage}
+              data-replyId={replyInfo?.replyId}
             ></img>
           </li>
           {'reply' in state &&
@@ -220,9 +227,9 @@ const Reply: React.FC<ReplyProps> = ({
           <li className="nickname">{replyInfo && replyInfo.memberName}</li>
           <li className="reply-created-time">{time} 전</li>
           {'reply' in state &&
-          replyInfo.replyId === replyId &&
+          replyInfo?.replyId === replyId &&
           ((replySucccess && state.reply.isEdit !== undefined) || null) &&
-          state.reply.isEdit[idx] ? (
+          state.reply.isEdit[idx!] ? (
             <li
               className="reply-update"
               id="edit"
@@ -232,17 +239,20 @@ const Reply: React.FC<ReplyProps> = ({
               }}
               onClick={(event): void => {
                 if (!replyEditInput.current?.value) {
-                  dispatch(setIsEdit(idx));
+                  dispatch(setIsEdit(idx!));
                   return;
                 }
-                dispatch(setIsEdit(idx));
+                dispatch(setIsEdit(idx!));
                 updateMutation({
                   replyId: replyInfo.replyId,
                   content: replyEditInput.current?.value,
                 });
               }}
             >
-              변경
+              {replyInfo.content === '삭제된 답글입니다.' ||
+              replyInfo.content === '신고된 답글입니다.'
+                ? null
+                : '변경'}
             </li>
           ) : (
             <li
@@ -252,15 +262,18 @@ const Reply: React.FC<ReplyProps> = ({
                   loginUserName === replyInfo?.memberName ? 'block' : 'none',
               }}
               onClick={(): void => {
-                dispatch(setCommentId(replyInfo.commentId));
-                dispatch(setReplyId(replyInfo.replyId));
-                dispatch(setIsEdit(idx));
+                dispatch(setCommentId(replyInfo!.commentId));
+                dispatch(setReplyId(replyInfo!.replyId));
+                dispatch(setIsEdit(idx!));
               }}
             >
-              수정
+              {replyInfo?.content === '삭제된 답글입니다.' ||
+              replyInfo?.content === '신고된 답글입니다.'
+                ? null
+                : '수정'}
             </li>
           )}
-          {loginUserName === replyInfo.memberName ? (
+          {loginUserName === replyInfo?.memberName ? (
             <li
               className="reply-delete"
               id="답글"
@@ -271,27 +284,28 @@ const Reply: React.FC<ReplyProps> = ({
                     : '3px 195px 0 5px',
               }}
               onClick={(event: React.MouseEvent<HTMLElement>) => {
-                dispatch(setReplyId(replyInfo.replyId));
+                dispatch(setReplyId(replyInfo?.replyId));
                 deleteTypeChecker(event);
                 confirmDeleteHandler();
               }}
             >
-              삭제
+              {replyInfo?.content === '삭제된 답글입니다.' ||
+              replyInfo?.content === '신고된 답글입니다.'
+                ? null
+                : '삭제'}
             </li>
           ) : null}
 
           <li
             className="reply-report"
             data-category="reply"
-            data-replyId={String(replyInfo.replyId)}
+            data-replyId={String(replyInfo?.replyId)}
             style={{
               display:
                 loginUserName === replyInfo?.memberName ? 'none' : 'block',
             }}
             onClick={(event): void => {
-              dispatch(
-                setIsOpenReport('post' in state && state.post.isOpenReport),
-              );
+              setIsOpenReport?.(!isOpenReport);
               reportTypeChecker(event);
             }}
           >
@@ -299,35 +313,41 @@ const Reply: React.FC<ReplyProps> = ({
           </li>
           <button
             onClick={_.debounce(() => {
-              ReplyLiikeHandler(replyInfo);
+              ReplyLiikeHandler(replyInfo!);
             }, 500)}
           >
-            <LikeIcon checked={replyInfo?.isThumbup} />
+            <LikeIcon checked={replyInfo!.isThumbup} />
           </button>
           <li className="reply-likes">{replyInfo?.thumbupCount}</li>
           <button
             onClick={_.debounce(() => {
-              ReplyDislikeHandler(replyInfo);
+              ReplyDislikeHandler(replyInfo!);
             }, 500)}
           >
-            <DislikeIcon checked={replyInfo?.isThumbdown} />
+            <DislikeIcon checked={replyInfo!.isThumbdown} />
           </button>
           <li className="reply-dislikes">{replyInfo?.thumbDownCount}</li>
         </ul>
       </ReplyInfo>
       <ReplyContent>
         {'reply' in state &&
-        replyInfo.replyId === replyId &&
-        state.reply?.isEdit[idx] ? (
+        replyInfo!.replyId === replyId &&
+        state.reply?.isEdit[idx!] ? (
           // 댓글 수정 시 생기는 INPUT
           <input
             className="edit-reply"
             placeholder={replyInfo && replyInfo.content}
             ref={replyEditInput}
+            onKeyDown={enterHandler}
           ></input>
         ) : (
           <div className="content">
-            {replyInfo && replyInfo.content} {replyIsEdit ? '(수정됨)' : null}
+            {replyInfo!.content}
+            {replyIsEdit && replyInfo!.content !== '삭제된 답글입니다.'
+              ? '(수정됨)'
+              : replyIsEdit && replyInfo!.content !== '신고된 답글입니다.'
+              ? '(수정됨)'
+              : null}
           </div>
         )}
       </ReplyContent>

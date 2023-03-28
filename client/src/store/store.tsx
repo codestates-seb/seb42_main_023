@@ -9,7 +9,6 @@ import headerSlice from '../slices/headerSlice';
 import mainSlice from '../slices/mainSlice';
 import mypageSlice from '../slices/mypageSlice';
 import nicknameSlice from '../slices/nicknameSlice';
-import { repliesApi } from '../api/replyApi';
 import surveySlice from '../slices/surveySlice';
 import { postsApi, recommendedPostsApi } from '../api/postApi';
 import { commentsApi } from '../api/commentApi';
@@ -17,7 +16,7 @@ import { nicknameApi } from '../api/nicknameApi';
 import { tempTokenApi } from '../api/tempTokenAPi';
 import reportSlice from '../slices/reportSlice';
 import { apiSlice } from '../api/apiSlice';
-import { happyHouseApi } from '../api/happyHouseApi';
+import { repliesApi } from '../api/replyApi';
 
 const store = configureStore({
   reducer: {
@@ -42,7 +41,6 @@ const store = configureStore({
     [nicknameApi.reducerPath]: nicknameApi.reducer,
     [tempTokenApi.reducerPath]: tempTokenApi.reducer,
     [apiSlice.reducerPath]: apiSlice.reducer,
-    [happyHouseApi.reducerPath]: happyHouseApi.reducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware()
@@ -52,8 +50,8 @@ const store = configureStore({
       .concat(recommendedPostsApi.middleware)
       .concat(nicknameApi.middleware)
       .concat(tempTokenApi.middleware)
-      .concat(apiSlice.middleware), // TODO: 이거빼고 위에 concat은 다 지워도됌.
-  // .concat(logger),
+      .concat(apiSlice.middleware) // TODO: 이거빼고 위에 concat은 다 지워도됌.
+      .concat(logger),
 });
 
 export type RootState = ReturnType<typeof store.getState>;

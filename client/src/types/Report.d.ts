@@ -1,7 +1,7 @@
 export interface PageInfo {
   page: number;
   size: number;
-  totalElement: number;
+  totalElements: number;
   totalPages: number;
   orderby: string;
 }

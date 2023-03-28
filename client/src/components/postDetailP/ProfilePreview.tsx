@@ -1,10 +1,17 @@
 import React from 'react';
 import styled from 'styled-components';
+import { setMemberName } from '../../slices/headerSlice';
 
-const ProfilePreview: React.FC = () => {
+const ProfilePreview = ({ name }: { name: string }) => {
   return (
     <ProfilePreviewContainer>
-      <ConfirmUserInfoBtn>더 보기</ConfirmUserInfoBtn>
+      <ConfirmUserInfoBtn
+        onClick={() => {
+          setMemberName(name);
+        }}
+      >
+        더 보기
+      </ConfirmUserInfoBtn>
     </ProfilePreviewContainer>
   );
 };
