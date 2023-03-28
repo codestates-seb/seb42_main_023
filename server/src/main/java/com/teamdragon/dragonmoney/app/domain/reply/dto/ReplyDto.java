@@ -3,6 +3,7 @@ package com.teamdragon.dragonmoney.app.domain.reply.dto;
 import com.teamdragon.dragonmoney.app.domain.reply.entity.Reply;
 import com.teamdragon.dragonmoney.app.global.pagenation.PageInfo;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import org.hibernate.validator.constraints.Length;
 import org.springframework.data.domain.Page;
 
@@ -12,6 +13,7 @@ import java.util.List;
 
 public class ReplyDto {
     @Getter
+    @NoArgsConstructor
     public static class CreateReq {
         @NotBlank
         @Length(max=1000)
@@ -23,6 +25,7 @@ public class ReplyDto {
     }
 
     @Getter
+    @NoArgsConstructor
     public static class UpdateReq {
         @NotBlank
         @Length(max=1000)

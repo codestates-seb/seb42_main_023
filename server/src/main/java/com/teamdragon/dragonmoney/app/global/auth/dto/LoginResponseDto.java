@@ -11,5 +11,4 @@ public class LoginResponseDto {
     private String name;
     private String picture;
     private String role;
-
 }

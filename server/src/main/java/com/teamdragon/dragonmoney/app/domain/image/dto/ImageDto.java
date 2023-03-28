@@ -10,11 +10,15 @@ import java.util.List;
 public class ImageDto {
 
     @Getter
+    @NoArgsConstructor
+    @AllArgsConstructor
     public static class DeleteImagesReq {
         private List<ImageReqDto> removeImages;
     }
 
     @Getter
+    @AllArgsConstructor
+    @NoArgsConstructor
     public static class ImageReqDto {
         @NotNull
         @Positive
