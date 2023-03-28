@@ -193,13 +193,20 @@ const Table = styled.table`
   }
 `;
 
-const HandleBtn = styled(WhiteBtn)`
+const HandleBtn = styled.button`
   font-size: 13px;
   padding: 3px;
-  color: var(--hover-font-gray-color);
-  border: 1px solid #234e75;
+  border-radius: 2px;
+  background-color: rgba(0, 105, 202, 0.3);
+  &:hover {
+    background-color: rgba(0, 105, 202, 0.5);
+  }
 `;
 
 const DeleteBtn = styled(HandleBtn)`
-  border: 1px solid var(--error-red-color);
+  background-color: rgba(202, 0, 0, 0.3);
+  &:hover {
+    background-color: rgba(202, 0, 0, 0.5);
+    color: black;
+  }
 `;
