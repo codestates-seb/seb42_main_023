@@ -71,6 +71,8 @@ const baseQueryWithReauth = async (args: any, api: any, extraOptions: any) => {
       Cookies.remove('Authorization');
       Cookies.remove('Refresh');
       localStorage.clear();
+
+      alert('재로그인 해주세요.');
       window.location.href = '/';
     }
   }
