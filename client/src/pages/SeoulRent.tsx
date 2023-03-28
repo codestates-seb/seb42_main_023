@@ -26,23 +26,36 @@ function SeoulRent() {
   const [clickedArea, setClickedArea] = useState('');
   //클릭한 지역 월세
   const [monthlyRent, setMonthlyRent] = useState('');
+  //클릭한 지역 전세
+  const [diposit, setDiposit] = useState('');
+  //행복주택
+  const [happyHouse, setHappyHouse] = useState('');
 
   const moveOnArea = (area: CustomArea, evt: AreaEvent) => {
     const coords = { x: evt.nativeEvent.clientX, y: evt.nativeEvent.clientY };
     setClickedArea(area.id as string);
-    const dataItem = data.locationList.find(
-      (el: Seoulrent) => el.location === clickedArea,
-    );
-
-    console.log(dataItem);
     setTooltipPosition(coords);
+    const dataItem = data?.locationList.find(
+      (el: Seoulrent) => el.location === area.id,
+    );
+    setMonthlyRent(dataItem?.monthlyRent?.averageMonthlyFee ?? '');
+    setDiposit(dataItem?.jeonse?.averageDeposit ?? '');
+    setHappyHouse(dataItem?.happyHouse);
   };
+
+  if (!isSuccess) {
+    return <div>loading...</div>;
+  }
 
   return (
     <MainContent>
       <NavRealEstate />
       <div className="content-container">
-        {/* {isSuccess && data.locationList[0].location} */}
+        <h1>서울 전월세 평균 데이터</h1>
+        <Mention className="mention">
+          연립주택,오피스텔,단독다세대 주택을 기준으로 평수에 상관없이 수집한
+          데이터입니다.
+        </Mention>
         <ImageMapper
           src={Seoulmap}
           map={AREAS_MAP}
@@ -50,22 +63,26 @@ function SeoulRent() {
           height={530}
           onMouseUp={(area, _, evt) => moveOnArea(area, evt)}
         />
-        {clickedArea && isSuccess && (
+        {clickedArea && (
           <TooltipWrap left={tooltipPosition.x} top={tooltipPosition.y}>
             <div>{clickedArea}</div>
             <div>
               <span>전세 </span>
-              {}
+              {diposit}
             </div>
             <div className="lastdiv">
               <span>월세 </span>
               {monthlyRent}
             </div>
-            <div>
-              <Link className="link" to="/happyhouse">
-                {'행복주택'}
-              </Link>
-            </div>
+            {happyHouse ? (
+              <div>
+                <Link className="link" to="/happyhouse">
+                  {'행복주택'}
+                </Link>
+              </div>
+            ) : (
+              <div>공고없음</div>
+            )}
           </TooltipWrap>
         )}
       </div>
@@ -80,14 +97,26 @@ const MainContent = styled(MainContainer)`
     display: flex;
     align-items: center;
     justify-content: center;
+    flex-direction: column;
     padding: 30px;
+    border: none;
+    h1 {
+      font-size: 20px;
+    }
   }
+`;
+
+const Mention = styled.span`
+  font-size: 12px;
+  margin-left: 4px;
+  color: var(--sub-font-color);
+  padding-bottom: 40px;
 `;
 const TooltipWrap = styled.div<StyleProps>`
   position: absolute;
   background-color: #fff;
   border: 1px solid var(--border-color);
-  width: 120px;
+  width: 140px;
   height: 124px;
   padding: 14px;
   border-radius: 10px;
