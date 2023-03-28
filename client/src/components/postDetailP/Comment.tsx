@@ -29,7 +29,6 @@ import {
   isEdit,
   setIsEdit,
   setIsOpenIntro,
-  setCommentCnt,
 } from '../../slices/commentSlice';
 import {
   isOpened,
@@ -38,7 +37,6 @@ import {
 } from '../../slices/replySlice';
 import { timeSince } from '../mainP/Timecalculator';
 import { membersApi } from '../../api/memberapi';
-import { postsApi } from '../../api/postApi';
 import { CommentInputProps } from '../../types/PostDetail';
 
 const Comment: React.FC<Partial<CommentInputProps>> = ({
