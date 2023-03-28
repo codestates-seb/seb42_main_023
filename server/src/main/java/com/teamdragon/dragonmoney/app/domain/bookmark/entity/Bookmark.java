@@ -2,7 +2,6 @@ package com.teamdragon.dragonmoney.app.domain.bookmark.entity;
 
 import com.teamdragon.dragonmoney.app.domain.member.entity.Member;
 import com.teamdragon.dragonmoney.app.domain.posts.entity.Posts;
-import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
