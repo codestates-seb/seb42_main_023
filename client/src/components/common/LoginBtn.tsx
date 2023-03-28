@@ -20,11 +20,13 @@ function LoginBtn() {
 export default LoginBtn;
 
 const Btn = styled.button`
-  padding: 6px 20px;
+  padding: 4px 14px;
+  font-size: 14px;
   background-color: #fff;
   box-sizing: border-box;
   border: 1px solid #d9d9d9;
   margin-left: 4px;
+  font-weight: 600;
   :hover {
     background-color: #f9f6f6;
     transition: 0.3s;

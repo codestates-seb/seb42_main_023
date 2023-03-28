@@ -51,7 +51,6 @@ const HappyHouse: React.FC = () => {
 
   return (
     <MainContainer>
-      <NavRealEstate />
       <div className="content-container">
         <Title>
           <h1>행복주택공고</h1>

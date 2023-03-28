@@ -66,7 +66,10 @@ function PostList({ posts, currentPage }: Props) {
 
 export default PostList;
 
-const List = styled.ul``;
+const List = styled.ul`
+  margin-top: -2px;
+  border-top: 1px solid var(--border-color);
+`;
 export const Item = styled.li`
   height: 100px;
   border-bottom: 1px solid var(--border-color);
@@ -103,4 +106,8 @@ export const Info = styled.div`
 `;
 export const Tag = styled(TagItem)`
   padding: 4px 10px;
+  color: var(--point-blue-color);
+  font-size: 12px;
+  background-color: #fff;
+  border: 1px solid var(--point-blue-color);
 `;

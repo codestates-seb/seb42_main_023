@@ -1,4 +1,5 @@
 import { createGlobalStyle } from 'styled-components';
+import { useLocation } from 'react-router-dom';
 
 const GlobalStyles = createGlobalStyle`
       :root {
@@ -52,7 +53,7 @@ const GlobalStyles = createGlobalStyle`
       width: 100vw;
       margin: auto; 
     }
-    
+
     main {
     max-width: 1100px;
     min-height: calc(100vh - 60px - 154px);

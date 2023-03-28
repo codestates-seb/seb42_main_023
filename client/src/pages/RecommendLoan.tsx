@@ -23,7 +23,6 @@ const RecommendLoan: React.FC = () => {
 
   return (
     <MainContainer>
-      <NavRealEstate />
       <div className="content-container">
         <SurveyBox>
           {!currentQuestion && !resultId && (

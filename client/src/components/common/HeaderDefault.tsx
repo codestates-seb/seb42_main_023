@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 import styled from 'styled-components';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useAppSelector, useAppDispatch } from '../../hooks';
-import Logo from '../../assets/Logo.png';
+import Logo from '../../assets/logo.svg';
 import LoginBtn from './LoginBtn';
 import SearchBar from './SearchBar';
 import SearchBtn from './SearchToggle';
@@ -10,7 +10,7 @@ import PostBtn from './PostBtn';
 import MediumProfileImg from './MediumProfileImg';
 import HeaderNav from './HeaderNav';
 import { MdManageAccounts } from 'react-icons/md';
-import { setMemberName, setMemberImg } from '../../slices/headerSlice';
+import { setMemberImg } from '../../slices/headerSlice';
 import Cookies from 'js-cookie';
 
 function HeaderDefault() {
@@ -43,14 +43,14 @@ function HeaderDefault() {
         </Main>
         <HeaderNav />
         <Btns>
-          {pathname === '/' && <SearchBtn />}
+          {(pathname === '/' || pathname === '/search') && <SearchBtn />}
           {auth === undefined && <LoginBtn />}
           {auth !== undefined && adim !== 'ADMIN' && (
             <>
               <PostBtn /> <MediumProfileImg />
             </>
           )}
-          {auth !== undefined && adim === 'ADMIN' && (
+          {auth === undefined && adim === 'ADMIN' && (
             <Adminwrap>
               <PostBtn />
               <MediumProfileImg />
@@ -74,7 +74,7 @@ const NavHead = styled.header`
   border-bottom: 1px solid var(--border-color);
   background-color: #fff;
   z-index: 98;
-  padding: 10px 0;
+  padding: 6px 0;
   margin: 0 auto;
   div {
     max-width: 1100px;
@@ -111,9 +111,10 @@ const Btns = styled.div`
     margin-left: 10px;
     svg {
       width: 30px;
+      color: var(--hover-font-gray-color);
       :hover {
         transition: 0.3s;
-        color: var(--hover-font-gray-color);
+        color: var(--main-font-color);
       }
     }
   }
