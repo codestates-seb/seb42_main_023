@@ -13,9 +13,7 @@ const CommentInput: React.FC<CommentInputProps> = ({
 }: CommentInputProps) => {
   const commentRef = useRef<HTMLInputElement>(null);
   const dispatch = useAppDispatch();
-  const state = useAppSelector((state) => {
-    return state;
-  });
+
   const params = useParams();
   const postId = params.postId;
 
@@ -29,7 +27,7 @@ const CommentInput: React.FC<CommentInputProps> = ({
       postId: postId,
       content: commentRef.current?.value,
     });
-    //TODO 댓글 추가시 댓글 개수 1 증가
+
     setCommentCnt(commentCnt + 1);
     dispatch(addCommentEdit(false));
 
@@ -41,7 +39,12 @@ const CommentInput: React.FC<CommentInputProps> = ({
   };
 
   const enterHandler = (event: React.KeyboardEvent<HTMLInputElement>): void => {
-    if (!commentRef.current?.value) return;
+    if (
+      !commentRef.current?.value ||
+      commentRef.current?.value !== '삭제된 댓글입니다.' ||
+      '신고된 댓글입니다.'
+    )
+      return;
     if (event.key === 'Enter' && event.nativeEvent.isComposing === false) {
       addCommentHandler();
     }
