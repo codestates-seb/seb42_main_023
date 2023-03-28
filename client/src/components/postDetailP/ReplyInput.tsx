@@ -11,6 +11,7 @@ import {
   ReplyStateType,
   CommentStateType,
 } from '../../types/PostDetail';
+import { commentsApi } from '../../api/commentApi';
 
 const ReplyInput: React.FC<CommentProps> = ({ commentInfo }: CommentProps) => {
   const replyRef = useRef<HTMLInputElement>(null);
@@ -23,21 +24,22 @@ const ReplyInput: React.FC<CommentProps> = ({ commentInfo }: CommentProps) => {
     },
   );
   const params = useParams();
+  const postId = params.postId;
   const commentId = commentInfo.commentId;
-
+  const page = 'comment' in state && state.comment?.page;
   const replyMutation = repliesApi.useSetReplyMutation();
   const setReplys = replyMutation[0];
-
+  const commentQuery = commentsApi.useGetCommentQuery({ postId, page });
+  const { refetch } = commentQuery;
   // 답글 추가
   const addReplyHandler = async () => {
-    console.log('commentId', commentId);
-    console.log('value', replyRef.current!.value);
     await setReplys({
       commentId: commentId,
       content: replyRef.current!.value,
     });
     dispatch(addReplyEdit(false));
     replyRef.current!.value = '';
+    refetch();
   };
 
   const valueCheck = (event: React.ChangeEvent<HTMLInputElement>): void => {

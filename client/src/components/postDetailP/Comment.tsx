@@ -453,11 +453,14 @@ const Comment: React.FC<
                   ) : (
                     <div className="content">
                       {comment?.content}
+
                       {commentIsEdit &&
-                      comment?.content !== '삭제된 댓글입니다.'
-                        ? '(수정됨)'
+                      comment?.content === '삭제된 댓글입니다.'
+                        ? null
                         : commentIsEdit &&
-                          comment?.content !== '신고된 댓글입니다.'
+                          comment?.content === '신고된 댓글입니다.'
+                        ? null
+                        : commentIsEdit
                         ? '(수정됨)'
                         : null}
                     </div>

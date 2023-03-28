@@ -48,7 +48,6 @@ const Reply: React.FC<Partial<ReplyProps & ReportProps>> = ({
   const loginUserName = window.localStorage.getItem('name');
   const commentId = 'comment' in state && state.comment?.commentId;
   const replyId = 'reply' in state && state.reply?.replyId;
-
   const selectedMember = 'post' in state ? state.post.selectedMember : null;
 
   // 답글
@@ -358,9 +357,11 @@ const Reply: React.FC<Partial<ReplyProps & ReportProps>> = ({
         ) : (
           <div className="content">
             {replyInfo!.content}
-            {replyIsEdit && replyInfo!.content !== '삭제된 답글입니다.'
-              ? '(수정됨)'
-              : replyIsEdit && replyInfo!.content !== '신고된 답글입니다.'
+            {replyIsEdit && replyInfo?.content === '삭제된 댓글입니다.'
+              ? null
+              : replyIsEdit && replyInfo?.content === '신고된 댓글입니다.'
+              ? null
+              : replyIsEdit
               ? '(수정됨)'
               : null}
           </div>
