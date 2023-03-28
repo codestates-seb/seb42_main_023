@@ -19,9 +19,9 @@ const Tag = ({ content }: Props) => {
     <>
       <TagItemWidthDelete>
         <span>{content}</span>
-        <button onClick={deleteTagHandler}>
+        <div onClick={deleteTagHandler}>
           <MdCancel size="13" />
-        </button>
+        </div>
       </TagItemWidthDelete>
     </>
   );
@@ -49,7 +49,7 @@ export const TagItem = styled.button`
 
 //삭제 버튼이 있는 태그
 export const TagItemWidthDelete = styled(TagItem)`
-  button {
+  div {
     position: absolute;
     right: 7px;
     top: 4px;
