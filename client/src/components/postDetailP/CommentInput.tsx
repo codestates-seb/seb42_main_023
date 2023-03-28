@@ -2,8 +2,7 @@ import React, { useRef } from 'react';
 import { useParams } from 'react-router-dom';
 import styled from 'styled-components';
 import { commentsApi } from '../../api/commentApi';
-import { postsApi } from '../../api/postApi';
-import { useAppDispatch, useAppSelector } from '../../hooks';
+import { useAppDispatch } from '../../hooks';
 import { addCommentEdit, setComment } from '../../slices/commentSlice';
 import { CommentInputProps } from '../../types/PostDetail';
 
@@ -39,12 +38,10 @@ const CommentInput: React.FC<CommentInputProps> = ({
   };
 
   const enterHandler = (event: React.KeyboardEvent<HTMLInputElement>): void => {
-    if (
-      !commentRef.current?.value ||
-      commentRef.current?.value !== '삭제된 댓글입니다.' ||
-      '신고된 댓글입니다.'
-    )
-      return;
+    if (!commentRef.current?.value) return;
+    if (commentRef.current?.value === '삭제된 댓글입니다.') return;
+    if (commentRef.current?.value === '신고된 댓글입니다.') return;
+
     if (event.key === 'Enter' && event.nativeEvent.isComposing === false) {
       addCommentHandler();
     }
@@ -64,6 +61,8 @@ const CommentInput: React.FC<CommentInputProps> = ({
       <AddCommentBtn
         onClick={() => {
           if (!commentRef.current?.value) return;
+          if (commentRef.current?.value === '삭제된 댓글입니다.') return;
+          if (commentRef.current?.value === '신고된 댓글입니다.') return;
           addCommentHandler();
         }}
       >

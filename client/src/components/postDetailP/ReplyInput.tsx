@@ -47,12 +47,9 @@ const ReplyInput: React.FC<CommentProps> = ({ commentInfo }: CommentProps) => {
   };
 
   const enterHandler = (event: React.KeyboardEvent<HTMLInputElement>): void => {
-    if (
-      !replyRef.current!.value ||
-      replyRef.current?.value !== '삭제된 답글입니다.' ||
-      '신고된 답글입니다.'
-    )
-      return;
+    if (!replyRef.current!.value) return;
+    if (replyRef.current?.value === '삭제된 답글입니다.') return;
+    if (replyRef.current?.value === '신고된 답글입니다.') return;
 
     if (event.key === 'Enter' && event.nativeEvent.isComposing === false) {
       dispatch(setCommentId(commentInfo.commentId));
@@ -72,6 +69,8 @@ const ReplyInput: React.FC<CommentProps> = ({ commentInfo }: CommentProps) => {
         onClick={(event) => {
           dispatch(setCommentId(commentInfo.commentId));
           if (!replyRef.current!.value) return;
+          if (replyRef.current?.value === '삭제된 답글입니다.') return;
+          if (replyRef.current?.value === '신고된 답글입니다.') return;
           addReplyHandler();
         }}
       >
