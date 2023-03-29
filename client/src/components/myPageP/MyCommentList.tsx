@@ -60,7 +60,7 @@ const MyCommentList = () => {
             );
           })}
       </List>
-      {isSuccess && (
+      {isSuccess && data.comments.length !== 0 && (
         <Pagination
           pageInfo={data.pageInfo}
           pageOffset={pageOffset}

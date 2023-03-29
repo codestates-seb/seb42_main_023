@@ -3,21 +3,26 @@ import styled from 'styled-components';
 import NavAdmin from '../components/AdminP/NavAdmin';
 import ReportList from '../components/AdminP/ReportList';
 import { useGetReportsDeletedQuery } from '../api/reportApi';
-import { useAppSelector, useAppDispatch } from '../hooks';
 
 const ReportsDeleted = () => {
-  const dispatch = useAppDispatch();
+  const [currentPage, setCurrentPage] = useState(1);
+  const [orderby, setOrderby] = useState('all');
 
-  const { page, orderby } = useAppSelector(({ report }) => report);
-  const { data } = useGetReportsDeletedQuery({
-    page,
-    orderby,
+  const { data, isSuccess } = useGetReportsDeletedQuery({
+    page: currentPage,
+    orderby: orderby,
   });
 
   return (
     <AdminMain>
       <NavAdmin />
-      <ReportList reportData={data} standby={false} />
+      <ReportList
+        reportData={data}
+        isSuccess={isSuccess}
+        standby={false}
+        setCurrentPage={setCurrentPage}
+        setOrderby={setOrderby}
+      />
     </AdminMain>
   );
 };

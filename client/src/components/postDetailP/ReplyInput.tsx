@@ -5,13 +5,13 @@ import { useAppDispatch, useAppSelector } from '../../hooks';
 import { setCommentId } from '../../slices/commentSlice';
 import { addReplyEdit, setReply } from '../../slices/replySlice';
 import { CommentProps } from '../../types/PostDetail';
-import { commentsApi } from '../../api/commentApi';
 import { useParams } from 'react-router-dom';
 import {
   PostStateType,
   ReplyStateType,
   CommentStateType,
 } from '../../types/PostDetail';
+import { commentsApi } from '../../api/commentApi';
 
 const ReplyInput: React.FC<CommentProps> = ({ commentInfo }: CommentProps) => {
   const replyRef = useRef<HTMLInputElement>(null);
@@ -27,17 +27,12 @@ const ReplyInput: React.FC<CommentProps> = ({ commentInfo }: CommentProps) => {
   const postId = params.postId;
   const commentId = commentInfo.commentId;
   const page = 'comment' in state && state.comment?.page;
-
   const replyMutation = repliesApi.useSetReplyMutation();
   const setReplys = replyMutation[0];
-
-  //댓글
   const commentQuery = commentsApi.useGetCommentQuery({ postId, page });
   const { refetch } = commentQuery;
   // 답글 추가
   const addReplyHandler = async () => {
-    console.log('commentId', commentId);
-    console.log('value', replyRef.current!.value);
     await setReplys({
       commentId: commentId,
       content: replyRef.current!.value,
@@ -53,6 +48,8 @@ const ReplyInput: React.FC<CommentProps> = ({ commentInfo }: CommentProps) => {
 
   const enterHandler = (event: React.KeyboardEvent<HTMLInputElement>): void => {
     if (!replyRef.current!.value) return;
+    if (replyRef.current?.value === '삭제된 답글입니다.') return;
+    if (replyRef.current?.value === '신고된 답글입니다.') return;
 
     if (event.key === 'Enter' && event.nativeEvent.isComposing === false) {
       dispatch(setCommentId(commentInfo.commentId));
@@ -72,6 +69,8 @@ const ReplyInput: React.FC<CommentProps> = ({ commentInfo }: CommentProps) => {
         onClick={(event) => {
           dispatch(setCommentId(commentInfo.commentId));
           if (!replyRef.current!.value) return;
+          if (replyRef.current?.value === '삭제된 답글입니다.') return;
+          if (replyRef.current?.value === '신고된 답글입니다.') return;
           addReplyHandler();
         }}
       >
@@ -89,7 +88,7 @@ const ReplyInputContainer = styled.div`
   position: relative;
   width: 720px;
   height: auto;
-  margin-top: 20px;
+  margin-top: 10px;
   h1 {
     font-size: 24px;
     font-weight: 400;

@@ -8,6 +8,7 @@ import { useAppDispatch, useAppSelector } from '../hooks';
 import { postListApi } from '../api/postListapi';
 import { setPostSetting } from '../slices/mainSlice';
 import Pagenation from '../components/common/Pagination';
+import { RiMoneyDollarCircleLine } from 'react-icons/ri';
 
 const Main = () => {
   const dispatch = useAppDispatch();
@@ -25,13 +26,19 @@ const Main = () => {
   });
   const { data, isSuccess, refetch } = postListquery;
 
-  //TODO: refetch
   useEffect(() => {
     refetch();
   }, []);
 
   return (
     <>
+      <Banner>
+        <h1>
+          <RiMoneyDollarCircleLine color="#fff" size={28} />
+          WELCOME!
+        </h1>
+        <p>사회초년생을 위한 경제 커뮤니티 용돈에 오신것을 환영합니다</p>
+      </Banner>
       <FilterWrap>
         <div>
           {postSetting === '' ? (
@@ -64,11 +71,13 @@ const Main = () => {
               명예의전당
             </ComuntyBtn>
           )}
+        </div>
+        <div>
           <DropdownButton />
         </div>
       </FilterWrap>
       {isSuccess && <PostList posts={data.posts} currentPage={currentPage} />}
-      {isSuccess && (
+      {isSuccess && data.posts.length !== 0 && (
         <Pagenation
           pageInfo={data.pageInfo}
           pageOffset={pageOffset}
@@ -84,17 +93,45 @@ export default Main;
 
 const ComuntyBtn = styled(NavBtn)`
   font-size: 20px;
-  margin-bottom: 10px;
-  margin-right: 20px;
-  margin-left: 10px;
+  padding-bottom: 10px;
+  padding-right: 10px;
+  padding-left: 10px;
   svg {
     transform: translateY(2px);
   }
 `;
 const ClickComuntyBtn = styled(ComuntyBtn)`
   color: var(--point-blue-color);
+  border-bottom: 2px solid var(--point-blue-color);
 `;
 const FilterWrap = styled.div`
   display: flex;
   justify-content: space-between;
+`;
+const Banner = styled.div`
+  width: 100%;
+  background: linear-gradient(
+    90deg,
+    rgba(0, 105, 202, 1) 0%,
+    rgba(13, 18, 117, 1) 100%
+  );
+  height: 120px;
+  border-radius: 10px;
+  margin-bottom: 40px;
+  padding: 30px;
+  h1 {
+    color: #fff;
+    font-size: 24px;
+    font-weight: 400;
+    display: flex;
+    align-items: center;
+    svg {
+      margin-right: 4px;
+    }
+  }
+  p {
+    color: #fff;
+    font-weight: 200;
+    margin-top: 8px;
+  }
 `;

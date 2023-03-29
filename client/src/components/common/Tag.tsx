@@ -19,9 +19,9 @@ const Tag = ({ content }: Props) => {
     <>
       <TagItemWidthDelete>
         <span>{content}</span>
-        <button onClick={deleteTagHandler}>
+        <div onClick={deleteTagHandler}>
           <MdCancel size="13" />
-        </button>
+        </div>
       </TagItemWidthDelete>
     </>
   );
@@ -33,27 +33,29 @@ export default Tag;
 export const TagItem = styled.button`
   position: relative;
   display: inline-flex;
-  background-color: #e3e8f0;
+  background-color: #fff;
+  border: 1px solid var(--point-blue-color);
   box-sizing: border-box;
   padding: 4px 0;
-  padding-left: 10px;
-  padding-right: 24px;
+  padding-left: 12px;
+  padding-right: 26px;
   border-radius: 30px;
   margin-right: 4px;
   span {
-    font-size: 13px;
+    font-size: 16px;
+    color: var(--point-blue-color);
   }
 `;
 
 //삭제 버튼이 있는 태그
 export const TagItemWidthDelete = styled(TagItem)`
-  button {
+  div {
     position: absolute;
-    right: 5px;
-    top: 3px;
+    right: 7px;
+    top: 4px;
     align-items: center;
-    background-color: #e3e8f0;
     margin-left: 4px;
+    border-radius: 10px;
     svg {
       color: #b4c2d6;
       :hover {
