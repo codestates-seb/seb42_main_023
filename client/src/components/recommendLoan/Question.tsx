@@ -41,7 +41,7 @@ const Question: React.FC<Props> = ({
         <h1>{currentQuestion!.question}</h1>
         <h2>{currentQuestion!.subinfo}</h2>
         {currentQuestion!.answers.map((answer) => (
-          <label key={answer.id} htmlFor={answer.content}>
+          <div key={answer.id}>
             <input
               type="radio"
               id={answer.content}
@@ -53,8 +53,8 @@ const Question: React.FC<Props> = ({
                 )
               }
             />
-            {answer.content}
-          </label>
+            <label htmlFor={answer.content}>{answer.content}</label>
+          </div>
         ))}
       </div>
       <div className="button">
@@ -89,8 +89,35 @@ const QuestionContainer = styled.div`
       color: #94969b;
       margin-bottom: 20px;
     }
-    > label {
-      margin-bottom: 10px;
+    > div {
+      /* Hide the default radio button */
+      > input[type='radio'] {
+        display: none;
+      }
+
+      /* Style the radio button label */
+      > label {
+        display: inline-block;
+        margin-bottom: 10px;
+        cursor: pointer;
+      }
+
+      /* Style the radio button icon */
+      > label::before {
+        content: '';
+        display: inline-block;
+        width: 20px;
+        height: 20px;
+        border: 2px solid #ccc;
+        border-radius: 50%;
+        margin-right: 5px;
+        vertical-align: middle;
+      }
+
+      /* Style the radio button icon when it's checked */
+      > input[type='radio']:checked + label::before {
+        background-color: var(--point-blue-color);
+      }
     }
   }
 
