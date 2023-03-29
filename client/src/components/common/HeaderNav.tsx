@@ -5,7 +5,6 @@ import { NavBtn, NavBtnClicked } from '../common/Btn';
 
 function HeaderNav() {
   const navigate = useNavigate();
-  const state = useAppSelector((state) => state);
   const { pathname } = useLocation();
   return (
     <nav>

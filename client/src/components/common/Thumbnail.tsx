@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import noimg from '../../assets/noimg.svg';
+import { NoimgSVG } from '../../assets/common/NoimgSVG';
 
 interface Props {
   content: string;
@@ -11,7 +11,7 @@ const Thumbnail = ({ content }: Props) => {
     <>
       {content === null ? (
         <None>
-          <img src={noimg} />
+          <NoimgSVG />
         </None>
       ) : (
         <Item src={content} />

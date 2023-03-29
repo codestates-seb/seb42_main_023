@@ -5,6 +5,7 @@ import { useNavigate } from 'react-router-dom';
 import { useEffect, useState, useRef } from 'react';
 import { usePostNicknameMutation } from '../api/nicknameApi';
 import { MainContainer, FormContainer } from '../components/common/Container';
+import { LogoSVG } from '../assets/common/LogoSVG';
 
 const SetNickname: React.FC = () => {
   // Tools
@@ -66,7 +67,7 @@ const SetNickname: React.FC = () => {
   return (
     <MainContainer>
       <FormContainer>
-        <div>Logo</div>
+        <LogoSVG />
         <NicknameInput>
           <label htmlFor="nickname">닉네임</label>
           <input
