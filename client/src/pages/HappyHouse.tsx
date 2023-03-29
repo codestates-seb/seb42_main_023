@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import { AiFillHome } from 'react-icons/ai';
 import { WhiteBtn } from '../components/common/Btn';
@@ -18,6 +18,10 @@ interface House {
   recruitDay: string;
 }
 const HappyHouse: React.FC = () => {
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
+
   const [currentPage, setCurrentPage] = useState(1);
   const [pageOffset, setPageOffset] = useState(0);
   const [state, setState] = useState('all');
