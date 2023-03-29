@@ -110,11 +110,7 @@ const FilterWrap = styled.div`
 `;
 const Banner = styled.div`
   width: 100%;
-  background: linear-gradient(
-    90deg,
-    rgba(0, 105, 202, 1) 0%,
-    rgba(13, 18, 117, 1) 100%
-  );
+  background: linear-gradient(90deg, #0069ca 0%, #0d1275 100%);
   height: 120px;
   border-radius: 10px;
   margin-bottom: 40px;

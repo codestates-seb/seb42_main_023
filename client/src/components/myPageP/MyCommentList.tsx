@@ -4,10 +4,9 @@ import { useAppSelector } from '../../hooks';
 import { FaRegThumbsDown } from 'react-icons/fa';
 import { FaRegThumbsUp } from 'react-icons/fa';
 import TimeIcon from '../../assets/common/TimeIcon';
-import { Link } from 'react-router-dom';
+import { PostListWrap } from './MyPostList';
 import { membersCommentsListApi } from '../../api/memberapi';
 import { timeSince } from '../mainP/Timecalculator';
-import { PostListWrap } from './MyPostList';
 import Pagination from '../common/Pagination';
 import { CommentType } from '../../types/PostList';
 
@@ -85,7 +84,10 @@ const List = styled.ul`
     padding: 20px 20px;
     div {
       :first-child {
-        max-width: 70%;
+        width: 589px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
       }
     }
   }

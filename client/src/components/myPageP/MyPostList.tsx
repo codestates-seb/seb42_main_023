@@ -133,5 +133,5 @@ export const Info = styled.div`
 export const PostListWrap = styled.div`
   display: flex;
   flex-direction: column;
-  width: 100%;
+  width: 1000px;
 `;
