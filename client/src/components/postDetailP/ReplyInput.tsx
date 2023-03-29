@@ -88,7 +88,7 @@ const ReplyInputContainer = styled.div`
   position: relative;
   width: 720px;
   height: auto;
-  margin-top: 20px;
+  margin-top: 10px;
   h1 {
     font-size: 24px;
     font-weight: 400;
