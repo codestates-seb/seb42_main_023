@@ -731,6 +731,7 @@ const ModalContainer = styled.div`
   top: 50px;
   bottom: 0;
   z-index: 2;
+  background-color: #fff;
 `;
 
 // 게시글, 댓글, 답글 삭제 확인창

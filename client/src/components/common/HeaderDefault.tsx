@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 import styled from 'styled-components';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useAppSelector, useAppDispatch } from '../../hooks';
-import Logo from '../../assets/logo.svg';
+import { LogoSVG } from '../../assets/common/LogoSVG';
 import LoginBtn from './LoginBtn';
 import SearchBar from './SearchBar';
 import SearchBtn from './SearchToggle';
@@ -10,7 +10,7 @@ import PostBtn from './PostBtn';
 import MediumProfileImg from './MediumProfileImg';
 import HeaderNav from './HeaderNav';
 import { MdManageAccounts } from 'react-icons/md';
-import { setMemberImg } from '../../slices/headerSlice';
+import { setMemberImg, setMemberName } from '../../slices/headerSlice';
 import Cookies from 'js-cookie';
 
 function HeaderDefault() {
@@ -25,9 +25,11 @@ function HeaderDefault() {
   useEffect(() => {
     if (auth !== undefined) {
       const memberImg = localStorage.getItem('picture');
-
-      if (memberImg) {
+      const memberName = localStorage.getItem('name');
+      if (memberImg && memberName) {
+        console.log(memberName);
         dispatch(setMemberImg(memberImg));
+        dispatch(setMemberName(memberName));
       }
     }
   }, []);
@@ -39,7 +41,7 @@ function HeaderDefault() {
     <NavHead>
       <div>
         <Main onClick={() => navigate('/')}>
-          <img src={Logo} height={30}></img>
+          <LogoSVG />
         </Main>
         <HeaderNav />
         <Btns>

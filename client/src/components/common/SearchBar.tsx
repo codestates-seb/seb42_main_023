@@ -8,7 +8,7 @@ import {
 } from '../../slices/headerSlice';
 import { setTagErr } from '../../slices/validationSlice';
 import { AiOutlineSearch } from 'react-icons/ai';
-import * as Styled from '../common/Tag';
+import { TagItemWidthDelete } from '../common/Tag';
 import { MdCancel } from 'react-icons/md';
 import SearchBtn from './SearchToggle';
 import { setPostSetting } from '../../slices/mainSlice';
@@ -128,12 +128,12 @@ const SearchBar: React.FC = () => {
             <TagConatiner>
               {header.tag.map((tag, idx) => {
                 return (
-                  <Styled.TagItemWidthDelete key={idx}>
+                  <TagItemWidthDelete key={idx}>
                     <span>{tag}</span>
                     <button onClick={() => dispatch(deleteSarchTag(tag))}>
                       <MdCancel size="13" />
                     </button>
-                  </Styled.TagItemWidthDelete>
+                  </TagItemWidthDelete>
                 );
               })}
             </TagConatiner>
@@ -157,12 +157,12 @@ const SearchBar: React.FC = () => {
             <TagConatiner>
               {header.tag.map((tag, idx) => {
                 return (
-                  <Styled.TagItemWidthDelete key={idx}>
+                  <TagItemWidthDelete key={idx}>
                     <span>{tag}</span>
                     <button onClick={() => dispatch(deleteSarchTag(tag))}>
-                      <MdCancel size="13" />
+                      <MdCancel size="13" color="#ccc" />
                     </button>
-                  </Styled.TagItemWidthDelete>
+                  </TagItemWidthDelete>
                 );
               })}
             </TagConatiner>
