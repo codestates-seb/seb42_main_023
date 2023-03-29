@@ -5,7 +5,7 @@ const questionData = [
     subinfo: '청년 맞춤형 공공전세대출 상품은 나이제한이 있습니다.',
     answers: [
       { id: 0, content: '네, 맞습니다.', next: 1 },
-      { id: 1, content: '아니요', next: 5 },
+      { id: 1, content: '아니요.', next: 5 },
     ],
   },
   {
@@ -13,7 +13,7 @@ const questionData = [
     question: '고객님의 순자산은 3.61억원 이하이십니까?',
     answers: [
       { id: 1, content: '네, 맞습니다.', next: 2 },
-      { id: 2, content: '아니요', result: '상품:시중은행상품' },
+      { id: 2, content: '아니요.', result: '상품:시중은행상품' },
     ],
   },
   {
@@ -25,7 +25,7 @@ const questionData = [
         content: '네, 맞습니다.',
         result: '한도:1억, 금리:1.2%, 상품:중기청전월세보증금대출',
       },
-      { id: 4, content: '아니요', next: 3 },
+      { id: 4, content: '아니요.', next: 3 },
     ],
   },
   {
