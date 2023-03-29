@@ -5,7 +5,11 @@ import { BsPencil } from 'react-icons/bs';
 import DropdownButton from './DropdownButton';
 import ProfileEdit from './ProfileEdit';
 import { useAppDispatch, useAppSelector } from '../../hooks';
-import { setEditOpen, setContent } from '../../slices/mypageSlice';
+import {
+  setEditOpen,
+  setContent,
+  setEditWidth,
+} from '../../slices/mypageSlice';
 import { membersApi } from '../../api/memberapi';
 import Cookies from 'js-cookie';
 
@@ -18,7 +22,6 @@ function Profile() {
     name: memberName,
   });
   const { data, isSuccess, refetch } = membersQuery;
-  const auth = Cookies.get('Authorization');
   const loginuser = Cookies.get('name');
 
   //회원정보에 들어올 때마다 데이터 업데이트
@@ -34,7 +37,7 @@ function Profile() {
     dispatch(setContent(data.member.intro));
     dispatch(setEditOpen(!EditOpen));
     if (divRef.current !== null) {
-      divRef.current.focus();
+      dispatch(setEditWidth(divRef.current?.offsetWidth + 20));
     }
   };
   //자기소개 수정
