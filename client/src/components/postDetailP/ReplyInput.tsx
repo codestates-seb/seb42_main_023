@@ -65,17 +65,33 @@ const ReplyInput: React.FC<CommentProps> = ({ commentInfo }: CommentProps) => {
         onChange={valueCheck}
         onKeyDown={enterHandler}
       ></Input>
-      <AddCommentBtn
-        onClick={(event) => {
-          dispatch(setCommentId(commentInfo.commentId));
-          if (!replyRef.current!.value) return;
-          if (replyRef.current?.value === '삭제된 답글입니다.') return;
-          if (replyRef.current?.value === '신고된 답글입니다.') return;
-          addReplyHandler();
-        }}
-      >
-        등록
-      </AddCommentBtn>
+      {!replyRef.current?.value ? (
+        <AddCommentBtn
+          className="noContent"
+          onClick={(event) => {
+            dispatch(setCommentId(commentInfo.commentId));
+            if (!replyRef.current!.value) return;
+            if (replyRef.current?.value === '삭제된 답글입니다.') return;
+            if (replyRef.current?.value === '신고된 답글입니다.') return;
+            addReplyHandler();
+          }}
+        >
+          등록
+        </AddCommentBtn>
+      ) : (
+        <AddCommentBtn
+          className="isContent"
+          onClick={(event) => {
+            dispatch(setCommentId(commentInfo.commentId));
+            if (!replyRef.current!.value) return;
+            if (replyRef.current?.value === '삭제된 답글입니다.') return;
+            if (replyRef.current?.value === '신고된 답글입니다.') return;
+            addReplyHandler();
+          }}
+        >
+          등록
+        </AddCommentBtn>
+      )}
     </ReplyInputContainer>
   );
 };
@@ -93,12 +109,23 @@ const ReplyInputContainer = styled.div`
     font-size: 24px;
     font-weight: 400;
   }
+  .isContent {
+    color: #0069ca;
+    cursor: pointer;
+  }
+  .noContent {
+    cursor: default;
+  }
 `;
 const Input = styled.input`
   width: 670px;
   height: 50px;
   border: 1px solid #d4d4d4;
   padding: 0 10px 0 10px;
+  margin-left: 2px;
+  :focus {
+    outline: 3px solid #0069ca;
+  }
 `;
 
 const AddCommentBtn = styled.button`

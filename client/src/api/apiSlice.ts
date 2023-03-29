@@ -15,7 +15,11 @@ const baseQuery = fetchBaseQuery({
 });
 
 // 권한 관련 오류와 access token 이 만료되었을때 실행하는 refresh token flow
-const baseQueryWithReauth = async (args: any, api: any, extraOptions: any) => {
+export const baseQueryWithReauth = async (
+  args: any,
+  api: any,
+  extraOptions: any,
+) => {
   let result = await baseQuery(args, api, extraOptions);
 
   type ErrorResHeader = {
