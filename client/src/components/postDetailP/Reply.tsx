@@ -445,7 +445,7 @@ const ReplyContainer = styled.div`
   }
 
   #moreInfo {
-    margin: 50px 0 0 30px;
+    margin: 50px 0 0 0px;
     text-align: left;
     font-size: 16px;
     font-weight: 450;

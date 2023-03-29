@@ -658,16 +658,20 @@ const CommentContainer = styled.div`
     z-index: 1;
   }
   .replyPageContainer {
-    margin: 0 0 0 40px;
+    margin: 0 0 0 50px;
     display: flex;
-    justify-content: flex-start;
+    width: 180px;
+    justify-content: space-between;
+    z-index: 10;
   }
   .commentPageContainer {
     display: flex;
-    justify-content: flex-start;
+    width: 180px;
+    justify-content: space-between;
+    z-index: 10;
   }
   #moreInfo {
-    margin: 10px 0 0 30px;
+    margin: 10px 0 0 0px;
     text-align: left;
     font-size: 16px;
     font-weight: 600;
