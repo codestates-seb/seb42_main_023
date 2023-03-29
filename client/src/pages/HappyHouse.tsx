@@ -183,7 +183,6 @@ export default HappyHouse;
 
 const MainContainer = styled.div`
   > .content-container {
-    border: 1px solid var(--border-color);
     width: 100%;
     height: 100%;
     padding: 20px;
@@ -198,23 +197,23 @@ const MainContainer = styled.div`
 
 // 행복주택 페이지 상단에 제목과 설명을 담는 컨테이너
 const Title = styled.div`
-  margin-bottom: 40px;
+  margin-bottom: 60px;
   > h1 {
-    font-size: 23px;
-    margin-bottom: 5px;
+    font-size: 31px;
+    margin-bottom: 8px;
   }
 
   > p {
     color: #5c5c5c;
     font-size: 14px;
-    margin-bottom: 20px;
+    margin-bottom: 40px;
   }
 
   > div {
     > h2 {
       font-size: 16px;
       font-weight: 700;
-      margin-bottom: 5px;
+      margin-bottom: 8px;
     }
     > p {
       font-size: 14px;
