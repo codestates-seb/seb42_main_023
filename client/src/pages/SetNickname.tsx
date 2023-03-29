@@ -22,8 +22,14 @@ const SetNickname: React.FC = () => {
 
   // 서버에 보내야 할 데이터 2: nickname
   const nicknameRef = useRef<HTMLInputElement>(null);
+
+  const handleKeyUp = (event: React.KeyboardEvent<HTMLInputElement>) => {
+    if (event.key === 'Enter') {
+      setNicknameHandler();
+    }
+  };
+
   const [nicknameErrMsg, setNicknameErrMsg] = useState<null | string>(null);
-  // const nicknameErr = useAppSelector((state) => state.nickname.nicknameErr);
 
   // '가입하기' 버튼을 눌렀을 때 실행되는 함수
   const setNicknameHandler = () => {
@@ -67,6 +73,7 @@ const SetNickname: React.FC = () => {
             id="nickname"
             placeholder="커뮤니티에서 사용할 닉네임을 작성해주세요"
             ref={nicknameRef}
+            onKeyUp={handleKeyUp}
           />
           <p>{nicknameErrMsg}</p>
         </NicknameInput>
