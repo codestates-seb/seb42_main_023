@@ -30,8 +30,8 @@ const Reply: React.FC<Partial<ReplyProps & ReportProps>> = ({
   setDeleteType,
   isOpenReport,
   isOpenDelete,
-  isOpenIntro,
-  isCommentOpenIntro,
+  // isOpenIntro,
+  // isCommentOpenIntro,
   isReplyOpenIntro,
   setIsOpenReplyIntro,
 }: Partial<ReplyProps & ReportProps>) => {
@@ -48,7 +48,6 @@ const Reply: React.FC<Partial<ReplyProps & ReportProps>> = ({
   const loginUserName = window.localStorage.getItem('name');
   const commentId = 'comment' in state && state.comment?.commentId;
   const replyId = 'reply' in state && state.reply?.replyId;
-
   const selectedMember = 'post' in state ? state.post.selectedMember : null;
 
   // 답글
@@ -324,7 +323,11 @@ const Reply: React.FC<Partial<ReplyProps & ReportProps>> = ({
               reportTypeChecker(event);
             }}
           >
-            신고
+            {replyInfo?.content === '삭제된 댓글입니다.'
+              ? null
+              : replyInfo?.content === '신고된 댓글입니다.'
+              ? null
+              : '신고'}
           </li>
           <button
             onClick={_.debounce(() => {
@@ -356,11 +359,13 @@ const Reply: React.FC<Partial<ReplyProps & ReportProps>> = ({
             onKeyDown={enterHandler}
           ></input>
         ) : (
-          <div className="content">
+          <div className="reply-content">
             {replyInfo!.content}
-            {replyIsEdit && replyInfo!.content !== '삭제된 답글입니다.'
-              ? '(수정됨)'
-              : replyIsEdit && replyInfo!.content !== '신고된 답글입니다.'
+            {replyIsEdit && replyInfo?.content === '삭제된 댓글입니다.'
+              ? null
+              : replyIsEdit && replyInfo?.content === '신고된 댓글입니다.'
+              ? null
+              : replyIsEdit
               ? '(수정됨)'
               : null}
           </div>
@@ -376,10 +381,10 @@ const ReplyContainer = styled.div`
   display: flex;
   flex-direction: column;
   width: 670px;
-  padding-left: 50px;
+  margin-left: 50px;
   height: auto;
   margin-top: 25px;
-
+  border-bottom: 1px solid #d4d4d4;
   h1 {
     font-size: 24px;
     font-weight: 400;
@@ -393,16 +398,11 @@ const ReplyContainer = styled.div`
     padding: 30px 0 30px 0;
     position: relative;
   }
-  .content {
+  .reply-content {
     display: flex;
     align-items: center;
-    width: 660px;
-    height: 50px;
-    padding-left: 10px;
-    display: flex;
-    justify-content: flex-start;
-    width: auto;
-    color: black;
+    width: 600px;
+    word-break: break-all;
   }
   .nickname {
     width: 130px;
@@ -443,14 +443,11 @@ const ReplyContainer = styled.div`
     font-size: 16px;
     margin: 3px 15px 0 15px;
   }
-  .pageContainer {
-    display: flex;
-    justify-content: flex-start;
-  }
+
   #moreInfo {
-    margin: 50px 0 0 50px;
+    margin: 50px 0 0 30px;
     text-align: left;
-    font-size: 18px;
+    font-size: 16px;
     font-weight: 450;
     cursor: pointer;
   }
@@ -512,12 +509,14 @@ const ReplyInfo = styled.div`
 `;
 
 const ReplyContent = styled.div`
-  padding-left: 50px;
+  margin-left: 50px;
   margin-top: 10px;
   display: flex;
   flex-direction: column;
-  width: 670px;
+  margin-bottom: 20px;
+  width: 580px;
   height: 100%;
+
   .edit-reply {
     width: 660px;
     height: 50px;

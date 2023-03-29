@@ -147,7 +147,6 @@ const PostDetail: React.FC = () => {
   const changeLiikeHandler = (): void => {
     // 좋아요만 있는 경우
     if (isLike && !isDislike) {
-      console.log('왜 안찍히지', postId);
       removeThumbUp({ postId });
       setIsLike(false);
       setLike((prev) => prev! - 1);
@@ -167,7 +166,6 @@ const PostDetail: React.FC = () => {
     }
     // 둘 다 없는 경우
     if (!isLike && !isDislike) {
-      console.log('좋아요 추가');
       addThumbUp({ postId });
       setIsLike(true);
       setLike((prev) => prev! + 1);
@@ -180,7 +178,7 @@ const PostDetail: React.FC = () => {
     // 좋아요만 있는 경우
     if (isLike && !isDislike) {
       // 좋아요 제거, 싫어요 추가
-      console.log('좋아요 삭제 후 싫어요 추가');
+
       removeThumbUp({ postId });
       setIsLike(false);
       setLike((prev) => prev! - 1);
@@ -194,7 +192,7 @@ const PostDetail: React.FC = () => {
     // 싫어요만 있는 경우
     if (!isLike && isDislike) {
       // 싫어요 제거
-      console.log('싫어요 삭제');
+
       removeThumbDown({ postId });
       setIsDislike(false);
       setDislike((prev) => prev! - 1);
@@ -203,7 +201,7 @@ const PostDetail: React.FC = () => {
     // 둘 다 없는 경우
     if (!isLike && !isDislike) {
       // 싫어요 추가
-      console.log('싫어요 추가');
+
       addThumbDown({ postId });
       setIsDislike(true);
       setDislike((prev) => prev! + 1);
@@ -228,7 +226,6 @@ const PostDetail: React.FC = () => {
   // 신고 모달창 오픈
   const reportHandler = (): void => {
     setIsOpenReport(!isOpenReport);
-    console.log('isOpenReport', isOpenReport);
   };
 
   // 데이터 삭제(게시글, 댓글, 답글)
@@ -237,7 +234,7 @@ const PostDetail: React.FC = () => {
     if (deleteType === '게시글') {
       deletePost({ postId });
       confirmDeleteHandler();
-      console.log('post delete');
+
       navigate('/');
       location.reload();
     }
@@ -245,13 +242,11 @@ const PostDetail: React.FC = () => {
     if (deleteType === '댓글') {
       deleteComment({ commentId });
       confirmDeleteHandler();
-      console.log('comment delete');
     }
     // 답글 삭제 로직
     if (deleteType === '답글') {
       deleteReply({ replyId });
       confirmDeleteHandler();
-      console.log('reply delete');
     }
   };
 
@@ -292,10 +287,11 @@ const PostDetail: React.FC = () => {
         reporterName: localStorage.getItem('name'),
       })
         .unwrap()
-        .then((res) => console.log('res in report:', res))
-        .catch((err: any) => console.log('err in report:', err));
-      // dispatch(setIsOpenReport('post' in state && state.post?.isOpenReport));
-      // dispatch(setReportErr(''));
+        .then((payload) => {
+          alert('신고가 접수 되었습니다.');
+        })
+        .catch(() => alert('실패했습니다.'));
+
       setIsOpenReport(isOpenReportErr);
       setReportErr('');
       setCheckedElement(-1);
@@ -312,9 +308,13 @@ const PostDetail: React.FC = () => {
         commentId: commentId,
         replyId: null,
         reporterName: loginUserName,
-      });
-      // dispatch(setIsOpenReport('post' in state && state.post?.isOpenReport));
-      // dispatch(setReportErr(''));
+      })
+        .unwrap()
+        .then((payload) => {
+          alert('신고가 접수 되었습니다.');
+        })
+        .catch(() => alert('실패했습니다.'));
+
       setIsOpenReport(isOpenReportErr);
       setReportErr('');
       setCheckedElement(-1);
@@ -331,13 +331,16 @@ const PostDetail: React.FC = () => {
         commentId: null,
         replyId: replyId,
         reporterName: loginUserName,
-      });
-      // dispatch(setIsOpenReport('post' in state && state.post?.isOpenReport));
-      // dispatch(setReportErr(''));
+      })
+        .unwrap()
+        .then((payload) => {
+          alert('신고가 접수 되었습니다.');
+        })
+        .catch(() => alert('실패했습니다.'));
+
       setIsOpenReport(isOpenReportErr);
       setReportErr('');
       setCheckedElement(-1);
-      alert('신고가 접수 되었습니다.');
     }
   };
 
@@ -414,9 +417,25 @@ const PostDetail: React.FC = () => {
                     />
 
                     {checkedElement === idx ? (
-                      <CheckedIcon width={30} height={30} />
+                      <button
+                        id={option}
+                        value={idx}
+                        onClick={() => {
+                          setCheckedElement(-1);
+                        }}
+                      >
+                        <CheckedIcon width={30} height={30} />
+                      </button>
                     ) : (
-                      <NoCheckedIcon width={30} height={30} />
+                      <button
+                        id={option}
+                        value={idx}
+                        onClick={() => {
+                          setCheckedElement(idx);
+                        }}
+                      >
+                        <NoCheckedIcon width={30} height={30} />
+                      </button>
                     )}
                     <label htmlFor={option}>{option}</label>
                   </div>
@@ -719,10 +738,11 @@ const DeleteModal = styled.div`
   display: flex;
   flex-direction: column;
   justify-content: space-around;
+  position: fixed;
+  top: 15%;
   align-items: center;
   width: 550px;
   height: 290px;
-  position: absolute;
   top: 300px;
   background-color: #ffffff;
   border: solid 1px #d4d4d4;
@@ -750,11 +770,11 @@ const ReportModal = styled.div`
   display: flex;
   flex-direction: column;
   justify-content: space-around;
+  position: fixed;
+  top: 15%;
   align-items: center;
   width: 550px;
   height: 650px;
-  position: absolute;
-  top: 100px;
   background-color: #ffffff;
   border: solid 1px #d4d4d4;
   border-radius: 5px;
@@ -812,8 +832,6 @@ const ReportModal = styled.div`
     display: none;
   }
 `;
-
-//TODO Intro
 const IntorductionContainer = styled.div`
   display: flex;
   flex-direction: column;
