@@ -585,7 +585,6 @@ const CommentContainer = styled.div`
   height: auto;
   padding: 0 0 50px 0;
   margin-top: 30px;
-
   h1 {
     font-size: 24px;
     font-weight: 400;
@@ -783,18 +782,22 @@ const ReplyContainer = styled.div`
 `;
 
 const ReplyBtn = styled.button`
-  width: 75px;
-  height: 36px;
+  width: max-content;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 30px;
+  padding: 0 10px 0 10px;
   background-color: #ffffff;
   color: #5c5c5c;
   margin-top: 15px;
-  border-radius: 20px;
+  border-radius: 15px;
   font-weight: bold;
   text-align: center;
   cursor: pointer;
 
   :hover {
-    background-color: #0099ca;
+    background-color: #0275e1;
     color: white;
     text-align: center;
   }
