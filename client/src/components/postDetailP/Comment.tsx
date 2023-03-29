@@ -660,6 +660,8 @@ const CommentContainer = styled.div`
     z-index: 1;
   }
   .replyPageContainer {
+    margin: 0 0 0 50px;
+
     display: flex;
     width: 180px;
     justify-content: space-between;
