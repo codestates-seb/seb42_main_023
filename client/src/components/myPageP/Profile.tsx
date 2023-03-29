@@ -24,6 +24,9 @@ function Profile() {
   //회원정보에 들어올 때마다 데이터 업데이트
   useEffect(() => {
     refetch();
+    if (isSuccess) {
+      console.log(loginuser);
+    }
   }, []);
 
   //자기소개 input토글
@@ -52,8 +55,7 @@ function Profile() {
           {isSuccess && (
             <h1>
               {data.member.memberName}
-              {auth !== undefined &&
-                data.member.memberName === loginuser &&
+              {data.member.memberName !== loginuser &&
                 (EditOpen ? (
                   <button onClick={submitHandler}>수정완료</button>
                 ) : (
@@ -70,9 +72,7 @@ function Profile() {
           )}
         </article>
       </div>
-      {auth !== undefined && data.member.memberName === loginuser && (
-        <DropdownButton />
-      )}
+      {isSuccess && data.member.memberName !== loginuser && <DropdownButton />}
     </ProfileWrap>
   );
 }

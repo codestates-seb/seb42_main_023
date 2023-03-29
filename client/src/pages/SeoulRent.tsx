@@ -40,21 +40,21 @@ function SeoulRent() {
   }
 
   //바깥 클릭시 tooltip 닫힘
-  // const handleClickOutside = (event: MouseEvent) => {
-  //   if (
-  //     tooltipRef.current &&
-  //     !tooltipRef.current.contains(event.target as Node)
-  //   ) {
-  //     setOpentooltip(false);
-  //   }
-  // };
+  const handleClickOutside = (event: MouseEvent) => {
+    if (
+      tooltipRef.current &&
+      !tooltipRef.current.contains(event.target as Node)
+    ) {
+      setOpentooltip(false);
+    }
+  };
 
-  // useEffect(() => {
-  //   document.addEventListener('mousedown', handleClickOutside);
-  //   return () => {
-  //     document.removeEventListener('mousedown', handleClickOutside);
-  //   };
-  // }, []);
+  useEffect(() => {
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, []);
 
   const moveOnArea = (area: CustomArea, evt: AreaEvent) => {
     const coords = { x: evt.nativeEvent.clientX, y: evt.nativeEvent.clientY };
@@ -64,8 +64,9 @@ function SeoulRent() {
       (el: Seoulrent) => el.location === area.id,
     );
     setMonthlyRent(dataItem?.monthlyRent?.averageMonthlyFee);
-    setJeonse(dataItem?.jeonse?.averageDeposit);
-    setDiposit(dataItem?.jeonse?.averageDeposit);
+    setJeonse(`${numberWithCommas(dataItem?.jeonse?.averageDeposit)}만원`);
+    setDiposit(`${numberWithCommas(dataItem?.jeonse?.averageDeposit)}만원`);
+    setOpentooltip(true);
   };
 
   if (!isSuccess) {
@@ -238,8 +239,8 @@ const TooltipWrap = styled.div<StyleProps>`
   border-radius: 10px;
   box-shadow: 4px 4px 8px rgba(0, 0, 0, 0.15);
 
-  left: ${(props) => props.left - 46}px;
-  top: ${(props) => props.top - 20}px;
+  left: ${(props) => props.left - 40}px;
+  top: ${(props) => props.top}px;
   z-index: 99;
   .link {
     display: block;
