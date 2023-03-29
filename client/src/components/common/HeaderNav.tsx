@@ -11,12 +11,26 @@ function HeaderNav() {
       {'/' === pathname ? (
         <NavBtnClicked>커뮤니티</NavBtnClicked>
       ) : (
-        <NavBtn onClick={() => navigate('/')}>커뮤니티</NavBtn>
+        <NavBtn
+          onClick={() => {
+            navigate('/');
+            window.scrollTo(0, 0);
+          }}
+        >
+          커뮤니티
+        </NavBtn>
       )}
       {'/seoulrent' === pathname ? (
         <NavBtnClicked>서울전월세평균</NavBtnClicked>
       ) : (
-        <NavBtn onClick={() => navigate('/seoulrent')}>서울전월세평균</NavBtn>
+        <NavBtn
+          onClick={() => {
+            navigate('/seoulrent');
+            window.scrollTo(0, 0);
+          }}
+        >
+          서울전월세평균
+        </NavBtn>
       )}
       {'/recommendedloan' === pathname ? (
         <NavBtnClicked>공공대출추천</NavBtnClicked>
