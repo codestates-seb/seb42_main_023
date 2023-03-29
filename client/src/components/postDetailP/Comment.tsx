@@ -220,12 +220,10 @@ const Comment: React.FC<
 
   const minusCommentPage = () => {
     if (page >= 2) {
-      window.scrollTo(0, 500);
       setPage((prev) => (prev = prev - 1));
     }
   };
   const plusCommentPage = () => {
-    window.scrollTo(0, 500);
     setPage((prev) => prev + 1);
   };
   const minusReplyPage = () => {
@@ -417,7 +415,11 @@ const Comment: React.FC<
                         reportTypeChecker(event);
                       }}
                     >
-                      신고
+                      {comment.content === '삭제된 댓글입니다.'
+                        ? null
+                        : comment.content === '신고된 댓글입니다.'
+                        ? null
+                        : '신고'}
                     </li>
                     <button
                       onClick={_.debounce(() => {
@@ -440,47 +442,77 @@ const Comment: React.FC<
                   </ul>
                 </CommentInfo>
                 <CommentContent>
-                  {'comment' in state &&
-                  state.comment.isEdit !== undefined &&
-                  state.comment.isEdit[idx] ? (
-                    // 댓글 수정 시 생기는 INPUT
-                    <input
-                      className="edit-content"
-                      placeholder={comment.content}
-                      ref={commentEditInput}
-                      onKeyDown={enterHandler}
-                    ></input>
-                  ) : (
-                    <div className="content">
-                      {comment?.content}
-                      {commentIsEdit &&
-                      comment?.content !== '삭제된 댓글입니다.'
-                        ? '(수정됨)'
-                        : commentIsEdit &&
-                          comment?.content !== '신고된 댓글입니다.'
-                        ? '(수정됨)'
-                        : null}
-                    </div>
-                  )}
-                  <ReplyBtn
-                    onClick={(): void => {
-                      dispatch(setCommentId(comment.commentId));
-                      // 답글 눌릴 경우 그 이외 답글들 다 가리기
-                      if (
-                        'comment' in state &&
-                        state.comment?.commentId !== comment?.commentId
-                      ) {
-                        const open = Array.from(
-                          { length: commentQuery.data?.comments?.length },
-                          (el) => (el = false),
-                        );
-                        dispatch(isOpened(open!));
-                      }
-                      dispatch(setIsOpened(idx!));
-                    }}
-                  >
-                    답글 {comment?.replyCount ? comment?.replyCount : ''}
-                  </ReplyBtn>
+                  <div className="commentContent">
+                    {'comment' in state &&
+                    state.comment.isEdit !== undefined &&
+                    state.comment.isEdit[idx] ? (
+                      // 댓글 수정 시 생기는 INPUT
+                      <input
+                        className="edit-content"
+                        placeholder={comment.content}
+                        ref={commentEditInput}
+                        onKeyDown={enterHandler}
+                      ></input>
+                    ) : (
+                      <div className="content">
+                        {comment?.content}
+
+                        {commentIsEdit &&
+                        comment?.content === '삭제된 댓글입니다.'
+                          ? null
+                          : commentIsEdit &&
+                            comment?.content === '신고된 댓글입니다.'
+                          ? null
+                          : commentIsEdit
+                          ? '(수정됨)'
+                          : null}
+                      </div>
+                    )}
+                    {comment?.replyCount !== 0 ? (
+                      <ReplyBtn
+                        className="isReply"
+                        onClick={(): void => {
+                          dispatch(setCommentId(comment.commentId));
+                          // 답글 눌릴 경우 그 이외 답글들 다 가리기
+                          if (
+                            'comment' in state &&
+                            state.comment?.commentId !== comment?.commentId
+                          ) {
+                            const open = Array.from(
+                              { length: commentQuery.data?.comments?.length },
+                              (el) => (el = false),
+                            );
+                            dispatch(isOpened(open!));
+                          }
+                          dispatch(setIsOpened(idx!));
+                        }}
+                      >
+                        답글
+                        {comment?.replyCount ? ' ' + comment?.replyCount : ''}개
+                      </ReplyBtn>
+                    ) : (
+                      <ReplyBtn
+                        className="noReply"
+                        onClick={(): void => {
+                          dispatch(setCommentId(comment.commentId));
+                          // 답글 눌릴 경우 그 이외 답글들 다 가리기
+                          if (
+                            'comment' in state &&
+                            state.comment?.commentId !== comment?.commentId
+                          ) {
+                            const open = Array.from(
+                              { length: commentQuery.data?.comments?.length },
+                              (el) => (el = false),
+                            );
+                            dispatch(isOpened(open!));
+                          }
+                          dispatch(setIsOpened(idx!));
+                        }}
+                      >
+                        답글 {comment?.replyCount ? comment?.replyCount : ''}
+                      </ReplyBtn>
+                    )}
+                  </div>
                 </CommentContent>
                 {'reply' in state && isSuccess && state.reply?.isOpened[idx] ? (
                   <>
@@ -552,6 +584,9 @@ const CommentContainer = styled.div`
   flex-direction: column;
   width: 720px;
   height: auto;
+  padding: 0 0 50px 0;
+  margin-top: 30px;
+
   h1 {
     font-size: 24px;
     font-weight: 400;
@@ -568,12 +603,12 @@ const CommentContainer = styled.div`
   .content {
     display: flex;
     align-items: center;
-    width: 660px;
-    height: 50px;
+    width: 700px;
+    height: auto;
     padding-left: 10px;
     display: flex;
     justify-content: flex-start;
-    width: auto;
+    word-break: break-all;
   }
   .nickname {
     width: 130px;
@@ -632,16 +667,15 @@ const CommentContainer = styled.div`
     justify-content: flex-start;
   }
   #moreInfo {
-    margin: 20px 0 0 50px;
+    margin: 10px 0 0 30px;
     text-align: left;
-    font-size: 18px;
+    font-size: 16px;
     font-weight: 600;
     color: #0069ca;
     cursor: pointer;
   }
 `;
 
-//TODO Into
 const IntorductionContainer = styled.div`
   display: flex;
   flex-direction: column;
@@ -695,7 +729,7 @@ const CommentInfo = styled.div`
   justify-content: center;
   width: 100%;
   height: 30px;
-  margin-top: 50px;
+  margin-top: 10px;
 `;
 
 const CommentContent = styled.div`
@@ -706,6 +740,9 @@ const CommentContent = styled.div`
   width: 720px;
   height: auto;
   margin-bottom: 10px;
+  padding: 0 0 15px 0;
+  border-bottom: 1px solid #d4d4d4;
+
   .edit-content {
     width: 660px;
     height: 50px;
@@ -715,19 +752,40 @@ const CommentContent = styled.div`
       color: #0099ca;
     }
   }
+  .isReply {
+    color: #0099ca;
+    font-weight: bold;
+  }
+  .noReply {
+    font-weight: bold;
+  }
 `;
 
 const ReplyContainer = styled.div`
   width: 100%;
   height: 100%;
   background-color: #ffffff;
+  padding: 0 0 15px 0;
+  /* border-bottom: 1px solid #d4d4d4; */
+  .isReply {
+    color: #0099ca;
+  }
 `;
 
 const ReplyBtn = styled.button`
-  width: 50px;
-  height: 10px;
+  width: 75px;
+  height: 36px;
   background-color: #ffffff;
   color: #5c5c5c;
   margin-top: 15px;
+  border-radius: 20px;
+  font-weight: bold;
+  text-align: center;
   cursor: pointer;
+
+  :hover {
+    background-color: #0099ca;
+    color: white;
+    text-align: center;
+  }
 `;
