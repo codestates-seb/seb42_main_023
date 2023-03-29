@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import styled from 'styled-components';
 import { BlueBtn } from '../common/Btn';
 import { useAppDispatch, useAppSelector } from '../../hooks';
