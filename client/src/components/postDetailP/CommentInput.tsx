@@ -58,16 +58,31 @@ const CommentInput: React.FC<CommentInputProps> = ({
         onChange={valueCheck}
         onKeyDown={enterHandler}
       ></Input>
-      <AddCommentBtn
-        onClick={() => {
-          if (!commentRef.current?.value) return;
-          if (commentRef.current?.value === '삭제된 댓글입니다.') return;
-          if (commentRef.current?.value === '신고된 댓글입니다.') return;
-          addCommentHandler();
-        }}
-      >
-        등록
-      </AddCommentBtn>
+      {!commentRef.current?.value ? (
+        <AddCommentBtn
+          className="noContent"
+          onClick={() => {
+            if (!commentRef.current?.value) return;
+            if (commentRef.current?.value === '삭제된 댓글입니다.') return;
+            if (commentRef.current?.value === '신고된 댓글입니다.') return;
+            addCommentHandler();
+          }}
+        >
+          등록
+        </AddCommentBtn>
+      ) : (
+        <AddCommentBtn
+          className="isContent"
+          onClick={() => {
+            if (!commentRef.current?.value) return;
+            if (commentRef.current?.value === '삭제된 댓글입니다.') return;
+            if (commentRef.current?.value === '신고된 댓글입니다.') return;
+            addCommentHandler();
+          }}
+        >
+          등록
+        </AddCommentBtn>
+      )}
     </CommentInputContainer>
   );
 };
@@ -83,13 +98,25 @@ const CommentInputContainer = styled.div`
     font-size: 24px;
     font-weight: 400;
   }
+  .isContent {
+    color: #0069ca;
+    cursor: pointer;
+  }
+  .noContent {
+    cursor: default;
+  }
 `;
 const Input = styled.input`
   width: 720px;
   height: 50px;
   border: 1px solid #d4d4d4;
   padding: 0 10px 0 10px;
+  margin-left: 3px;
+  :focus {
+    outline: 3px solid #0069ca;
+  }
 `;
+
 const AddCommentBtn = styled.button`
   width: 50px;
   height: 30px;
@@ -99,5 +126,4 @@ const AddCommentBtn = styled.button`
   top: 55px;
   right: 15px;
   color: gray;
-  cursor: pointer;
 `;

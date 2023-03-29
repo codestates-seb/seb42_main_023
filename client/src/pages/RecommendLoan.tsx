@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import styled from 'styled-components';
 import Intro from '../components/recommendLoan/Intro';
 import Question from '../components/recommendLoan/Question';
@@ -19,6 +19,12 @@ const RecommendLoan: React.FC = () => {
     dispatch(setCurrentQuestion(null));
     dispatch(setResultId(result));
   };
+
+  // 설문 중간에 다른 페이지로 이동시 다시 인트로 화면으로 돌아가게 한다.
+  useEffect(() => {
+    dispatch(setCurrentQuestion(null));
+    window.scrollTo(0, 0);
+  }, []);
 
   return (
     <MainContainer>
@@ -49,9 +55,10 @@ export const MainContainer = styled.div`
   > .content-container {
     border: 1px solid #d4d4d4;
     background-color: #f8f8f8;
+    border-radius: 20px;
     width: 100%;
     height: 600px;
-    padding: 20px;
+    padding: 50px;
     display: flex;
     justify-content: center;
     align-items: center;

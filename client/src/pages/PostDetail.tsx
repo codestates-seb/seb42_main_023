@@ -854,7 +854,7 @@ const IntorductionContainer = styled.div`
     white-space: nowrap;
   }
   .intro-moreInfo {
-    font-size: 17x;
+    font-size: 17px;
     color: gray;
     width: 100px;
     margin: 5px 0 0 135px;

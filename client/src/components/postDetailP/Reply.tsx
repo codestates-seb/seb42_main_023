@@ -403,16 +403,19 @@ const ReplyContainer = styled.div`
     align-items: center;
     width: 600px;
     word-break: break-all;
+    font-size: 17px;
   }
   .nickname {
     width: 130px;
     font-size: 16px;
     margin: 2px 15px 0 5px;
+    font-size: 17px;
   }
   .reply-created-time {
     width: 75px;
     font-size: 16px;
     margin: 3px 15px 0 5px;
+    color: #94969b;
   }
   .reply-update {
     width: 40px;
@@ -445,7 +448,7 @@ const ReplyContainer = styled.div`
   }
 
   #moreInfo {
-    margin: 50px 0 0 30px;
+    margin: 50px 0 0 0px;
     text-align: left;
     font-size: 16px;
     font-weight: 450;

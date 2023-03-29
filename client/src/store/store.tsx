@@ -8,7 +8,6 @@ import validationSlice from '../slices/validationSlice';
 import headerSlice from '../slices/headerSlice';
 import mainSlice from '../slices/mainSlice';
 import mypageSlice from '../slices/mypageSlice';
-import nicknameSlice from '../slices/nicknameSlice';
 import surveySlice from '../slices/surveySlice';
 import { postsApi, recommendedPostsApi } from '../api/postApi';
 import { commentsApi } from '../api/commentApi';
@@ -30,7 +29,6 @@ const store = configureStore({
     main: mainSlice.reducer,
     mypage: mypageSlice.reducer,
     survey: surveySlice.reducer,
-    nickname: nicknameSlice.reducer,
     report: reportSlice.reducer,
 
     // api Reducer

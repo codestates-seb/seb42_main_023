@@ -251,7 +251,6 @@ const Comment: React.FC<
                 return reply.commentId === comment.commentId;
               });
             // 시간 계산
-
             const time = timeSince(comment.createdAt);
             const enterHandler = (
               event: React.KeyboardEvent<HTMLInputElement>,
@@ -339,7 +338,6 @@ const Comment: React.FC<
                             dispatch(setIsEdit(idx));
                             return;
                           }
-
                           dispatch(setIsEdit(idx));
                           updateMutation({
                             postId: postId,
@@ -473,6 +471,7 @@ const Comment: React.FC<
                         className="isReply"
                         onClick={(): void => {
                           dispatch(setCommentId(comment.commentId));
+                          setReplyPage(1);
                           // 답글 눌릴 경우 그 이외 답글들 다 가리기
                           if (
                             'comment' in state &&
@@ -586,7 +585,6 @@ const CommentContainer = styled.div`
   height: auto;
   padding: 0 0 50px 0;
   margin-top: 30px;
-
   h1 {
     font-size: 24px;
     font-weight: 400;
@@ -606,19 +604,22 @@ const CommentContainer = styled.div`
     width: 700px;
     height: auto;
     padding-left: 10px;
+    margin-top: 12px;
     display: flex;
     justify-content: flex-start;
     word-break: break-all;
+    font-size: 17px;
   }
   .nickname {
     width: 130px;
-    font-size: 16px;
+    font-size: 17px;
     margin: 2px 15px 0 5px;
   }
   .created-time {
     width: 75px;
     font-size: 16px;
     margin: 3px 15px 0 5px;
+    color: #94969b;
   }
   .comment-update {
     width: 40px;
@@ -658,16 +659,24 @@ const CommentContainer = styled.div`
     z-index: 1;
   }
   .replyPageContainer {
-    margin: 0 0 0 40px;
+    margin: 0 0 0 50px;
+
     display: flex;
-    justify-content: flex-start;
+    width: 180px;
+    justify-content: space-between;
+    z-index: 10;
+    align-items: center;
+    margin-left: 50px;
   }
   .commentPageContainer {
     display: flex;
-    justify-content: flex-start;
+    width: 180px;
+    justify-content: space-between;
+    z-index: 10;
+    align-items: center;
   }
   #moreInfo {
-    margin: 10px 0 0 30px;
+    margin: 10px 0 0 0px;
     text-align: left;
     font-size: 16px;
     font-weight: 600;
@@ -749,11 +758,11 @@ const CommentContent = styled.div`
     border-bottom: 1px solid #d4d4d4;
     padding: 3px 0 0 10px;
     ::placeholder {
-      color: #0099ca;
+      color: #0275e1;
     }
   }
   .isReply {
-    color: #0099ca;
+    color: #0275e1;
     font-weight: bold;
   }
   .noReply {
@@ -768,23 +777,27 @@ const ReplyContainer = styled.div`
   padding: 0 0 15px 0;
   /* border-bottom: 1px solid #d4d4d4; */
   .isReply {
-    color: #0099ca;
+    color: #0275e1;
   }
 `;
 
 const ReplyBtn = styled.button`
-  width: 75px;
-  height: 36px;
+  width: max-content;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 30px;
+  padding: 0 10px 0 10px;
   background-color: #ffffff;
   color: #5c5c5c;
   margin-top: 15px;
-  border-radius: 20px;
+  border-radius: 15px;
   font-weight: bold;
   text-align: center;
   cursor: pointer;
 
   :hover {
-    background-color: #0099ca;
+    background-color: #0275e1;
     color: white;
     text-align: center;
   }
