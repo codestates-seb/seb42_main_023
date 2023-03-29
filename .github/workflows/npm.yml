@@ -32,6 +32,7 @@ jobs:
           touch .env
           echo "REACT_APP_GOOGLE_CLIENT_ID=${{ secrets.REACT_APP_GOOGLE_CLIENT_ID }}" >> .env
           echo "REACT_APP_SERVER_ADDRESS=${{ secrets.REACT_APP_SERVER_ADDRESS }}" >> .env
+           echo "REACT_APP_S3_ADDRESS=${{ secrets.REACT_APP_S3_ADDRESS }}" >> .env
           cat .env
 
         working-directory: ./client
