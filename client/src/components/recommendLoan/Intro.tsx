@@ -1,6 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import { BlueBtn } from '../../components/common/Btn';
+import { LogoSVG } from '../../assets/common/LogoSVG';
 
 interface Props {
   nextQuestionHandler: (next: number) => void;
@@ -9,7 +10,7 @@ interface Props {
 const Intro: React.FC<Props> = ({ nextQuestionHandler }) => {
   return (
     <IntroContainer>
-      <div>Logo</div>
+      <LogoSVG />
       <Question>
         <h2>
           <strong>1~2%대</strong> 금리로 제공받을 수 있는 <br />
