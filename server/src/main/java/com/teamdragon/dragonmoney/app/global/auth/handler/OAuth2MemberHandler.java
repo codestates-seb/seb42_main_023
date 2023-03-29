@@ -101,9 +101,7 @@ public class OAuth2MemberHandler extends SimpleUrlAuthenticationSuccessHandler {
         return UriComponentsBuilder
                 .newInstance()
                 .scheme("http")
-//                .host("hp5234-dragonmoney-front.s3-website.ap-northeast-2.amazonaws.com")
-                .host("localhost")
-                .port(3000)
+                .host("hp5234-dragonmoney-front.s3-website.ap-northeast-2.amazonaws.com")
                 .path("/setnickname")
                 .queryParams(queryParams)
                 .build()
@@ -117,9 +115,7 @@ public class OAuth2MemberHandler extends SimpleUrlAuthenticationSuccessHandler {
         return UriComponentsBuilder
                 .newInstance()
                 .scheme("http")
-//                .host("hp5234-dragonmoney-front.s3-website.ap-northeast-2.amazonaws.com")
-                .host("localhost")
-                .port(3000)
+                .host("hp5234-dragonmoney-front.s3-website.ap-northeast-2.amazonaws.com")
                 .path("/temptoken")
                 .queryParams(queryParams)
                 .build()
@@ -133,9 +129,7 @@ public class OAuth2MemberHandler extends SimpleUrlAuthenticationSuccessHandler {
         return UriComponentsBuilder
                 .newInstance()
                 .scheme("http")
-//                .host("hp5234-dragonmoney-front.s3-website.ap-northeast-2.amazonaws.com")
-                .host("localhost")
-                .port(3000)
+                .host("hp5234-dragonmoney-front.s3-website.ap-northeast-2.amazonaws.com")
                 .path("/recovery")
                 .queryParams(queryParams)
                 .build()
