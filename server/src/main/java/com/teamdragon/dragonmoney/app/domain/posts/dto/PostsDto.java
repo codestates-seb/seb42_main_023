@@ -35,7 +35,7 @@ public class PostsDto {
         @NotBlank
         @Length(min=10, max=30000)
         private String content;
-        @Size(max = 5)
+        @Size(min = 1, max = 5)
         private List<TagDto.TagName> tagNames;
 
         @Builder
@@ -58,7 +58,7 @@ public class PostsDto {
         @NotBlank
         @Length(min=10, max=30000)
         private String content;
-        @Size(max = 5)
+        @Size(min = 1, max = 5)
         private List<TagDto.TagName> tagNames;
 
         @Builder

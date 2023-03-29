@@ -2,10 +2,10 @@ package com.teamdragon.dragonmoney.app.domain.tag.repository;
 
 import com.querydsl.jpa.JPAExpressions;
 import com.querydsl.jpa.impl.JPAQueryFactory;
+import com.teamdragon.dragonmoney.app.domain.posts.entity.QPostsTag;
 import com.teamdragon.dragonmoney.app.domain.tag.entity.QTag;
 import lombok.RequiredArgsConstructor;
 
-import static com.teamdragon.dragonmoney.app.domain.posts.entity.QPostsTag.postsTag;
 import static com.teamdragon.dragonmoney.app.domain.tag.entity.QTag.*;
 
 @RequiredArgsConstructor
@@ -16,17 +16,14 @@ public class TagRepositoryImpl implements TagRepositoryCustom {
     // 태그 삭제 : 참조되는곳이 없는 태그들 삭제
     @Override
     public void deleteOrphanTag() {
-        QTag tag2 = new QTag("tag2");
 
         queryFactory
-                .delete(tag2)
-                .where(tag2.id.in(
+                .delete(tag)
+                .where(tag.id.notIn(
                         JPAExpressions
-                                .select(tag.id)
-                                .from(tag)
-                                .leftJoin(postsTag)
-                                .on(tag.id.eq(postsTag.tag.id))
-                                .where(postsTag.posts.isNull())
+                                .select(QPostsTag.postsTag.tag.id)
+                                .from(QPostsTag.postsTag)
+                                .groupBy(QPostsTag.postsTag.tag.id)
                 ))
                 .execute();
     }

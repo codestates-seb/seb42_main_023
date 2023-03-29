@@ -37,7 +37,7 @@ public class ImageController {
         return new ResponseEntity<>(imageResponse, HttpStatus.CREATED);
     }
 
-    @DeleteMapping("/images")
+    @PostMapping("/images/drop")
     public ResponseEntity<Void> deleteImage(@AuthenticationPrincipal Principal principal,
                                             @Valid @RequestBody ImageDto.DeleteImagesReq imagesDto) {
         Member loginMember = finderService.findVerifiedMemberByName(principal.getName());
