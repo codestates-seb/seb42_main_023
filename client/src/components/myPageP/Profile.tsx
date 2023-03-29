@@ -22,7 +22,7 @@ function Profile() {
     name: memberName,
   });
   const { data, isSuccess, refetch } = membersQuery;
-  const loginuser = Cookies.get('name');
+  const loginuser = localStorage.getItem('name');
 
   //회원정보에 들어올 때마다 데이터 업데이트
   useEffect(() => {
@@ -58,7 +58,7 @@ function Profile() {
           {isSuccess && (
             <h1>
               {data.member.memberName}
-              {data.member.memberName !== loginuser &&
+              {data.member.memberName === loginuser &&
                 (EditOpen ? (
                   <button onClick={submitHandler}>수정완료</button>
                 ) : (
@@ -75,7 +75,7 @@ function Profile() {
           )}
         </article>
       </div>
-      {isSuccess && data.member.memberName !== loginuser && <DropdownButton />}
+      {isSuccess && data.member.memberName === loginuser && <DropdownButton />}
     </ProfileWrap>
   );
 }
