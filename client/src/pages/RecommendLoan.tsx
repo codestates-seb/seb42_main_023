@@ -49,9 +49,10 @@ export const MainContainer = styled.div`
   > .content-container {
     border: 1px solid #d4d4d4;
     background-color: #f8f8f8;
+    border-radius: 20px;
     width: 100%;
     height: 600px;
-    padding: 20px;
+    padding: 50px;
     display: flex;
     justify-content: center;
     align-items: center;
