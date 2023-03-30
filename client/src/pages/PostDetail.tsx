@@ -63,12 +63,21 @@ const PostDetail: React.FC = () => {
   const [isOpenReplyIntro, setIsOpenReplyIntro] = useState<boolean>(false);
 
   const handleSelectChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    if (event.target instanceof HTMLInputElement) {
-      setCheckedElement(Number(event.target.value));
-      console.log(event.target.id);
-      dispatch(setReportOption(event.target.id));
-    }
+    setCheckedElement(Number(event.target.value));
+    dispatch(setReportOption(event.target.id));
   };
+
+  const handleSelected = (event: React.MouseEvent<HTMLButtonElement>) => {
+    setCheckedElement(Number(event.currentTarget.value));
+    console.log(event.currentTarget?.parentElement);
+    console.log(event.currentTarget?.parentElement?.id);
+    dispatch(
+      setReportOption(
+        String(event.currentTarget?.parentElement?.children[0].id),
+      ),
+    );
+  };
+
   const reportTextRef = useRef<HTMLTextAreaElement>(null);
   const dispatch = useAppDispatch();
   const state = useAppSelector(
@@ -94,7 +103,6 @@ const PostDetail: React.FC = () => {
   const replyId = 'reply' in state ? state.reply?.replyId : null;
   const reportReason = 'post' in state ? state.post.reportOption : null;
   const reportErr = 'validation' in state ? state.validation.reportErr : null;
-  console.log(reportErr);
   const selectedMember = 'post' in state ? state.post.selectedMember : null;
   const loginUserName = window.localStorage.getItem('name');
 
@@ -414,22 +422,30 @@ const PostDetail: React.FC = () => {
 
                     {checkedElement === idx ? (
                       <button
-                        onClick={() => {
+                        id={option}
+                        value={idx}
+                        onClick={(event): void => {
+                          handleSelected(event);
                           setCheckedElement(-1);
                         }}
                       >
-                        <CheckedIcon id={option} width={30} height={30} />
+                        <CheckedIcon width={30} height={30} />
                       </button>
                     ) : (
                       <button
-                        onClick={() => {
+                        id={option}
+                        value={idx}
+                        onClick={(event) => {
+                          handleSelected(event);
                           setCheckedElement(idx);
                         }}
                       >
-                        <NoCheckedIcon id={option} width={30} height={30} />
+                        <NoCheckedIcon width={30} height={30} />
                       </button>
                     )}
-                    <label htmlFor={option}>{option}</label>
+                    <label className="option" htmlFor={option}>
+                      {option}
+                    </label>
                   </div>
                 );
               })}
@@ -772,7 +788,6 @@ const ReportModal = styled.div`
   border-radius: 5px;
   color: #5c5c5c;
   z-index: 10;
-
   padding: 25px 15px 0 15px;
 
   .report {
