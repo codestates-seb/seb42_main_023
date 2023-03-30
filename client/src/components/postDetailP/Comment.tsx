@@ -722,7 +722,7 @@ const IntorductionContainer = styled.div`
   border: 1px solid #d4d4d4;
   z-index: 2;
   top: 50px;
-  left: 45px;
+  left: 18px;
   background-color: white;
   .introduction {
     font-size: 17x;
