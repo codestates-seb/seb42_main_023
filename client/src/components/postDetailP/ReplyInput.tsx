@@ -47,11 +47,17 @@ const ReplyInput: React.FC<CommentProps> = ({ commentInfo }: CommentProps) => {
   };
 
   const enterHandler = (event: React.KeyboardEvent<HTMLInputElement>): void => {
+    if (
+      commentInfo.content === '삭제된 댓글입니다.' ||
+      commentInfo.content === '신고된 댓글입니다.'
+    ) {
+      return;
+    }
     if (!replyRef.current!.value) return;
     if (replyRef.current?.value === '삭제된 답글입니다.') return;
     if (replyRef.current?.value === '신고된 답글입니다.') return;
 
-    if (event.key === 'Enter' && event.nativeEvent.isComposing === false) {
+    if (event.key === 'Enter') {
       dispatch(setCommentId(commentInfo.commentId));
       addReplyHandler();
     }
@@ -66,23 +72,18 @@ const ReplyInput: React.FC<CommentProps> = ({ commentInfo }: CommentProps) => {
         onKeyDown={enterHandler}
       ></Input>
       {!replyRef.current?.value ? (
-        <AddCommentBtn
-          className="noContent"
-          onClick={(event) => {
-            dispatch(setCommentId(commentInfo.commentId));
-            if (!replyRef.current!.value) return;
-            if (replyRef.current?.value === '삭제된 답글입니다.') return;
-            if (replyRef.current?.value === '신고된 답글입니다.') return;
-            addReplyHandler();
-          }}
-        >
-          등록
-        </AddCommentBtn>
+        <AddCommentBtn className="noContent">등록</AddCommentBtn>
       ) : (
         <AddCommentBtn
           className="isContent"
-          onClick={(event) => {
+          onClick={() => {
             dispatch(setCommentId(commentInfo.commentId));
+            if (
+              commentInfo.content === '삭제된 댓글입니다.' ||
+              commentInfo.content === '신고된 댓글입니다.'
+            ) {
+              return;
+            }
             if (!replyRef.current!.value) return;
             if (replyRef.current?.value === '삭제된 답글입니다.') return;
             if (replyRef.current?.value === '신고된 답글입니다.') return;
