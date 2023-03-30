@@ -38,7 +38,10 @@ const Main = () => {
           <RiMoneyDollarCircleLine color="#fff" size={28} />
           WELCOME!
         </h1>
-        <p>사회초년생을 위한 경제 커뮤니티 용돈에 오신것을 환영합니다</p>
+        <p>
+          재테크, 내집마련, 주식투자, 모든 금융고민을 또래 사회초년생과 함께
+          나눠보세요.
+        </p>
       </Banner>
       <FilterWrap>
         <div>
