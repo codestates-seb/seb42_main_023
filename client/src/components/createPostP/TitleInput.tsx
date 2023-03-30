@@ -76,8 +76,10 @@ const Input = styled.input`
   border: 1px solid #d4d4d4;
   padding: 0 10px 0 10px;
   margin-top: 20px;
-  font-style: italic;
   padding-left: 15px;
+  ::placeholder {
+    font-style: italic;
+  }
 `;
 
 const Error = styled.div`
