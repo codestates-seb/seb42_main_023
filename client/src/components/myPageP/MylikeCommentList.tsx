@@ -32,7 +32,7 @@ const MylikeCommentList = () => {
     <PostListWrap>
       <List>
         {isSuccess && data.comments.length === 0 && (
-          <Nolist name={'좋아요한 eot글이'} />
+          <Nolist name={'좋아요한 댓글이'} />
         )}
         {isSuccess &&
           data.comments.length !== 0 &&
