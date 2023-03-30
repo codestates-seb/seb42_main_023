@@ -371,9 +371,9 @@ const Reply: React.FC<Partial<ReplyProps & ReportProps>> = ({
         ) : (
           <div className="reply-content">
             {replyInfo!.content}
-            {replyIsEdit && replyInfo?.content === '삭제된 댓글입니다.'
+            {replyIsEdit && replyInfo?.content === '삭제된 답글입니다.'
               ? null
-              : replyIsEdit && replyInfo?.content === '신고된 댓글입니다.'
+              : replyIsEdit && replyInfo?.content === '신고된 답글입니다.'
               ? null
               : replyIsEdit
               ? '(수정됨)'
