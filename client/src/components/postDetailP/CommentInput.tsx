@@ -21,16 +21,17 @@ const CommentInput: React.FC<CommentInputProps> = ({
   const [setComments] = commetMutation;
 
   // 댓글 추가
-  const addCommentHandler = async () => {
-    await setComments({
+  const addCommentHandler = () => {
+    setComments({
       postId: postId,
       content: commentRef.current?.value,
-    });
-
-    setCommentCnt(commentCnt + 1);
-    dispatch(addCommentEdit(false));
-
-    commentRef.current!.value = '';
+    })
+      .unwrap()
+      .then(() => {
+        setCommentCnt(commentCnt + 1);
+        dispatch(addCommentEdit(false));
+        commentRef.current!.value = '';
+      });
   };
 
   const valueCheck = (event: React.ChangeEvent<HTMLInputElement>): void => {
@@ -50,7 +51,6 @@ const CommentInput: React.FC<CommentInputProps> = ({
   return (
     <CommentInputContainer>
       <h1>댓글 {commentCnt}개 </h1>
-      {/* <h1>댓글 {postQuery.data?.commentCount}개 </h1> */}
       <Input
         type="text"
         placeholder="댓글을 남겨 주세요"

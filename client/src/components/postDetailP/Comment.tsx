@@ -460,7 +460,17 @@ const Comment: React.FC<
                         onKeyDown={enterHandler}
                       ></input>
                     ) : (
-                      <div className="content">
+                      <div
+                        className="content"
+                        style={{
+                          color:
+                            comment?.content === '삭제된 댓글입니다.'
+                              ? '#94969b'
+                              : comment?.content === '신고된 댓글입니다.'
+                              ? '#94969b'
+                              : ' #000000',
+                        }}
+                      >
                         {comment?.content}
                         {commentIsEdit &&
                         comment?.content === '삭제된 댓글입니다.'
@@ -523,9 +533,6 @@ const Comment: React.FC<
                 {'reply' in state && isSuccess && state.reply?.isOpened[idx] ? (
                   <>
                     <ReplyContainer>
-                      {/* {comment.content !== '삭제된 댓글입니다.' ? (
-                        <ReplyInput commentInfo={comment}></ReplyInput>
-                      ) : null} */}
                       <ReplyInput commentInfo={comment}></ReplyInput>
                       {filtered?.map((reply: ReplyType, idx: number) => {
                         return (
@@ -569,12 +576,24 @@ const Comment: React.FC<
 
       <div className="commentPageContainer">
         {page !== 1 ? (
-          <button id="moreInfo" onClick={minusCommentPage}>
+          <button
+            id="moreInfo"
+            onClick={() => {
+              minusCommentPage();
+              scrollTo(0, 500);
+            }}
+          >
             《 이전 댓글
           </button>
         ) : null}
         {commentCnt! > 10 && commentCnt! / 10 > page ? (
-          <button id="moreInfo" onClick={plusCommentPage}>
+          <button
+            id="moreInfo"
+            onClick={() => {
+              plusCommentPage();
+              scrollTo(0, 500);
+            }}
+          >
             댓글 더보기 》
           </button>
         ) : null}

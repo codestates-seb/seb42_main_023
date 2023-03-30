@@ -207,7 +207,7 @@ const Reply: React.FC<Partial<ReplyProps & ReportProps>> = ({
               src={replyInfo && replyInfo.memberImage}
               id={replyInfo?.memberName}
               data-img={replyInfo?.memberImage}
-              data-replyId={replyInfo?.replyId}
+              data-replyid={replyInfo?.replyId}
             ></img>
           </li>
           {'reply' in state &&
@@ -313,7 +313,7 @@ const Reply: React.FC<Partial<ReplyProps & ReportProps>> = ({
           <li
             className="reply-report"
             data-category="reply"
-            data-replyId={String(replyInfo?.replyId)}
+            data-replyid={String(replyInfo?.replyId)}
             style={{
               display:
                 loginUserName === replyInfo?.memberName ? 'none' : 'block',
@@ -339,9 +339,7 @@ const Reply: React.FC<Partial<ReplyProps & ReportProps>> = ({
                 }, 500)}
                 style={{
                   margin:
-                    loginUserName === replyInfo?.memberName
-                      ? '0'
-                      : '0 0 0 78px',
+                    loginUserName === replyInfo?.memberName ? '0' : '0 0 0 7px',
                 }}
               >
                 <LikeIcon checked={replyInfo!.isThumbup} />
@@ -371,11 +369,21 @@ const Reply: React.FC<Partial<ReplyProps & ReportProps>> = ({
             onKeyDown={enterHandler}
           ></input>
         ) : (
-          <div className="reply-content">
+          <div
+            className="reply-content"
+            style={{
+              color:
+                replyInfo?.content === '삭제된 답글입니다.'
+                  ? '#94969b'
+                  : replyInfo?.content === '신고된 답글입니다.'
+                  ? '#94969b'
+                  : '#000000',
+            }}
+          >
             {replyInfo!.content}
-            {replyIsEdit && replyInfo?.content === '삭제된 댓글입니다.'
+            {replyIsEdit && replyInfo?.content === '삭제된 답글입니다.'
               ? null
-              : replyIsEdit && replyInfo?.content === '신고된 댓글입니다.'
+              : replyIsEdit && replyInfo?.content === '신고된 답글입니다.'
               ? null
               : replyIsEdit
               ? '(수정됨)'
