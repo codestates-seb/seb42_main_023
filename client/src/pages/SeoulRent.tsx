@@ -66,7 +66,9 @@ function SeoulRent() {
     );
     setMonthlyRent(dataItem?.monthlyRent?.averageMonthlyFee);
     setJeonse(`${numberWithCommas(dataItem?.jeonse?.averageDeposit)}만원`);
-    setDiposit(`${numberWithCommas(dataItem?.jeonse?.averageDeposit)}만원`);
+    setDiposit(
+      `${numberWithCommas(dataItem?.monthlyRent?.averageDeposit)}만원`,
+    );
     setOpentooltip(true);
   };
 
@@ -98,12 +100,15 @@ function SeoulRent() {
         // left={tooltipPosition.x}
         // top={tooltipPosition.y}
         >
-          <div>{clickedArea}</div>
-          <div>
+          <h1>
+            <AiOutlineEnvironment size={18} />
+            {clickedArea}
+          </h1>
+          <div className="line">
             <span>전세 </span>
             {jeonse}
           </div>
-          <div>
+          <div className="afterLine">
             <span>월세 </span>
             {monthlyRent}
           </div>
@@ -243,7 +248,7 @@ const TooltipWrap = styled.div`
   background-color: #fff;
   border: 1px solid var(--border-color);
   width: 160px;
-  height: 124px;
+  height: 140px;
   padding: 14px;
   border-radius: 10px;
   box-shadow: 4px 4px 8px rgba(0, 0, 0, 0.15);
@@ -251,6 +256,13 @@ const TooltipWrap = styled.div`
   top: 170px;
   left: 212px;
   z-index: 2;
+  h1 {
+    font-size: 20px;
+    margin-bottom: 4px;
+    svg {
+      transform: translateY(1px);
+    }
+  }
   .link {
     display: block;
     height: 20px;
@@ -260,9 +272,18 @@ const TooltipWrap = styled.div`
   }
   span {
     color: var(--point-blue-color);
+    .line {
+      background-color: var(--border-color);
+      height: 4px;
+    }
   }
   div {
     margin-bottom: 4px;
+  }
+  .line + div {
+    border-top: 1px solid #ccc;
+    margin: 5px 0;
+    padding-top: 6px;
   }
 `;
 const BeforeClicked = styled(TooltipWrap)`
