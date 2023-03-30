@@ -105,8 +105,7 @@ const PostDetail: React.FC = () => {
   const replyId = 'reply' in state ? state.reply?.replyId : null;
   const reportReason = 'post' in state ? state.post.reportOption : null;
   const reportErr = 'validation' in state ? state.validation.reportErr : null;
-  // const selectedMember = 'post' in state ? state.post.selectedMember : null;
-  const selectedMember = 'abc';
+  const selectedMember = 'post' in state ? state.post.selectedMember : null;
   const loginUserName = window.localStorage.getItem('name');
 
   // 게시글 조회 및 추가
@@ -130,11 +129,12 @@ const PostDetail: React.FC = () => {
   // 신고 추가
   const [sendReport] = reportApi.usePostReportMutation();
   //  멤버 정보 조회
-  const memeberQuery = selectedMember
-    ? membersApi.useGetMemberQuery({ name: selectedMember } ?? skipToken, {
-        skip: !selectedMember,
-      })
-    : null;
+  const memberQuery = membersApi.useGetMemberQuery(
+    { name: selectedMember },
+    {
+      skip: !selectedMember,
+    },
+  );
 
   // 시간 계산
   const time = timeSince(isSuccess && data?.createdAt);
@@ -511,7 +511,7 @@ const PostDetail: React.FC = () => {
                     </ul>
                   </IntroInfo>
                   <label className="introduction">
-                    {memeberQuery?.data?.intro || '소개 내용이 없습니다.'}
+                    {memberQuery?.data?.intro || '소개 내용이 없습니다.'}
                   </label>
                   <button
                     className="intro-moreInfo"
