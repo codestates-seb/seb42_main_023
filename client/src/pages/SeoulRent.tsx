@@ -7,6 +7,7 @@ import ImageMapper from 'react-img-mapper';
 import { CustomArea, AreaEvent } from 'react-img-mapper/dist/types';
 import { seoulrentApi } from '../api/seoulrentApi';
 import { AiFillHome } from 'react-icons/ai';
+import { AiOutlineEnvironment } from 'react-icons/ai';
 
 interface StyleProps {
   left: number;
@@ -91,11 +92,11 @@ function SeoulRent() {
         onMouseUp={(area, _, evt) => moveOnArea(area, evt)}
         stayHighlighted={true}
       />
-      {openTooltip && (
+      {openTooltip ? (
         <TooltipWrap
-          ref={tooltipRef}
-          left={tooltipPosition.x}
-          top={tooltipPosition.y}
+        // ref={tooltipRef}
+        // left={tooltipPosition.x}
+        // top={tooltipPosition.y}
         >
           <div>{clickedArea}</div>
           <div>
@@ -111,6 +112,14 @@ function SeoulRent() {
             {diposit}
           </div>
         </TooltipWrap>
+      ) : (
+        <BeforeClicked>
+          <AiOutlineEnvironment size={24} />
+          <p>
+            궁금한 지역을
+            <br /> 클릭하세요
+          </p>
+        </BeforeClicked>
       )}
       <p
         style={{
@@ -229,7 +238,7 @@ const Mention = styled.span`
   padding-bottom: 70px;
   font-weight: 300;
 `;
-const TooltipWrap = styled.div<StyleProps>`
+const TooltipWrap = styled.div`
   position: absolute;
   background-color: #fff;
   border: 1px solid var(--border-color);
@@ -239,9 +248,9 @@ const TooltipWrap = styled.div<StyleProps>`
   border-radius: 10px;
   box-shadow: 4px 4px 8px rgba(0, 0, 0, 0.15);
 
-  left: ${(props) => props.left - 40}px;
-  top: ${(props) => props.top}px;
-  z-index: 99;
+  top: 170px;
+  left: 212px;
+  z-index: 2;
   .link {
     display: block;
     height: 20px;
@@ -254,5 +263,13 @@ const TooltipWrap = styled.div<StyleProps>`
   }
   div {
     margin-bottom: 4px;
+  }
+`;
+const BeforeClicked = styled(TooltipWrap)`
+  color: var(--hover-font-gray-color);
+  text-align: center;
+  svg {
+    color: var(--hover-font-gray-color);
+    margin: 4px 0;
   }
 `;
