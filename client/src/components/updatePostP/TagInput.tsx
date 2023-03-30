@@ -25,7 +25,6 @@ const TagInput: React.FC = () => {
   const postId = params.postId;
   const postQuery = postsApi.useGetPostQuery({ postId });
   const { data } = postQuery;
-  const tags = data?.tags;
 
   //  테그 추가
   const addTagHandler = (event: KeyboardEvent<HTMLInputElement>): void => {

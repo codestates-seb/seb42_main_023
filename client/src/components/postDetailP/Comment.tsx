@@ -651,11 +651,13 @@ const CommentContainer = styled.div`
     width: 30px;
     font-size: 16px;
     margin: 3px 15px 0 15px;
+    color: var(--point-blue-color);
   }
   .comment-dislikes {
     width: 30px;
     font-size: 16px;
     margin: 3px 15px 0 15px;
+    color: var(--error-red-color);
   }
 
   #edit {
