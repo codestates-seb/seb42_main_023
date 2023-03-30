@@ -32,23 +32,14 @@ const MylikeCommentList = () => {
     <PostListWrap>
       <List>
         {isSuccess && data.comments.length === 0 && (
-          <Nolist name={'좋아요한 댓글이'} />
+          <Nolist name={'좋아요한 eot글이'} />
         )}
         {isSuccess &&
           data.comments.length !== 0 &&
           data.comments.map((item: CommentType) => {
             return (
               <li key={item.commentId}>
-                <Link
-                  to={
-                    item.comment !== '신고된 댓글입니다.'
-                      ? `/posts/${item.postId}`
-                      : `#`
-                  }
-                  className={
-                    item.comment !== '신고된 댓글입니다.' ? '' : 'disabled-link'
-                  }
-                >
+                <Link to={`/posts/${item.postId}`}>
                   {item.comment === '신고된 댓글입니다.' ? (
                     <div style={{ color: '#94969b' }}>{item.comment}</div>
                   ) : (
