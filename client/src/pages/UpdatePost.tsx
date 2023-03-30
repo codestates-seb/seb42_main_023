@@ -89,6 +89,10 @@ const UpdatePost: React.FC = () => {
       }
     }
   };
+  // 페이지 이동 시 스크롤 최상단 이동
+  useEffect(() => {
+    scrollTo(0, 0);
+  }, []);
 
   const preventClose = (e: BeforeUnloadEvent) => {
     e.preventDefault();
