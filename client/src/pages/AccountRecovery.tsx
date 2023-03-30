@@ -2,11 +2,10 @@ import React from 'react';
 import styled from 'styled-components';
 import { MainContainer, FormContainer } from '../components/common/Container';
 import { BlueBtn } from '../components/common/Btn';
-import { usePostTempTokenMutation } from '../api/tempTokenAPi';
-import { LogoSVG } from '../assets/common/LogoSVG';
+import { usePostTempTokenRecoveryMutation } from '../api/tempTokenAPi';
 
 const AccountRecovery: React.FC = () => {
-  const [postTempToken] = usePostTempTokenMutation();
+  const [postTempTokenRecovery] = usePostTempTokenRecoveryMutation();
 
   // '계정 복구' 버튼을 눌렀을 때 실행되는 함수
   const recoverAccountHandler = () => {
@@ -14,7 +13,7 @@ const AccountRecovery: React.FC = () => {
     const tempAccessToken = url.searchParams.get('tempAccessToken');
     console.log('tempAccessToken', tempAccessToken);
 
-    postTempToken({ tempAccessToken })
+    postTempTokenRecovery({ tempAccessToken })
       .unwrap()
       .then((payload: any) => {
         // 유저 정보를 로컬스토리지에 저장
@@ -32,7 +31,7 @@ const AccountRecovery: React.FC = () => {
   return (
     <MainContainer>
       <FormContainer>
-        <LogoSVG />
+        <div>Logo</div>
         <p>가입내역이 확인되는 회원입니다.</p>
         <RecoveryQuestion>
           <p>탈퇴했던 기존의 계정을 복구할 수 있습니다.</p>
