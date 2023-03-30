@@ -4,17 +4,16 @@ import { useAppSelector } from '../../hooks';
 import TimeIcon from '../../assets/common/TimeIcon';
 import ViewIcon from '../../assets/common/ViewIcon';
 import Thumnail from '../common/Thumbnail';
-import { TagItem } from '../common/Tag';
 import { Link } from 'react-router-dom';
 import { membersPostListApi } from '../../api/memberapi';
-import { postsApi } from '../../api/postApi';
 import { timeSince } from '../mainP/Timecalculator';
 import Pagination from '../common/Pagination';
 import { FaBookmark } from 'react-icons/fa';
 import { PostListItem } from '../../types/PostList';
 import { FaRegThumbsUp } from 'react-icons/fa';
 import { Tag } from '../mainP/PostList';
-import { PostListWrap, Item } from './MyPostList';
+import { Item, Itemside, Info } from '../mainP/PostList';
+import { PostListWrap } from './MyPostList';
 import Nolist from './Nolist';
 
 function MyBookmarks() {
@@ -106,23 +105,4 @@ export default MyBookmarks;
 
 const List = styled.ul`
   width: 100%;
-`;
-
-export const Itemside = styled.div`
-  display: flex;
-  flex-direction: row;
-  justify-content: space-between;
-  > div {
-    display: flex;
-  }
-`;
-export const Info = styled.div`
-  span {
-    color: var(--sub-font-color);
-    font-size: var(--sub-font-size);
-    margin-left: 20px;
-    flex-direction: row;
-    display: flex;
-    align-items: center;
-  }
 `;

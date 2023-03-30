@@ -38,7 +38,16 @@ const MyCommentList = () => {
           data.comments.map((item: CommentType) => {
             return (
               <li key={item.commentId}>
-                <Link to={`/posts/${item.postId}`}>
+                <Link
+                  to={
+                    item.comment !== '신고된 댓글입니다.'
+                      ? `/posts/${item.postId}`
+                      : `#`
+                  }
+                  className={
+                    item.comment !== '신고된 댓글입니다.' ? '' : 'disabled-link'
+                  }
+                >
                   {item.comment === '신고된 댓글입니다.' ? (
                     <div style={{ color: '#94969b' }}>{item.comment}</div>
                   ) : (

@@ -11,7 +11,8 @@ import { timeSince } from '../mainP/Timecalculator';
 import Pagination from '../common/Pagination';
 import { PostListItem } from '../../types/PostList';
 import { FaRegThumbsUp } from 'react-icons/fa';
-import { PostListWrap, Item } from './MyPostList';
+import { Item, Itemside, Info } from '../mainP/PostList';
+import { PostListWrap } from './MyPostList';
 import Nolist from './Nolist';
 
 function MyLikePostList() {
@@ -103,23 +104,4 @@ export default MyLikePostList;
 
 const List = styled.ul`
   width: 100%;
-`;
-
-export const Itemside = styled.div`
-  display: flex;
-  flex-direction: row;
-  justify-content: space-between;
-  > div {
-    display: flex;
-  }
-`;
-export const Info = styled.div`
-  span {
-    color: var(--sub-font-color);
-    font-size: var(--sub-font-size);
-    margin-left: 20px;
-    flex-direction: row;
-    display: flex;
-    align-items: center;
-  }
 `;

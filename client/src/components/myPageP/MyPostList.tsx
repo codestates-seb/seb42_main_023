@@ -12,6 +12,7 @@ import Pagination from '../common/Pagination';
 import { PostListItem } from '../../types/PostList';
 import { FaRegThumbsUp } from 'react-icons/fa';
 import Nolist from './Nolist';
+import { Item, Itemside, Info } from '../mainP/PostList';
 
 function MyPostList() {
   const [pageOffset, setPageOffset] = useState(0);
@@ -101,50 +102,6 @@ export default MyPostList;
 
 const List = styled.ul`
   width: 100%;
-`;
-export const Item = styled.li`
-  a {
-    height: 100px;
-    border-bottom: 1px solid var(--border-color);
-    box-sizing: border-box;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    padding: 0 20px;
-    h1 {
-      font-size: 20px;
-      margin-bottom: 4px;
-    }
-    > div:nth-child(2) {
-      flex-grow: 1;
-    }
-    :hover {
-      background-color: var(--background-color);
-    }
-    .disabled-link {
-      pointer-events: none;
-      opacity: 0.5;
-      cursor: not-allowed;
-    }
-  }
-`;
-export const Itemside = styled.div`
-  display: flex;
-  flex-direction: row;
-  justify-content: space-between;
-  > div {
-    display: flex;
-  }
-`;
-export const Info = styled.div`
-  span {
-    color: var(--sub-font-color);
-    font-size: var(--sub-font-size);
-    margin-left: 20px;
-    flex-direction: row;
-    display: flex;
-    align-items: center;
-  }
 `;
 
 export const PostListWrap = styled.div`

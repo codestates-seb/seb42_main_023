@@ -24,38 +24,36 @@ function PostList({ posts, currentPage }: Props) {
       {posts.map((post: PostListItem) => {
         return (
           <Item key={post.postId}>
-            <div>
-              <Link to={`/posts/${post.postId}`}>
+            <Link to={`/posts/${post.postId}`}>
+              <div>
                 <Thumnail content={post.imgUrl} />
-              </Link>
-            </div>
-            <div>
-              <Link to={`/posts/${post.postId}`}>
+              </div>
+              <div>
                 <h1>{post.title}</h1>
-              </Link>
-              <Itemside>
-                <div>
-                  {post.tags.map((tag, idx) => (
-                    <Tag key={idx}>{tag.tagName}</Tag>
-                  ))}
-                </div>
-                <Info>
-                  <span>{post.memberName}</span>
-                  <span>
-                    <TimeIcon />
-                    {timeSince(post.createdAt)}
-                  </span>
-                  <span>
-                    <ViewIcon />
-                    {post.viewCount}
-                  </span>
-                  <span>
-                    <FaRegThumbsUp size={13} />
-                    {post.thumbupCount}
-                  </span>
-                </Info>
-              </Itemside>
-            </div>
+                <Itemside>
+                  <div>
+                    {post.tags.map((tag, idx) => (
+                      <Tag key={idx}>{tag.tagName}</Tag>
+                    ))}
+                  </div>
+                  <Info>
+                    <span>{post.memberName}</span>
+                    <span>
+                      <TimeIcon />
+                      {timeSince(post.createdAt)}
+                    </span>
+                    <span>
+                      <ViewIcon />
+                      {post.viewCount}
+                    </span>
+                    <span>
+                      <FaRegThumbsUp size={13} />
+                      {post.thumbupCount}
+                    </span>
+                  </Info>
+                </Itemside>
+              </div>
+            </Link>
           </Item>
         );
       })}
@@ -70,19 +68,29 @@ const List = styled.ul`
   border-top: 1px solid var(--border-color);
 `;
 export const Item = styled.li`
-  height: 100px;
-  border-bottom: 1px solid var(--border-color);
-  box-sizing: border-box;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  padding: 0 30px;
-  h1 {
-    font-size: 20px;
-    margin-bottom: 4px;
-  }
-  > div:nth-child(2) {
-    flex-grow: 1;
+  a {
+    height: 100px;
+    border-bottom: 1px solid var(--border-color);
+    box-sizing: border-box;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 0 20px;
+    h1 {
+      font-size: 20px;
+      margin-bottom: 4px;
+    }
+    > div:nth-child(2) {
+      flex-grow: 1;
+    }
+    :hover {
+      background-color: var(--background-color);
+    }
+    .disabled-link {
+      pointer-events: none;
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
   }
 `;
 export const Itemside = styled.div`
