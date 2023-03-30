@@ -1,26 +1,38 @@
 import React, { useRef, useEffect } from 'react';
 import styled from 'styled-components';
-import { useAppDispatch, useAppSelector } from '../../hooks';
-import { setContent, setEditOpen } from '../../slices/mypageSlice';
-import { membersApi } from '../../api/memberapi';
 
-const ProfileEdit = () => {
-  const dispatch = useAppDispatch();
-  const { EditWidth, content } = useAppSelector(({ mypage }) => mypage);
+interface ProfileEditProps {
+  content: string;
+  setContent: React.Dispatch<React.SetStateAction<string>>;
+  submitHandler: () => void;
+}
+
+const ProfileEdit: React.FC<ProfileEditProps> = ({
+  content,
+  setContent,
+  submitHandler,
+}) => {
   const inputRef = useRef<HTMLInputElement>(null);
 
-  //처음 실행될 때 div의 넓이를 지정함
   useEffect(() => {
-    inputRef.current?.style?.setProperty('width', `${EditWidth - 24}px`);
     inputRef.current?.focus();
-  }, [EditWidth]);
+  });
 
+  //엔터로 수정
+  const searchEnterHandler = (
+    event: React.KeyboardEvent<HTMLInputElement>,
+  ): void => {
+    if (event.key === 'Enter') {
+      submitHandler();
+    }
+  };
   return (
     <InputWrap>
       <input
         value={content}
         ref={inputRef}
-        onChange={(e) => dispatch(setContent(e.target.value))}
+        onChange={(e) => setContent(e.target.value)}
+        onKeyDown={searchEnterHandler}
       ></input>
     </InputWrap>
   );
@@ -30,6 +42,7 @@ const InputWrap = styled.div`
   display: flex;
   input {
     box-sizing: border-box;
+    width: 900px;
     :focus {
       outline: none;
       color: var(--point-blue-color);
