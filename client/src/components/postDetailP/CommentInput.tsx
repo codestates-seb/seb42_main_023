@@ -48,7 +48,6 @@ const CommentInput: React.FC<CommentInputProps> = ({
   return (
     <CommentInputContainer>
       <h1>댓글 {commentCnt}개 </h1>
-      {/* <h1>댓글 {postQuery.data?.commentCount}개 </h1> */}
       <Input
         type="text"
         placeholder="댓글을 남겨 주세요"
