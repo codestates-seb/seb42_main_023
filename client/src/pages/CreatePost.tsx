@@ -99,7 +99,7 @@ const CreatePost: React.FC = () => {
         return;
       }
       if (state.validation.tagErr !== '' || state.postInput.tag.length === 0) {
-        alert('태그를 다시 확인해 주세요.');
+        alert('태그를 1개 이상 추가해 주세요.');
         return;
       }
     }
