@@ -39,6 +39,15 @@ public class ReplyService implements ThumbCountService {
         return findVerifyReplyById(replyId);
     }
 
+    // 단일 조회 : Active 상태
+    public Reply findOneStateActive(Long postsId) {
+        Reply findReply = findVerifyReplyById(postsId);
+        if (findReply.getState() != Reply.State.ACTIVE) {
+            throw new BusinessLogicException(BusinessExceptionCode.THUMB_UNUSABLE);
+        }
+        return findReply;
+    }
+
     // 추가
     public Reply createReply(Long commentId, Member loginMember, Reply newReply) {
         Comment findComment = finderService.findVerifyCommentById(commentId);

@@ -26,4 +26,7 @@ public interface ThumbdownRepository extends JpaRepository<Thumbdown, Long>{
 
     // 답글 싫어요 취소
     void deleteByMember_IdAndParentReply_Id(Long memberId, Long postId);
+
+    // 좋아요 삭제 : 회원 아이디
+    void deleteByMember_Id(Long memberId);
 }
