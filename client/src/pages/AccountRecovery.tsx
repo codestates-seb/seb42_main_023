@@ -2,10 +2,10 @@ import React from 'react';
 import styled from 'styled-components';
 import { MainContainer, FormContainer } from '../components/common/Container';
 import { BlueBtn } from '../components/common/Btn';
-import { usePostTempTokenMutation } from '../api/tempTokenAPi';
+import { usePostTempTokenRecoveryMutation } from '../api/tempTokenAPi';
 
 const AccountRecovery: React.FC = () => {
-  const [postTempToken] = usePostTempTokenMutation();
+  const [postTempTokenRecovery] = usePostTempTokenRecoveryMutation();
 
   // '계정 복구' 버튼을 눌렀을 때 실행되는 함수
   const recoverAccountHandler = () => {
@@ -13,7 +13,7 @@ const AccountRecovery: React.FC = () => {
     const tempAccessToken = url.searchParams.get('tempAccessToken');
     console.log('tempAccessToken', tempAccessToken);
 
-    postTempToken({ tempAccessToken })
+    postTempTokenRecovery({ tempAccessToken })
       .unwrap()
       .then((payload: any) => {
         // 유저 정보를 로컬스토리지에 저장
