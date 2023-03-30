@@ -4,7 +4,6 @@ import { useAppSelector } from '../../hooks';
 import { FaRegThumbsDown } from 'react-icons/fa';
 import { FaRegThumbsUp } from 'react-icons/fa';
 import TimeIcon from '../../assets/common/TimeIcon';
-import { Link } from 'react-router-dom';
 import { membersCommentsListApi } from '../../api/memberapi';
 import { timeSince } from '../mainP/Timecalculator';
 import { PostListWrap } from './MyPostList';

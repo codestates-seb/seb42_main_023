@@ -11,6 +11,7 @@ import { timeSince } from '../mainP/Timecalculator';
 import Pagination from '../common/Pagination';
 import { PostListItem } from '../../types/PostList';
 import { FaRegThumbsUp } from 'react-icons/fa';
+import { PostListWrap } from './MyPostList';
 
 function MyLikePostList() {
   const [pageOffset, setPageOffset] = useState(0);
@@ -129,10 +130,4 @@ export const Info = styled.div`
     display: flex;
     align-items: center;
   }
-`;
-
-export const PostListWrap = styled.div`
-  display: flex;
-  flex-direction: column;
-  width: 100%;
 `;

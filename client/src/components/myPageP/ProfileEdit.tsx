@@ -11,30 +11,28 @@ const ProfileEdit = () => {
 
   //처음 실행될 때 div의 넓이를 지정함
   useEffect(() => {
-    if (inputRef.current) {
-      inputRef.current.style.width = `${EditWidth - 24}px`;
-    }
-  }, []);
+    inputRef.current?.style?.setProperty('width', `${EditWidth - 24}px`);
+    inputRef.current?.focus();
+  }, [EditWidth]);
 
   return (
-    <Input>
+    <InputWrap>
       <input
         value={content}
         ref={inputRef}
         onChange={(e) => dispatch(setContent(e.target.value))}
       ></input>
-    </Input>
+    </InputWrap>
   );
 };
 export default ProfileEdit;
-const Input = styled.div`
+const InputWrap = styled.div`
   display: flex;
   input {
     box-sizing: border-box;
     :focus {
       outline: none;
-      border-bottom: 1px solid var(--border-color);
-      padding: 4px 0;
+      border-bottom: 1px solid var(--point-blue-color);
     }
   }
   button {

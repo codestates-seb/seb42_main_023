@@ -7,6 +7,7 @@ import ImageMapper from 'react-img-mapper';
 import { CustomArea, AreaEvent } from 'react-img-mapper/dist/types';
 import { seoulrentApi } from '../api/seoulrentApi';
 import { AiFillHome } from 'react-icons/ai';
+import { AiOutlineEnvironment } from 'react-icons/ai';
 
 interface StyleProps {
   left: number;
@@ -65,7 +66,9 @@ function SeoulRent() {
     );
     setMonthlyRent(dataItem?.monthlyRent?.averageMonthlyFee);
     setJeonse(`${numberWithCommas(dataItem?.jeonse?.averageDeposit)}만원`);
-    setDiposit(`${numberWithCommas(dataItem?.jeonse?.averageDeposit)}만원`);
+    setDiposit(
+      `${numberWithCommas(dataItem?.monthlyRent?.averageDeposit)}만원`,
+    );
     setOpentooltip(true);
   };
 
@@ -91,18 +94,21 @@ function SeoulRent() {
         onMouseUp={(area, _, evt) => moveOnArea(area, evt)}
         stayHighlighted={true}
       />
-      {openTooltip && (
+      {openTooltip ? (
         <TooltipWrap
-          ref={tooltipRef}
-          left={tooltipPosition.x}
-          top={tooltipPosition.y}
+        // ref={tooltipRef}
+        // left={tooltipPosition.x}
+        // top={tooltipPosition.y}
         >
-          <div>{clickedArea}</div>
-          <div>
+          <h1>
+            <AiOutlineEnvironment size={18} />
+            {clickedArea}
+          </h1>
+          <div className="line">
             <span>전세 </span>
             {jeonse}
           </div>
-          <div>
+          <div className="afterLine">
             <span>월세 </span>
             {monthlyRent}
           </div>
@@ -111,6 +117,14 @@ function SeoulRent() {
             {diposit}
           </div>
         </TooltipWrap>
+      ) : (
+        <BeforeClicked>
+          <AiOutlineEnvironment size={24} />
+          <p>
+            궁금한 지역을
+            <br /> 클릭하세요
+          </p>
+        </BeforeClicked>
       )}
       <p
         style={{
@@ -229,19 +243,26 @@ const Mention = styled.span`
   padding-bottom: 70px;
   font-weight: 300;
 `;
-const TooltipWrap = styled.div<StyleProps>`
+const TooltipWrap = styled.div`
   position: absolute;
   background-color: #fff;
   border: 1px solid var(--border-color);
   width: 160px;
-  height: 124px;
+  height: 140px;
   padding: 14px;
   border-radius: 10px;
   box-shadow: 4px 4px 8px rgba(0, 0, 0, 0.15);
 
-  left: ${(props) => props.left - 40}px;
-  top: ${(props) => props.top}px;
-  z-index: 99;
+  top: 170px;
+  left: 212px;
+  z-index: 2;
+  h1 {
+    font-size: 20px;
+    margin-bottom: 4px;
+    svg {
+      transform: translateY(1px);
+    }
+  }
   .link {
     display: block;
     height: 20px;
@@ -251,8 +272,25 @@ const TooltipWrap = styled.div<StyleProps>`
   }
   span {
     color: var(--point-blue-color);
+    .line {
+      background-color: var(--border-color);
+      height: 4px;
+    }
   }
   div {
     margin-bottom: 4px;
+  }
+  .line + div {
+    border-top: 1px solid #ccc;
+    margin: 5px 0;
+    padding-top: 6px;
+  }
+`;
+const BeforeClicked = styled(TooltipWrap)`
+  color: var(--hover-font-gray-color);
+  text-align: center;
+  svg {
+    color: var(--hover-font-gray-color);
+    margin: 4px 0;
   }
 `;

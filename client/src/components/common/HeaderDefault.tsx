@@ -52,7 +52,7 @@ function HeaderDefault() {
               <PostBtn /> <MediumProfileImg />
             </>
           )}
-          {auth === undefined && adim === 'ADMIN' && (
+          {auth !== undefined && adim === 'ADMIN' && (
             <Adminwrap>
               <PostBtn />
               <MediumProfileImg />

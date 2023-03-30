@@ -74,7 +74,7 @@ function Sidebar() {
 export default Sidebar;
 const Nav = styled.nav`
   box-sizing: border-box;
-  width: 200px;
+  flex-basis: 200px;
   height: 100%;
   padding: 8px;
   margin-top: -1px;
