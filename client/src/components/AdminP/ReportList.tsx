@@ -6,7 +6,6 @@ import { setSelectedReport } from '../../slices/reportSlice';
 import { useDeleteReportMutation } from '../../api/reportApi';
 import { Report } from '../../types/Report';
 import Pagination from '../common/Pagination';
-import { AiOutlineExclamationCircle } from 'react-icons/ai';
 
 interface Props {
   reportData: Report;
@@ -78,11 +77,10 @@ const ReportList: React.FC<Props> = ({
           </tr>
         </thead>
         <tbody>
-          {isSuccess && !reportData.reports ? (
-            <div>
-              <AiOutlineExclamationCircle size={20} />
-              <p>접수된 신고건이 없습니다.</p>
-            </div>
+          {isSuccess && reportData.reports ? (
+            <tr>
+              <td>접수된 신고건이 없습니다.</td>
+            </tr>
           ) : (
             reportData?.reports?.map((item, idx) => {
               return (
@@ -122,7 +120,7 @@ const ReportList: React.FC<Props> = ({
         </tbody>
       </Table>
       {isReviewOpen ? <ReportReview setIsReviewOpen={setIsReviewOpen} /> : null}
-      {isSuccess && (
+      {isSuccess && reportData.reports.length > 0 && (
         <Pagination
           pageInfo={reportData.pageInfo}
           pageOffset={pageOffset}
@@ -187,12 +185,12 @@ const Table = styled.table`
 
   > tbody {
     // 접수된 신고가 없을때
-    > div {
+    /* > div {
       display: flex;
       > p {
         margin-left: 3px;
       }
-    }
+    } */
 
     // 접수된 신고가 있을때
     > tr {
