@@ -260,7 +260,7 @@ public class PostsRepositoryImpl implements PostsRepositoryCustom {
                 .from(thumbup)
                 .join(thumbup.parentPosts, posts)
                 .join(thumbup.member, member)
-                .where(posts.state.notIn(Posts.State.DELETED))
+                .where(posts.state.notIn(Posts.State.DELETED), thumbup.member.name.eq(memberName))
                 .orderBy(orders)
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
