@@ -11,7 +11,8 @@ import _ from 'lodash';
 import axios from 'axios';
 import Cookies from 'js-cookie';
 
-const url = process.env.REACT_APP_SERVER_ADDRESS + '/images';
+const deleteImgEP = process.env.REACT_APP_SERVER_ADDRESS + '/images/drop';
+
 const CreatePost: React.FC = () => {
   const navigate = useNavigate();
   const state = useAppSelector((state) => state);
@@ -21,7 +22,7 @@ const CreatePost: React.FC = () => {
   const addedImg = state.post?.addedImg;
   const removedImg = state.post?.removedImg;
   const tag = state.postInput?.tag;
-  const tagNames = tag.map((tagName) => {
+  const tagNames = tag.map((tagName: string) => {
     return { tagName };
   });
   const accsessToken = Cookies.get('Authorization');
@@ -44,7 +45,7 @@ const CreatePost: React.FC = () => {
   console.log('deletedImg', deletedImg);
   const preventClose = (e: BeforeUnloadEvent) => {
     e.preventDefault();
-    axios.delete(url, {
+    axios.delete(deleteImgEP, {
       headers: {
         'Content-Type': 'application/json',
         Authorization: accsessToken,
@@ -65,7 +66,7 @@ const CreatePost: React.FC = () => {
   }, []);
 
   const deleteImg = () => {
-    axios.delete(url, {
+    axios.delete(deleteImgEP, {
       headers: {
         'Content-Type': 'application/json',
         Authorization: accsessToken,
@@ -99,7 +100,7 @@ const CreatePost: React.FC = () => {
         return;
       }
       if (state.validation.tagErr !== '' || state.postInput.tag.length === 0) {
-        alert('태그를 다시 확인해 주세요.');
+        alert('태그를 1개 이상 추가해 주세요.');
         return;
       }
     }

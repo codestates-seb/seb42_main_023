@@ -54,7 +54,6 @@ const PostDetail: React.FC = () => {
   const [checkedElement, setCheckedElement] = useState(-1);
   // 신고, 삭제, 소개
   const [isOpenReport, setIsOpenReport] = useState<boolean>(false);
-  const [reportType] = useState<string>('');
   const [isOpenReportErr] = useState<boolean>(false);
   const [isOpenFilter, setIsOpenFilter] = useState<boolean>(false);
   const [isOpenDelete, setIsOpenDelete] = useState<boolean>(false);
@@ -64,11 +63,21 @@ const PostDetail: React.FC = () => {
   const [isOpenReplyIntro, setIsOpenReplyIntro] = useState<boolean>(false);
 
   const handleSelectChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    if (event.target instanceof HTMLInputElement) {
-      setCheckedElement(Number(event.target.value));
-      dispatch(setReportOption(event.target.id));
-    }
+    setCheckedElement(Number(event.target.value));
+    dispatch(setReportOption(event.target.id));
   };
+
+  const handleSelected = (event: React.MouseEvent<HTMLButtonElement>) => {
+    setCheckedElement(Number(event.currentTarget.value));
+    console.log(event.currentTarget?.parentElement);
+    console.log(event.currentTarget?.parentElement?.id);
+    dispatch(
+      setReportOption(
+        String(event.currentTarget?.parentElement?.children[0].id),
+      ),
+    );
+  };
+
   const reportTextRef = useRef<HTMLTextAreaElement>(null);
   const dispatch = useAppDispatch();
   const state = useAppSelector(
@@ -274,7 +283,7 @@ const PostDetail: React.FC = () => {
     if ('validation' in state && state.validation?.reportErr) return;
     if ('post' in state && !state.post?.reportOption) return;
     if (reportTextRef.current?.value === '') return;
-    console.log(reportOption, reportType);
+
     // 게시물 신고
     if ('post' in state && state.post?.reportType === 'post') {
       sendReport({
@@ -287,15 +296,14 @@ const PostDetail: React.FC = () => {
         reporterName: localStorage.getItem('name'),
       })
         .unwrap()
-        .then((payload) => {
+        .then(() => {
           alert('신고가 접수 되었습니다.');
         })
         .catch(() => alert('실패했습니다.'));
 
       setIsOpenReport(isOpenReportErr);
-      setReportErr('');
+      dispatch(setReportErr(''));
       setCheckedElement(-1);
-      alert('신고가 접수 되었습니다.');
     }
 
     // 댓글 신고
@@ -310,15 +318,14 @@ const PostDetail: React.FC = () => {
         reporterName: loginUserName,
       })
         .unwrap()
-        .then((payload) => {
+        .then(() => {
           alert('신고가 접수 되었습니다.');
         })
         .catch(() => alert('실패했습니다.'));
 
       setIsOpenReport(isOpenReportErr);
-      setReportErr('');
+      dispatch(setReportErr(''));
       setCheckedElement(-1);
-      alert('신고가 접수 되었습니다.');
     }
 
     // 답글 신고
@@ -333,13 +340,13 @@ const PostDetail: React.FC = () => {
         reporterName: loginUserName,
       })
         .unwrap()
-        .then((payload) => {
+        .then(() => {
           alert('신고가 접수 되었습니다.');
         })
         .catch(() => alert('실패했습니다.'));
 
       setIsOpenReport(isOpenReportErr);
-      setReportErr('');
+      dispatch(setReportErr(''));
       setCheckedElement(-1);
     }
   };
@@ -347,23 +354,18 @@ const PostDetail: React.FC = () => {
   //  신고 유효성 검사
   const validationTest = (): void => {
     const reportValue = reportTextRef.current?.value;
-    // if ('post' in state && !state.post?.reportOption) {
-    //   dispatch(setReportErr('신고 이유를 선택해 주세요'));
-    // }
-    if (!reportOption) {
-      setReportErr('신고 이유를 선택해 주세요');
+
+    if ('post' in state && !state.post?.reportOption) {
+      dispatch(setReportErr('신고 이유를 선택해 주세요'));
     }
     if (reportValue?.length === 0) {
-      // dispatch(setReportErr('신고 내용을 작성해 주세요.'));
-      setReportErr('신고 내용을 작성해 주세요.');
+      dispatch(setReportErr('신고 내용을 작성해 주세요.'));
     }
     if (reportValue) {
       if (reportValue.length < 10 || reportValue.length > 40) {
-        // dispatch(setReportErr('제목은 10자 이상 40자 이하로 작성해주세요.'));
-        setReportErr('제목은 10자 이상 40자 이하로 작성해주세요.');
+        dispatch(setReportErr('신고내용은 10자 이상 40자 이하이어야 합니다. '));
       } else {
-        // dispatch(setReportErr(''));
-        setReportErr('');
+        dispatch(setReportErr(''));
       }
     }
   };
@@ -420,7 +422,8 @@ const PostDetail: React.FC = () => {
                       <button
                         id={option}
                         value={idx}
-                        onClick={() => {
+                        onClick={(event): void => {
+                          handleSelected(event);
                           setCheckedElement(-1);
                         }}
                       >
@@ -430,14 +433,17 @@ const PostDetail: React.FC = () => {
                       <button
                         id={option}
                         value={idx}
-                        onClick={() => {
+                        onClick={(event) => {
+                          handleSelected(event);
                           setCheckedElement(idx);
                         }}
                       >
                         <NoCheckedIcon width={30} height={30} />
                       </button>
                     )}
-                    <label htmlFor={option}>{option}</label>
+                    <label className="option" htmlFor={option}>
+                      {option}
+                    </label>
                   </div>
                 );
               })}
@@ -453,8 +459,8 @@ const PostDetail: React.FC = () => {
               <CancelBtn
                 onClick={(): void => {
                   setCheckedElement(-1);
-                  setReportOption('');
-                  setReportErr('');
+                  dispatch(setReportOption(''));
+                  dispatch(setReportErr(''));
                   reportHandler();
                 }}
               >
@@ -731,7 +737,6 @@ const ModalContainer = styled.div`
   top: 50px;
   bottom: 0;
   z-index: 2;
-  background-color: #fff;
 `;
 
 // 게시글, 댓글, 답글 삭제 확인창
@@ -749,7 +754,7 @@ const DeleteModal = styled.div`
   border: solid 1px #d4d4d4;
   border-radius: 5px;
   color: #5c5c5c;
-  cursor: pointer;
+
   padding: 0 15px 0 15px;
 
   .delete {
@@ -781,7 +786,6 @@ const ReportModal = styled.div`
   border-radius: 5px;
   color: #5c5c5c;
   z-index: 10;
-  cursor: pointer;
   padding: 25px 15px 0 15px;
 
   .report {
@@ -828,6 +832,9 @@ const ReportModal = styled.div`
     resize: none;
     padding: 20px;
     margin: 15px 0 0 0;
+    :focus {
+      outline: 3px solid #0069ca;
+    }
   }
   input {
     display: none;

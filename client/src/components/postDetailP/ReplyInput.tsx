@@ -1,4 +1,4 @@
-import React, { useRef } from 'react';
+import React, { useEffect, useRef } from 'react';
 import styled from 'styled-components';
 import { repliesApi } from '../../api/replyApi';
 import { useAppDispatch, useAppSelector } from '../../hooks';
@@ -37,9 +37,9 @@ const ReplyInput: React.FC<CommentProps> = ({ commentInfo }: CommentProps) => {
       commentId: commentId,
       content: replyRef.current!.value,
     });
+    refetch();
     dispatch(addReplyEdit(false));
     replyRef.current!.value = '';
-    refetch();
   };
 
   const valueCheck = (event: React.ChangeEvent<HTMLInputElement>): void => {

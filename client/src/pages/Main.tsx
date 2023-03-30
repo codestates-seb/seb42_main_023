@@ -112,9 +112,10 @@ const Banner = styled.div`
   width: 100%;
   background: linear-gradient(90deg, #0069ca 0%, #0d1275 100%);
   height: 120px;
-  border-radius: 10px;
   margin-bottom: 40px;
   padding: 30px;
+  border-radius: 10px;
+
   h1 {
     color: #fff;
     font-size: 24px;

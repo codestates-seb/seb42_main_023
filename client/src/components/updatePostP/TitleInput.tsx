@@ -12,7 +12,6 @@ const TitleInput: React.FC = () => {
   const title = useRef<HTMLInputElement>(null);
   const params = useParams();
   const postId = Number(params.postId);
-  console.log('postId', postId);
 
   const postQuery = postsApi.useGetPostQuery({ postId });
   const { data } = postQuery;
@@ -45,9 +44,9 @@ const TitleInput: React.FC = () => {
           <Input
             ref={title}
             className="title-input"
-            placeholder="제목을 입력해주세요."
+            placeholder="제목을 입력하세요."
             onChange={valueCheck}
-            value={data?.title || ''}
+            value={state.postInput?.title}
           ></Input>
         </TitleInputContainer>
       ) : (
@@ -56,11 +55,11 @@ const TitleInput: React.FC = () => {
           <Input
             ref={title}
             className="title-input"
-            placeholder="제목을 입력해주세요."
+            placeholder="제목을 입력하세요."
             onChange={valueCheck}
-            value={data?.title || ''}
+            value={state.postInput?.title}
           ></Input>
-          <Error>{state.validation.titleErr}</Error>
+          <Error>{state.validation?.titleErr}</Error>
         </TitleInputContainer>
       )}
     </>
@@ -86,6 +85,10 @@ const Input = styled.input`
   border: 1px solid #d4d4d4;
   padding: 0 10px 0 10px;
   margin-top: 20px;
+  padding-left: 15px;
+  ::placeholder {
+    font-style: italic;
+  }
 `;
 
 const Error = styled.div`
