@@ -7,6 +7,7 @@ const GlobalStyles = createGlobalStyle`
         --background-comment-color: #f3f3f3;
         --background-dark-color: #f5f4f4;
         --background-blue-color: #F3FAFF;
+        --background-hover-blue-color: #eaf2f8;
         --main-font-color: #000000;
         --hover-font-gray-color:#5C5C5C;
         --sub-font-color: #94969b;
