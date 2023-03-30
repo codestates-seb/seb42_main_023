@@ -57,7 +57,6 @@ const Comment: React.FC<
   );
   const navigate = useNavigate();
   const [page, setPage] = useState<number>(1);
-
   const loginUserName = window.localStorage.getItem('name');
   const params = useParams();
   const postId = params.postId;
@@ -457,12 +456,12 @@ const Comment: React.FC<
                         className="edit-content"
                         placeholder={comment.content}
                         ref={commentEditInput}
+                        // value={comment.content}
                         onKeyDown={enterHandler}
                       ></input>
                     ) : (
                       <div className="content">
                         {comment?.content}
-
                         {commentIsEdit &&
                         comment?.content === '삭제된 댓글입니다.'
                           ? null
@@ -751,22 +750,26 @@ const CommentInfo = styled.div`
 
 const CommentContent = styled.div`
   padding-left: 50px;
-  margin-top: 10px;
+  margin: 10px 0 10px 0;
   display: flex;
   flex-direction: column;
   width: 720px;
   height: auto;
-  margin-bottom: 10px;
+
   padding: 0 0 15px 0;
   border-bottom: 1px solid #d4d4d4;
 
   .edit-content {
-    width: 660px;
+    width: 720px;
+    font-size: 17px;
     height: 50px;
     border-bottom: 1px solid #d4d4d4;
-    padding: 3px 0 0 10px;
+    padding: 5px 0 0 10px;
     ::placeholder {
       color: #0275e1;
+    }
+    :focus {
+      outline: none;
     }
   }
   .isReply {

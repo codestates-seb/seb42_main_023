@@ -66,7 +66,7 @@ function PostList({ posts, currentPage }: Props) {
 export default PostList;
 
 const List = styled.ul`
-  margin-top: -2px;
+  margin-top: -4px;
   border-top: 1px solid var(--border-color);
 `;
 export const Item = styled.li`

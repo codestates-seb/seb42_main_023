@@ -14,7 +14,8 @@ import { FaBookmark } from 'react-icons/fa';
 import { PostListItem } from '../../types/PostList';
 import { FaRegThumbsUp } from 'react-icons/fa';
 import { Tag } from '../mainP/PostList';
-import { PostListWrap } from './MyPostList';
+import { PostListWrap, Item } from './MyPostList';
+import Nolist from './Nolist';
 
 function MyBookmarks() {
   const [pageOffset, setPageOffset] = useState(0);
@@ -32,53 +33,59 @@ function MyBookmarks() {
     refetch();
   }, []);
 
-  if (!isSuccess) {
-    return <div>Loading...</div>;
-  }
-
   return (
     <PostListWrap>
       <List>
+        {isSuccess && data.posts.length === 0 && (
+          <Nolist name={'북마크한 글이'} />
+        )}
         {isSuccess &&
           data.posts.map((post: PostListItem) => {
             return (
               <Item key={post.postId}>
-                <div>
-                  <Link to={`/posts/${post.postId}`}>
+                <Link
+                  to={
+                    post.title !== '신고된 게시글입니다.'
+                      ? `/posts/${post.postId}`
+                      : `#`
+                  }
+                  className={
+                    post.title !== '신고된 게시글입니다.' ? '' : 'disabled-link'
+                  }
+                >
+                  <div>
                     <Thumnail content={post.imgUrl} />
-                  </Link>
-                </div>
-                <div>
-                  {post.title === '신고된 게시글입니다.' ? (
-                    <h1 style={{ color: '#94969b' }}>{post.title}</h1>
-                  ) : (
-                    <Link to={`/posts/${post.postId}`}>
+                  </div>
+                  <div>
+                    {post.title === '신고된 게시글입니다.' ? (
+                      <h1 style={{ color: '#94969b' }}>{post.title}</h1>
+                    ) : (
                       <h1>{post.title}</h1>
-                    </Link>
-                  )}
-                  <Itemside>
-                    <div>
-                      {post.tags.map((tag, idx) => (
-                        <Tag key={idx}>{tag.tagName}</Tag>
-                      ))}
-                    </div>
-                    <Info>
-                      <span>{post.memberName}</span>
-                      <span>
-                        <TimeIcon />
-                        {timeSince(post.createdAt)}
-                      </span>
-                      <span>
-                        <ViewIcon />
-                        {post.viewCount}
-                      </span>
-                      <span>
-                        <FaRegThumbsUp size={13} />
-                        {post.thumbupCount}
-                      </span>
-                    </Info>
-                  </Itemside>
-                </div>
+                    )}
+                    <Itemside>
+                      <div>
+                        {post.tags.map((tag, idx) => (
+                          <Tag key={idx}>{tag.tagName}</Tag>
+                        ))}
+                      </div>
+                      <Info>
+                        <span>{post.memberName}</span>
+                        <span>
+                          <TimeIcon />
+                          {timeSince(post.createdAt)}
+                        </span>
+                        <span>
+                          <ViewIcon />
+                          {post.viewCount}
+                        </span>
+                        <span>
+                          <FaRegThumbsUp size={13} />
+                          {post.thumbupCount}
+                        </span>
+                      </Info>
+                    </Itemside>
+                  </div>
+                </Link>
               </Item>
             );
           })}
@@ -100,22 +107,7 @@ export default MyBookmarks;
 const List = styled.ul`
   width: 100%;
 `;
-export const Item = styled.li`
-  height: 100px;
-  border-bottom: 1px solid var(--border-color);
-  box-sizing: border-box;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  padding: 0 20px;
-  h1 {
-    font-size: 20px;
-    margin-bottom: 4px;
-  }
-  > div:nth-child(2) {
-    flex-grow: 1;
-  }
-`;
+
 export const Itemside = styled.div`
   display: flex;
   flex-direction: row;

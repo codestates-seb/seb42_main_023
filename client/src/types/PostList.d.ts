@@ -15,6 +15,7 @@ export interface PostListItem {
 }
 export interface CommentType {
   commentId: number;
+  postId: number;
   memberName: string;
   memberImage: string;
   createdAt: string;

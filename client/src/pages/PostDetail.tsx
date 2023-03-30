@@ -152,6 +152,11 @@ const PostDetail: React.FC = () => {
     if (isSuccess) setCommentCnt(data?.commentCount);
   }, [data]);
 
+  // 페이지 이동 시 스크롤 최상단 이동
+  useEffect(() => {
+    scrollTo(0, 0);
+  }, [postId]);
+
   // 좋아요 클릭 함수
   const changeLiikeHandler = (): void => {
     // 좋아요만 있는 경우
@@ -833,7 +838,7 @@ const ReportModal = styled.div`
     padding: 20px;
     margin: 15px 0 0 0;
     :focus {
-      outline: 3px solid #0069ca;
+      outline: 2px solid #0069ca;
     }
   }
   input {

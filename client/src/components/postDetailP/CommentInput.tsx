@@ -113,7 +113,7 @@ const Input = styled.input`
   padding: 0 10px 0 10px;
   margin-left: 3px;
   :focus {
-    outline: 3px solid #0069ca;
+    outline: 2px solid #0069ca;
   }
 `;
 
