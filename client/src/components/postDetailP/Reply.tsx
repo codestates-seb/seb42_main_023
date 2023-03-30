@@ -337,6 +337,12 @@ const Reply: React.FC<Partial<ReplyProps & ReportProps>> = ({
                 onClick={_.debounce(() => {
                   ReplyLiikeHandler(replyInfo!);
                 }, 500)}
+                style={{
+                  margin:
+                    loginUserName === replyInfo?.memberName
+                      ? '0'
+                      : '0 0 0 78px',
+                }}
               >
                 <LikeIcon checked={replyInfo!.isThumbup} />
               </button>
@@ -400,6 +406,7 @@ const ReplyContainer = styled.div`
     height: 80px;
     display: flex;
     align-items: center;
+
     font-size: 12px;
     padding: 30px 0 30px 0;
     position: relative;
@@ -446,11 +453,13 @@ const ReplyContainer = styled.div`
     width: 30px;
     font-size: 16px;
     margin: 3px 15px 0 15px;
+    color: var(--point-blue-color);
   }
   .reply-dislikes {
     width: 30px;
     font-size: 16px;
     margin: 3px 15px 0 15px;
+    color: var(--error-red-color);
   }
 
   #moreInfo {
