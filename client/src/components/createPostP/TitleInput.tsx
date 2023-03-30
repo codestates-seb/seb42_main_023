@@ -37,7 +37,7 @@ const TitleInput: React.FC = () => {
           <Input
             ref={title}
             className="title-input"
-            placeholder="제목을 입력해주세요."
+            placeholder="제목을 입력하세요."
             onChange={valueCheck}
           ></Input>
         </TitleInputContainer>
@@ -47,7 +47,7 @@ const TitleInput: React.FC = () => {
           <Input
             ref={title}
             className="title-input"
-            placeholder="제목을 입력해주세요."
+            placeholder="제목을 입력하세요."
             onChange={valueCheck}
           ></Input>
           <Error>{state.validation.titleErr}</Error>
@@ -76,6 +76,8 @@ const Input = styled.input`
   border: 1px solid #d4d4d4;
   padding: 0 10px 0 10px;
   margin-top: 20px;
+  font-style: italic;
+  padding-left: 15px;
 `;
 
 const Error = styled.div`
