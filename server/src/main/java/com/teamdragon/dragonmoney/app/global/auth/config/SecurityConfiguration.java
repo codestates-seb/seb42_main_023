@@ -61,7 +61,7 @@ public class SecurityConfiguration {
                         .antMatchers(HttpMethod.DELETE, "/members/*/bookmark/**").hasRole("USER")
 
                         .antMatchers(HttpMethod.POST, "/images").hasRole("USER")
-                        .antMatchers(HttpMethod.DELETE, "/images").hasRole("USER")
+                        .antMatchers(HttpMethod.POST, "/images/drop").hasRole("USER")
                         .antMatchers(HttpMethod.POST, "/posts").hasRole("USER")
                         .antMatchers(HttpMethod.PATCH, "/posts/*").hasRole("USER")
                         .antMatchers(HttpMethod.GET, "/posts").permitAll()
@@ -95,6 +95,9 @@ public class SecurityConfiguration {
                         .antMatchers(HttpMethod.POST, "/reports").hasRole("USER")
                         .antMatchers(HttpMethod.GET, "/reports/*").hasRole("ADMIN")
                         .antMatchers(HttpMethod.DELETE, "/reports/*").hasRole("ADMIN")
+
+                        .antMatchers(HttpMethod.GET, "/recruit/happy-house").permitAll()
+                        .antMatchers(HttpMethod.GET, "/rent-price/house/seoul").permitAll()
                 )
                 .oauth2Login(oauth2 -> oauth2
                         .successHandler(new OAuth2MemberHandler(jwtTokenizer, authorityUtils, memberService, oAuth2Service))
