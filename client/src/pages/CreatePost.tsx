@@ -11,7 +11,7 @@ import _ from 'lodash';
 import axios from 'axios';
 import Cookies from 'js-cookie';
 
-const url = process.env.REACT_APP_SERVER_ADDRESS + '/images';
+const url = process.env.REACT_APP_SERVER_ADDRESS + '/images/drop';
 const CreatePost: React.FC = () => {
   const navigate = useNavigate();
   const state = useAppSelector((state) => state);
