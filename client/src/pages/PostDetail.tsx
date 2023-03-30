@@ -32,6 +32,7 @@ import { timeSince } from '../components/mainP/Timecalculator';
 import { membersApi } from '../api/memberapi';
 import _ from 'lodash';
 import parse from 'html-react-parser';
+import Tag from '../components/postDetailP/Tag';
 
 const reportOption = [
   '영리목적/홍보성',
@@ -546,8 +547,12 @@ const PostDetail: React.FC = () => {
           </PostInfo>
           <PostContent>
             <div>{parsedData}</div>
-
             <ul className="post-info">
+              <TagConatiner>
+                {data?.tags?.map((tag: string, idx: number) => {
+                  return <Tag key={idx} content={tag}></Tag>;
+                })}
+              </TagConatiner>
               <button
                 onClick={_.debounce(() => {
                   changeLiikeHandler();
@@ -933,4 +938,10 @@ const Error = styled.div`
   margin: 10px 0 5px 0;
   font-size: 19px;
   margin-left: 35px;
+`;
+const TagConatiner = styled.div`
+  display: flex;
+  width: 1000px;
+  justify-content: start;
+  margin-top: 15px;
 `;
