@@ -80,14 +80,15 @@ const Comment: React.FC<
   const memeberQuery = membersApi.useGetMemberQuery({ name: selectedMember });
 
   // 댓글 좋아요 추가, 삭제
-  const addThumbUpMutation = commentsApi.useAddThumbUpMutation();
+  const addThumbUpMutation = commentsApi.useAddCommentThumbUpMutation();
   const [addThumbUp] = addThumbUpMutation;
-  const removeThumbUpMutation = commentsApi.useRemoveThumbUpMutation();
+  const removeThumbUpMutation = commentsApi.useRemoveCommentThumbUpMutation();
   const [removeThumbUp] = removeThumbUpMutation;
   // 댓글 싫어요  추가, 삭제
-  const addThumbDownMutation = commentsApi.useAddThumbDownMutation();
+  const addThumbDownMutation = commentsApi.useAddCommentThumbDownMutation();
   const [addThumbDown] = addThumbDownMutation;
-  const removeThumbDownMutation = commentsApi.useRemoveThumbDownMutation();
+  const removeThumbDownMutation =
+    commentsApi.useRemoveCommentThumbDownMutation();
   const [removeThumbDown] = removeThumbDownMutation;
 
   // 유저 정보 조회
@@ -722,7 +723,7 @@ const IntorductionContainer = styled.div`
   border: 1px solid #d4d4d4;
   z-index: 2;
   top: 50px;
-  left: 45px;
+  left: 18px;
   background-color: white;
   .introduction {
     font-size: 17x;

@@ -33,6 +33,7 @@ import { membersApi } from '../api/memberapi';
 import _ from 'lodash';
 import parse from 'html-react-parser';
 import Tag from '../components/postDetailP/Tag';
+import { skipToken } from '@reduxjs/toolkit/query/react';
 
 const reportOption = [
   '영리목적/홍보성',
@@ -104,7 +105,8 @@ const PostDetail: React.FC = () => {
   const replyId = 'reply' in state ? state.reply?.replyId : null;
   const reportReason = 'post' in state ? state.post.reportOption : null;
   const reportErr = 'validation' in state ? state.validation.reportErr : null;
-  const selectedMember = 'post' in state ? state.post.selectedMember : null;
+  // const selectedMember = 'post' in state ? state.post.selectedMember : null;
+  const selectedMember = 'abc';
   const loginUserName = window.localStorage.getItem('name');
 
   // 게시글 조회 및 추가
@@ -112,11 +114,11 @@ const PostDetail: React.FC = () => {
   const { data, isSuccess } = postDetailQuery;
   const [deletePost] = postsApi.useDeletePostMutation();
   // 게시글 좋아요 추가, 삭제
-  const [addThumbUp] = postsApi.useAddThumbUpMutation();
-  const [removeThumbUp] = postsApi.useRemoveThumbUpMutation();
+  const [addThumbUp] = postsApi.useAddPostThumbUpMutation();
+  const [removeThumbUp] = postsApi.useRemovePostThumbUpMutation();
   // 게시글 싫어요  추가, 삭제
-  const [addThumbDown] = postsApi.useAddThumbDownMutation();
-  const [removeThumbDown] = postsApi.useRemoveThumbDownMutation();
+  const [addThumbDown] = postsApi.useAddPostThumbDownMutation();
+  const [removeThumbDown] = postsApi.useRemovePostThumbDownMutation();
   // 북마크 추가, 삭제
   const [addBookmark] = postsApi.useAddBookmarkMutation();
   const [removeBookmark] = postsApi.useRemoveBookmarkMutation();
@@ -128,7 +130,11 @@ const PostDetail: React.FC = () => {
   // 신고 추가
   const [sendReport] = reportApi.usePostReportMutation();
   //  멤버 정보 조회
-  const memeberQuery = membersApi.useGetMemberQuery({ name: selectedMember });
+  const memeberQuery = selectedMember
+    ? membersApi.useGetMemberQuery({ name: selectedMember } ?? skipToken, {
+        skip: !selectedMember,
+      })
+    : null;
 
   // 시간 계산
   const time = timeSince(isSuccess && data?.createdAt);
@@ -505,7 +511,7 @@ const PostDetail: React.FC = () => {
                     </ul>
                   </IntroInfo>
                   <label className="introduction">
-                    {memeberQuery.data?.intro || '소개 내용이 없습니다.'}
+                    {memeberQuery?.data?.intro || '소개 내용이 없습니다.'}
                   </label>
                   <button
                     className="intro-moreInfo"
@@ -859,13 +865,13 @@ const IntorductionContainer = styled.div`
   border: 1px solid #d4d4d4;
   z-index: 2;
   top: 45px;
-  left: 48px;
+  left: 20px;
   background-color: white;
   .introduction {
     font-size: 17x;
     color: gray;
     width: 175px;
-    margin: 10px 0 0 35px;
+    margin: 15px 0 0 35px;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
@@ -874,7 +880,7 @@ const IntorductionContainer = styled.div`
     font-size: 17px;
     color: gray;
     width: 100px;
-    margin: 5px 0 0 135px;
+    margin: 15px 0 0 135px;
     cursor: pointer;
   }
 `;
@@ -892,7 +898,7 @@ const IntroInfo = styled.div`
     width: 150px;
     height: 30px;
     font-size: 16px;
-    margin: 8px 0 0 10px;
+    margin: 18px 0 0 10px;
   }
 `;
 
