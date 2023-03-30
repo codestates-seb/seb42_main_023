@@ -11,6 +11,7 @@ public enum BusinessExceptionCode {
     POSTS_NOT_FOUND(404, null, "Posts not found"),
     COMMENT_NOT_FOUND(404, null, "Comment not found"),
     REPLY_NOT_FOUND(404, null, "Reply not found"),
+    THUMB_UNUSABLE(400, null, "Target's state is cant use Thumb"),
     THUMBUP_NOT_FOUND(404, null, "Thumbup not found"),
     THUMBUP_EXIST(400, null, "Thumbup already exist"),
     THUMBDOWN_NOT_FOUND(404, null, "Thumbdown not found"),

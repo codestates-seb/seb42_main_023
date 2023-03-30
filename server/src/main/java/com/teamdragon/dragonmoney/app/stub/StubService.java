@@ -8,6 +8,8 @@ import com.teamdragon.dragonmoney.app.domain.information.house.happyhouse.servic
 import com.teamdragon.dragonmoney.app.domain.member.entity.Member;
 import com.teamdragon.dragonmoney.app.domain.member.repository.MemberRepository;
 import com.teamdragon.dragonmoney.app.domain.popular.entity.BestAwards;
+import com.teamdragon.dragonmoney.app.domain.popular.repository.BestAwardsRepository;
+import com.teamdragon.dragonmoney.app.domain.popular.service.PopularService;
 import com.teamdragon.dragonmoney.app.domain.posts.entity.Posts;
 import com.teamdragon.dragonmoney.app.domain.posts.entity.PostsTag;
 import com.teamdragon.dragonmoney.app.domain.posts.repository.PostsRepository;
@@ -25,7 +27,11 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.DayOfWeek;
+import java.time.LocalDateTime;
+import java.time.temporal.TemporalAdjusters;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Transactional
@@ -41,6 +47,7 @@ public class StubService {
     private final ThumbdownRepository thumbdownRepository;
     private final HousePriceService housePriceService;
     private final HappyHouseService happyHouseService;
+    private final BestAwardsRepository bestAwardsRepository;
 
     private final String MEMBER_IMAGE_URL = "https://preview.free3d.com/img/2018/03/2269226802687772611/8mk0tyu6.jpg";
     private final String POSTS_IMAGE_URL = "https://cdn.dribbble.com/userupload/2585189/file/original-83a7c6bde4d8c033d208318966e913d7.png?compress=1&resize=752x";
@@ -251,16 +258,17 @@ public class StubService {
     }
 
     public void makeBestAwards(List<Posts> savePosts) {
-        if (savePosts == null) {
-            savePosts = postsRepository.findAll();
+        int WEEKLY_POPULAR_MAX_SIZE = 10;
+        LocalDateTime countStartedAt = setStartTime();
+        LocalDateTime countEndedAt = setEndTime(countStartedAt);
+
+        List<Posts> weeklyPopularList
+                = postsRepository.findWeeklyPopularList(WEEKLY_POPULAR_MAX_SIZE, countStartedAt, countEndedAt);
+        ArrayList<BestAwards> bestAwards = new ArrayList<>();
+        for (Posts posts : weeklyPopularList) {
+            bestAwards.add(new BestAwards(posts));
         }
-        ArrayList<Posts> bestAwards = new ArrayList<>();
-        for (int i = 0; i < savePosts.size() / 3; i++) {
-            Posts posts = savePosts.get(i);
-            posts.selectedBestAwards(new BestAwards(posts));
-            bestAwards.add(posts);
-        }
-        postsRepository.saveAll(bestAwards);
+        bestAwardsRepository.saveAll(bestAwards);
     }
 
     public void makeStubData() {
@@ -286,5 +294,17 @@ public class StubService {
 
         // 명예의 전당 추가
         makeBestAwards(savePosts);
+    }
+
+    // 주간인기글 측정 시작시간 설정
+    private LocalDateTime setStartTime() {
+        LocalDateTime currentTime = LocalDateTime.now();
+        LocalDateTime tempTime = currentTime.with(TemporalAdjusters.previousOrSame(DayOfWeek.MONDAY));
+        return LocalDateTime.of(tempTime.getYear(), tempTime.getMonth(), tempTime.getDayOfMonth(), 0, 0, 0);
+    }
+
+    // 주간인기글 종료 시작시간 설정
+    private LocalDateTime setEndTime(LocalDateTime startTime) {
+        return startTime.plusDays(7);
     }
 }

@@ -40,15 +40,15 @@ public class ThumbService {
         builder.member(loginMember);
         switch (targetType) {
             case POSTS:
-                Posts findPosts = postsService.findOne(targetId);
+                Posts findPosts = postsService.findOneStateActive(targetId);
                 builder.parentPosts(findPosts);
                 break;
             case COMMENT:
-                Comment findComment = commentService.findOne(targetId);
+                Comment findComment = commentService.findOneStateActive(targetId);
                 builder.parentComment(findComment);
                 break;
             case REPLY:
-                Reply findReply = replyService.findOne(targetId);
+                Reply findReply = replyService.findOneStateActive(targetId);
                 builder.parentReply(findReply);
                 break;
             default:
@@ -75,15 +75,15 @@ public class ThumbService {
         builder.member(loginMember);
         switch (targetType) {
             case POSTS:
-                Posts findPosts = postsService.findOne(targetId);
+                Posts findPosts = postsService.findOneStateActive(targetId);
                 builder.parentPosts(findPosts);
                 break;
             case COMMENT:
-                Comment findComment = commentService.findOne(targetId);
+                Comment findComment = commentService.findOneStateActive(targetId);
                 builder.parentComment(findComment);
                 break;
             case REPLY:
-                Reply findReply = replyService.findOne(targetId);
+                Reply findReply = replyService.findOneStateActive(targetId);
                 builder.parentReply(findReply);
                 break;
         }
@@ -97,6 +97,12 @@ public class ThumbService {
         Thumbdown verifyThumbdown = findVerifyThumbdown(targetType, loginMember, targetId);
         thumbdownRepository.delete(verifyThumbdown);
         return updateThumbdownCount(targetType, targetId, ThumbDto.ACTION.MINUS, true);
+    }
+
+    // 회원의 좋아요, 싫어요 모두 삭제
+    public void removeAllThumbByMemberId(Long memberId) {
+        thumbupRepository.deleteByMember_Id(memberId);
+        thumbdownRepository.deleteByMember_Id(memberId);
     }
 
     // 좋아요 전 싫어요 취소

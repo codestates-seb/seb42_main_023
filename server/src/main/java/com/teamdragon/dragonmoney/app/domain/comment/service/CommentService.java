@@ -41,6 +41,15 @@ public class CommentService implements ThumbCountService {
         return findVerifyCommentById(commentId);
     }
 
+    // 단일 조회 : Active 상태
+    public Comment findOneStateActive(Long postsId) {
+        Comment findComment = findVerifyCommentById(postsId);
+        if (findComment.getState() != Comment.State.ACTIVE) {
+            throw new BusinessLogicException(BusinessExceptionCode.THUMB_UNUSABLE);
+        }
+        return findComment;
+    }
+
     // 추가
     public Comment createComment(Long postsId, Member loginMember, Comment newComment) {
         Posts parentPosts = finderService.findVerifyPostsById(postsId);

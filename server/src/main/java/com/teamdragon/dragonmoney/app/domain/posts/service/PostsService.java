@@ -165,6 +165,15 @@ public class PostsService implements ThumbCountService {
         return findVerifyPostsById(postsId);
     }
 
+    // 단일 조회 : Active 상태
+    public Posts findOneStateActive(Long postsId) {
+        Posts findPosts = findVerifyPostsById(postsId);
+        if (findPosts.getState() != Posts.State.ACTIVE) {
+            throw new BusinessLogicException(BusinessExceptionCode.THUMB_UNUSABLE);
+        }
+        return findPosts;
+    }
+
     // 게시글 상세 조회 : 게시글 id
     public PostsDto.PostsDetailRes findPostsDetail(Long postsId, Long loginMemberId){
         plusViewCount(postsId);
