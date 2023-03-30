@@ -33,6 +33,7 @@ public class ThumbService {
 
     // 좋아요 등록
     public ThumbDto saveThumbup(ThumbDto.Target targetType, Member loginMember, Long targetId) {
+        duplicationCheckThumbup(targetType, loginMember, targetId);
         Thumbup.ThumbupBuilder builder = Thumbup.builder();
         // 좋아요 등록 전 싫어요 취소
         beforeThumbup(targetType, loginMember, targetId);
@@ -67,6 +68,7 @@ public class ThumbService {
 
     // 싫어요 등록
     public ThumbDto saveThumbdown(ThumbDto.Target targetType, Member loginMember, Long targetId) {
+        duplicationCheckThumbdown(targetType, loginMember, targetId);
         Thumbdown.ThumbdownBuilder builder = Thumbdown.builder();
         // 싫어요 등록 전 좋아요 취소
         beforeThumbdown(targetType, loginMember, targetId);
@@ -228,5 +230,21 @@ public class ThumbService {
                 throw new RuntimeException("Invalid Thumb TargetType");
         }
         return findThumbdown;
+    }
+
+    // 좋아요 중복검사
+    private void duplicationCheckThumbup(ThumbDto.Target targetType, Member loginMember, Long targetId) {
+        Optional<Thumbup> findThumbup = findThumbup(targetType, loginMember, targetId);
+        if (findThumbup.isPresent()){
+            throw new BusinessLogicException(BusinessExceptionCode.THUMBUP_EXIST);
+        }
+    }
+
+    // 싫어요 중복검사
+    private void duplicationCheckThumbdown(ThumbDto.Target targetType, Member loginMember, Long targetId) {
+        Optional<Thumbdown> findThumbdown = findThumbdown(targetType, loginMember, targetId);
+        if (findThumbdown.isPresent()){
+            throw new BusinessLogicException(BusinessExceptionCode.THUMBDOWN_EXIST);
+        }
     }
 }
