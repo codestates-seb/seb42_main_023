@@ -9,6 +9,8 @@ import { membersCommentsListApi } from '../../api/memberapi';
 import { timeSince } from '../mainP/Timecalculator';
 import Pagination from '../common/Pagination';
 import { CommentType } from '../../types/PostList';
+import { Link } from 'react-router-dom';
+import Nolist from './Nolist';
 
 const MyCommentList = () => {
   const [pageOffset, setPageOffset] = useState(0);
@@ -26,35 +28,37 @@ const MyCommentList = () => {
     refetch();
   }, []);
 
-  if (!isSuccess) {
-    return <div>Loading...</div>;
-  }
   return (
     <PostListWrap>
+      {isSuccess && data.comments.length === 0 && (
+        <Nolist name={'작성한 댓글이'} />
+      )}
       <List>
         {isSuccess &&
           data.comments.map((item: CommentType) => {
             return (
               <li key={item.commentId}>
-                {item.comment === '신고된 댓글입니다.' ? (
-                  <div style={{ color: '#94969b' }}>{item.comment}</div>
-                ) : (
-                  <div>{item.comment}</div>
-                )}
-                <CommentInfo>
-                  <span>
-                    <TimeIcon />
-                    {timeSince(item.createdAt)}
-                  </span>
-                  <span>
-                    <FaRegThumbsUp size={13} />
-                    {item.thumbupCount}
-                  </span>
-                  <span>
-                    <FaRegThumbsDown size={13} />
-                    {item.thumbdownCount}
-                  </span>
-                </CommentInfo>
+                <Link to={`/posts/${item.postId}`}>
+                  {item.comment === '신고된 댓글입니다.' ? (
+                    <div style={{ color: '#94969b' }}>{item.comment}</div>
+                  ) : (
+                    <div>{item.comment}</div>
+                  )}
+                  <CommentInfo>
+                    <span>
+                      <TimeIcon />
+                      {timeSince(item.createdAt)}
+                    </span>
+                    <span>
+                      <FaRegThumbsUp size={13} />
+                      {item.thumbupCount}
+                    </span>
+                    <span>
+                      <FaRegThumbsDown size={13} />
+                      {item.thumbdownCount}
+                    </span>
+                  </CommentInfo>
+                </Link>
               </li>
             );
           })}
@@ -77,17 +81,19 @@ const List = styled.ul`
   display: flex;
   flex-direction: column;
   li {
-    width: 100%;
-    display: flex;
-    justify-content: space-between;
-    border-bottom: 1px solid var(--border-color);
-    padding: 20px 20px;
-    div {
-      :first-child {
-        width: 589px;
-        white-space: nowrap;
-        overflow: hidden;
-        text-overflow: ellipsis;
+    a {
+      width: 100%;
+      display: flex;
+      justify-content: space-between;
+      border-bottom: 1px solid var(--border-color);
+      padding: 20px 20px;
+      div {
+        :first-child {
+          max-width: 70%;
+        }
+      }
+      :hover {
+        background-color: var(--background-color);
       }
     }
   }

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import styled from 'styled-components';
 import Profile from '../components/myPageP/Profile';
 import MyPostList from '../components/myPageP/MyPostList';
@@ -12,7 +12,9 @@ import DeleteModal from '../components/myPageP/DeleteModal';
 
 function MyPage() {
   const { filter, deleteAccountOpen } = useAppSelector(({ mypage }) => mypage);
-
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
   return (
     <MyPageWrap>
       {deleteAccountOpen && <DeleteModal />}
