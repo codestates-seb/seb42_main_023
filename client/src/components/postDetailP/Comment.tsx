@@ -72,12 +72,20 @@ const Comment: React.FC<
 
   // 답글 조회
   const [replyPage, setReplyPage] = useState<number>(1);
-  const replyQuery = repliesApi.useGetReplyQuery({ commentId, replyPage });
+  const replyQuery = repliesApi.useGetReplyQuery(
+    { commentId, replyPage },
+    {
+      skip: !commentId,
+    },
+  );
   const { isSuccess, data } = replyQuery;
   const commentEditInput = useRef<HTMLInputElement>(null);
 
   //  멤버 정보 조회
-  const memeberQuery = membersApi.useGetMemberQuery({ name: selectedMember });
+  const memberQuery = membersApi.useGetMemberQuery(
+    { name: selectedMember },
+    { skip: !selectedMember },
+  );
 
   // 댓글 좋아요 추가, 삭제
   const addThumbUpMutation = commentsApi.useAddCommentThumbUpMutation();
@@ -216,7 +224,7 @@ const Comment: React.FC<
   useEffect(() => {
     // 답글 데이터가 변경될 때마다 총 답글 데이터 반영
     dispatch(setTotalReplies(replyQuery.data?.replies || []));
-  }, [data]);
+  }, [replyQuery.data]);
 
   const minusCommentPage = () => {
     if (page >= 2) {
@@ -298,7 +306,7 @@ const Comment: React.FC<
                           </ul>
                         </IntroInfo>
                         <label className="introduction">
-                          {memeberQuery.data?.intro || '소개 내용이 없습니다.'}
+                          {memberQuery.data?.intro || '소개 내용이 없습니다.'}
                         </label>
                         <div
                           className="intro-moreInfo"
