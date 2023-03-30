@@ -18,6 +18,8 @@ const ReportsStandBy = () => {
     orderby: orderby,
   });
 
+  console.log('DATA:', data);
+
   return (
     <AdminMain>
       <NavAdmin />

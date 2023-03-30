@@ -1,7 +1,6 @@
 import React, { useState, Dispatch, SetStateAction } from 'react';
 import styled from 'styled-components';
 import ReportReview from './ReportReview';
-import { WhiteBtn } from '../common/Btn';
 import { useAppDispatch } from '../../hooks';
 import { setSelectedReport } from '../../slices/reportSlice';
 import { useDeleteReportMutation } from '../../api/reportApi';
@@ -66,7 +65,7 @@ const ReportList: React.FC<Props> = ({
           <tr>
             <th>신고대상</th>
             <th>신고유형</th>
-            <th>제목/내용</th>
+            <th>신고사유</th>
             <th>작성자</th>
             <th>신고시간</th>
             {standby ? (
@@ -78,7 +77,11 @@ const ReportList: React.FC<Props> = ({
           </tr>
         </thead>
         <tbody>
-          {isSuccess &&
+          {isSuccess && reportData.reports.length < 1 ? (
+            <tr>
+              <td>접수된 신고건이 없습니다.</td>
+            </tr>
+          ) : (
             reportData?.reports?.map((item, idx) => {
               return (
                 <tr
@@ -87,23 +90,21 @@ const ReportList: React.FC<Props> = ({
                 >
                   <td className="target-type">{item.targetType}</td>
                   <td className="report-category">{item.reportCategory}</td>
-                  <td className="description">
-                    {item.description.slice(0, 20)}
-                  </td>
+                  <td className="description">{item.description}</td>
                   <td className="writer">{item.writer}</td>
                   <td className="reported-time">
                     {item.reportedAt.replace('T', ' ').slice(0, -7)}
                   </td>
                   {standby ? (
                     <React.Fragment>
-                      <td>
+                      <td className="review-btn">
                         <HandleBtn
                           onClick={() => reviewReportHanlder(item.reportId)}
                         >
                           검토하기
                         </HandleBtn>
                       </td>
-                      <td>
+                      <td className="delete-btn">
                         <DeleteBtn
                           onClick={() => deleteReportHanlder(item.reportId)}
                         >
@@ -114,11 +115,12 @@ const ReportList: React.FC<Props> = ({
                   ) : null}
                 </tr>
               );
-            })}
+            })
+          )}
         </tbody>
       </Table>
       {isReviewOpen ? <ReportReview setIsReviewOpen={setIsReviewOpen} /> : null}
-      {isSuccess && (
+      {isSuccess && reportData.reports.length > 0 && (
         <Pagination
           pageInfo={reportData.pageInfo}
           pageOffset={pageOffset}
@@ -173,6 +175,7 @@ const TargetFilter = styled.div`
 // 신고글 리스트
 const Table = styled.table`
   border-collapse: collapse;
+  width: 100%;
   > thead > tr > th {
     font-size: 14px;
     font-weight: 600;
@@ -180,15 +183,49 @@ const Table = styled.table`
     border-bottom: 1px solid var(--border-color);
   }
 
-  > tbody > tr {
-    text-align: center;
-    height: 35px;
-    border-bottom: 1px solid var(--border-color);
-    &.row-even {
-      background-color: #f8f8f8;
-    }
-    > td {
-      font-size: 14px;
+  > tbody {
+    // 접수된 신고가 없을때
+    /* > div {
+      display: flex;
+      > p {
+        margin-left: 3px;
+      }
+    } */
+
+    // 접수된 신고가 있을때
+    > tr {
+      text-align: center;
+      height: 35px;
+      border-bottom: 1px solid var(--border-color);
+      &.row-even {
+        background-color: #f8f8f8;
+      }
+      &:hover {
+        background-color: #f3faff;
+      }
+      > td {
+        font-size: 14px;
+        &.target-type {
+          width: 50px;
+        }
+        &.report-category {
+          width: 95px;
+        }
+        &.description {
+          text-align: left;
+          padding-left: 20px;
+        }
+        &.writer {
+          width: 90px;
+        }
+        &.reported-time {
+          width: 150px;
+        }
+        &.review-btn,
+        &.delete-btn {
+          width: 60px;
+        }
+      }
     }
   }
 `;
@@ -197,16 +234,9 @@ const HandleBtn = styled.button`
   font-size: 13px;
   padding: 3px;
   border-radius: 2px;
-  background-color: rgba(0, 105, 202, 0.3);
-  &:hover {
-    background-color: rgba(0, 105, 202, 0.5);
-  }
+  background-color: rgba(0, 105, 202, 0.2);
 `;
 
 const DeleteBtn = styled(HandleBtn)`
-  background-color: rgba(202, 0, 0, 0.3);
-  &:hover {
-    background-color: rgba(202, 0, 0, 0.5);
-    color: black;
-  }
+  background-color: rgba(202, 0, 0, 0.2);
 `;
