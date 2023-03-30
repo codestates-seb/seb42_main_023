@@ -62,6 +62,8 @@ const TagInput: React.FC = () => {
       // 태그 개수 제한
       if (tag.length >= 5) {
         dispatch(setTagErr('태그는 5개까지만 입력 가능합니다.'));
+        dispatch(setTagContent(''));
+        dispatch(setTagErr(''));
         return;
       } else {
         dispatch(setTagContent(''));
@@ -121,6 +123,9 @@ const Input = styled.input`
   height: 50px;
   border: 1px solid #d4d4d4;
   padding: 0 10px 0 10px;
+  ::placeholder {
+    font-style: italic;
+  }
 `;
 
 const Error = styled.div`
