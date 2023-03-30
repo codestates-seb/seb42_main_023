@@ -865,7 +865,7 @@ const IntorductionContainer = styled.div`
     font-size: 17x;
     color: gray;
     width: 175px;
-    margin: 10px 0 0 35px;
+    margin: 15px 0 0 35px;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
@@ -874,7 +874,7 @@ const IntorductionContainer = styled.div`
     font-size: 17px;
     color: gray;
     width: 100px;
-    margin: 5px 0 0 135px;
+    margin: 15px 0 0 135px;
     cursor: pointer;
   }
 `;
@@ -892,7 +892,7 @@ const IntroInfo = styled.div`
     width: 150px;
     height: 30px;
     font-size: 16px;
-    margin: 8px 0 0 10px;
+    margin: 18px 0 0 10px;
   }
 `;
 
