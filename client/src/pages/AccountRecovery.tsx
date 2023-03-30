@@ -3,6 +3,7 @@ import styled from 'styled-components';
 import { MainContainer, FormContainer } from '../components/common/Container';
 import { BlueBtn } from '../components/common/Btn';
 import { usePostTempTokenMutation } from '../api/tempTokenAPi';
+import { LogoSVG } from '../assets/common/LogoSVG';
 
 const AccountRecovery: React.FC = () => {
   const [postTempToken] = usePostTempTokenMutation();
@@ -31,7 +32,7 @@ const AccountRecovery: React.FC = () => {
   return (
     <MainContainer>
       <FormContainer>
-        <div>Logo</div>
+        <LogoSVG />
         <p>가입내역이 확인되는 회원입니다.</p>
         <RecoveryQuestion>
           <p>탈퇴했던 기존의 계정을 복구할 수 있습니다.</p>
