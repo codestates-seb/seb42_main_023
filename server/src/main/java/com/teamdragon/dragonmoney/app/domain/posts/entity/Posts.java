@@ -118,7 +118,8 @@ public class Posts extends BaseTimeEntity implements ThumbCountable {
     }
 
     @Builder
-    public Posts(Member writer, Category category, String title, String content, List<Image> images, List<PostsTag> postsTags) {
+    public Posts(Long id, Member writer, Category category, String title, String content, List<Image> images, List<PostsTag> postsTags) {
+        this.id = id;
         this.title = title;
         this.content = content;
         this.writer = writer;
@@ -199,6 +200,8 @@ public class Posts extends BaseTimeEntity implements ThumbCountable {
     public void changeStateToDeleted(DeleteResult deleteResult){
         if(deleteResult.getDeleteReason() == DeleteResult.Reason.DELETED_BY_REPORT) {
             this.state = State.REPORTED;
+        } else if (deleteResult.getDeleteReason() == DeleteResult.Reason.DELETED_BY_MEMBER_REMOVE) {
+            this.state = State.DELETED;
         } else {
             this.state = State.DELETED;
         }

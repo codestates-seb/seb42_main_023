@@ -2,6 +2,7 @@ package com.teamdragon.dragonmoney.app.domain.reply.entity;
 
 import com.teamdragon.dragonmoney.app.domain.comment.entity.Comment;
 import com.teamdragon.dragonmoney.app.domain.member.entity.Member;
+import com.teamdragon.dragonmoney.app.domain.posts.entity.Posts;
 import com.teamdragon.dragonmoney.app.domain.thumb.ThumbDto;
 import com.teamdragon.dragonmoney.app.domain.thumb.ThumbCountable;
 import com.teamdragon.dragonmoney.app.domain.thumb.entity.Thumbdown;
@@ -104,6 +105,8 @@ public class Reply extends BaseTimeEntity implements ThumbCountable {
     public void changeStateToDeleted(DeleteResult deleteResult){
         if(deleteResult.getDeleteReason() == DeleteResult.Reason.DELETED_BY_REPORT) {
             this.state = State.REPOTED;
+        } else if (deleteResult.getDeleteReason() == DeleteResult.Reason.DELETED_BY_MEMBER_REMOVE) {
+            this.state = State.DELETED;
         } else {
             this.state = State.DELETED;
         }

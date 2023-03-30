@@ -112,6 +112,8 @@ public class Comment extends BaseTimeEntity implements ThumbCountable {
     public void changeStateToDeleted(DeleteResult deleteResult){
         if(deleteResult.getDeleteReason() == DeleteResult.Reason.DELETED_BY_REPORT) {
             this.state = State.REPORTED;
+        } else if (deleteResult.getDeleteReason() == DeleteResult.Reason.DELETED_BY_MEMBER_REMOVE) {
+            this.state = State.DELETED;
         } else {
             this.state = State.DELETED;
         }
