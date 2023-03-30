@@ -22,11 +22,11 @@ const RecommendedPost: React.FC = () => {
           const url = `/posts/${post.postId}`;
           return (
             <li key={post.postId}>
-              <p>
+              <div>
                 <Link to={url}>
                   <h2>{post.title}</h2>
                 </Link>
-              </p>
+              </div>
             </li>
           );
         })}
@@ -57,7 +57,7 @@ const RecommendedPostContainer = styled.div`
       margin-right: 4px;
     }
   }
-  li p {
+  li div {
     margin: 15px 0 15px 0;
     width: 250px;
     height: 25px;

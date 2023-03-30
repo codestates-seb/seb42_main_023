@@ -54,7 +54,6 @@ const PostDetail: React.FC = () => {
   const [checkedElement, setCheckedElement] = useState(-1);
   // 신고, 삭제, 소개
   const [isOpenReport, setIsOpenReport] = useState<boolean>(false);
-  const [reportType] = useState<string>('');
   const [isOpenReportErr] = useState<boolean>(false);
   const [isOpenFilter, setIsOpenFilter] = useState<boolean>(false);
   const [isOpenDelete, setIsOpenDelete] = useState<boolean>(false);
@@ -66,6 +65,7 @@ const PostDetail: React.FC = () => {
   const handleSelectChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.target instanceof HTMLInputElement) {
       setCheckedElement(Number(event.target.value));
+      console.log(event.target.id);
       dispatch(setReportOption(event.target.id));
     }
   };
@@ -94,6 +94,7 @@ const PostDetail: React.FC = () => {
   const replyId = 'reply' in state ? state.reply?.replyId : null;
   const reportReason = 'post' in state ? state.post.reportOption : null;
   const reportErr = 'validation' in state ? state.validation.reportErr : null;
+  console.log(reportErr);
   const selectedMember = 'post' in state ? state.post.selectedMember : null;
   const loginUserName = window.localStorage.getItem('name');
 
@@ -274,7 +275,7 @@ const PostDetail: React.FC = () => {
     if ('validation' in state && state.validation?.reportErr) return;
     if ('post' in state && !state.post?.reportOption) return;
     if (reportTextRef.current?.value === '') return;
-    console.log(reportOption, reportType);
+
     // 게시물 신고
     if ('post' in state && state.post?.reportType === 'post') {
       sendReport({
@@ -287,15 +288,14 @@ const PostDetail: React.FC = () => {
         reporterName: localStorage.getItem('name'),
       })
         .unwrap()
-        .then((payload) => {
+        .then(() => {
           alert('신고가 접수 되었습니다.');
         })
         .catch(() => alert('실패했습니다.'));
 
       setIsOpenReport(isOpenReportErr);
-      setReportErr('');
+      dispatch(setReportErr(''));
       setCheckedElement(-1);
-      alert('신고가 접수 되었습니다.');
     }
 
     // 댓글 신고
@@ -310,15 +310,14 @@ const PostDetail: React.FC = () => {
         reporterName: loginUserName,
       })
         .unwrap()
-        .then((payload) => {
+        .then(() => {
           alert('신고가 접수 되었습니다.');
         })
         .catch(() => alert('실패했습니다.'));
 
       setIsOpenReport(isOpenReportErr);
-      setReportErr('');
+      dispatch(setReportErr(''));
       setCheckedElement(-1);
-      alert('신고가 접수 되었습니다.');
     }
 
     // 답글 신고
@@ -333,13 +332,13 @@ const PostDetail: React.FC = () => {
         reporterName: loginUserName,
       })
         .unwrap()
-        .then((payload) => {
+        .then(() => {
           alert('신고가 접수 되었습니다.');
         })
         .catch(() => alert('실패했습니다.'));
 
       setIsOpenReport(isOpenReportErr);
-      setReportErr('');
+      dispatch(setReportErr(''));
       setCheckedElement(-1);
     }
   };
@@ -347,23 +346,20 @@ const PostDetail: React.FC = () => {
   //  신고 유효성 검사
   const validationTest = (): void => {
     const reportValue = reportTextRef.current?.value;
-    // if ('post' in state && !state.post?.reportOption) {
-    //   dispatch(setReportErr('신고 이유를 선택해 주세요'));
-    // }
-    if (!reportOption) {
-      setReportErr('신고 이유를 선택해 주세요');
+
+    if ('post' in state && !state.post?.reportOption) {
+      dispatch(setReportErr('신고 이유를 선택해 주세요'));
     }
     if (reportValue?.length === 0) {
-      // dispatch(setReportErr('신고 내용을 작성해 주세요.'));
-      setReportErr('신고 내용을 작성해 주세요.');
+      dispatch(setReportErr('신고 내용을 작성해 주세요.'));
     }
     if (reportValue) {
       if (reportValue.length < 10 || reportValue.length > 40) {
-        // dispatch(setReportErr('제목은 10자 이상 40자 이하로 작성해주세요.'));
-        setReportErr('제목은 10자 이상 40자 이하로 작성해주세요.');
+        dispatch(
+          setReportErr('신고내용은 10자 이상 300자 이하이어야 합니다. '),
+        );
       } else {
-        // dispatch(setReportErr(''));
-        setReportErr('');
+        dispatch(setReportErr(''));
       }
     }
   };
@@ -418,23 +414,19 @@ const PostDetail: React.FC = () => {
 
                     {checkedElement === idx ? (
                       <button
-                        id={option}
-                        value={idx}
                         onClick={() => {
                           setCheckedElement(-1);
                         }}
                       >
-                        <CheckedIcon width={30} height={30} />
+                        <CheckedIcon id={option} width={30} height={30} />
                       </button>
                     ) : (
                       <button
-                        id={option}
-                        value={idx}
                         onClick={() => {
                           setCheckedElement(idx);
                         }}
                       >
-                        <NoCheckedIcon width={30} height={30} />
+                        <NoCheckedIcon id={option} width={30} height={30} />
                       </button>
                     )}
                     <label htmlFor={option}>{option}</label>
@@ -453,8 +445,8 @@ const PostDetail: React.FC = () => {
               <CancelBtn
                 onClick={(): void => {
                   setCheckedElement(-1);
-                  setReportOption('');
-                  setReportErr('');
+                  dispatch(setReportOption(''));
+                  dispatch(setReportErr(''));
                   reportHandler();
                 }}
               >
@@ -748,7 +740,7 @@ const DeleteModal = styled.div`
   border: solid 1px #d4d4d4;
   border-radius: 5px;
   color: #5c5c5c;
-  cursor: pointer;
+
   padding: 0 15px 0 15px;
 
   .delete {
@@ -780,7 +772,7 @@ const ReportModal = styled.div`
   border-radius: 5px;
   color: #5c5c5c;
   z-index: 10;
-  cursor: pointer;
+
   padding: 25px 15px 0 15px;
 
   .report {
@@ -827,6 +819,9 @@ const ReportModal = styled.div`
     resize: none;
     padding: 20px;
     margin: 15px 0 0 0;
+    :focus {
+      outline: 3px solid #0069ca;
+    }
   }
   input {
     display: none;
