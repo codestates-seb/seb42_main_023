@@ -33,17 +33,11 @@ const BodyInput: React.FC = () => {
   const postQuery = postsApi.useGetPostQuery({ postId });
   const { data } = postQuery;
   const bodyValue = state.postInput?.body;
-  const addedImg = state.post?.addedImg;
   const removedImg = state.post?.removedImg;
   const totalImg = state.post?.totalImg;
   const remainImg = data?.images;
   const accsessToken = Cookies.get('Authorization');
 
-  console.log('remainImg', remainImg);
-  //TODO 받아온 body 데이터에서 이미지를 추출해서 remainImage, addedImages, removedImages를 요청 바디에 보내줘야함
-  // 초기 이미지, 추가한 이미지, 제거한 이미지
-  // 전체 이미지 = 초기 이미지 + 추가한 이미지
-  // 제거한 이미지 = 전채 이미지에서 현재 이미지 제외
   const img: Array<any> = _.cloneDeep(totalImg!);
 
   //  문자열을 HTML 요소로 변환

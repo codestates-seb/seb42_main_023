@@ -14,7 +14,6 @@ const TitleInput: React.FC = () => {
   const postId = Number(params.postId);
 
   const postQuery = postsApi.useGetPostQuery({ postId });
-  const { data } = postQuery;
 
   // 제목 value 확인
   const valueCheck = (event: React.ChangeEvent<HTMLInputElement>): void => {
@@ -88,6 +87,9 @@ const Input = styled.input`
   padding-left: 15px;
   ::placeholder {
     font-style: italic;
+  }
+  :focus {
+    outline: 2px solid #0069ca;
   }
 `;
 

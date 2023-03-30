@@ -109,6 +109,9 @@ const Input = styled.input`
   ::placeholder {
     font-style: italic;
   }
+  :focus {
+    outline: 2px solid #0069ca;
+  }
 `;
 
 const Error = styled.div`

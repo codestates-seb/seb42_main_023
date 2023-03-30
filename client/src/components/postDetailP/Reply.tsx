@@ -515,24 +515,30 @@ const ReplyInfo = styled.div`
   justify-content: center;
   width: 100%;
   height: 30px;
+  margin-top: 10px;
 `;
 
 const ReplyContent = styled.div`
-  margin-left: 50px;
-  margin-top: 10px;
   display: flex;
   flex-direction: column;
-  margin-bottom: 20px;
+  padding: 15px 0 0 0;
+  margin: 0px 0 20px 15px;
   width: 580px;
-  height: 100%;
+  height: 50px;
+  font-size: 17px;
 
   .edit-reply {
-    width: 660px;
+    width: 655px;
+    font-size: 17px;
     height: 50px;
     border-bottom: 1px solid #d4d4d4;
-    padding: 3px 0 0 10px;
+    padding: 3px 0 8px 0px;
+
     ::placeholder {
-      color: #0099ca;
+      color: #0275e1;
+    }
+    :focus {
+      outline: none;
     }
   }
 `;
