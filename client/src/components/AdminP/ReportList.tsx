@@ -77,7 +77,7 @@ const ReportList: React.FC<Props> = ({
           </tr>
         </thead>
         <tbody>
-          {isSuccess && reportData.reports ? (
+          {isSuccess && reportData.reports.length < 1 ? (
             <tr>
               <td>접수된 신고건이 없습니다.</td>
             </tr>
