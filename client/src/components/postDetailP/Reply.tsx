@@ -207,7 +207,7 @@ const Reply: React.FC<Partial<ReplyProps & ReportProps>> = ({
               src={replyInfo && replyInfo.memberImage}
               id={replyInfo?.memberName}
               data-img={replyInfo?.memberImage}
-              data-replyId={replyInfo?.replyId}
+              data-replyid={replyInfo?.replyId}
             ></img>
           </li>
           {'reply' in state &&
@@ -313,7 +313,7 @@ const Reply: React.FC<Partial<ReplyProps & ReportProps>> = ({
           <li
             className="reply-report"
             data-category="reply"
-            data-replyId={String(replyInfo?.replyId)}
+            data-replyid={String(replyInfo?.replyId)}
             style={{
               display:
                 loginUserName === replyInfo?.memberName ? 'none' : 'block',
@@ -339,9 +339,7 @@ const Reply: React.FC<Partial<ReplyProps & ReportProps>> = ({
                 }, 500)}
                 style={{
                   margin:
-                    loginUserName === replyInfo?.memberName
-                      ? '0'
-                      : '0 0 0 78px',
+                    loginUserName === replyInfo?.memberName ? '0' : '0 0 0 7px',
                 }}
               >
                 <LikeIcon checked={replyInfo!.isThumbup} />

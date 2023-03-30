@@ -26,10 +26,8 @@ const CommentInput: React.FC<CommentInputProps> = ({
       postId: postId,
       content: commentRef.current?.value,
     });
-
     setCommentCnt(commentCnt + 1);
     dispatch(addCommentEdit(false));
-
     commentRef.current!.value = '';
   };
 
