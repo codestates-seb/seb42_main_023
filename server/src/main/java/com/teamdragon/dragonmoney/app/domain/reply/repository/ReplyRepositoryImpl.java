@@ -7,6 +7,7 @@ import com.querydsl.core.types.Projections;
 import com.querydsl.jpa.JPAExpressions;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
+import com.teamdragon.dragonmoney.app.domain.comment.entity.Comment;
 import com.teamdragon.dragonmoney.app.domain.reply.dto.ReplyDto;
 import com.teamdragon.dragonmoney.app.domain.reply.entity.Reply;
 import com.teamdragon.dragonmoney.app.global.pagenation.QueryDslUtil;
@@ -107,7 +108,7 @@ public class ReplyRepositoryImpl implements ReplyRepositoryCustom{
                 .select(reply).distinct()
                 .from(reply)
                 .leftJoin(reply.writer, member).fetchJoin()
-                .where(reply.state.eq(Reply.State.ACTIVE), reply.writer.name.eq(memberName))
+                .where(reply.state.notIn(Reply.State.DELETED), reply.writer.name.eq(memberName))
                 .fetch();
     }
 

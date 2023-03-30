@@ -54,6 +54,11 @@ public class BookmarkService {
         bookmarkRepository.delete(bookmark);
     }
 
+    // 회원 탈퇴 시 북마크 삭제
+    public void removeAllBookmarkByMemberId(Long memberId) {
+        bookmarkRepository.deleteByMember_Id(memberId);
+    }
+
     // 북마크 조회
     private Bookmark findBookmark(Member member, Long postsId) {
         Long memberId = member.getId();

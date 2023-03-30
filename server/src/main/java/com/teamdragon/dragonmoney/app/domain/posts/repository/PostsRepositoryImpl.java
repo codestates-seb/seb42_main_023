@@ -303,7 +303,7 @@ public class PostsRepositoryImpl implements PostsRepositoryCustom {
                 .select(posts).distinct()
                 .from(posts)
                 .leftJoin(posts.writer, member).fetchJoin()
-                .where(posts.state.eq(Posts.State.ACTIVE), posts.writer.name.eq(memberName))
+                .where(posts.state.notIn(Posts.State.DELETED), posts.writer.name.eq(memberName))
                 .fetch();
     }
 
