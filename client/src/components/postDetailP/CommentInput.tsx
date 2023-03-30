@@ -21,14 +21,17 @@ const CommentInput: React.FC<CommentInputProps> = ({
   const [setComments] = commetMutation;
 
   // 댓글 추가
-  const addCommentHandler = async () => {
-    await setComments({
+  const addCommentHandler = () => {
+    setComments({
       postId: postId,
       content: commentRef.current?.value,
-    });
-    setCommentCnt(commentCnt + 1);
-    dispatch(addCommentEdit(false));
-    commentRef.current!.value = '';
+    })
+      .unwrap()
+      .then(() => {
+        setCommentCnt(commentCnt + 1);
+        dispatch(addCommentEdit(false));
+        commentRef.current!.value = '';
+      });
   };
 
   const valueCheck = (event: React.ChangeEvent<HTMLInputElement>): void => {

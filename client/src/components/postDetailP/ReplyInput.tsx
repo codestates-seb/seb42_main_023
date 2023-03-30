@@ -32,14 +32,16 @@ const ReplyInput: React.FC<CommentProps> = ({ commentInfo }: CommentProps) => {
   const commentQuery = commentsApi.useGetCommentQuery({ postId, page });
   const { refetch } = commentQuery;
   // 답글 추가
-  const addReplyHandler = async () => {
-    await setReplys({
+  const addReplyHandler = () => {
+    setReplys({
       commentId: commentId,
       content: replyRef.current!.value,
-    });
-    refetch();
-    dispatch(addReplyEdit(false));
-    replyRef.current!.value = '';
+    })
+      .unwrap()
+      .then(() => {
+        replyRef.current!.value = '';
+        refetch();
+      });
   };
 
   const valueCheck = (event: React.ChangeEvent<HTMLInputElement>): void => {
