@@ -80,14 +80,15 @@ const Comment: React.FC<
   const memeberQuery = membersApi.useGetMemberQuery({ name: selectedMember });
 
   // 댓글 좋아요 추가, 삭제
-  const addThumbUpMutation = commentsApi.useAddThumbUpMutation();
+  const addThumbUpMutation = commentsApi.useAddCommentThumbUpMutation();
   const [addThumbUp] = addThumbUpMutation;
-  const removeThumbUpMutation = commentsApi.useRemoveThumbUpMutation();
+  const removeThumbUpMutation = commentsApi.useRemoveCommentThumbUpMutation();
   const [removeThumbUp] = removeThumbUpMutation;
   // 댓글 싫어요  추가, 삭제
-  const addThumbDownMutation = commentsApi.useAddThumbDownMutation();
+  const addThumbDownMutation = commentsApi.useAddCommentThumbDownMutation();
   const [addThumbDown] = addThumbDownMutation;
-  const removeThumbDownMutation = commentsApi.useRemoveThumbDownMutation();
+  const removeThumbDownMutation =
+    commentsApi.useRemoveCommentThumbDownMutation();
   const [removeThumbDown] = removeThumbDownMutation;
 
   // 유저 정보 조회
