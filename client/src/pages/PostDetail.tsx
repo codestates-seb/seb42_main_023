@@ -363,9 +363,7 @@ const PostDetail: React.FC = () => {
     }
     if (reportValue) {
       if (reportValue.length < 10 || reportValue.length > 40) {
-        dispatch(
-          setReportErr('신고내용은 10자 이상 300자 이하이어야 합니다. '),
-        );
+        dispatch(setReportErr('신고내용은 10자 이상 40자 이하이어야 합니다. '));
       } else {
         dispatch(setReportErr(''));
       }
