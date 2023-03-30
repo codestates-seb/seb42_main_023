@@ -369,7 +369,17 @@ const Reply: React.FC<Partial<ReplyProps & ReportProps>> = ({
             onKeyDown={enterHandler}
           ></input>
         ) : (
-          <div className="reply-content">
+          <div
+            className="reply-content"
+            style={{
+              color:
+                replyInfo?.content === '삭제된 답글입니다.'
+                  ? '#94969b'
+                  : replyInfo?.content === '신고된 답글입니다.'
+                  ? '#94969b'
+                  : '#000000',
+            }}
+          >
             {replyInfo!.content}
             {replyIsEdit && replyInfo?.content === '삭제된 답글입니다.'
               ? null

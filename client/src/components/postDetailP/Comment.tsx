@@ -460,7 +460,17 @@ const Comment: React.FC<
                         onKeyDown={enterHandler}
                       ></input>
                     ) : (
-                      <div className="content">
+                      <div
+                        className="content"
+                        style={{
+                          color:
+                            comment?.content === '삭제된 댓글입니다.'
+                              ? '#94969b'
+                              : comment?.content === '신고된 댓글입니다.'
+                              ? '#94969b'
+                              : ' #000000',
+                        }}
+                      >
                         {comment?.content}
                         {commentIsEdit &&
                         comment?.content === '삭제된 댓글입니다.'
@@ -523,9 +533,6 @@ const Comment: React.FC<
                 {'reply' in state && isSuccess && state.reply?.isOpened[idx] ? (
                   <>
                     <ReplyContainer>
-                      {/* {comment.content !== '삭제된 댓글입니다.' ? (
-                        <ReplyInput commentInfo={comment}></ReplyInput>
-                      ) : null} */}
                       <ReplyInput commentInfo={comment}></ReplyInput>
                       {filtered?.map((reply: ReplyType, idx: number) => {
                         return (
