@@ -36,6 +36,7 @@ const MyPageWrap = styled.div`
 `;
 const Content = styled.div`
   display: flex;
+  flex-basis: 900px;
   width: 100%;
   height: 1040px;
 `;

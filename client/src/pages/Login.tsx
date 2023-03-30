@@ -2,6 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 import { MainContainer, FormContainer } from '../components/common/Container';
 import { FcGoogle } from 'react-icons/fc';
+import { LogoSVG } from '../assets/common/LogoSVG';
 // import { SiNaver } from 'react-icons/si';
 // import { RiKakaoTalkFill } from 'react-icons/ri';
 
@@ -15,7 +16,7 @@ const Login: React.FC = () => {
   return (
     <MainContainer>
       <FormContainer>
-        <div>Logo</div>
+        <LogoSVG />
         <p>회원가입 없이 간편하게 로그인하세요</p>
         <LoginBtnContainer>
           <button className="btn google" onClick={loginGoogleHandler}>

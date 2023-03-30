@@ -97,7 +97,6 @@ const NicknameInput = styled.div`
     margin: 8px 0px;
     padding-left: 4px;
     border: 1px solid #d4d4d4;
-    border: none;
     border-radius: 3px;
     color: #7b7b7b;
     &:focus {

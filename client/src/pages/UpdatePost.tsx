@@ -12,7 +12,7 @@ import { setBody, setTitle } from '../slices/postInputSlice';
 import Cookies from 'js-cookie';
 import axios from 'axios';
 
-const url = process.env.REACT_APP_SERVER_ADDRESS + '/images';
+const deleteImgEP = process.env.REACT_APP_SERVER_ADDRESS + '/images/drop';
 const UpdatePost: React.FC = () => {
   const dispatch = useAppDispatch();
   const state = useAppSelector((state) => state);
@@ -92,7 +92,7 @@ const UpdatePost: React.FC = () => {
 
   const preventClose = (e: BeforeUnloadEvent) => {
     e.preventDefault();
-    axios.delete(url, {
+    axios.delete(deleteImgEP, {
       headers: {
         'Content-Type': 'application/json',
         Authorization: accsessToken,
@@ -113,7 +113,7 @@ const UpdatePost: React.FC = () => {
   }, []);
 
   const deleteImg = () => {
-    axios.delete(url, {
+    axios.delete(deleteImgEP, {
       headers: {
         'Content-Type': 'application/json',
         Authorization: accsessToken,

@@ -2,13 +2,7 @@ import React, { useRef } from 'react';
 import styled from 'styled-components';
 import { useAppDispatch, useAppSelector } from '../../hooks';
 import { FiMoreHorizontal } from 'react-icons/fi';
-import {
-  setIsOpenDelete,
-  setIsOpenFilter,
-  setIsOpenReport,
-  setDeleteType,
-  setReportType,
-} from '../../slices/postSlice';
+import { setIsOpenFilter, setReportType } from '../../slices/postSlice';
 import { useNavigate, useParams } from 'react-router-dom';
 
 interface Props {
