@@ -295,7 +295,6 @@ const PostDetail: React.FC = () => {
       setIsOpenReport(isOpenReportErr);
       setReportErr('');
       setCheckedElement(-1);
-      alert('신고가 접수 되었습니다.');
     }
 
     // 댓글 신고
@@ -318,7 +317,6 @@ const PostDetail: React.FC = () => {
       setIsOpenReport(isOpenReportErr);
       setReportErr('');
       setCheckedElement(-1);
-      alert('신고가 접수 되었습니다.');
     }
 
     // 답글 신고
@@ -333,7 +331,7 @@ const PostDetail: React.FC = () => {
         reporterName: loginUserName,
       })
         .unwrap()
-        .then((payload) => {
+        .then(() => {
           alert('신고가 접수 되었습니다.');
         })
         .catch(() => alert('실패했습니다.'));
@@ -748,7 +746,7 @@ const DeleteModal = styled.div`
   border: solid 1px #d4d4d4;
   border-radius: 5px;
   color: #5c5c5c;
-  cursor: pointer;
+
   padding: 0 15px 0 15px;
 
   .delete {
@@ -780,7 +778,7 @@ const ReportModal = styled.div`
   border-radius: 5px;
   color: #5c5c5c;
   z-index: 10;
-  cursor: pointer;
+
   padding: 25px 15px 0 15px;
 
   .report {
