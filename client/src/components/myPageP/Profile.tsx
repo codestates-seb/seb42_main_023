@@ -1,21 +1,17 @@
-import React, { useRef, useEffect } from 'react';
+import React, { useRef, useEffect, useState } from 'react';
 import styled from 'styled-components';
 import LargeProfileImg from '../common/LargeProfileImg';
-import { BsPencil } from 'react-icons/bs';
 import DropdownButton from './DropdownButton';
 import ProfileEdit from './ProfileEdit';
 import { useAppDispatch, useAppSelector } from '../../hooks';
-import {
-  setEditOpen,
-  setContent,
-  setEditWidth,
-} from '../../slices/mypageSlice';
+import { setEditWidth } from '../../slices/mypageSlice';
 import { membersApi } from '../../api/memberapi';
-import Cookies from 'js-cookie';
 
 function Profile() {
   const dispatch = useAppDispatch();
-  const { EditOpen, content } = useAppSelector(({ mypage }) => mypage);
+  const [EditOpen, setEditOpen] = useState(false);
+  const [content, setContent] = useState('');
+  const [blank, setBlank] = useState('');
   const { memberName } = useAppSelector(({ header }) => header);
   const divRef = useRef<HTMLDivElement>(null);
   const membersQuery = membersApi.useGetMemberQuery({
@@ -34,8 +30,8 @@ function Profile() {
 
   //자기소개 input토글
   const EditOpenHandler = () => {
-    dispatch(setContent(data.member.intro));
-    dispatch(setEditOpen(!EditOpen));
+    setContent(data.member.intro);
+    setEditOpen(!EditOpen);
     if (divRef.current !== null) {
       dispatch(setEditWidth(divRef.current?.offsetWidth + 20));
     }
@@ -44,10 +40,16 @@ function Profile() {
   const updateMemberMutaion = membersApi.useUpdateMemberMutation();
   const [updateMember] = updateMemberMutaion;
   const submitHandler = () => {
-    dispatch(setEditOpen(!EditOpen));
-    const name = localStorage.getItem('name');
-    const intro = content;
-    updateMember({ name, intro });
+    if (content.length === 0) {
+      setBlank('소개글이 비어 있습니다.');
+      return;
+    } else {
+      setEditOpen(!EditOpen);
+      const name = localStorage.getItem('name');
+      const intro = content;
+      updateMember({ name, intro });
+      setBlank('');
+    }
   };
 
   return (
@@ -67,10 +69,15 @@ function Profile() {
             </h1>
           )}
           {EditOpen ? (
-            <ProfileEdit />
+            <ProfileEdit
+              content={content}
+              setContent={setContent}
+              submitHandler={submitHandler}
+            />
           ) : (
             <Intro ref={divRef}>{isSuccess && data.member.intro}</Intro>
           )}
+          {blank && <Error>소개글이 비어있습니다.</Error>}
         </article>
       </div>
       {isSuccess && data.member.memberName === loginuser && <DropdownButton />}
@@ -114,5 +121,11 @@ const Finish = styled.button`
   }
 `;
 const Intro = styled.div`
-  width: 100%;
+  width: 900px;
+`;
+const Error = styled.span`
+  position: absolute;
+  font-size: 12px;
+  color: var(--error-red-color);
+  margin-top: 4px;
 `;
