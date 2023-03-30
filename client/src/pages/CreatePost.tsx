@@ -22,7 +22,7 @@ const CreatePost: React.FC = () => {
   const addedImg = state.post?.addedImg;
   const removedImg = state.post?.removedImg;
   const tag = state.postInput?.tag;
-  const tagNames = tag.map((tagName) => {
+  const tagNames = tag.map((tagName: string) => {
     return { tagName };
   });
   const accsessToken = Cookies.get('Authorization');

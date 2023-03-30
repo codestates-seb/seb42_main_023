@@ -69,7 +69,6 @@ const GlobalStyles = createGlobalStyle`
     margin: auto;    
     }   
 
-   
 
 `;
 

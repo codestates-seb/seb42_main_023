@@ -419,24 +419,32 @@ const Comment: React.FC<
                         ? null
                         : '신고'}
                     </li>
-                    <button
-                      onClick={_.debounce(() => {
-                        commentLiikeHandler(comment);
-                      }, 500)}
-                    >
-                      <LikeIcon checked={comment.isThumbup} />
-                    </button>
-                    <li className="comment-likes">{comment.thumbupCount}</li>
-                    <button
-                      onClick={_.debounce(() => {
-                        commentDislikeHandler(comment);
-                      }, 500)}
-                    >
-                      <DislikeIcon checked={comment.isThumbdown} />
-                    </button>
-                    <li className="comment-dislikes">
-                      {comment.thumbDownCount}
-                    </li>
+                    {comment.content ===
+                    '삭제된 댓글입니다.' ? null : comment.content ===
+                      '신고된 댓글입니다.' ? null : (
+                      <>
+                        <button
+                          onClick={_.debounce(() => {
+                            commentLiikeHandler(comment);
+                          }, 500)}
+                        >
+                          <LikeIcon checked={comment.isThumbup} />
+                        </button>
+                        <li className="comment-likes">
+                          {comment.thumbupCount}
+                        </li>
+                        <button
+                          onClick={_.debounce(() => {
+                            commentDislikeHandler(comment);
+                          }, 500)}
+                        >
+                          <DislikeIcon checked={comment.isThumbdown} />
+                        </button>
+                        <li className="comment-dislikes">
+                          {comment.thumbDownCount}
+                        </li>
+                      </>
+                    )}
                   </ul>
                 </CommentInfo>
                 <CommentContent>

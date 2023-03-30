@@ -323,28 +323,34 @@ const Reply: React.FC<Partial<ReplyProps & ReportProps>> = ({
               reportTypeChecker(event);
             }}
           >
-            {replyInfo?.content === '삭제된 댓글입니다.'
+            {replyInfo?.content === '삭제된 답글입니다.'
               ? null
-              : replyInfo?.content === '신고된 댓글입니다.'
+              : replyInfo?.content === '신고된 답글입니다.'
               ? null
               : '신고'}
           </li>
-          <button
-            onClick={_.debounce(() => {
-              ReplyLiikeHandler(replyInfo!);
-            }, 500)}
-          >
-            <LikeIcon checked={replyInfo!.isThumbup} />
-          </button>
-          <li className="reply-likes">{replyInfo?.thumbupCount}</li>
-          <button
-            onClick={_.debounce(() => {
-              ReplyDislikeHandler(replyInfo!);
-            }, 500)}
-          >
-            <DislikeIcon checked={replyInfo!.isThumbdown} />
-          </button>
-          <li className="reply-dislikes">{replyInfo?.thumbDownCount}</li>
+          {replyInfo?.content ===
+          '삭제된 답글입니다.' ? null : replyInfo?.content ===
+            '신고된 답글입니다.' ? null : (
+            <>
+              <button
+                onClick={_.debounce(() => {
+                  ReplyLiikeHandler(replyInfo!);
+                }, 500)}
+              >
+                <LikeIcon checked={replyInfo!.isThumbup} />
+              </button>
+              <li className="reply-likes">{replyInfo?.thumbupCount}</li>
+              <button
+                onClick={_.debounce(() => {
+                  ReplyDislikeHandler(replyInfo!);
+                }, 500)}
+              >
+                <DislikeIcon checked={replyInfo!.isThumbdown} />
+              </button>
+              <li className="reply-dislikes">{replyInfo?.thumbDownCount}</li>
+            </>
+          )}
         </ul>
       </ReplyInfo>
       <ReplyContent>
