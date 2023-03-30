@@ -576,12 +576,24 @@ const Comment: React.FC<
 
       <div className="commentPageContainer">
         {page !== 1 ? (
-          <button id="moreInfo" onClick={minusCommentPage}>
+          <button
+            id="moreInfo"
+            onClick={() => {
+              minusCommentPage();
+              scrollTo(0, 500);
+            }}
+          >
             《 이전 댓글
           </button>
         ) : null}
         {commentCnt! > 10 && commentCnt! / 10 > page ? (
-          <button id="moreInfo" onClick={plusCommentPage}>
+          <button
+            id="moreInfo"
+            onClick={() => {
+              plusCommentPage();
+              scrollTo(0, 500);
+            }}
+          >
             댓글 더보기 》
           </button>
         ) : null}
