@@ -28,6 +28,7 @@ const Main = () => {
 
   useEffect(() => {
     refetch();
+    window.scrollTo(0, 0);
   }, []);
 
   return (
@@ -92,12 +93,12 @@ const Main = () => {
 export default Main;
 
 const ComuntyBtn = styled(NavBtn)`
-  font-size: 20px;
+  font-size: 16px;
   padding-bottom: 10px;
   padding-right: 10px;
   padding-left: 10px;
   svg {
-    transform: translateY(2px);
+    transform: translateY(4px);
   }
 `;
 const ClickComuntyBtn = styled(ComuntyBtn)`

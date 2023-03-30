@@ -32,6 +32,7 @@ const InputWrap = styled.div`
     box-sizing: border-box;
     :focus {
       outline: none;
+      color: var(--point-blue-color);
       border-bottom: 1px solid var(--point-blue-color);
     }
   }

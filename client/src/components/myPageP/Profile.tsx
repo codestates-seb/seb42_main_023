@@ -60,11 +60,9 @@ function Profile() {
               {data.member.memberName}
               {data.member.memberName === loginuser &&
                 (EditOpen ? (
-                  <button onClick={submitHandler}>수정완료</button>
+                  <Finish onClick={submitHandler}>수정완료</Finish>
                 ) : (
-                  <button onClick={EditOpenHandler}>
-                    <BsPencil />
-                  </button>
+                  <button onClick={EditOpenHandler}>소개수정</button>
                 ))}
             </h1>
           )}
@@ -98,14 +96,21 @@ const ProfileWrap = styled.div`
       margin-bottom: 10px;
       button {
         margin-left: 24px;
-        :hover {
-          color: var(--hover-font-gray-color);
+        font-size: 12px;
+        .finish {
+          color: var(--point-blue-color);
         }
       }
     }
   }
   > div:nth-child(1) {
     display: felx;
+  }
+`;
+const Finish = styled.button`
+  color: var(--point-blue-color);
+  :hover {
+    color: var(--hover-point-blue-color);
   }
 `;
 const Intro = styled.div`
