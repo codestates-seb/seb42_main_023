@@ -142,14 +142,14 @@ public class CommentRepositoryImpl implements CommentRepositoryCustom {
         return PageableExecutionUtils.getPage(content, pageable, countQuery::fetchOne);
     }
 
-    // 회원 탈퇴 시 작성한 게시글 조회
+    // 회원 탈퇴 시 작성한 댓글 조회
     @Override
     public List<Comment> findCommentByDeletedMember(String memberName) {
         return queryFactory
                 .select(comment).distinct()
                 .from(comment)
                 .leftJoin(comment.writer, member).fetchJoin()
-                .where(comment.state.eq(Comment.State.ACTIVE), comment.writer.name.eq(memberName))
+                .where(comment.state.notIn(Comment.State.DELETED), comment.writer.name.eq(memberName))
                 .fetch();
     }
 
