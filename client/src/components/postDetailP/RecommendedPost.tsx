@@ -24,7 +24,7 @@ const RecommendedPost: React.FC = () => {
             <li key={post.postId}>
               <p>
                 <Link to={url}>
-                  <h1>{post.title}</h1>
+                  <h2>{post.title}</h2>
                 </Link>
               </p>
             </li>
@@ -42,14 +42,18 @@ const RecommendedPostContainer = styled.div`
   flex-direction: column;
   justify-content: flex-start;
   align-items: flex-start;
+  height: 100%;
+  margin-top: 18px;
+
   h1 {
-    margin-top: 10px;
+    margin-bottom: 20px;
     font-weight: 500;
     font-size: 18px;
     display: flex;
     align-items: center;
+    color: var(--point-blue-color);
     svg {
-      color: var(--hover-font-gray-color);
+      color: var(--point-blue-color);
       margin-right: 4px;
     }
   }
@@ -61,13 +65,16 @@ const RecommendedPostContainer = styled.div`
     text-overflow: ellipsis;
     overflow: hidden;
     white-space: nowrap;
+    line-height: 15px;
     cursor: pointer;
   }
   a {
     text-decoration: none;
-    color: black;
+    color: #5c5c5c;
     font-weight: 550;
     h2 {
+      height: 30px;
+      width: 250px;
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
