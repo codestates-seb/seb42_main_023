@@ -833,7 +833,7 @@ const ReportModal = styled.div`
     padding: 20px;
     margin: 15px 0 0 0;
     :focus {
-      outline: 3px solid #0069ca;
+      outline: 2px solid #0069ca;
     }
   }
   input {
