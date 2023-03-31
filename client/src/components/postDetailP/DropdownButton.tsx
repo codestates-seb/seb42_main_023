@@ -36,7 +36,7 @@ const DropdownButton = ({
 
   // 삭제 확인 모달창
   const confirmDeleteHandler = (): void => {
-    setIsOpenDelete?.(!isOpenDelete!);
+    setIsOpenDelete(!isOpenDelete);
   };
 
   const typeChecker = (event: React.MouseEvent<HTMLElement>) => {
@@ -58,13 +58,15 @@ const DropdownButton = ({
     }
     if (option === '수정하기') {
       navigate(`/posts/update/${postId}`);
-      window.location.reload();
     }
     if (option === '삭제하기') confirmDeleteHandler();
   };
 
   const handleToggle = () => {
-    dispatch(setIsOpenFilter(!state.post.isOpenFilter));
+    if (!state.post.isOpenFilter) {
+      // console.log('a', !state.post.isOpenFilter);
+      dispatch(setIsOpenFilter(state.post?.isOpenFilter));
+    }
   };
 
   return (

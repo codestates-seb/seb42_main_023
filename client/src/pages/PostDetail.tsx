@@ -13,7 +13,11 @@ import DropdownButton from '../components/postDetailP/DropdownButton';
 import { BlueBtn, WhiteBtn } from '../components/common/Btn';
 import { ReactComponent as CheckedIcon } from '../assets/checked.svg';
 import { ReactComponent as NoCheckedIcon } from '../assets/noChecked.svg';
-import { setReportOption, setSelectedMember } from '../slices/postSlice';
+import {
+  setIsOpenFilter,
+  setReportOption,
+  setSelectedMember,
+} from '../slices/postSlice';
 import { setReportErr } from '../slices/validationSlice';
 import { setMemberName } from '../slices/headerSlice';
 import { useAppDispatch, useAppSelector } from '../hooks';
@@ -56,7 +60,7 @@ const PostDetail: React.FC = () => {
   // 신고, 삭제, 소개
   const [isOpenReport, setIsOpenReport] = useState<boolean>(false);
   const [isOpenReportErr] = useState<boolean>(false);
-  const [isOpenFilter, setIsOpenFilter] = useState<boolean>(false);
+  // const [isOpenFilter, setIsOpenFilter] = useState<boolean>(false);
   const [isOpenDelete, setIsOpenDelete] = useState<boolean>(false);
   const [deleteType, setDeleteType] = useState<string>('');
   const [isOpenIntro, setIsOpenIntro] = useState<boolean>(false);
@@ -109,14 +113,14 @@ const PostDetail: React.FC = () => {
 
   // 게시글 조회 및 추가
   const postDetailQuery = postsApi.useGetPostQuery({ postId });
-  const { data, isSuccess } = postDetailQuery;
+  const { data, isSuccess, isLoading, refetch } = postDetailQuery;
   const [deletePost] = postsApi.useDeletePostMutation();
   // 게시글 좋아요 추가, 삭제
-  const [addThumbUp] = postsApi.useAddThumbUpMutation();
-  const [removeThumbUp] = postsApi.useRemoveThumbUpMutation();
+  const [addThumbUp] = postsApi.useAddPostThumbUpMutation();
+  const [removeThumbUp] = postsApi.useRemovePostThumbUpMutation();
   // 게시글 싫어요  추가, 삭제
-  const [addThumbDown] = postsApi.useAddThumbDownMutation();
-  const [removeThumbDown] = postsApi.useRemoveThumbDownMutation();
+  const [addThumbDown] = postsApi.useAddPostThumbDownMutation();
+  const [removeThumbDown] = postsApi.useRemovePostThumbDownMutation();
   // 북마크 추가, 삭제
   const [addBookmark] = postsApi.useAddBookmarkMutation();
   const [removeBookmark] = postsApi.useRemoveBookmarkMutation();
@@ -128,7 +132,12 @@ const PostDetail: React.FC = () => {
   // 신고 추가
   const [sendReport] = reportApi.usePostReportMutation();
   //  멤버 정보 조회
-  const memeberQuery = membersApi.useGetMemberQuery({ name: selectedMember });
+  const memberQuery = membersApi.useGetMemberQuery(
+    { name: selectedMember },
+    {
+      skip: !selectedMember,
+    },
+  );
 
   // 시간 계산
   const time = timeSince(isSuccess && data?.createdAt);
@@ -155,7 +164,11 @@ const PostDetail: React.FC = () => {
 
   // 페이지 이동 시 스크롤 최상단 이동
   useEffect(() => {
+    if ('post' in state && state.post.isOpenFilter) {
+      dispatch(setIsOpenFilter(true));
+    }
     scrollTo(0, 0);
+    refetch();
   }, [postId]);
 
   // 좋아요 클릭 함수
@@ -193,7 +206,6 @@ const PostDetail: React.FC = () => {
     // 좋아요만 있는 경우
     if (isLike && !isDislike) {
       // 좋아요 제거, 싫어요 추가
-
       removeThumbUp({ postId });
       setIsLike(false);
       setLike((prev) => prev! - 1);
@@ -251,7 +263,6 @@ const PostDetail: React.FC = () => {
       confirmDeleteHandler();
 
       navigate('/');
-      location.reload();
     }
     // 댓글 삭제 로직
     if (deleteType === '댓글') {
@@ -267,8 +278,10 @@ const PostDetail: React.FC = () => {
 
   // 드롭다운 클로즈
   const handleClickOutside = (event: MouseEvent) => {
-    if (isOpenFilter) {
-      setIsOpenFilter(!isOpenFilter);
+    if ('post' in state && state.post?.isOpenFilter) {
+      dispatch(setIsOpenFilter('post' in state && state.post?.isOpenFilter));
+    } else {
+      return;
     }
   };
 
@@ -505,7 +518,7 @@ const PostDetail: React.FC = () => {
                     </ul>
                   </IntroInfo>
                   <label className="introduction">
-                    {memeberQuery.data?.intro || '소개 내용이 없습니다.'}
+                    {memberQuery?.data?.intro || '소개 내용이 없습니다.'}
                   </label>
                   <button
                     className="intro-moreInfo"
@@ -859,13 +872,13 @@ const IntorductionContainer = styled.div`
   border: 1px solid #d4d4d4;
   z-index: 2;
   top: 45px;
-  left: 48px;
+  left: 20px;
   background-color: white;
   .introduction {
     font-size: 17x;
     color: gray;
     width: 175px;
-    margin: 10px 0 0 35px;
+    margin: 15px 0 0 35px;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
@@ -874,7 +887,7 @@ const IntorductionContainer = styled.div`
     font-size: 17px;
     color: gray;
     width: 100px;
-    margin: 5px 0 0 135px;
+    margin: 15px 0 0 135px;
     cursor: pointer;
   }
 `;
@@ -892,7 +905,7 @@ const IntroInfo = styled.div`
     width: 150px;
     height: 30px;
     font-size: 16px;
-    margin: 8px 0 0 10px;
+    margin: 18px 0 0 10px;
   }
 `;
 

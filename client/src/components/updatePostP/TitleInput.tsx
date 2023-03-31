@@ -1,9 +1,8 @@
 import React, { useRef } from 'react';
 import styled from 'styled-components';
 import { useAppDispatch, useAppSelector } from '../../hooks';
-import { setTitle } from '../../slices/postInputSlice';
+import { setIsEdit, setTitle } from '../../slices/postInputSlice';
 import { setTitleErr } from '../../slices/validationSlice';
-import { postsApi } from '../../api/postApi';
 import { useParams } from 'react-router-dom';
 
 const TitleInput: React.FC = () => {
@@ -12,8 +11,6 @@ const TitleInput: React.FC = () => {
   const title = useRef<HTMLInputElement>(null);
   const params = useParams();
   const postId = Number(params.postId);
-
-  const postQuery = postsApi.useGetPostQuery({ postId });
 
   // 제목 value 확인
   const valueCheck = (event: React.ChangeEvent<HTMLInputElement>): void => {
@@ -44,7 +41,10 @@ const TitleInput: React.FC = () => {
             ref={title}
             className="title-input"
             placeholder="제목을 입력하세요."
-            onChange={valueCheck}
+            onChange={(event) => {
+              valueCheck(event);
+              dispatch(setIsEdit(true));
+            }}
             value={state.postInput?.title}
           ></Input>
         </TitleInputContainer>
@@ -55,7 +55,10 @@ const TitleInput: React.FC = () => {
             ref={title}
             className="title-input"
             placeholder="제목을 입력하세요."
-            onChange={valueCheck}
+            onChange={(event) => {
+              valueCheck(event);
+              dispatch(setIsEdit(true));
+            }}
             value={state.postInput?.title}
           ></Input>
           <Error>{state.validation?.titleErr}</Error>

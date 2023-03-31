@@ -72,22 +72,31 @@ const Comment: React.FC<
 
   // 답글 조회
   const [replyPage, setReplyPage] = useState<number>(1);
-  const replyQuery = repliesApi.useGetReplyQuery({ commentId, replyPage });
+  const replyQuery = repliesApi.useGetReplyQuery(
+    { commentId, replyPage },
+    {
+      skip: !commentId,
+    },
+  );
   const { isSuccess, data } = replyQuery;
   const commentEditInput = useRef<HTMLInputElement>(null);
 
   //  멤버 정보 조회
-  const memeberQuery = membersApi.useGetMemberQuery({ name: selectedMember });
+  const memberQuery = membersApi.useGetMemberQuery(
+    { name: selectedMember },
+    { skip: !selectedMember },
+  );
 
   // 댓글 좋아요 추가, 삭제
-  const addThumbUpMutation = commentsApi.useAddThumbUpMutation();
+  const addThumbUpMutation = commentsApi.useAddCommentThumbUpMutation();
   const [addThumbUp] = addThumbUpMutation;
-  const removeThumbUpMutation = commentsApi.useRemoveThumbUpMutation();
+  const removeThumbUpMutation = commentsApi.useRemoveCommentThumbUpMutation();
   const [removeThumbUp] = removeThumbUpMutation;
   // 댓글 싫어요  추가, 삭제
-  const addThumbDownMutation = commentsApi.useAddThumbDownMutation();
+  const addThumbDownMutation = commentsApi.useAddCommentThumbDownMutation();
   const [addThumbDown] = addThumbDownMutation;
-  const removeThumbDownMutation = commentsApi.useRemoveThumbDownMutation();
+  const removeThumbDownMutation =
+    commentsApi.useRemoveCommentThumbDownMutation();
   const [removeThumbDown] = removeThumbDownMutation;
 
   // 유저 정보 조회
@@ -215,7 +224,7 @@ const Comment: React.FC<
   useEffect(() => {
     // 답글 데이터가 변경될 때마다 총 답글 데이터 반영
     dispatch(setTotalReplies(replyQuery.data?.replies || []));
-  }, [data]);
+  }, [replyQuery.data]);
 
   const minusCommentPage = () => {
     if (page >= 2) {
@@ -297,7 +306,7 @@ const Comment: React.FC<
                           </ul>
                         </IntroInfo>
                         <label className="introduction">
-                          {memeberQuery.data?.intro || '소개 내용이 없습니다.'}
+                          {memberQuery.data?.intro || '소개 내용이 없습니다.'}
                         </label>
                         <div
                           className="intro-moreInfo"
@@ -405,7 +414,7 @@ const Comment: React.FC<
                         margin:
                           loginUserName === comment?.memberName
                             ? '3px 148px 0 5px'
-                            : '3px 228px 0 5px',
+                            : '3px 258px 0 5px',
                       }}
                       onClick={(event): void => {
                         setIsOpenReport?.(!isOpenReport!);
@@ -722,7 +731,7 @@ const IntorductionContainer = styled.div`
   border: 1px solid #d4d4d4;
   z-index: 2;
   top: 50px;
-  left: 45px;
+  left: 18px;
   background-color: white;
   .introduction {
     font-size: 17x;

@@ -4,7 +4,7 @@ import 'react-quill/dist/quill.snow.css';
 import axios from 'axios';
 import styled from 'styled-components';
 import { useAppDispatch, useAppSelector } from '../../hooks';
-import { setBody } from '../../slices/postInputSlice';
+import { setBody, setIsEdit } from '../../slices/postInputSlice';
 import { setBodyErr } from '../../slices/validationSlice';
 import { postsApi } from '../../api/postApi';
 import { useParams } from 'react-router-dom';
@@ -72,7 +72,7 @@ const BodyInput: React.FC = () => {
     const bodyValue = state.postInput.body;
     const html = stringToHTML(bodyValue);
     const realValue = html.textContent;
-    console.log(realValue?.length);
+    // console.log(realValue?.length);
     if (realValue) {
       if (realValue?.length < 9) {
         dispatch(setBodyErr('본문은 10자 이상 작성해주세요.'));
@@ -92,14 +92,6 @@ const BodyInput: React.FC = () => {
       dispatch(setRemaindImg(_.uniqBy(totalImg!, 'imageId')));
     }
     if ((removedImg! as Array<object>)?.length !== 0) {
-      console.log(
-        'testasdasdasdas',
-        _.differenceBy(remainImg, removedImg!, 'imageId'),
-      );
-
-      // dispatch(
-      //   setRemaindImg(_.differenceBy(remainImg, removedImg!, 'imageId')),
-      // );
     }
     if (bodyValue) imageCheck();
   }, [bodyValue]);
@@ -114,8 +106,8 @@ const BodyInput: React.FC = () => {
       const file = input.files![0];
       const formData = new FormData();
       formData.append('image', file);
-      console.log('formData', formData);
-      console.log('url', url);
+      // console.log('formData', formData);
+      // console.log('url', url);
       try {
         const result = await axios.post(url, formData, {
           headers: {
@@ -126,16 +118,16 @@ const BodyInput: React.FC = () => {
         });
 
         const { data } = result;
-        console.log('resData', data);
+        // console.log('resData', data);
         const { imageId, imageName } = data;
 
         const ImgUrl = process.env.REACT_APP_S3_ADDRESS + '/' + imageName;
-        console.log('ImgUrl', ImgUrl);
+        // console.log('ImgUrl', ImgUrl);
         const imgObj = {
           imageId,
           imageName,
         };
-        console.log('imgObj', imgObj);
+        // console.log('imgObj', imgObj);
         dispatch(setAddedImg(imgObj));
         dispatch(setTotalmg(imgObj));
         // img!.push(imgObj);
@@ -204,9 +196,12 @@ const BodyInput: React.FC = () => {
                 }
               }}
               theme="snow"
-              placeholder="게시글 내용을 입력하세요."
+              placeholder="게시글 내용을 입력하세요.(2MB 이하의 이미지만  입력 가능합니다.)"
               value={state?.postInput.body}
-              onChange={valueCheck}
+              onChange={() => {
+                valueCheck();
+                dispatch(setIsEdit(true));
+              }}
               modules={modules}
               formats={formats}
             />
@@ -225,7 +220,10 @@ const BodyInput: React.FC = () => {
               theme="snow"
               placeholder="게시글 내용을 입력하세요."
               value={state?.postInput.body}
-              onChange={valueCheck}
+              onChange={() => {
+                valueCheck();
+                dispatch(setIsEdit(true));
+              }}
               modules={modules}
               formats={formats}
             />

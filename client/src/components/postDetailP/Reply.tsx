@@ -30,8 +30,6 @@ const Reply: React.FC<Partial<ReplyProps & ReportProps>> = ({
   setDeleteType,
   isOpenReport,
   isOpenDelete,
-  // isOpenIntro,
-  // isCommentOpenIntro,
   isReplyOpenIntro,
   setIsOpenReplyIntro,
 }: Partial<ReplyProps & ReportProps>) => {
@@ -60,14 +58,14 @@ const Reply: React.FC<Partial<ReplyProps & ReportProps>> = ({
   const isOpenPostIntro = 'post' in state && state?.post.isOpeneIntro;
 
   // 답글 좋아요 추가, 삭제
-  const addThumbUpMutation = repliesApi.useAddThumbUpMutation();
+  const addThumbUpMutation = repliesApi.useAddRplyThumbUpMutation();
   const [addThumbUp] = addThumbUpMutation;
-  const removeThumbUpMutation = repliesApi.useRemoveThumbUpMutation();
+  const removeThumbUpMutation = repliesApi.useRemoveRplyThumbUpMutation();
   const [removeThumbUp] = removeThumbUpMutation;
   // 답글 싫어요  추가, 삭제
-  const addThumbDownMutation = repliesApi.useAddThumbDownMutation();
+  const addThumbDownMutation = repliesApi.useAddRplyThumbDownMutation();
   const [addThumbDown] = addThumbDownMutation;
-  const removeThumbDownMutation = repliesApi.useRemoveThumbDownMutation();
+  const removeThumbDownMutation = repliesApi.useRemoveRplyThumbDownMutation();
   const [removeThumbDown] = removeThumbDownMutation;
 
   //  멤버 정보 조회
@@ -85,7 +83,7 @@ const Reply: React.FC<Partial<ReplyProps & ReportProps>> = ({
       return;
     }
     // 싫어요만 있는 경우
-    if (reply?.isThumbup && reply?.isThumbdown) {
+    if (!reply?.isThumbup && reply?.isThumbdown) {
       console.log('싫어요 삭제 후 좋아요 추가');
       removeThumbDown({ replyId });
       setTimeout(() => {
@@ -317,6 +315,10 @@ const Reply: React.FC<Partial<ReplyProps & ReportProps>> = ({
             style={{
               display:
                 loginUserName === replyInfo?.memberName ? 'none' : 'block',
+              margin:
+                loginUserName === replyInfo?.memberName
+                  ? '3px 148px 0 5px'
+                  : '3px 228px 0 5px',
             }}
             onClick={(event): void => {
               setIsOpenReport?.(!isOpenReport);
@@ -487,7 +489,7 @@ const IntorductionContainer = styled.div`
   border: 1px solid #d4d4d4;
   z-index: 5;
   top: 45px;
-  left: 45px;
+  left: 18px;
   background-color: white;
 
   .introduction {

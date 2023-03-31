@@ -68,6 +68,7 @@ export interface PostInputStateType {
     tag: Array<object>;
     tagContent: string;
     title: string;
+    isEdit: boolean;
   };
 }
 
@@ -89,6 +90,7 @@ export interface PostType {
 }
 
 export interface CommentType {
+  postId: number;
   commentId: number;
   memberName: string;
   memberImage: string;

@@ -2,7 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 import { MdCancel } from 'react-icons/md';
 import { useAppDispatch } from '../../hooks';
-import { deleteTag } from '../../slices/postInputSlice';
+import { deleteTag, setIsEdit } from '../../slices/postInputSlice';
 
 interface Props {
   content: string;
@@ -14,6 +14,7 @@ const Tag = ({ content }: Props) => {
   const dispatch = useAppDispatch();
   const deleteTagHandler = () => {
     dispatch(deleteTag(content));
+    dispatch(setIsEdit(true));
   };
   return (
     <>

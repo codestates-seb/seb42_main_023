@@ -9,9 +9,11 @@ import { postListApi } from '../api/postListapi';
 import { setPostSetting } from '../slices/mainSlice';
 import Pagenation from '../components/common/Pagination';
 import { RiMoneyDollarCircleLine } from 'react-icons/ri';
+import { useParams } from 'react-router-dom';
 
 const Main = () => {
   const dispatch = useAppDispatch();
+  const params = useParams();
   //페이지네이션
   const [pageOffset, setPageOffset] = useState(0);
   const [currentPage, setCurrentPage] = useState(1);
@@ -29,7 +31,7 @@ const Main = () => {
   useEffect(() => {
     window.scrollTo(0, 0);
     console.log(currentPage);
-  }, []);
+  }, [params]);
 
   return (
     <>

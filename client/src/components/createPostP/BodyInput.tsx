@@ -170,7 +170,7 @@ const BodyInput: React.FC = () => {
                 }
               }}
               theme="snow"
-              placeholder="게시글 내용을 입력하세요."
+              placeholder="게시글 내용을 입력하세요.(2MB 이하의 이미지만  입력 가능합니다.)"
               value={state.postInput.body}
               onChange={valueCheck}
               modules={modules}
