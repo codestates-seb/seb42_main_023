@@ -21,14 +21,12 @@ const TitleInput: React.FC = () => {
   // 유효성 검사
   const validationTest = (): void => {
     const titleValue = title!.current?.value;
-    if (titleValue!.length === 0) {
-      dispatch(setTitleErr('제목을 작성해주세요.'));
+    if (!titleValue?.length) {
+      dispatch(setTitleErr(''));
     }
     if (titleValue) {
       if (titleValue.length < 5 || titleValue.length > 20) {
         dispatch(setTitleErr('제목은 5자 이상 20자 이하로 작성해주세요.'));
-      } else {
-        dispatch(setTitleErr(''));
       }
     }
   };
