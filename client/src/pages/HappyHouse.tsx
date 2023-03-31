@@ -229,6 +229,7 @@ const Title = styled.div`
 const Filter = styled.div`
   display: flex;
   justify-content: space-between;
+  align-items: center;
   border-bottom: 1px solid var(--border-color);
   margin-top: 10px;
   > .state-filter {
@@ -249,11 +250,10 @@ const Filter = styled.div`
   > .location-filter {
     > select {
       border: 1px solid #d4d4d4;
-      border-bottom: none;
       width: 130px;
-      height: 30px;
+      height: 28px;
+      margin-bottom: 5px;
       border-radius: 3px;
-      margin-top: 5px;
       padding-left: 10px;
       &:focus {
         outline: none;
