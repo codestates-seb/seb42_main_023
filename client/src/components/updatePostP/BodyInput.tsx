@@ -4,7 +4,7 @@ import 'react-quill/dist/quill.snow.css';
 import axios from 'axios';
 import styled from 'styled-components';
 import { useAppDispatch, useAppSelector } from '../../hooks';
-import { setBody } from '../../slices/postInputSlice';
+import { setBody, setIsEdit } from '../../slices/postInputSlice';
 import { setBodyErr } from '../../slices/validationSlice';
 import { postsApi } from '../../api/postApi';
 import { useParams } from 'react-router-dom';
@@ -198,7 +198,10 @@ const BodyInput: React.FC = () => {
               theme="snow"
               placeholder="게시글 내용을 입력하세요.(2MB 이하의 이미지만  입력 가능합니다.)"
               value={state?.postInput.body}
-              onChange={valueCheck}
+              onChange={() => {
+                valueCheck();
+                dispatch(setIsEdit(true));
+              }}
               modules={modules}
               formats={formats}
             />
@@ -217,7 +220,10 @@ const BodyInput: React.FC = () => {
               theme="snow"
               placeholder="게시글 내용을 입력하세요."
               value={state?.postInput.body}
-              onChange={valueCheck}
+              onChange={() => {
+                valueCheck();
+                dispatch(setIsEdit(true));
+              }}
               modules={modules}
               formats={formats}
             />

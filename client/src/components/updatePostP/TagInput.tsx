@@ -1,7 +1,7 @@
 import React, { KeyboardEvent } from 'react';
 import styled from 'styled-components';
 import { useAppDispatch, useAppSelector } from '../../hooks';
-import { setTag, setTagContent } from '../../slices/postInputSlice';
+import { setIsEdit, setTag, setTagContent } from '../../slices/postInputSlice';
 import { setTagErr } from '../../slices/validationSlice';
 import Tag from '../common/Tag';
 import { postsApi } from '../../api/postApi';
@@ -74,7 +74,10 @@ const TagInput: React.FC = () => {
           <Input
             className="tag-input"
             placeholder="태그를 입력하고 엔터를 치세요.(최대 5개)"
-            onChange={valueCheck}
+            onChange={(event) => {
+              valueCheck(event);
+              dispatch(setIsEdit(true));
+            }}
             onKeyDown={addTagHandler}
             value={state.postInput.tagContent}
           ></Input>
@@ -89,7 +92,10 @@ const TagInput: React.FC = () => {
           <Input
             className="tag-input"
             placeholder="태그를 입력하고 엔터를 치세요.(최대 5개)"
-            onChange={valueCheck}
+            onChange={(event) => {
+              valueCheck(event);
+              dispatch(setIsEdit(true));
+            }}
             onKeyDown={addTagHandler}
             value={state.postInput.tagContent}
           ></Input>

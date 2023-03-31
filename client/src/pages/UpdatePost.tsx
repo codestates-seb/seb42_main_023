@@ -8,7 +8,13 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { useAppDispatch, useAppSelector } from '../hooks';
 import { postsApi } from '../api/postApi';
 import _ from 'lodash';
-import { deleteTag, setBody, setTag, setTitle } from '../slices/postInputSlice';
+import {
+  deleteTag,
+  setBody,
+  setIsEdit,
+  setTag,
+  setTitle,
+} from '../slices/postInputSlice';
 import Cookies from 'js-cookie';
 import axios from 'axios';
 import Loading from '../components/common/Loading';
@@ -43,6 +49,7 @@ const UpdatePost: React.FC = () => {
     tags?.forEach((tag: string) => {
       dispatch(deleteTag(tag));
     });
+    dispatch(setIsEdit(false));
   }, [postId]);
 
   useEffect(() => {
@@ -51,6 +58,7 @@ const UpdatePost: React.FC = () => {
     tags?.forEach((tag: string) => {
       dispatch(setTag(tag));
     });
+    dispatch(setIsEdit(false));
   }, [data]);
 
   const remain = _.differenceBy(remainImg!, removedImg!, 'imageId');
@@ -70,10 +78,11 @@ const UpdatePost: React.FC = () => {
     removedImages: removedImg,
   };
 
-  // console.log('remain', remain);
-  // console.log('reqBody', reqBody);
-  // console.log('deletedImg', deletedImg);
   const addPostHandler = (): void => {
+    if (!state.postInput.isEdit) {
+      alert('게시물에 변경사항이 없습니다.');
+      return;
+    }
     if (
       state.postInput.title !== '' &&
       state.postInput.body !== '' &&
@@ -84,11 +93,10 @@ const UpdatePost: React.FC = () => {
     ) {
       updatePost(reqBody)
         .unwrap()
-        .then((res) => console.log(res));
-      // navigate('posts/65');
-      setTimeout(() => {
-        location.reload();
-      }, 1500);
+        .then(() => navigate(`/posts/${data.postId}`));
+      // setTimeout(() => {
+      //   location.reload();
+      // }, 1500);
     } else {
       if (state.validation.titleErr !== '' || state.postInput.title === '') {
         alert('제목을 다시 확인해 주세요.');
@@ -109,27 +117,28 @@ const UpdatePost: React.FC = () => {
     scrollTo(0, 0);
   }, []);
 
-  const preventClose = (e: BeforeUnloadEvent) => {
-    e.preventDefault();
-    axios.delete(deleteImgEP, {
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: accsessToken,
-      },
-      withCredentials: true,
-      data: deletedImg,
-    });
-  };
+  //TODO 뒤로가기 등 버튼 눌릴 경우 이미지 삭제 로직 필요
+  // const preventClose = (e: BeforeUnloadEvent) => {
+  //   e.preventDefault();
+  //   axios.delete(deleteImgEP, {
+  //     headers: {
+  //       'Content-Type': 'application/json',
+  //       Authorization: accsessToken,
+  //     },
+  //     withCredentials: true,
+  //     data: deletedImg,
+  //   });
+  // };
 
-  useEffect(() => {
-    (() => {
-      window.addEventListener('beforeunload', preventClose);
-    })();
+  // useEffect(() => {
+  //   (() => {
+  //     window.addEventListener('beforeunload', preventClose);
+  //   })();
 
-    return () => {
-      window.removeEventListener('beforeunload', preventClose);
-    };
-  }, []);
+  //   return () => {
+  //     window.removeEventListener('beforeunload', preventClose);
+  //   };
+  // }, []);
 
   const deleteImg = () => {
     axios.delete(deleteImgEP, {
@@ -144,7 +153,7 @@ const UpdatePost: React.FC = () => {
 
   const cancelAddHandler = (): void => {
     navigate('/');
-    location.reload();
+    // location.reload();
   };
 
   return (
