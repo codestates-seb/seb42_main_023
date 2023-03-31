@@ -20,13 +20,11 @@ function HeaderDefault() {
   const auth = Cookies.get('Authorization');
   const adim = localStorage.getItem('role');
 
-  //TODO: 로그인시 유저데이터 저장
   useEffect(() => {
     if (auth !== undefined) {
       const memberImg = localStorage.getItem('picture');
       const memberName = localStorage.getItem('name');
       if (memberImg && memberName) {
-        console.log(memberName);
         dispatch(setMemberImg(memberImg));
         dispatch(setMemberName(memberName));
       }

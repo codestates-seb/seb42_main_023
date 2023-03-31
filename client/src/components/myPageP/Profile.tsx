@@ -23,9 +23,6 @@ function Profile() {
   //회원정보에 들어올 때마다 데이터 업데이트
   useEffect(() => {
     refetch();
-    if (isSuccess) {
-      console.log(loginuser);
-    }
   }, []);
 
   //자기소개 input토글

@@ -37,7 +37,6 @@ function Sidebar() {
 
   useEffect(() => {
     return () => {
-      console.log('필터리셋');
       dispatch(setFilter('작성한 글'));
     };
   }, []);
