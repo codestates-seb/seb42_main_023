@@ -89,6 +89,7 @@ export interface PostType {
 }
 
 export interface CommentType {
+  postId: number;
   commentId: number;
   memberName: string;
   memberImage: string;
