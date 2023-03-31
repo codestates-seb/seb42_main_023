@@ -154,17 +154,21 @@ const HappyHouse: React.FC = () => {
               data.houseList.map((house: House) => {
                 return (
                   <tr key={house.houseId}>
-                    <td>{house.noticeState}</td>
-                    <td>{house.location}</td>
-                    <td>{house.noticeDetailKind}</td>
-                    <td>{house.title}</td>
-                    <td>
+                    <td className="state">{house.noticeState}</td>
+                    <td className="location">{house.location}</td>
+                    <td className="category">{house.noticeDetailKind}</td>
+                    <td className="title">{house.title}</td>
+                    <td className="see-detail">
                       <SeeDetailBtn onClick={() => window.open(house.url)}>
                         보기
                       </SeeDetailBtn>
                     </td>
-                    <td>{house.noticeStartDay.slice(0, -9)}</td>
-                    <td>{house.noticeEndDay.slice(0, -9)}</td>
+                    <td className="start-date">
+                      {house.noticeStartDay.slice(0, -9)}
+                    </td>
+                    <td className="end-date">
+                      {house.noticeEndDay.slice(0, -9)}
+                    </td>
                   </tr>
                 );
               })}
@@ -282,6 +286,10 @@ const Table = styled.table`
     }
     > td {
       font-size: 14px;
+
+      &.title {
+        width: 550px;
+      }
     }
   }
 `;
