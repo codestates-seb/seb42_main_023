@@ -67,10 +67,10 @@ function MyPostList() {
                       </div>
                       <Info>
                         <span>{post.memberName}</span>
-                        {/* <span>
+                        <span>
                           <CommentIcon checked={false} />
                           {post.commentCount}
-                        </span> */}
+                        </span>
                         <span>
                           <TimeIcon />
                           {timeSince(post.createdAt)}

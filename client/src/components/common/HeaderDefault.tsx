@@ -2,7 +2,6 @@ import React, { useEffect } from 'react';
 import styled from 'styled-components';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useAppSelector, useAppDispatch } from '../../hooks';
-import { LogoSVG } from '../../assets/common/LogoSVG';
 import LoginBtn from './LoginBtn';
 import SearchBar from './SearchBar';
 import SearchBtn from './SearchToggle';
@@ -40,9 +39,6 @@ function HeaderDefault() {
   ) : (
     <NavHead>
       <div>
-        <Main onClick={() => navigate('/')}>
-          <LogoSVG />
-        </Main>
         <HeaderNav />
         <Btns>
           {(pathname === '/' || pathname === '/search') && <SearchBtn />}
@@ -68,10 +64,6 @@ function HeaderDefault() {
 }
 export default HeaderDefault;
 
-const Main = styled.button`
-  background-color: #fff;
-  cursor: pointer;
-`;
 const NavHead = styled.header`
   border-bottom: 1px solid var(--border-color);
   background-color: #fff;
@@ -88,9 +80,12 @@ const NavHead = styled.header`
     }
   }
   nav {
-    width: 400px;
+    width: 780px;
     display: flex;
     justify-content: space-between;
+    button {
+      margin-right: 30px;
+    }
   }
 `;
 const SearchHead = styled.header`

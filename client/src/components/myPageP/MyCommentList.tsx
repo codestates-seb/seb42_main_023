@@ -115,6 +115,7 @@ const CommentInfo = styled.div`
     margin-right: 10px;
     svg {
       transform: translateY(2px);
+      margin-right: 2px;
     }
   }
 `;

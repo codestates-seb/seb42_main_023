@@ -1,6 +1,7 @@
 import React from 'react';
+import styled from 'styled-components';
 import { useNavigate, useLocation } from 'react-router-dom';
-import { useAppSelector } from '../../hooks';
+import { LogoSVG } from '../../assets/common/LogoSVG';
 import { NavBtn, NavBtnClicked } from '../common/Btn';
 
 function HeaderNav() {
@@ -8,6 +9,9 @@ function HeaderNav() {
   const { pathname } = useLocation();
   return (
     <nav>
+      <Main onClick={() => navigate('/')}>
+        <LogoSVG />
+      </Main>
       {'/' === pathname ? (
         <NavBtnClicked>커뮤니티</NavBtnClicked>
       ) : (
@@ -48,3 +52,7 @@ function HeaderNav() {
   );
 }
 export default HeaderNav;
+const Main = styled.button`
+  background-color: #fff;
+  cursor: pointer;
+`;

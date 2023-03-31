@@ -1,6 +1,5 @@
 import React from 'react';
 import styled from 'styled-components';
-import { useNavigate } from 'react-router-dom';
 import { AiFillGithub, AiFillYoutube } from 'react-icons/ai';
 import { RxNotionLogo } from 'react-icons/rx';
 
@@ -15,7 +14,11 @@ function Footer() {
         >
           <AiFillGithub size={24} />
         </a>
-        <a href="#">
+        <a
+          href="https://www.youtube.com/watch?v=WSenS382Kbs"
+          target="_blank"
+          rel="noreferrer"
+        >
           <AiFillYoutube size={24} />
         </a>
         <a
