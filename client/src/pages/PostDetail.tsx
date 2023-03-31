@@ -164,6 +164,9 @@ const PostDetail: React.FC = () => {
 
   // 페이지 이동 시 스크롤 최상단 이동
   useEffect(() => {
+    if ('post' in state && state.post.isOpenFilter) {
+      dispatch(setIsOpenFilter(true));
+    }
     scrollTo(0, 0);
     refetch();
   }, [postId]);
