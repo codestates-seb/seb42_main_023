@@ -58,7 +58,6 @@ const DropdownButton = ({
     }
     if (option === '수정하기') {
       navigate(`/posts/update/${postId}`);
-      window.location.reload();
     }
     if (option === '삭제하기') confirmDeleteHandler();
   };

@@ -24,7 +24,7 @@ const TagInput: React.FC = () => {
   const params = useParams();
   const postId = params.postId;
   const postQuery = postsApi.useGetPostQuery({ postId });
-
+  // const { isFetching } = postQuery;
   //  테그 추가
   const addTagHandler = (event: KeyboardEvent<HTMLInputElement>): void => {
     const tag: Array<string> = state.postInput.tag;
@@ -94,6 +94,7 @@ const TagInput: React.FC = () => {
             value={state.postInput.tagContent}
           ></Input>
           <Error>{state.validation.tagErr}</Error>
+
           <TagConatiner>
             {state.postInput.tag?.map((tag: string, idx: number) => {
               return <Tag key={idx} content={tag}></Tag>;

@@ -8,7 +8,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { useAppDispatch, useAppSelector } from '../hooks';
 import { postsApi } from '../api/postApi';
 import _ from 'lodash';
-import { setBody, setTag, setTitle } from '../slices/postInputSlice';
+import { deleteTag, setBody, setTag, setTitle } from '../slices/postInputSlice';
 import Cookies from 'js-cookie';
 import axios from 'axios';
 import Loading from '../components/common/Loading';
@@ -22,7 +22,7 @@ const UpdatePost: React.FC = () => {
   const postId = Number(params.postId);
   const [updatePost] = postsApi.useUpdatePostMutation();
   const postQuery = postsApi.useGetPostQuery({ postId });
-  const { data, isSuccess, isLoading } = postQuery;
+  const { data, isSuccess } = postQuery;
   const title = data?.title;
   const body = data?.content;
   const tags = data?.tags;
@@ -36,15 +36,23 @@ const UpdatePost: React.FC = () => {
     return { tagName };
   });
   const accsessToken = Cookies.get('Authorization');
+
   useEffect(() => {
-    if (isSuccess) {
-      dispatch(setTitle(title));
-      dispatch(setBody(body));
-      tags.forEach((tag: string) => {
-        dispatch(setTag(tag));
-      });
-    }
-  }, [data, body]);
+    dispatch(setTitle(''));
+    dispatch(setBody(''));
+    tags?.forEach((tag: string) => {
+      dispatch(deleteTag(tag));
+    });
+  }, [postId]);
+
+  useEffect(() => {
+    dispatch(setTitle(title));
+    dispatch(setBody(body));
+    tags?.forEach((tag: string) => {
+      dispatch(setTag(tag));
+    });
+  }, [data]);
+
   const remain = _.differenceBy(remainImg!, removedImg!, 'imageId');
   const reqBody = {
     postId: postId,
@@ -74,8 +82,10 @@ const UpdatePost: React.FC = () => {
       state.validation.bodyErr === '' &&
       state.validation.tagErr === ''
     ) {
-      updatePost(reqBody);
-      navigate('/');
+      updatePost(reqBody)
+        .unwrap()
+        .then((res) => console.log(res));
+      // navigate('posts/65');
       setTimeout(() => {
         location.reload();
       }, 1500);
@@ -139,7 +149,7 @@ const UpdatePost: React.FC = () => {
 
   return (
     <Container>
-      {isLoading ? (
+      {!isSuccess ? (
         <Loading></Loading>
       ) : (
         <>
