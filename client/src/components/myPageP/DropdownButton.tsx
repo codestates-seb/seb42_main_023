@@ -30,7 +30,6 @@ const DropdownButton = () => {
   };
 
   const handleToggle = () => {
-    console.log(dropOpen);
     dispatch(setFilterOpen(!dropOpen));
   };
 
