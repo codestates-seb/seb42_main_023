@@ -520,7 +520,7 @@ const PostDetail: React.FC = () => {
                     </ul>
                   </IntroInfo>
                   <label className="introduction">
-                    {memberQuery?.data?.intro || '소개 내용이 없습니다.'}
+                    {memberQuery?.data?.member.intro || '소개 내용이 없습니다.'}
                   </label>
                   <button
                     className="intro-moreInfo"
