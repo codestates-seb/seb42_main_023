@@ -56,11 +56,13 @@ const postSlice = createSlice({
     },
     // 필터 오픈
     setIsOpenFilter: (state, action: PayloadAction<boolean>): void => {
-      state.isOpenFilter = !state.isOpenFilter;
+      // state.isOpenFilter = !state.isOpenFilter;
+      state.isOpenFilter = !action.payload;
     },
     // 신고창 오픈
     setIsOpenReport: (state, action: PayloadAction<boolean>): void => {
-      state.isOpenReport = !state.isOpenReport;
+      // state.isOpenReport = !state.isOpenReport;
+      state.isOpenReport = !action.payload;
     },
     // 신고 옵션
     setReportOption: (state, action: PayloadAction<string>): void => {
