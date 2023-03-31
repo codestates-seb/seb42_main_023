@@ -218,21 +218,19 @@ const Head = styled.div`
 // 행복주택 페이지 상단에 설명을 담는 컨테이너
 const Title = styled.div`
   margin-bottom: 60px;
-  background-color: var(--hover-font-gray-color);
+  background-color: var(--background-dark-color);
   padding: 20px;
   box-sizing: border-box;
   border-radius: 10px;
   > div {
     > h2 {
-      color: #fff;
       font-size: 16px;
       font-weight: 500;
       margin-bottom: 8px;
     }
     > p {
-      color: #fff;
       font-size: 14px;
-      font-weight: 300;
+      font-weight: 400;
     }
   }
 `;

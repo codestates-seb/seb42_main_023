@@ -50,7 +50,6 @@ const mainSlice = createSlice({
     // 현재페이지
     setCurrentPage: (state, action: Page): void => {
       state.currentPage = action.payload;
-      console.log('페이지' + state.currentPage);
     },
   },
 });
