@@ -122,7 +122,7 @@ const HappyHouse: React.FC = () => {
               <option value="daegu">대구광역시</option>
               <option value="incheon">인천광역시</option>
               <option value="gwangju">광주광역시</option>
-              <option value="daejeon">대구광역시</option>
+              <option value="daejeon">대전광역시</option>
               <option value="ulsan">울산광역시</option>
               <option value="sejong">세종특별자치시</option>
               <option value="jeju">제주특별자치도</option>
@@ -154,17 +154,21 @@ const HappyHouse: React.FC = () => {
               data.houseList.map((house: House) => {
                 return (
                   <tr key={house.houseId}>
-                    <td>{house.noticeState}</td>
-                    <td>{house.location}</td>
-                    <td>{house.noticeDetailKind}</td>
-                    <td>{house.title}</td>
-                    <td>
+                    <td className="state">{house.noticeState}</td>
+                    <td className="location">{house.location}</td>
+                    <td className="category">{house.noticeDetailKind}</td>
+                    <td className="title">{house.title}</td>
+                    <td className="see-detail">
                       <SeeDetailBtn onClick={() => window.open(house.url)}>
                         보기
                       </SeeDetailBtn>
                     </td>
-                    <td>{house.noticeStartDay.slice(0, -9)}</td>
-                    <td>{house.noticeEndDay.slice(0, -9)}</td>
+                    <td className="start-date">
+                      {house.noticeStartDay.slice(0, -9)}
+                    </td>
+                    <td className="end-date">
+                      {house.noticeEndDay.slice(0, -9)}
+                    </td>
                   </tr>
                 );
               })}
@@ -229,11 +233,13 @@ const Title = styled.div`
 const Filter = styled.div`
   display: flex;
   justify-content: space-between;
+  align-items: center;
   border-bottom: 1px solid var(--border-color);
   margin-top: 10px;
   > .state-filter {
     button {
-      width: 80px;
+      width: max-content;
+      padding: 0px 15px 0px 15px;
       height: 35px;
       border: 1px solid var(--border-color);
       background-color: #f4f4f4;
@@ -248,11 +254,10 @@ const Filter = styled.div`
   > .location-filter {
     > select {
       border: 1px solid #d4d4d4;
-      border-bottom: none;
       width: 130px;
-      height: 30px;
+      height: 28px;
+      margin-bottom: 5px;
       border-radius: 3px;
-      margin-top: 5px;
       padding-left: 10px;
       &:focus {
         outline: none;
@@ -281,6 +286,10 @@ const Table = styled.table`
     }
     > td {
       font-size: 14px;
+
+      &.title {
+        width: 550px;
+      }
     }
   }
 `;
