@@ -514,7 +514,38 @@ const PostDetail: React.FC = () => {
                 </li>
                 {isSuccess && isOpenIntro ? (
                   <IntorductionContainer>
-                    <IntroInfo>
+                    <div className="card-image">
+                      <img src={data?.memberImage}></img>
+                    </div>
+                    <div>{data?.memberName}</div>
+                    <div className="introduction">
+                      {memberQuery?.data?.member.intro ||
+                        '소개 내용이 없습니다.'}
+                    </div>
+                    <div className="intro-moreInfo">
+                      <span>
+                        게시글
+                        <span className="color">
+                          {memberQuery?.data?.membersCount.postCount}
+                        </span>
+                      </span>
+                      <span>
+                        댓글
+                        <span className="color">
+                          {memberQuery?.data?.membersCount.commentCount}
+                        </span>
+                      </span>
+                      <button
+                        className="intro-moreInfo"
+                        onClick={() => {
+                          dispatch(setMemberName(data?.memberName));
+                          navigate('/mypage');
+                        }}
+                      >
+                        더보기
+                      </button>
+                    </div>
+                    {/* <IntroInfo>
                       <ul className="intro-content-info">
                         <li className="image">
                           <img src={data?.memberImage}></img>
@@ -534,7 +565,7 @@ const PostDetail: React.FC = () => {
                       }}
                     >
                       더보기 》
-                    </button>
+                    </button> */}
                   </IntorductionContainer>
                 ) : null}
 
@@ -712,6 +743,7 @@ const PostContainer = styled.div`
     height: 20px;
     border-radius: 100px;
     transform: translateY(7px);
+    cursor: pointer;
   }
 `;
 const Bookmark = styled.button``;
@@ -880,50 +912,51 @@ const ReportModal = styled.div`
   }
 `;
 const IntorductionContainer = styled.div`
+  position: absolute;
   display: flex;
   flex-direction: column;
-  position: absolute;
-  border-radius: 10px;
+  top: 45px;
+  left: 20px;
+  z-index: 2;
   width: 240px;
   height: 140px;
   border: 1px solid #d4d4d4;
+  padding: 16px;
+  border-radius: 10px;
   box-shadow: 4px 4px 8px rgba(0, 0, 0, 0.15);
-  z-index: 2;
-  top: 45px;
-  left: 20px;
   background-color: white;
+  .card-image {
+    text-align: end;
+    img {
+      width: 42px;
+      height: 42px;
+      border-radius: 50%;
+    }
+  }
   .introduction {
-    font-size: 14x;
-    color: gray;
+    font-size: 13px;
+    margin-top: 4px;
     width: 175px;
-    margin: 8px 0 0 28px;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
   }
   .intro-moreInfo {
-    font-size: 14px;
-    color: gray;
-    width: 100px;
-    margin: 15px 0 0 135px;
-    cursor: pointer;
+    span {
+      font-size: 13px;
+      margin-right: 6px;
+      .color {
+        color: var(--point-blue-color);
+        margin-left: 2px;
+      }
+    }
   }
-`;
-const IntroInfo = styled.div`
-  z-index: 5;
-  .intro-content-info {
-    width: 100%;
-    height: 50px;
-    display: flex;
-    align-items: center;
-    font-size: 12px;
-    padding: 17px 0 0 25px;
-  }
-  .intro-nickname {
-    width: 150px;
-    height: 30px;
-    font-size: 16px;
-    margin-top: 17px;
+  button {
+    font-size: 13px;
+    color: var(--sub-font-color);
+    :hover {
+      color: var(--point-blue-color);
+    }
   }
 `;
 
