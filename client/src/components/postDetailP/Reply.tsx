@@ -69,7 +69,7 @@ const Reply: React.FC<Partial<ReplyProps & ReportProps>> = ({
   const [removeThumbDown] = removeThumbDownMutation;
 
   //  멤버 정보 조회
-  const memeberQuery = membersApi.useGetMemberQuery({ name: selectedMember });
+  const memberQuery = membersApi.useGetMemberQuery({ name: selectedMember });
 
   // 답글 수정 여부
   const replyIsEdit =
@@ -219,7 +219,7 @@ const Reply: React.FC<Partial<ReplyProps & ReportProps>> = ({
                 </ul>
               </IntroInfo>
               <label className="introduction">
-                {memeberQuery.data?.intro || '소개 내용이 없습니다.'}
+                {memberQuery.data?.intro || '소개 내용이 없습니다.'}
               </label>
               <div
                 className="intro-moreInfo"
