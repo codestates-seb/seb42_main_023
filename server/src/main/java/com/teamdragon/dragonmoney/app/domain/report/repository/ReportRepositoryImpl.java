@@ -230,7 +230,7 @@ public class ReportRepositoryImpl implements ReportRepositoryCustom{
             List<Report> content = queryFactory
                     .selectFrom(report)
                     .distinct()
-                    .where(report.handleState.eq(handledState), reply.state.eq(Reply.State.REPOTED))
+                    .where(report.handleState.eq(handledState))
                     .offset(pageable.getOffset())
                     .limit(pageable.getPageSize())
                     .fetch();
