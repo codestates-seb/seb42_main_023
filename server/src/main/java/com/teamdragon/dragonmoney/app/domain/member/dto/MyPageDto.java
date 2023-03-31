@@ -97,6 +97,7 @@ public class MyPageDto {
         private LocalDateTime createdAt;
         private Long viewCount;
         private Long thumbupCount;
+        private Long commentCount;
 
         public MyPagePostsListElement(Posts posts) {
             this.postId = posts.getId();
@@ -109,6 +110,7 @@ public class MyPageDto {
             this.createdAt = posts.getCreatedAt();
             this.viewCount = posts.getViewCount();
             this.thumbupCount = posts.getThumbupCount();
+            this.commentCount = posts.getCommentCount();
             List<Image> images = posts.getImages();
             if (images != null && images.size() != 0) {
                 this.imgUrl = images.get(0).getUrl();
