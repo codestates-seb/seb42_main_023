@@ -8,6 +8,7 @@ import { CustomArea, AreaEvent } from 'react-img-mapper/dist/types';
 import { seoulrentApi } from '../api/seoulrentApi';
 import { AiFillHome } from 'react-icons/ai';
 import { AiOutlineEnvironment } from 'react-icons/ai';
+import Loading from '../components/common/Loading';
 
 interface StyleProps {
   left: number;
@@ -73,7 +74,7 @@ function SeoulRent() {
   };
 
   if (!isSuccess) {
-    return <div>loading...</div>;
+    return <Loading />;
   }
 
   return (
