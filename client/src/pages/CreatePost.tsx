@@ -5,15 +5,17 @@ import BodyInput from '../components/createPostP/BodyInput';
 import TagInput from '../components/createPostP/TagInput';
 import { BlueBtn, WhiteBtn } from '../components/common/Btn';
 import { useNavigate } from 'react-router-dom';
-import { useAppSelector } from '../hooks';
+import { useAppDispatch, useAppSelector } from '../hooks';
 import { postsApi } from '../api/postApi';
 import _ from 'lodash';
 import axios from 'axios';
 import Cookies from 'js-cookie';
+import { deleteTag, setBody, setTag, setTitle } from '../slices/postInputSlice';
 
 const deleteImgEP = process.env.REACT_APP_SERVER_ADDRESS + '/images/drop';
 
 const CreatePost: React.FC = () => {
+  const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const state = useAppSelector((state) => state);
   const [createPost] = postsApi.useSetPostMutation();
@@ -43,6 +45,11 @@ const CreatePost: React.FC = () => {
 
   // 페이지 이동 시 스크롤 최상단 이동
   useEffect(() => {
+    if ('postInput' in state && state.postInput?.title) dispatch(setTitle(''));
+    if ('postInput' in state && state.postInput?.body) dispatch(setBody(''));
+    if ('postInput' in state && state.postInput?.tag) {
+      tag.forEach((tag) => dispatch(deleteTag(tag)));
+    }
     scrollTo(0, 0);
   }, []);
 
