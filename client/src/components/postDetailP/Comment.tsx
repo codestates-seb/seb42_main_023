@@ -486,15 +486,17 @@ const Comment: React.FC<
                         }}
                       >
                         {comment?.content}
-                        {commentIsEdit &&
-                        comment?.content === '삭제된 댓글입니다.'
-                          ? null
-                          : commentIsEdit &&
-                            comment?.content === '신고된 댓글입니다.'
-                          ? null
-                          : commentIsEdit
-                          ? '(수정됨)'
-                          : null}
+                        <div className="edit-confirm">
+                          {commentIsEdit &&
+                          comment?.content === '삭제된 댓글입니다.'
+                            ? null
+                            : commentIsEdit &&
+                              comment?.content === '신고된 댓글입니다.'
+                            ? null
+                            : commentIsEdit
+                            ? '(수정됨)'
+                            : null}
+                        </div>
                       </div>
                     )}
                     {comment?.replyCount !== 0 ? (
@@ -724,6 +726,9 @@ const CommentContainer = styled.div`
     font-weight: 600;
     color: #0069ca;
     cursor: pointer;
+  }
+  .edit-confirm {
+    font-size: 12px;
   }
 `;
 
