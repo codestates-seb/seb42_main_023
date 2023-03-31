@@ -8,9 +8,10 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { useAppDispatch, useAppSelector } from '../hooks';
 import { postsApi } from '../api/postApi';
 import _ from 'lodash';
-import { setBody, setTitle } from '../slices/postInputSlice';
+import { setBody, setTag, setTitle } from '../slices/postInputSlice';
 import Cookies from 'js-cookie';
 import axios from 'axios';
+import Loading from '../components/common/Loading';
 
 const deleteImgEP = process.env.REACT_APP_SERVER_ADDRESS + '/images/drop';
 const UpdatePost: React.FC = () => {
@@ -21,9 +22,10 @@ const UpdatePost: React.FC = () => {
   const postId = Number(params.postId);
   const [updatePost] = postsApi.useUpdatePostMutation();
   const postQuery = postsApi.useGetPostQuery({ postId });
-  const { data } = postQuery;
+  const { data, isSuccess, isLoading } = postQuery;
   const title = data?.title;
   const body = data?.content;
+  const tags = data?.tags;
   const titleValue = state.postInput?.title;
   const bodyValue = state.postInput?.body;
   const addedImg = state.post?.addedImg;
@@ -34,12 +36,15 @@ const UpdatePost: React.FC = () => {
     return { tagName };
   });
   const accsessToken = Cookies.get('Authorization');
-
   useEffect(() => {
-    dispatch(setTitle(title));
-    dispatch(setBody(body));
-  }, [body]);
-
+    if (isSuccess) {
+      dispatch(setTitle(title));
+      dispatch(setBody(body));
+      tags.forEach((tag: string) => {
+        dispatch(setTag(tag));
+      });
+    }
+  }, [data, body]);
   const remain = _.differenceBy(remainImg!, removedImg!, 'imageId');
   const reqBody = {
     postId: postId,
@@ -57,9 +62,9 @@ const UpdatePost: React.FC = () => {
     removedImages: removedImg,
   };
 
-  console.log('remain', remain);
-  console.log('reqBody', reqBody);
-  console.log('deletedImg', deletedImg);
+  // console.log('remain', remain);
+  // console.log('reqBody', reqBody);
+  // console.log('deletedImg', deletedImg);
   const addPostHandler = (): void => {
     if (
       state.postInput.title !== '' &&
@@ -134,22 +139,26 @@ const UpdatePost: React.FC = () => {
 
   return (
     <Container>
-      <TitleInput></TitleInput>
-      <BodyInput></BodyInput>
-      <TagInput></TagInput>
-
-      <BtnContainer>
-        <CancleBtn
-          onClick={() => {
-            //.TODO
-            deleteImg();
-            cancelAddHandler();
-          }}
-        >
-          취소
-        </CancleBtn>
-        <PostBtn onClick={addPostHandler}>수정</PostBtn>
-      </BtnContainer>
+      {isLoading ? (
+        <Loading></Loading>
+      ) : (
+        <>
+          <TitleInput></TitleInput>
+          <BodyInput></BodyInput>
+          <TagInput></TagInput>
+          <BtnContainer>
+            <CancleBtn
+              onClick={() => {
+                deleteImg();
+                cancelAddHandler();
+              }}
+            >
+              취소
+            </CancleBtn>
+            <PostBtn onClick={addPostHandler}>수정</PostBtn>
+          </BtnContainer>
+        </>
+      )}
     </Container>
   );
 };

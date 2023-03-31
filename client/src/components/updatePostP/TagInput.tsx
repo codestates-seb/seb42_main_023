@@ -24,21 +24,16 @@ const TagInput: React.FC = () => {
   const params = useParams();
   const postId = params.postId;
   const postQuery = postsApi.useGetPostQuery({ postId });
-  const { data } = postQuery;
 
   //  테그 추가
   const addTagHandler = (event: KeyboardEvent<HTMLInputElement>): void => {
     const tag: Array<string> = state.postInput.tag;
     const tagContent = state.postInput.tagContent;
 
-    // data?.tags.map((tag: string) => {
-    //   dispatch(setTag(tag));
-    // });
-
     // 유효성 검사
     if (event.key === 'Enter' && event.nativeEvent.isComposing === false) {
       // 태그 중복 입력 방지
-      console.log(tagContent);
+
       if (tag.includes(tagContent)) {
         dispatch(setTagErr(''));
         return;
