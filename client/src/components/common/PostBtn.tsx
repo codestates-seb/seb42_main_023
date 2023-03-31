@@ -9,6 +9,7 @@ function PostBtn() {
       <Btn
         onClick={() => {
           navigate('/posts/create');
+          location.reload();
         }}
       >
         글쓰기
