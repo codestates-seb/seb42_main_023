@@ -46,7 +46,7 @@ jobs:
           echo "${{ secrets.APPLICATION_SERVER }}" > ./application.yml
           
           # application-local.yml 파일 생성
-          touch ./application-local.yml 
+          touch ./application-server.yml 
           
           # GitHub-Actions 에서 설정한 값으로 값 지정
           echo "${{ secrets.APPLICATION_SERVER }}" > ./application-server.yml
@@ -67,7 +67,7 @@ jobs:
           echo "${{ secrets.APPLICATION_SERVER }}" > ./application.yml
           
           # application-local.yml 파일 생성
-          touch ./application-local.yml 
+          touch ./application-server.yml 
           
           # GitHub-Actions 에서 설정한 값으로 값 지정
           echo "${{ secrets.APPLICATION_SERVER }}" > ./application-server.yml
