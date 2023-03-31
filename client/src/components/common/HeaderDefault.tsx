@@ -76,7 +76,7 @@ const NavHead = styled.header`
   border-bottom: 1px solid var(--border-color);
   background-color: #fff;
   z-index: 98;
-  padding: 6px 0;
+  padding: 10px 0;
   margin: 0 auto;
   div {
     max-width: 1100px;

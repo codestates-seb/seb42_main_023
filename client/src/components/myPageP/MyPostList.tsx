@@ -4,6 +4,7 @@ import { useAppSelector } from '../../hooks';
 import TimeIcon from '../../assets/common/TimeIcon';
 import ViewIcon from '../../assets/common/ViewIcon';
 import Thumnail from '../common/Thumbnail';
+import CommentIcon from '../../assets/common/CommentIcon';
 import { Tag } from '../mainP/PostList';
 import { Link } from 'react-router-dom';
 import { membersPostListApi } from '../../api/memberapi';
@@ -66,6 +67,10 @@ function MyPostList() {
                       </div>
                       <Info>
                         <span>{post.memberName}</span>
+                        {/* <span>
+                          <CommentIcon checked={false} />
+                          {post.commentCount}
+                        </span> */}
                         <span>
                           <TimeIcon />
                           {timeSince(post.createdAt)}

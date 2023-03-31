@@ -32,50 +32,27 @@ function DeleteModal() {
     };
   }, []);
   return (
-    <ModalWrap>
-      <ModalBox ref={modalRef}>
-        <h1>회원탈퇴</h1>
-        <div>정말 탈퇴하시겠습니까?</div>
-        <div>
-          <NoBtn onClick={() => dispatch(setDeleteAccountOpen(false))}>
-            아니요
-          </NoBtn>
-          <YesBtn onClick={DeleteAccounthandler}>네, 탈퇴하겠습니다</YesBtn>
-        </div>
-      </ModalBox>
-    </ModalWrap>
+    <ModalBox ref={modalRef}>
+      <h1>회원탈퇴</h1>
+      <div>정말 탈퇴하시겠습니까?</div>
+      <div>
+        <NoBtn onClick={() => dispatch(setDeleteAccountOpen(false))}>
+          아니요
+        </NoBtn>
+        <YesBtn onClick={DeleteAccounthandler}>네, 탈퇴하겠습니다</YesBtn>
+      </div>
+    </ModalBox>
   );
 }
 
 export default DeleteModal;
-const ModalWrap = styled.div`
-  width: 100vw;
-  height: 100%;
-  position: fixed;
-  top: 0;
-  z-index: 99;
-  display: flex;
-  align-items: center;
-  justify-content: center;
 
-  h1 {
-    padding-bottom: 4px;
-    margin-bottom: 10px;
-    border-bottom: 1px solid var(--border-color);
-    font-weight: 600;
-  }
-  div {
-    :first-child {
-      margin-bottom: 20px;
-    }
-  }
-`;
 const ModalBox = styled.div`
   background-color: #fff;
   display: flex;
   flex-direction: column;
   border: 1px solid var(--border-color);
-  padding: 20px;
+  padding: 26px;
   box-shadow: 4px 4px 8px rgba(0, 0, 0, 0.15);
 `;
 const NoBtn = styled(WhiteBtn)`
