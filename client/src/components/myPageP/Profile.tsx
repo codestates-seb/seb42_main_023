@@ -60,7 +60,6 @@ function Profile() {
               (EditOpen ? (
                 <>
                   <Finish onClick={submitHandler}>확인</Finish>
-                  <span>{content.length}/500</span>
                 </>
               ) : (
                 <button onClick={EditOpenHandler}>소개수정</button>
@@ -68,11 +67,14 @@ function Profile() {
           </h1>
         )}
         {EditOpen ? (
-          <ProfileEdit
-            content={content}
-            setContent={setContent}
-            submitHandler={submitHandler}
-          />
+          <>
+            <ProfileEdit
+              content={content}
+              setContent={setContent}
+              submitHandler={submitHandler}
+            />
+            <Leng>{content.length}/500</Leng>
+          </>
         ) : (
           <Intro ref={divRef}>{isSuccess && data.member.intro}</Intro>
         )}
@@ -116,10 +118,6 @@ const ProfileWrap = styled.div`
       }
     }
   }
-  > div:nth-child(1) {
-    display: flex;
-    margin-right: 32px;
-  }
 `;
 const Finish = styled.button`
   color: var(--point-blue-color);
@@ -135,4 +133,10 @@ const Error = styled.span`
   font-size: 12px;
   color: var(--error-red-color);
   margin-top: 4px;
+`;
+const Leng = styled.div`
+  font-size: 12px;
+  color: var(--sub-font-color);
+  text-align: end;
+  padding-top: 10px;
 `;

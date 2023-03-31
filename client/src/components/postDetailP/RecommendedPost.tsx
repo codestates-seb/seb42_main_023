@@ -20,12 +20,14 @@ const RecommendedPost: React.FC = () => {
           return (
             <div key={post?.postId}>
               <div className="recommend-list">
-                <div className="idx">{idx + 1}</div>
                 <Link to={url}>
-                  <h2 className="title">{post?.title}</h2>
+                  <h2 className="title">
+                    <span className="idx">{idx + 1}</span>
+                    {post?.title}
+                  </h2>
                 </Link>
                 <div className="icon">
-                  <CommentIcon checked={true}></CommentIcon>
+                  <CommentIcon checked={false}></CommentIcon>
                   <span className="comment-count">
                     {isSuccess && post.commentCount}
                   </span>
@@ -56,7 +58,7 @@ const RecommendedPostContainer = styled.div`
     display: flex;
     align-items: center;
     padding: 0 0 10px 0;
-    border-bottom: 2px solid #5c5c5c;
+    border-bottom: 1px solid #5c5c5c;
     color: var(--main-font-color);
     font-weight: 700;
     svg {
@@ -66,7 +68,7 @@ const RecommendedPostContainer = styled.div`
   }
   .recommend-list {
     display: flex;
-    justify-content: flex-start;
+    justify-content: space-between;
   }
   .idx {
     font-size: 17px;
@@ -77,11 +79,15 @@ const RecommendedPostContainer = styled.div`
     font-style: italic;
   }
   .icon {
-    margin: 5px 0 0 15px;
+    margin-left: 10px;
+    svg {
+      transform: translateY(2px);
+    }
   }
   .comment-count {
-    font-weight: 500;
-    margin-left: 15px;
+    font-size: 14px;
+    margin-left: 4px;
+    color: var(--sub-font-color);
   }
   a {
     text-decoration: none;
@@ -94,7 +100,6 @@ const RecommendedPostContainer = styled.div`
       overflow: hidden;
       text-overflow: ellipsis;
       margin: 5px 0 5px 0;
-      font-weight: 700;
     }
     :hover {
       color: var(--point-blue-color);

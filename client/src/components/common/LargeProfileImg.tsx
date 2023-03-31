@@ -14,16 +14,12 @@ export default LargeProfileImg;
 const Item = styled.img`
   box-sizing: border-box;
   border-radius: 50%;
-  object-fit: cover;
   width: 100px;
   height: 100px;
-  transition: all 0.3s linear;
-  :hover {
-    transform: scale(1.2);
-  }
 `;
 const Cover = styled.div`
   border-radius: 50%;
+  margin-right: 30px;
   width: 100px;
   height: 100px;
   background-color: #fff;
