@@ -24,11 +24,11 @@ const Main = () => {
     orderby: orderby,
     search: searchQuery,
   });
-  const { data, isSuccess, refetch } = postListquery;
+  const { data, isSuccess } = postListquery;
 
   useEffect(() => {
-    refetch();
     window.scrollTo(0, 0);
+    console.log(currentPage);
   }, []);
 
   return (
@@ -36,11 +36,11 @@ const Main = () => {
       <Banner>
         <h1>
           <RiMoneyDollarCircleLine color="#fff" size={28} />
-          WELCOME!
+          Dragon Money Community
         </h1>
         <p>
-          재테크, 내집마련, 주식투자, 모든 금융고민을 또래 사회초년생과 함께
-          나눠보세요.
+          용돈 받을때부터 드릴때까지! 재테크, 내집마련, 주식투자, 모든
+          금융고민을 또래 사회초년생과 함께 나눠보세요.
         </p>
       </Banner>
       <FilterWrap>

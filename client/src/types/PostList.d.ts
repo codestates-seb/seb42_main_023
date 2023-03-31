@@ -12,6 +12,7 @@ export interface PostListItem {
   modified_at: string;
   viewCount: number;
   thumbupCount: number;
+  commentCount: number;
 }
 export interface CommentType {
   commentId: number;

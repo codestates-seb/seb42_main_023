@@ -2,7 +2,6 @@ import React, { useEffect } from 'react';
 import styled from 'styled-components';
 import NextPageIcon from '../../assets/common/NextPageIcon';
 import PrevPageIcon from '../../assets/common/PrevPageIcon';
-import { useAppDispatch } from '../../hooks';
 
 interface Page {
   page: number;
@@ -17,14 +16,13 @@ interface Props {
   setCurrentPage: React.Dispatch<React.SetStateAction<number>>;
 }
 
-//TODO: 전역 state로 현재 페이지 상태값 관리
+//TODO: 첫클릭이 적용안됨
 const Pagination = ({
   pageInfo,
   pageOffset,
   setPageOffset,
   setCurrentPage,
 }: Props) => {
-  const dispatch = useAppDispatch();
   const prevPageHandler = () => {
     if (pageOffset > 0) {
       setPageOffset(pageOffset - 5);
@@ -37,14 +35,15 @@ const Pagination = ({
   };
   const pageButtonHandler = (e: React.MouseEvent<HTMLButtonElement>) => {
     if (e.target instanceof HTMLButtonElement) {
-      const newPage = parseInt(e.target.value);
-      setCurrentPage(newPage);
+      console.log(e.target.value);
+      setCurrentPage(parseInt(e.target.value));
     }
   };
   //현재페이지 초기화
   useEffect(() => {
     return () => {
-      setCurrentPage(1);
+      console.log('reset');
+      // setCurrentPage(1);
     };
   }, []);
 
