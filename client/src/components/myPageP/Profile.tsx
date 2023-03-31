@@ -124,7 +124,7 @@ const ProfileWrap = styled.div`
     }
   }
   > div:nth-child(1) {
-    display: felx;
+    display: flex;
   }
 `;
 const Finish = styled.button`
