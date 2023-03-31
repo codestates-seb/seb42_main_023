@@ -90,9 +90,6 @@ const CreatePost: React.FC = () => {
     ) {
       createPost(reqBody);
       navigate('/');
-      setTimeout(() => {
-        location.reload();
-      }, 1500);
     } else {
       if (state.validation.titleErr !== '' || !state.postInput.title.length) {
         alert('제목을 다시 확인해 주세요.');
@@ -110,7 +107,6 @@ const CreatePost: React.FC = () => {
   };
   const cancelAddHandler = (): void => {
     navigate('/');
-    location.reload();
   };
 
   return (

@@ -263,7 +263,6 @@ const PostDetail: React.FC = () => {
       confirmDeleteHandler();
 
       navigate('/');
-      location.reload();
     }
     // 댓글 삭제 로직
     if (deleteType === '댓글') {
