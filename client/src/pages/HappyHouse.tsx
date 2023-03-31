@@ -122,7 +122,7 @@ const HappyHouse: React.FC = () => {
               <option value="daegu">대구광역시</option>
               <option value="incheon">인천광역시</option>
               <option value="gwangju">광주광역시</option>
-              <option value="daejeon">대구광역시</option>
+              <option value="daejeon">대전광역시</option>
               <option value="ulsan">울산광역시</option>
               <option value="sejong">세종특별자치시</option>
               <option value="jeju">제주특별자치도</option>
