@@ -94,9 +94,6 @@ const UpdatePost: React.FC = () => {
       updatePost(reqBody)
         .unwrap()
         .then(() => navigate(`/posts/${data.postId}`));
-      // setTimeout(() => {
-      //   location.reload();
-      // }, 1500);
     } else {
       if (state.validation.titleErr !== '' || state.postInput.title === '') {
         alert('제목을 다시 확인해 주세요.');
@@ -153,7 +150,6 @@ const UpdatePost: React.FC = () => {
 
   const cancelAddHandler = (): void => {
     navigate('/');
-    // location.reload();
   };
 
   return (
