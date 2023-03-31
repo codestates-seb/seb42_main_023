@@ -73,6 +73,8 @@ export interface PostInputStateType {
 }
 
 export interface PostType {
+  recommends: Array<PostType>;
+  commentCount: number;
   postId: number;
   memberName: string;
   memberImage: string;

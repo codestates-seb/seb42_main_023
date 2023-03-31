@@ -57,6 +57,9 @@ const Comment: React.FC<
   );
   const navigate = useNavigate();
   const [page, setPage] = useState<number>(1);
+  const [editComment, setEditComment] = useState<Array<CommentType>>([]);
+
+  const commentEditInput = useRef<HTMLInputElement>(null);
   const loginUserName = window.localStorage.getItem('name');
   const params = useParams();
   const postId = params.postId;
@@ -78,8 +81,7 @@ const Comment: React.FC<
       skip: !commentId,
     },
   );
-  const { isSuccess, data } = replyQuery;
-  const commentEditInput = useRef<HTMLInputElement>(null);
+  const { isSuccess } = replyQuery;
 
   //  멤버 정보 조회
   const memberQuery = membersApi.useGetMemberQuery(
@@ -98,7 +100,6 @@ const Comment: React.FC<
   const removeThumbDownMutation =
     commentsApi.useRemoveCommentThumbDownMutation();
   const [removeThumbDown] = removeThumbDownMutation;
-
   // 유저 정보 조회
   // 답글 Open 여부 확인을 위한 배열 생성
   if (
@@ -129,22 +130,20 @@ const Comment: React.FC<
     const commentId = comment.commentId;
     // 좋아요만 있는 경우
     if (comment?.isThumbup && !comment?.isThumbdown) {
-      console.log('좋아요 삭제');
       removeThumbUp({ commentId });
       return;
     }
     // 싫어요만 있는 경우
     if (!comment?.isThumbup && comment?.isThumbdown) {
       const commentId = comment.commentId;
-      console.log('싫어요 삭제 후 좋아요 추가');
       removeThumbDown({ commentId });
-      addThumbUp({ commentId });
-
+      setTimeout(() => {
+        addThumbUp({ commentId });
+      }, 500);
       return;
     }
     // 둘 다 없는 경우
     if (!comment?.isThumbdown && !comment?.isThumbdown) {
-      console.log('좋아요 추가');
       addThumbUp({ commentId });
       return;
     }
@@ -156,16 +155,18 @@ const Comment: React.FC<
     // 좋아요만 있는 경우
     if (comment.isThumbup && !comment?.isThumbdown) {
       // 좋아요 제거, 싫어요 추가
-      console.log('좋아요 삭제 후 싫어요 추가');
+
       removeThumbUp({ commentId });
-      addThumbDown({ commentId });
+      setTimeout(() => {
+        addThumbDown({ commentId });
+      }, 500);
 
       return;
     }
     // 싫어요만 있는 경우
     if (!comment?.isThumbup && comment?.isThumbdown) {
       // 싫어요 제거
-      console.log('싫어요 삭제');
+
       removeThumbDown({ commentId });
       return;
     }
@@ -173,7 +174,6 @@ const Comment: React.FC<
     // 둘 다 없는 경우
     if (!comment?.isThumbup && !comment?.isThumbdown) {
       // 싫어요 추가
-      console.log('싫어요 추가');
       addThumbDown({ commentId });
       return;
     }
@@ -181,6 +181,7 @@ const Comment: React.FC<
 
   // 삭제 확인 모달창
   const confirmDeleteHandler = (): void => {
+    console.log(editComment);
     setIsOpenDelete?.(!isOpenDelete!);
   };
 
@@ -222,7 +223,9 @@ const Comment: React.FC<
   useEffect(() => {
     // 답글 데이터가 변경될 때마다 총 답글 데이터 반영
     dispatch(setTotalReplies(replyQuery.data?.replies || []));
-  }, [replyQuery.data]);
+    // 수정 중인 답글 반영
+    setEditComment(commentQuery.data?.comments);
+  }, [replyQuery.data?.comments, commentQuery.data]);
 
   const minusCommentPage = () => {
     if (page >= 2) {
@@ -431,9 +434,13 @@ const Comment: React.FC<
                       '신고된 댓글입니다.' ? null : (
                       <>
                         <button
-                          onClick={_.throttle(() => {
-                            commentLiikeHandler(comment);
-                          }, 300)}
+                          onClick={_.debounce(
+                            () => {
+                              commentLiikeHandler(comment);
+                            },
+                            3000,
+                            { leading: true },
+                          )}
                         >
                           <LikeIcon checked={comment.isThumbup} />
                         </button>
@@ -441,9 +448,14 @@ const Comment: React.FC<
                           {comment.thumbupCount}
                         </li>
                         <button
-                          onClick={_.throttle(() => {
-                            commentDislikeHandler(comment);
-                          }, 300)}
+                          onClick={_.debounce(
+                            () => {
+                              console.log('test');
+                              commentDislikeHandler(comment);
+                            },
+                            3000,
+                            { leading: true },
+                          )}
                         >
                           <DislikeIcon checked={comment.isThumbdown} />
                         </button>
