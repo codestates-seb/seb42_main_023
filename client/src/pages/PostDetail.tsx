@@ -74,8 +74,7 @@ const PostDetail: React.FC = () => {
 
   const handleSelected = (event: React.MouseEvent<HTMLButtonElement>) => {
     setCheckedElement(Number(event.currentTarget.value));
-    console.log(event.currentTarget?.parentElement);
-    console.log(event.currentTarget?.parentElement?.id);
+
     dispatch(
       setReportOption(
         String(event.currentTarget?.parentElement?.children[0].id),
@@ -570,17 +569,25 @@ const PostDetail: React.FC = () => {
                 })}
               </TagConatiner>
               <button
-                onClick={_.throttle(() => {
-                  changeLiikeHandler();
-                }, 300)}
+                onClick={_.debounce(
+                  () => {
+                    changeLiikeHandler();
+                  },
+                  3000,
+                  { leading: true },
+                )}
               >
                 <LikeIcon checked={isLike!} />
               </button>
               <li className="likes">{like!}</li>
               <button
-                onClick={_.throttle(() => {
-                  changeDislikeHandler();
-                }, 300)}
+                onClick={_.debounce(
+                  () => {
+                    changeDislikeHandler();
+                  },
+                  3000,
+                  { leading: true },
+                )}
               >
                 <DislikeIcon checked={isSuccess && isDislike!} />
               </button>
