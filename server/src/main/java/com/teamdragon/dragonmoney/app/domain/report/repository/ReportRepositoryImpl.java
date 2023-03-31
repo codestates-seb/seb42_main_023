@@ -178,7 +178,6 @@ public class ReportRepositoryImpl implements ReportRepositoryCustom{
                     .distinct()
                     .join(report.targetPosts, posts)
                     .where(report.handleState.eq(handledState), report.targetPosts.isNotNull())
-                    .where(posts.state.eq(Posts.State.REPORTED))
                     .offset(pageable.getOffset())
                     .limit(pageable.getPageSize())
                     .fetch();
@@ -196,7 +195,6 @@ public class ReportRepositoryImpl implements ReportRepositoryCustom{
                     .distinct()
                     .join(report.targetComment, comment)
                     .where(report.handleState.eq(handledState), report.targetComment.isNotNull())
-                    .where(comment.state.eq(Comment.State.REPORTED))
                     .offset(pageable.getOffset())
                     .limit(pageable.getPageSize())
                     .fetch();
@@ -214,7 +212,6 @@ public class ReportRepositoryImpl implements ReportRepositoryCustom{
                     .distinct()
                     .join(report.targetReply, reply)
                     .where(report.handleState.eq(handledState), report.targetReply.isNotNull())
-                    .where(reply.state.eq(Reply.State.REPOTED))
                     .offset(pageable.getOffset())
                     .limit(pageable.getPageSize())
                     .fetch();
