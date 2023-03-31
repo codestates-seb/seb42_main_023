@@ -414,7 +414,7 @@ const Comment: React.FC<
                         margin:
                           loginUserName === comment?.memberName
                             ? '3px 148px 0 5px'
-                            : '3px 228px 0 5px',
+                            : '3px 258px 0 5px',
                       }}
                       onClick={(event): void => {
                         setIsOpenReport?.(!isOpenReport!);

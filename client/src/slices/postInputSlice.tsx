@@ -12,6 +12,7 @@ const postInputSlice = createSlice({
     body: '',
     tagContent: '',
     tag: [],
+    isEdit: false,
   },
   reducers: {
     // 게시글 제목
@@ -37,9 +38,18 @@ const postInputSlice = createSlice({
         (tag) => tag !== action.payload,
       );
     },
+    setIsEdit: (state, action: PayloadAction<boolean>): void => {
+      state.isEdit = action.payload;
+    },
   },
 });
 
 export default postInputSlice;
-export const { setTitle, setBody, setTagContent, setTag, deleteTag } =
-  postInputSlice.actions;
+export const {
+  setTitle,
+  setBody,
+  setTagContent,
+  setTag,
+  deleteTag,
+  setIsEdit,
+} = postInputSlice.actions;

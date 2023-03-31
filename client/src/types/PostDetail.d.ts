@@ -68,6 +68,7 @@ export interface PostInputStateType {
     tag: Array<object>;
     tagContent: string;
     title: string;
+    isEdit: boolean;
   };
 }
 

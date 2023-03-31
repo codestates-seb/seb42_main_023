@@ -1,11 +1,7 @@
 import React, { useRef } from 'react';
 import styled from 'styled-components';
 import { useAppDispatch, useAppSelector } from '../../hooks';
-import {
-  setFilter,
-  setFilterOpen,
-  setDeleteAccountOpen,
-} from '../../slices/mypageSlice';
+import { setFilterOpen, setDeleteAccountOpen } from '../../slices/mypageSlice';
 
 import { FiMoreHorizontal } from 'react-icons/fi';
 import Cookies from 'js-cookie';
@@ -17,6 +13,7 @@ const DropdownButton = () => {
   const options: ['로그아웃', '회원탈퇴'] = ['로그아웃', '회원탈퇴'];
 
   const handleSelect = (option: '로그아웃' | '회원탈퇴') => {
+    console.log('a');
     dispatch(setFilterOpen(false));
 
     // 회원탈퇴 시 확인메세지창을 띄우고, '네'를 클릭시 회원탈퇴가 되며 저장되어 있던 쿠키와 유저정보를 제거한다.

@@ -1,7 +1,7 @@
 import React, { KeyboardEvent } from 'react';
 import styled from 'styled-components';
 import { useAppDispatch, useAppSelector } from '../../hooks';
-import { setTag, setTagContent } from '../../slices/postInputSlice';
+import { setIsEdit, setTag, setTagContent } from '../../slices/postInputSlice';
 import { setTagErr } from '../../slices/validationSlice';
 import Tag from '../common/Tag';
 import { postsApi } from '../../api/postApi';
@@ -24,21 +24,16 @@ const TagInput: React.FC = () => {
   const params = useParams();
   const postId = params.postId;
   const postQuery = postsApi.useGetPostQuery({ postId });
-  const { data } = postQuery;
-
+  // const { isFetching } = postQuery;
   //  테그 추가
   const addTagHandler = (event: KeyboardEvent<HTMLInputElement>): void => {
     const tag: Array<string> = state.postInput.tag;
     const tagContent = state.postInput.tagContent;
 
-    // data?.tags.map((tag: string) => {
-    //   dispatch(setTag(tag));
-    // });
-
     // 유효성 검사
     if (event.key === 'Enter' && event.nativeEvent.isComposing === false) {
       // 태그 중복 입력 방지
-      console.log(tagContent);
+
       if (tag.includes(tagContent)) {
         dispatch(setTagErr(''));
         return;
@@ -79,7 +74,10 @@ const TagInput: React.FC = () => {
           <Input
             className="tag-input"
             placeholder="태그를 입력하고 엔터를 치세요.(최대 5개)"
-            onChange={valueCheck}
+            onChange={(event) => {
+              valueCheck(event);
+              dispatch(setIsEdit(true));
+            }}
             onKeyDown={addTagHandler}
             value={state.postInput.tagContent}
           ></Input>
@@ -94,11 +92,15 @@ const TagInput: React.FC = () => {
           <Input
             className="tag-input"
             placeholder="태그를 입력하고 엔터를 치세요.(최대 5개)"
-            onChange={valueCheck}
+            onChange={(event) => {
+              valueCheck(event);
+              dispatch(setIsEdit(true));
+            }}
             onKeyDown={addTagHandler}
             value={state.postInput.tagContent}
           ></Input>
           <Error>{state.validation.tagErr}</Error>
+
           <TagConatiner>
             {state.postInput.tag?.map((tag: string, idx: number) => {
               return <Tag key={idx} content={tag}></Tag>;

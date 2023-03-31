@@ -83,7 +83,7 @@ const Reply: React.FC<Partial<ReplyProps & ReportProps>> = ({
       return;
     }
     // 싫어요만 있는 경우
-    if (reply?.isThumbup && reply?.isThumbdown) {
+    if (!reply?.isThumbup && reply?.isThumbdown) {
       console.log('싫어요 삭제 후 좋아요 추가');
       removeThumbDown({ replyId });
       setTimeout(() => {
@@ -315,6 +315,10 @@ const Reply: React.FC<Partial<ReplyProps & ReportProps>> = ({
             style={{
               display:
                 loginUserName === replyInfo?.memberName ? 'none' : 'block',
+              margin:
+                loginUserName === replyInfo?.memberName
+                  ? '3px 148px 0 5px'
+                  : '3px 228px 0 5px',
             }}
             onClick={(event): void => {
               setIsOpenReport?.(!isOpenReport);

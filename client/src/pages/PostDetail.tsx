@@ -13,7 +13,11 @@ import DropdownButton from '../components/postDetailP/DropdownButton';
 import { BlueBtn, WhiteBtn } from '../components/common/Btn';
 import { ReactComponent as CheckedIcon } from '../assets/checked.svg';
 import { ReactComponent as NoCheckedIcon } from '../assets/noChecked.svg';
-import { setReportOption, setSelectedMember } from '../slices/postSlice';
+import {
+  setIsOpenFilter,
+  setReportOption,
+  setSelectedMember,
+} from '../slices/postSlice';
 import { setReportErr } from '../slices/validationSlice';
 import { setMemberName } from '../slices/headerSlice';
 import { useAppDispatch, useAppSelector } from '../hooks';
@@ -33,7 +37,6 @@ import { membersApi } from '../api/memberapi';
 import _ from 'lodash';
 import parse from 'html-react-parser';
 import Tag from '../components/postDetailP/Tag';
-import { skipToken } from '@reduxjs/toolkit/query/react';
 
 const reportOption = [
   '영리목적/홍보성',
@@ -57,7 +60,7 @@ const PostDetail: React.FC = () => {
   // 신고, 삭제, 소개
   const [isOpenReport, setIsOpenReport] = useState<boolean>(false);
   const [isOpenReportErr] = useState<boolean>(false);
-  const [isOpenFilter, setIsOpenFilter] = useState<boolean>(false);
+  // const [isOpenFilter, setIsOpenFilter] = useState<boolean>(false);
   const [isOpenDelete, setIsOpenDelete] = useState<boolean>(false);
   const [deleteType, setDeleteType] = useState<string>('');
   const [isOpenIntro, setIsOpenIntro] = useState<boolean>(false);
@@ -110,7 +113,7 @@ const PostDetail: React.FC = () => {
 
   // 게시글 조회 및 추가
   const postDetailQuery = postsApi.useGetPostQuery({ postId });
-  const { data, isSuccess, refetch } = postDetailQuery;
+  const { data, isSuccess, isLoading, refetch } = postDetailQuery;
   const [deletePost] = postsApi.useDeletePostMutation();
   // 게시글 좋아요 추가, 삭제
   const [addThumbUp] = postsApi.useAddPostThumbUpMutation();
@@ -273,8 +276,10 @@ const PostDetail: React.FC = () => {
 
   // 드롭다운 클로즈
   const handleClickOutside = (event: MouseEvent) => {
-    if (isOpenFilter) {
-      setIsOpenFilter(!isOpenFilter);
+    if ('post' in state && state.post?.isOpenFilter) {
+      dispatch(setIsOpenFilter('post' in state && state.post?.isOpenFilter));
+    } else {
+      return;
     }
   };
 
