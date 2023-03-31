@@ -113,7 +113,7 @@ const ProfileWrap = styled.div`
       }
       span {
         position: absolute;
-        right: 68px;
+        right: 160px;
         font-size: 12px;
         top: 42px;
         color: var(--sub-font-color);

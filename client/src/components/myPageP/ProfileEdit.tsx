@@ -47,7 +47,7 @@ const InputWrap = styled.div`
   display: flex;
   textarea {
     box-sizing: border-box;
-    width: 900px;
+    width: 806px;
     resize: none;
     border: 1px solid var(--border-color);
     padding: 10px;
