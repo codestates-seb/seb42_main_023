@@ -27,6 +27,5 @@ const Cover = styled.div`
   width: 100px;
   height: 100px;
   background-color: #fff;
-  overflow: hidden;
   box-shadow: 4px 4px 8px rgba(0, 0, 0, 0.15);
 `;

@@ -54,35 +54,33 @@ function Profile() {
 
   return (
     <ProfileWrap>
-      <div>
-        {isSuccess && <LargeProfileImg url={data.member.memberImage} />}
-        <article>
-          {isSuccess && (
-            <h1>
-              {data.member.memberName}
-              {data.member.memberName === loginuser &&
-                (EditOpen ? (
-                  <>
-                    <Finish onClick={submitHandler}>확인</Finish>
-                    <span>{content.length}/500</span>
-                  </>
-                ) : (
-                  <button onClick={EditOpenHandler}>소개수정</button>
-                ))}
-            </h1>
-          )}
-          {EditOpen ? (
-            <ProfileEdit
-              content={content}
-              setContent={setContent}
-              submitHandler={submitHandler}
-            />
-          ) : (
-            <Intro ref={divRef}>{isSuccess && data.member.intro}</Intro>
-          )}
-          {blank && <Error>소개글이 비어있습니다.</Error>}
-        </article>
-      </div>
+      {isSuccess && <LargeProfileImg url={data.member.memberImage} />}
+      <article>
+        {isSuccess && (
+          <h1>
+            {data.member.memberName}
+            {data.member.memberName === loginuser &&
+              (EditOpen ? (
+                <>
+                  <Finish onClick={submitHandler}>확인</Finish>
+                  <span>{content.length}/500</span>
+                </>
+              ) : (
+                <button onClick={EditOpenHandler}>소개수정</button>
+              ))}
+          </h1>
+        )}
+        {EditOpen ? (
+          <ProfileEdit
+            content={content}
+            setContent={setContent}
+            submitHandler={submitHandler}
+          />
+        ) : (
+          <Intro ref={divRef}>{isSuccess && data.member.intro}</Intro>
+        )}
+        {blank && <Error>소개글이 비어있습니다.</Error>}
+      </article>
       {isSuccess && data.member.memberName === loginuser && <DropdownButton />}
     </ProfileWrap>
   );
@@ -92,13 +90,11 @@ const ProfileWrap = styled.div`
   padding-bottom: 40px;
   padding-left: 10px;
   display: flex;
-  justify-content: space-between;
   position: relative;
   border-bottom: 1px solid var(--border-color);
   article {
     flex-direction: column;
     justify-content: center;
-    margin-left: 30px;
     margin-top: 30px;
     h1 {
       font-weight: 600;
@@ -113,7 +109,7 @@ const ProfileWrap = styled.div`
       }
       span {
         position: absolute;
-        right: 160px;
+        right: 70px;
         font-size: 12px;
         top: 42px;
         color: var(--sub-font-color);
@@ -125,6 +121,7 @@ const ProfileWrap = styled.div`
   }
   > div:nth-child(1) {
     display: flex;
+    margin-right: 32px;
   }
 `;
 const Finish = styled.button`
