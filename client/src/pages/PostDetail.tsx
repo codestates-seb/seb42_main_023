@@ -174,75 +174,77 @@ const PostDetail: React.FC = () => {
   // 좋아요 클릭 함수
   const changeLiikeHandler = (): void => {
     // 좋아요만 있는 경우
-    if (isLike && !isDislike) {
-      removeThumbUp({ postId });
-      setIsLike(false);
-      setLike((prev) => prev! - 1);
-      return;
-    }
-    // 싫어요만 있는 경우
-    if (!isLike && isDislike) {
-      removeThumbDown({ postId });
-      setIsDislike(false);
-      setDislike((prev) => prev! - 1);
-      setTimeout(() => {
+    if (loginUserName) {
+      if (isLike && !isDislike) {
+        removeThumbUp({ postId });
+        setIsLike(false);
+        setLike((prev) => prev! - 1);
+        return;
+      }
+      // 싫어요만 있는 경우
+      if (!isLike && isDislike) {
+        removeThumbDown({ postId });
+        setIsDislike(false);
+        setDislike((prev) => prev! - 1);
         addThumbUp({ postId });
         setIsLike(true);
         setLike((prev) => prev! + 1);
-      }, 500);
-      return;
-    }
-    // 둘 다 없는 경우
-    if (!isLike && !isDislike) {
-      addThumbUp({ postId });
-      setIsLike(true);
-      setLike((prev) => prev! + 1);
-      return;
+
+        return;
+      }
+      // 둘 다 없는 경우
+      if (!isLike && !isDislike) {
+        addThumbUp({ postId });
+        setIsLike(true);
+        setLike((prev) => prev! + 1);
+        return;
+      }
     }
   };
 
   // 싫어요 클릭 함수
   const changeDislikeHandler = (): void => {
-    // 좋아요만 있는 경우
-    if (isLike && !isDislike) {
-      // 좋아요 제거, 싫어요 추가
-      removeThumbUp({ postId });
-      setIsLike(false);
-      setLike((prev) => prev! - 1);
-      setTimeout(() => {
+    if (loginUserName) {
+      // 좋아요만 있는 경우
+      if (isLike && !isDislike) {
+        // 좋아요 제거, 싫어요 추가
+        removeThumbUp({ postId });
+        setIsLike(false);
+        setLike((prev) => prev! - 1);
         addThumbDown({ postId });
         setIsDislike(true);
         setDislike((prev) => prev! + 1);
-      }, 500);
-      return;
-    }
-    // 싫어요만 있는 경우
-    if (!isLike && isDislike) {
-      // 싫어요 제거
 
-      removeThumbDown({ postId });
-      setIsDislike(false);
-      setDislike((prev) => prev! - 1);
-      return;
-    }
-    // 둘 다 없는 경우
-    if (!isLike && !isDislike) {
-      // 싫어요 추가
-
-      addThumbDown({ postId });
-      setIsDislike(true);
-      setDislike((prev) => prev! + 1);
-      return;
+        return;
+      }
+      // 싫어요만 있는 경우
+      if (!isLike && isDislike) {
+        // 싫어요 제거
+        removeThumbDown({ postId });
+        setIsDislike(false);
+        setDislike((prev) => prev! - 1);
+        return;
+      }
+      // 둘 다 없는 경우
+      if (!isLike && !isDislike) {
+        // 싫어요 추가
+        addThumbDown({ postId });
+        setIsDislike(true);
+        setDislike((prev) => prev! + 1);
+        return;
+      }
     }
   };
   // 북마크 클릭 함수
   const changeBookmarkHandler = (): void => {
-    if (isBookmark) {
-      setBookmark(false);
-      removeBookmark({ loginUserName, postId });
-    } else {
-      setBookmark(true);
-      addBookmark({ loginUserName, postId });
+    if (loginUserName) {
+      if (isBookmark) {
+        setBookmark(false);
+        removeBookmark({ loginUserName, postId });
+      } else {
+        setBookmark(true);
+        addBookmark({ loginUserName, postId });
+      }
     }
   };
 
@@ -541,21 +543,22 @@ const PostDetail: React.FC = () => {
               <li className="comments">{commentCnt}</li>
               <Bookmark
                 className="bookmark"
-                onClick={_.debounce(() => {
+                onClick={_.throttle(() => {
                   changeBookmarkHandler();
-                }, 1500)}
+                }, 300)}
               >
                 <BookmarkIcon checked={isBookmark!} />
               </Bookmark>
-
-              <DropdownButton
-                memberName={data?.memberName}
-                isOpenReport={isOpenReport}
-                setIsOpenReport={setIsOpenReport}
-                isOpenDelete={isOpenDelete}
-                setIsOpenDelete={setIsOpenDelete}
-                setDeleteType={setDeleteType}
-              ></DropdownButton>
+              {loginUserName ? (
+                <DropdownButton
+                  memberName={data?.memberName}
+                  isOpenReport={isOpenReport}
+                  setIsOpenReport={setIsOpenReport}
+                  isOpenDelete={isOpenDelete}
+                  setIsOpenDelete={setIsOpenDelete}
+                  setDeleteType={setDeleteType}
+                ></DropdownButton>
+              ) : null}
             </ul>
           </PostInfo>
           <PostContent>
@@ -567,17 +570,17 @@ const PostDetail: React.FC = () => {
                 })}
               </TagConatiner>
               <button
-                onClick={_.debounce(() => {
+                onClick={_.throttle(() => {
                   changeLiikeHandler();
-                }, 1500)}
+                }, 300)}
               >
                 <LikeIcon checked={isLike!} />
               </button>
               <li className="likes">{like!}</li>
               <button
-                onClick={_.debounce(() => {
+                onClick={_.throttle(() => {
                   changeDislikeHandler();
-                }, 1500)}
+                }, 300)}
               >
                 <DislikeIcon checked={isSuccess && isDislike!} />
               </button>
