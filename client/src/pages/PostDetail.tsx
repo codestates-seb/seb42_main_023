@@ -110,7 +110,7 @@ const PostDetail: React.FC = () => {
 
   // 게시글 조회 및 추가
   const postDetailQuery = postsApi.useGetPostQuery({ postId });
-  const { data, isSuccess } = postDetailQuery;
+  const { data, isSuccess, refetch } = postDetailQuery;
   const [deletePost] = postsApi.useDeletePostMutation();
   // 게시글 좋아요 추가, 삭제
   const [addThumbUp] = postsApi.useAddPostThumbUpMutation();
@@ -162,6 +162,7 @@ const PostDetail: React.FC = () => {
   // 페이지 이동 시 스크롤 최상단 이동
   useEffect(() => {
     scrollTo(0, 0);
+    refetch();
   }, [postId]);
 
   // 좋아요 클릭 함수
@@ -199,7 +200,6 @@ const PostDetail: React.FC = () => {
     // 좋아요만 있는 경우
     if (isLike && !isDislike) {
       // 좋아요 제거, 싫어요 추가
-
       removeThumbUp({ postId });
       setIsLike(false);
       setLike((prev) => prev! - 1);
