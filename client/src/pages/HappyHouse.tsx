@@ -233,7 +233,8 @@ const Filter = styled.div`
   margin-top: 10px;
   > .state-filter {
     button {
-      width: 80px;
+      width: max-content;
+      padding: 0px 15px 0px 15px;
       height: 35px;
       border: 1px solid var(--border-color);
       background-color: #f4f4f4;
