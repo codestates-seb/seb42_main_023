@@ -751,7 +751,7 @@ const RecommendedPostContainer = styled.div`
     display: flex;
     justify-content: center;
     padding: 10px;
-    width: 315px;
+    width: 290px;
     height: 480px;
     background-color: white;
     border: 1px solid #d4d4d4;
