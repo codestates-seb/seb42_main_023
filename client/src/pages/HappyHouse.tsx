@@ -56,9 +56,11 @@ const HappyHouse: React.FC = () => {
   return (
     <MainContainer>
       <div className="content-container">
-        <Title>
+        <Head>
           <h1>청년들을 위한 임대 · 행복주택공고</h1>
           <p>공공기관이 공급하는 임대주택 모집공고를 검색하실 수 있습니다.</p>
+        </Head>
+        <Title>
           <div>
             <h2>
               <AiFillHome /> 행복주택이란?
@@ -202,29 +204,35 @@ const MainContainer = styled.div`
     }
   }
 `;
-
-// 행복주택 페이지 상단에 제목과 설명을 담는 컨테이너
-const Title = styled.div`
-  margin-bottom: 60px;
-  > h1 {
-    font-size: 31px;
-    margin-bottom: 8px;
+// 행복주택 페이지 상단에 제목 컨테이너
+const Head = styled.div`
+  h1 {
+    font-size: 24px;
+    margin-bottom: 4px;
   }
-
-  > p {
-    color: #5c5c5c;
+  p {
     font-size: 14px;
     margin-bottom: 40px;
   }
-
+`;
+// 행복주택 페이지 상단에 설명을 담는 컨테이너
+const Title = styled.div`
+  margin-bottom: 60px;
+  background-color: var(--hover-font-gray-color);
+  padding: 20px;
+  box-sizing: border-box;
+  border-radius: 10px;
   > div {
     > h2 {
+      color: #fff;
       font-size: 16px;
-      font-weight: 700;
+      font-weight: 500;
       margin-bottom: 8px;
     }
     > p {
+      color: #fff;
       font-size: 14px;
+      font-weight: 300;
     }
   }
 `;
@@ -234,7 +242,6 @@ const Filter = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
-  border-bottom: 1px solid var(--border-color);
   margin-top: 10px;
   > .state-filter {
     button {
@@ -243,6 +250,7 @@ const Filter = styled.div`
       height: 35px;
       border: 1px solid var(--border-color);
       background-color: #f4f4f4;
+      margin-left: -1px;
       cursor: pointer;
       &.current {
         background-color: var(--point-blue-color);
@@ -269,7 +277,9 @@ const Filter = styled.div`
 // 공고 리스트
 const Table = styled.table`
   width: 100%;
+  margin-top: -1px;
   border-collapse: collapse;
+  border-top: 1px solid var(--border-color);
   > thead > tr > th {
     font-size: 15px;
     font-weight: 600;

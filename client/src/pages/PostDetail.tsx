@@ -711,7 +711,7 @@ const PostContainer = styled.div`
     width: 20px;
     height: 20px;
     border-radius: 100px;
-    transform: translateY(6px);
+    transform: translateY(7px);
   }
 `;
 const Bookmark = styled.button``;
@@ -757,7 +757,7 @@ const RecommendedPostContainer = styled.div`
     display: flex;
     justify-content: center;
     padding: 10px;
-    width: 315px;
+    width: 290px;
     height: 480px;
     background-color: white;
     border: 1px solid #d4d4d4;
@@ -883,24 +883,26 @@ const IntorductionContainer = styled.div`
   display: flex;
   flex-direction: column;
   position: absolute;
+  border-radius: 10px;
   width: 240px;
   height: 140px;
   border: 1px solid #d4d4d4;
+  box-shadow: 4px 4px 8px rgba(0, 0, 0, 0.15);
   z-index: 2;
   top: 45px;
   left: 20px;
   background-color: white;
   .introduction {
-    font-size: 17x;
+    font-size: 14x;
     color: gray;
     width: 175px;
-    margin: 15px 0 0 35px;
+    margin: 8px 0 0 28px;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
   }
   .intro-moreInfo {
-    font-size: 17px;
+    font-size: 14px;
     color: gray;
     width: 100px;
     margin: 15px 0 0 135px;
@@ -915,13 +917,13 @@ const IntroInfo = styled.div`
     display: flex;
     align-items: center;
     font-size: 12px;
-    padding: 10px 0 0 10px;
+    padding: 17px 0 0 25px;
   }
   .intro-nickname {
     width: 150px;
     height: 30px;
     font-size: 16px;
-    margin: 18px 0 0 10px;
+    margin-top: 17px;
   }
 `;
 

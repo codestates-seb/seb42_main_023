@@ -263,13 +263,6 @@ const TooltipWrap = styled.div`
       transform: translateY(1px);
     }
   }
-  .link {
-    display: block;
-    height: 20px;
-    :hover {
-      color: var(--point-blue-color);
-    }
-  }
   span {
     color: var(--point-blue-color);
     .line {
