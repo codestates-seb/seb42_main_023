@@ -138,9 +138,8 @@ const Comment: React.FC<
       const commentId = comment.commentId;
       console.log('싫어요 삭제 후 좋아요 추가');
       removeThumbDown({ commentId });
-      setTimeout(() => {
-        addThumbUp({ commentId });
-      }, 500);
+      addThumbUp({ commentId });
+
       return;
     }
     // 둘 다 없는 경우
@@ -159,9 +158,8 @@ const Comment: React.FC<
       // 좋아요 제거, 싫어요 추가
       console.log('좋아요 삭제 후 싫어요 추가');
       removeThumbUp({ commentId });
-      setTimeout(() => {
-        addThumbDown({ commentId });
-      }, 500);
+      addThumbDown({ commentId });
+
       return;
     }
     // 싫어요만 있는 경우
@@ -432,9 +430,9 @@ const Comment: React.FC<
                       '신고된 댓글입니다.' ? null : (
                       <>
                         <button
-                          onClick={_.debounce(() => {
+                          onClick={_.throttle(() => {
                             commentLiikeHandler(comment);
-                          }, 500)}
+                          }, 300)}
                         >
                           <LikeIcon checked={comment.isThumbup} />
                         </button>
@@ -442,9 +440,9 @@ const Comment: React.FC<
                           {comment.thumbupCount}
                         </li>
                         <button
-                          onClick={_.debounce(() => {
+                          onClick={_.throttle(() => {
                             commentDislikeHandler(comment);
-                          }, 500)}
+                          }, 300)}
                         >
                           <DislikeIcon checked={comment.isThumbdown} />
                         </button>

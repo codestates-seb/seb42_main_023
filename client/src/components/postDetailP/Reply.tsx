@@ -86,9 +86,8 @@ const Reply: React.FC<Partial<ReplyProps & ReportProps>> = ({
     if (!reply?.isThumbup && reply?.isThumbdown) {
       console.log('싫어요 삭제 후 좋아요 추가');
       removeThumbDown({ replyId });
-      setTimeout(() => {
-        addThumbUp({ replyId });
-      }, 500);
+      addThumbUp({ replyId });
+
       return;
     }
     // 둘 다 없는 경우
@@ -107,9 +106,8 @@ const Reply: React.FC<Partial<ReplyProps & ReportProps>> = ({
       // 좋아요 제거, 싫어요 추가
       console.log('좋아요 삭제 후 싫어요 추가');
       removeThumbUp({ replyId });
-      setTimeout(() => {
-        addThumbDown({ replyId });
-      }, 500);
+      addThumbDown({ replyId });
+
       return;
     }
     // 싫어요만 있는 경우
@@ -336,9 +334,9 @@ const Reply: React.FC<Partial<ReplyProps & ReportProps>> = ({
             '신고된 답글입니다.' ? null : (
             <>
               <button
-                onClick={_.debounce(() => {
+                onClick={_.throttle(() => {
                   ReplyLiikeHandler(replyInfo!);
-                }, 500)}
+                }, 300)}
                 style={{
                   margin:
                     loginUserName === replyInfo?.memberName ? '0' : '0 0 0 7px',
@@ -348,9 +346,9 @@ const Reply: React.FC<Partial<ReplyProps & ReportProps>> = ({
               </button>
               <li className="reply-likes">{replyInfo?.thumbupCount}</li>
               <button
-                onClick={_.debounce(() => {
+                onClick={_.throttle(() => {
                   ReplyDislikeHandler(replyInfo!);
-                }, 500)}
+                }, 300)}
               >
                 <DislikeIcon checked={replyInfo!.isThumbdown} />
               </button>
