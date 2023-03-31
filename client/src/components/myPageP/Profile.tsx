@@ -62,7 +62,10 @@ function Profile() {
               {data.member.memberName}
               {data.member.memberName === loginuser &&
                 (EditOpen ? (
-                  <Finish onClick={submitHandler}>수정완료</Finish>
+                  <>
+                    <Finish onClick={submitHandler}>확인</Finish>
+                    <span>{content.length}/500</span>
+                  </>
                 ) : (
                   <button onClick={EditOpenHandler}>소개수정</button>
                 ))}
@@ -106,6 +109,16 @@ const ProfileWrap = styled.div`
         font-size: 12px;
         .finish {
           color: var(--point-blue-color);
+        }
+      }
+      span {
+        position: absolute;
+        right: 68px;
+        font-size: 12px;
+        top: 42px;
+        color: var(--sub-font-color);
+        .red {
+          color: var(--error-red-color);
         }
       }
     }

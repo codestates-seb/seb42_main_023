@@ -12,41 +12,48 @@ const ProfileEdit: React.FC<ProfileEditProps> = ({
   setContent,
   submitHandler,
 }) => {
-  const inputRef = useRef<HTMLInputElement>(null);
+  const inputRef = useRef<HTMLTextAreaElement>(null);
 
   useEffect(() => {
     inputRef.current?.focus();
   });
 
-  //엔터로 수정
   const searchEnterHandler = (
-    event: React.KeyboardEvent<HTMLInputElement>,
+    event: React.KeyboardEvent<HTMLTextAreaElement>,
   ): void => {
     if (event.key === 'Enter') {
       submitHandler();
     }
   };
+
   return (
     <InputWrap>
-      <input
+      <textarea
         value={content}
         ref={inputRef}
-        onChange={(e) => setContent(e.target.value)}
+        onChange={(e) => {
+          setContent(e.currentTarget.value);
+        }}
         onKeyDown={searchEnterHandler}
-      ></input>
+        rows={5}
+        maxLength={499}
+      ></textarea>
     </InputWrap>
   );
 };
+
 export default ProfileEdit;
 const InputWrap = styled.div`
   display: flex;
-  input {
+  textarea {
     box-sizing: border-box;
     width: 900px;
+    resize: none;
+    border: 1px solid var(--border-color);
+    padding: 10px;
+    border-radius: 6px;
     :focus {
-      outline: none;
-      color: var(--point-blue-color);
-      border-bottom: 1px solid var(--point-blue-color);
+      outline: 1px solid var(--point-blue-color);
     }
   }
   button {

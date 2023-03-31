@@ -17,7 +17,12 @@ function MyPage() {
   }, []);
   return (
     <MyPageWrap>
-      {deleteAccountOpen && <DeleteModal />}
+      {deleteAccountOpen && (
+        <ModalWrap>
+          <DeleteModal />
+        </ModalWrap>
+      )}
+
       <Profile />
       <Content>
         <Sidebar />
@@ -41,4 +46,28 @@ const Content = styled.div`
   flex-basis: 900px;
   width: 100%;
   height: 1040px;
+`;
+const ModalWrap = styled.div`
+  width: 100vw;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.2);
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 99;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  h1 {
+    padding-bottom: 4px;
+    margin-bottom: 10px;
+    border-bottom: 1px solid var(--border-color);
+    font-weight: 600;
+  }
+  div {
+    :first-child {
+      margin-bottom: 20px;
+    }
+  }
 `;

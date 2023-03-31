@@ -5,6 +5,7 @@ import { useAppSelector } from '../../hooks';
 import TimeIcon from '../../assets/common/TimeIcon';
 import ViewIcon from '../../assets/common/ViewIcon';
 import Thumnail from '../common/Thumbnail';
+import CommentIcon from '../../assets/common/CommentIcon';
 import { TagItem } from '../common/Tag';
 import { Link } from 'react-router-dom';
 import { timeSince } from '../mainP/Timecalculator';
@@ -38,6 +39,10 @@ function PostList({ posts, currentPage }: Props) {
                   </div>
                   <Info>
                     <span>{post.memberName}</span>
+                    <span>
+                      <CommentIcon checked={false} />
+                      {post.commentCount}
+                    </span>
                     <span>
                       <TimeIcon />
                       {timeSince(post.createdAt)}
@@ -109,6 +114,9 @@ export const Info = styled.div`
     flex-direction: row;
     display: flex;
     align-items: center;
+    svg {
+      margin-right: 2px;
+    }
   }
 `;
 export const Tag = styled(TagItem)`

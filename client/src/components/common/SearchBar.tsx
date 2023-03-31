@@ -124,7 +124,7 @@ const SearchBar: React.FC = () => {
             <Icon onClick={searchClickHandler}>
               <AiOutlineSearch size={26} />
             </Icon>
-            {header.tag.length === 0 && <Span>#태그를 검색하세요</Span>}
+            {header.tag.length === 0 && <Span>#주식 #경제 #연봉</Span>}
             <TagConatiner>
               {header.tag.map((tag, idx) => {
                 return (
@@ -188,7 +188,6 @@ const InputWraper = styled.div`
 const Input = styled.input`
   border: 1px solid #d4d4d4;
   padding: 10px 20px;
-  padding-left: 40px;
   width: 500px;
   border-radius: 40px;
   font-size: 14px;
@@ -214,7 +213,7 @@ const TagConatiner = styled.div`
 const Icon = styled.button`
   background-color: #fff;
   position: absolute;
-  left: 12px;
+  left: 460px;
   cursor: pointer;
 `;
 const Span = styled.span`
