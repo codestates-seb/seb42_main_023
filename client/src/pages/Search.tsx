@@ -20,11 +20,7 @@ const Search = () => {
     orderby: orderby,
     search: searchQuery,
   });
-  const { data, isSuccess, refetch } = postListquery;
-
-  useEffect(() => {
-    refetch();
-  }, []);
+  const { data, isSuccess } = postListquery;
 
   return (
     <>
