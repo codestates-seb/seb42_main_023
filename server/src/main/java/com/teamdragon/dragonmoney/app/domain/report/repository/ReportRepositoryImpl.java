@@ -231,6 +231,7 @@ public class ReportRepositoryImpl implements ReportRepositoryCustom{
                     .selectFrom(report)
                     .distinct()
                     .where(report.handleState.eq(handledState))
+                    .where(reply.state.eq(Reply.State.REPOTED))
                     .offset(pageable.getOffset())
                     .limit(pageable.getPageSize())
                     .fetch();
