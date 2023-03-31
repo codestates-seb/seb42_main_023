@@ -59,8 +59,12 @@ const BodyInput: React.FC = () => {
     const realValue = html.textContent;
 
     if (realValue) {
-      if (realValue?.length < 9) {
+      console.log(realValue.length);
+      if (realValue?.length < 9 || realValue?.length === 0) {
         dispatch(setBodyErr('본문은 10자 이상 작성해주세요.'));
+      }
+      if (realValue?.length === 1) {
+        dispatch(setBodyErr(''));
       }
       if (realValue?.length >= 9) {
         dispatch(setBodyErr(''));
@@ -170,7 +174,7 @@ const BodyInput: React.FC = () => {
                 }
               }}
               theme="snow"
-              placeholder="게시글 내용을 입력하세요.(2MB 이하의 이미지만  입력 가능합니다.)"
+              placeholder="게시글 내용을 입력하세요.(2MB 이하의 이미지만  추가 가능합니다.)"
               value={state.postInput.body}
               onChange={valueCheck}
               modules={modules}
@@ -189,7 +193,7 @@ const BodyInput: React.FC = () => {
                 }
               }}
               theme="snow"
-              placeholder="게시글 내용을 입력하세요."
+              placeholder="게시글 내용을 입력하세요.(2MB 이하의 이미지만  추가 가능합니다.)"
               value={state.postInput.body}
               onChange={valueCheck}
               modules={modules}

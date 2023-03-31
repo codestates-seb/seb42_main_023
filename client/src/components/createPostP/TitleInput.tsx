@@ -18,14 +18,12 @@ const TitleInput: React.FC = () => {
   // 유효성 검사
   const validationTest = (): void => {
     const titleValue = title.current?.value;
-    if (titleValue!.length === 0) {
-      dispatch(setTitleErr('제목을 작성해주세요.'));
+    if (!titleValue?.length) {
+      dispatch(setTitleErr(''));
     }
     if (titleValue) {
       if (titleValue.length < 5 || titleValue.length > 20) {
         dispatch(setTitleErr('제목은 5자 이상 20자 이하로 작성해주세요.'));
-      } else {
-        dispatch(setTitleErr(''));
       }
     }
   };
@@ -77,9 +75,9 @@ const Input = styled.input`
   padding: 0 10px 0 10px;
   margin-top: 20px;
   padding-left: 15px;
-  ::placeholder {
+  /* ::placeholder {
     font-style: italic;
-  }
+  } */
   :focus {
     outline: 2px solid #0069ca;
   }

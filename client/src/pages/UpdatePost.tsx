@@ -18,6 +18,7 @@ import {
 import Cookies from 'js-cookie';
 import axios from 'axios';
 import Loading from '../components/common/Loading';
+import { setBodyErr, setTitleErr } from '../slices/validationSlice';
 
 const deleteImgEP = process.env.REACT_APP_SERVER_ADDRESS + '/images/drop';
 const UpdatePost: React.FC = () => {
@@ -29,9 +30,11 @@ const UpdatePost: React.FC = () => {
   const [updatePost] = postsApi.useUpdatePostMutation();
   const postQuery = postsApi.useGetPostQuery({ postId });
   const { data, isSuccess } = postQuery;
+  // 서버에서 받아오는 데이터
   const title = data?.title;
   const body = data?.content;
   const tags = data?.tags;
+  // 요청 보내는 데이터
   const titleValue = state.postInput?.title;
   const bodyValue = state.postInput?.body;
   const addedImg = state.post?.addedImg;
@@ -42,6 +45,10 @@ const UpdatePost: React.FC = () => {
     return { tagName };
   });
   const accsessToken = Cookies.get('Authorization');
+  useEffect(() => {
+    dispatch(setBodyErr(''));
+    dispatch(setTitleErr(''));
+  }, []);
 
   useEffect(() => {
     dispatch(setTitle(''));

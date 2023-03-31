@@ -1,22 +1,30 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import TitleInput from '../components/createPostP/TitleInput';
 import BodyInput from '../components/createPostP/BodyInput';
 import TagInput from '../components/createPostP/TagInput';
 import { BlueBtn, WhiteBtn } from '../components/common/Btn';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { useAppDispatch, useAppSelector } from '../hooks';
 import { postsApi } from '../api/postApi';
 import _ from 'lodash';
 import axios from 'axios';
 import Cookies from 'js-cookie';
-import { deleteTag, setBody, setTag, setTitle } from '../slices/postInputSlice';
+import {
+  deleteTag,
+  setBody,
+  setTitle,
+  setTagContent,
+} from '../slices/postInputSlice';
+import { setBodyErr, setTitleErr } from '../slices/validationSlice';
 
 const deleteImgEP = process.env.REACT_APP_SERVER_ADDRESS + '/images/drop';
 
 const CreatePost: React.FC = () => {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
+
+  const params = useParams();
   const state = useAppSelector((state) => state);
   const [createPost] = postsApi.useSetPostMutation();
   const titleValue = state.postInput?.title;
@@ -42,16 +50,22 @@ const CreatePost: React.FC = () => {
   const deletedImg = {
     removedImages: removedImg,
   };
-
-  // 페이지 이동 시 스크롤 최상단 이동
   useEffect(() => {
-    if ('postInput' in state && state.postInput?.title) dispatch(setTitle(''));
+    dispatch(setBodyErr(''));
+    dispatch(setTitleErr(''));
+  }, []);
+
+  // 페이지 이동 시 state 관리 및 스크롤 이동
+  useEffect(() => {
     if ('postInput' in state && state.postInput?.body) dispatch(setBody(''));
+    if ('postInput' in state && state.postInput?.tagContent) {
+      dispatch(setTagContent(''));
+    }
     if ('postInput' in state && state.postInput?.tag) {
       tag.forEach((tag) => dispatch(deleteTag(tag)));
     }
     scrollTo(0, 0);
-  }, []);
+  }, [params]);
 
   const preventClose = (e: BeforeUnloadEvent) => {
     e.preventDefault();
@@ -95,8 +109,11 @@ const CreatePost: React.FC = () => {
       state.validation.bodyErr === '' &&
       state.validation.tagErr === ''
     ) {
-      createPost(reqBody);
-      navigate('/');
+      createPost(reqBody)
+        .unwrap()
+        .then((data) => {
+          navigate(`/posts/${data.postsId}`);
+        });
     } else {
       if (state.validation.titleErr !== '' || !state.postInput.title.length) {
         alert('제목을 다시 확인해 주세요.');
