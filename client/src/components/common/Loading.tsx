@@ -4,14 +4,11 @@ import HashLoader from 'react-spinners/HashLoader';
 const Loading: React.FC = () => {
   return (
     <>
-      <div className="contentWrap">
+      <div>
         <div
           style={{
-            position: 'fixed',
-            height: '500vh',
-            top: '50%',
-            left: '50%',
-            transform: 'translate(-50%, -50%)',
+            width: '1100px',
+            height: '2000px',
             zIndex: '10',
           }}
         >

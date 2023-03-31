@@ -37,6 +37,7 @@ import { membersApi } from '../api/memberapi';
 import _ from 'lodash';
 import parse from 'html-react-parser';
 import Tag from '../components/postDetailP/Tag';
+import Loading from '../components/common/Loading';
 
 const reportOption = [
   '영리목적/홍보성',
@@ -112,7 +113,7 @@ const PostDetail: React.FC = () => {
 
   // 게시글 조회 및 추가
   const postDetailQuery = postsApi.useGetPostQuery({ postId });
-  const { data, isSuccess, refetch } = postDetailQuery;
+  const { data, isSuccess, isLoading, isFetching, refetch } = postDetailQuery;
   const [deletePost] = postsApi.useDeletePostMutation();
   // 게시글 좋아요 추가, 삭제
   const [addThumbUp] = postsApi.useAddPostThumbUpMutation();
@@ -497,129 +498,133 @@ const PostDetail: React.FC = () => {
           </ReportModal>
         </ModalContainer>
       ) : null}
+      {isLoading ? (
+        <Loading />
+      ) : (
+        <Container onClick={handleClickOutside}>
+          <PostContainer onClick={outClickIntroHandler}>
+            <div className="post-title">
+              <h1>{data?.title}</h1>
+              {isEdit ? <p>(수정됨)</p> : null}
+            </div>
+            <PostInfo>
+              <ul className="post-info">
+                <li className="image" onClick={IntroHandler}>
+                  <img src={data?.memberImage} id={data?.memberName}></img>
+                </li>
+                {isSuccess && isOpenIntro ? (
+                  <IntorductionContainer>
+                    <IntroInfo>
+                      <ul className="intro-content-info">
+                        <li className="image">
+                          <img src={data?.memberImage}></img>
+                        </li>
+                        <li className="intro-nickname">{data?.memberName}</li>
+                      </ul>
+                    </IntroInfo>
+                    <label className="introduction">
+                      {memberQuery?.data?.member.intro ||
+                        '소개 내용이 없습니다.'}
+                    </label>
+                    <button
+                      className="intro-moreInfo"
+                      onClick={() => {
+                        dispatch(setMemberName(data?.memberName));
+                        navigate('/mypage');
+                      }}
+                    >
+                      더보기 》
+                    </button>
+                  </IntorductionContainer>
+                ) : null}
 
-      <Container onClick={handleClickOutside}>
-        <PostContainer onClick={outClickIntroHandler}>
-          <div className="post-title">
-            <h1>{data?.title}</h1>
-            {isEdit ? <p>(수정됨)</p> : null}
-          </div>
-          <PostInfo>
-            <ul className="post-info">
-              <li className="image" onClick={IntroHandler}>
-                <img src={data?.memberImage} id={data?.memberName}></img>
-              </li>
-              {isSuccess && isOpenIntro ? (
-                <IntorductionContainer>
-                  <IntroInfo>
-                    <ul className="intro-content-info">
-                      <li className="image">
-                        <img src={data?.memberImage}></img>
-                      </li>
-                      <li className="intro-nickname">{data?.memberName}</li>
-                    </ul>
-                  </IntroInfo>
-                  <label className="introduction">
-                    {memberQuery?.data?.member.intro || '소개 내용이 없습니다.'}
-                  </label>
-                  <button
-                    className="intro-moreInfo"
-                    onClick={() => {
-                      dispatch(setMemberName(data?.memberName));
-                      navigate('/mypage');
-                    }}
-                  >
-                    더보기 》
-                  </button>
-                </IntorductionContainer>
-              ) : null}
-
-              <li className="nickname">{data?.memberName}</li>
-              <TimeIcon />
-              <li className="created-time">{time} 전</li>
-              <ViewIcon />
-              <li className="views">{views}</li>
-              <CommentIcon checked={true} />
-              <li className="comments">{commentCnt}</li>
-              <Bookmark
-                className="bookmark"
-                onClick={_.throttle(() => {
-                  changeBookmarkHandler();
-                }, 300)}
-              >
-                <BookmarkIcon checked={isBookmark!} />
-              </Bookmark>
-              {loginUserName ? (
-                <DropdownButton
-                  memberName={data?.memberName}
-                  isOpenReport={isOpenReport}
-                  setIsOpenReport={setIsOpenReport}
-                  isOpenDelete={isOpenDelete}
-                  setIsOpenDelete={setIsOpenDelete}
-                  setDeleteType={setDeleteType}
-                ></DropdownButton>
-              ) : null}
-            </ul>
-          </PostInfo>
-          <PostContent>
-            <div>{parsedData}</div>
-            <ul className="post-info">
-              <TagConatiner>
-                {data?.tags?.map((tag: string, idx: number) => {
-                  return <Tag key={idx} content={tag}></Tag>;
-                })}
-              </TagConatiner>
-              <button
-                onClick={_.debounce(
-                  () => {
-                    changeLiikeHandler();
-                  },
-                  3000,
-                  { leading: true },
-                )}
-              >
-                <LikeIcon checked={isLike!} />
-              </button>
-              <li className="likes">{like!}</li>
-              <button
-                onClick={_.debounce(
-                  () => {
-                    changeDislikeHandler();
-                  },
-                  3000,
-                  { leading: true },
-                )}
-              >
-                <DislikeIcon checked={isSuccess && isDislike!} />
-              </button>
-              <li className="dislikes">{isSuccess && dislike!}</li>
-            </ul>
-            <CommentInput
-              commentCnt={commentCnt!}
-              setCommentCnt={setCommentCnt!}
-            ></CommentInput>
-            <Comment
-              commentCnt={commentCnt!}
-              setIsOpenReport={setIsOpenReport!}
-              setIsOpenDelete={setIsOpenDelete!}
-              setDeleteType={setDeleteType!}
-              setIsOpenCommentIntro={setIsOpenCommentIntro}
-              setIsOpenReplyIntro={setIsOpenReplyIntro}
-              isOpenReport={isOpenReport!}
-              isOpenDelete={isOpenDelete!}
-              isOpenIntro={isOpenIntro}
-              isCommentOpenIntro={isOpenCommentIntro}
-              isReplyOpenIntro={isOpenReplyIntro}
-            ></Comment>
-          </PostContent>
-        </PostContainer>
-        <RecommendedPostContainer>
-          <div className="recommended-post">
-            <RecommendedPost></RecommendedPost>
-          </div>
-        </RecommendedPostContainer>
-        {/* <ProfilePreview></ProfilePreview> */}
-      </Container>
+                <li className="nickname">{data?.memberName}</li>
+                <TimeIcon />
+                <li className="created-time">{time} 전</li>
+                <ViewIcon />
+                <li className="views">{views}</li>
+                <CommentIcon checked={true} />
+                <li className="comments">{commentCnt}</li>
+                <Bookmark
+                  className="bookmark"
+                  onClick={_.throttle(() => {
+                    changeBookmarkHandler();
+                  }, 300)}
+                >
+                  <BookmarkIcon checked={isBookmark!} />
+                </Bookmark>
+                {loginUserName ? (
+                  <DropdownButton
+                    memberName={data?.memberName}
+                    isOpenReport={isOpenReport}
+                    setIsOpenReport={setIsOpenReport}
+                    isOpenDelete={isOpenDelete}
+                    setIsOpenDelete={setIsOpenDelete}
+                    setDeleteType={setDeleteType}
+                  ></DropdownButton>
+                ) : null}
+              </ul>
+            </PostInfo>
+            <PostContent>
+              <div>{parsedData}</div>
+              <ul className="post-info">
+                <TagConatiner>
+                  {data?.tags?.map((tag: string, idx: number) => {
+                    return <Tag key={idx} content={tag}></Tag>;
+                  })}
+                </TagConatiner>
+                <button
+                  onClick={_.debounce(
+                    () => {
+                      changeLiikeHandler();
+                    },
+                    3000,
+                    { leading: true },
+                  )}
+                >
+                  <LikeIcon checked={isLike!} />
+                </button>
+                <li className="likes">{like!}</li>
+                <button
+                  onClick={_.debounce(
+                    () => {
+                      changeDislikeHandler();
+                    },
+                    3000,
+                    { leading: true },
+                  )}
+                >
+                  <DislikeIcon checked={isSuccess && isDislike!} />
+                </button>
+                <li className="dislikes">{isSuccess && dislike!}</li>
+              </ul>
+              <CommentInput
+                commentCnt={commentCnt!}
+                setCommentCnt={setCommentCnt!}
+              ></CommentInput>
+              <Comment
+                commentCnt={commentCnt!}
+                setIsOpenReport={setIsOpenReport!}
+                setIsOpenDelete={setIsOpenDelete!}
+                setDeleteType={setDeleteType!}
+                setIsOpenCommentIntro={setIsOpenCommentIntro}
+                setIsOpenReplyIntro={setIsOpenReplyIntro}
+                isOpenReport={isOpenReport!}
+                isOpenDelete={isOpenDelete!}
+                isOpenIntro={isOpenIntro}
+                isCommentOpenIntro={isOpenCommentIntro}
+                isReplyOpenIntro={isOpenReplyIntro}
+              ></Comment>
+            </PostContent>
+          </PostContainer>
+          <RecommendedPostContainer>
+            <div className="recommended-post">
+              <RecommendedPost></RecommendedPost>
+            </div>
+          </RecommendedPostContainer>
+          {/* <ProfilePreview></ProfilePreview> */}
+        </Container>
+      )}
     </>
   );
 };
