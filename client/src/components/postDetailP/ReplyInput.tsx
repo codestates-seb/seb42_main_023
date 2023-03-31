@@ -70,14 +70,42 @@ const ReplyInput: React.FC<CommentProps> = ({ commentInfo }: CommentProps) => {
         type="text"
         placeholder="답글을 남겨 주세요"
         ref={replyRef}
+        style={{
+          display:
+            commentInfo.content === '삭제된 댓글입니다.'
+              ? 'none'
+              : commentInfo.content === '신고된 댓글입니다.'
+              ? 'none'
+              : 'inlineblock',
+        }}
         onChange={valueCheck}
         onKeyDown={enterHandler}
       ></Input>
       {!replyRef.current?.value ? (
-        <AddCommentBtn className="noContent">등록</AddCommentBtn>
+        <AddCommentBtn
+          className="noContent"
+          style={{
+            display:
+              commentInfo.content === '삭제된 댓글입니다.'
+                ? 'none'
+                : commentInfo.content === '신고된 댓글입니다.'
+                ? 'none'
+                : 'inlineblock',
+          }}
+        >
+          등록
+        </AddCommentBtn>
       ) : (
         <AddCommentBtn
           className="isContent"
+          style={{
+            display:
+              commentInfo.content === '삭제된 댓글입니다.'
+                ? 'none'
+                : commentInfo.content === '신고된 댓글입니다.'
+                ? 'none'
+                : 'inlineblock',
+          }}
           onClick={() => {
             dispatch(setCommentId(commentInfo.commentId));
             if (

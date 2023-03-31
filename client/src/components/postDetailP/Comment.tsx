@@ -464,6 +464,12 @@ const Comment: React.FC<
                         className="edit-content"
                         placeholder={comment.content}
                         ref={commentEditInput}
+                        style={{
+                          display:
+                            comment.content === '삭제된 댓글입니다.'
+                              ? 'none'
+                              : 'flex',
+                        }}
                         // value={comment.content}
                         onKeyDown={enterHandler}
                       ></input>
@@ -732,6 +738,7 @@ const IntorductionContainer = styled.div`
   top: 50px;
   left: 18px;
   background-color: white;
+
   .introduction {
     font-size: 17x;
     color: gray;
@@ -779,7 +786,7 @@ const CommentInfo = styled.div`
 
 const CommentContent = styled.div`
   padding-left: 50px;
-  margin: 10px 0 10px 0;
+  margin: 10px 0 0 0;
   display: flex;
   flex-direction: column;
   width: 720px;
