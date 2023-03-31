@@ -45,7 +45,7 @@ public class MemberDto {
     public static class PatchReq {
         @NotNull(message = "내용을 입력해주세요.")
         @NotBlank(message = "공백은 불가능합니다.")
-        @Size(max = 500, message = "60글자 이내로 작성 가능합니다.")
+        @Size(max = 1700, message = "60글자 이내로 작성 가능합니다.")
         private String intro;
 
         public PatchReq(String intro) {
