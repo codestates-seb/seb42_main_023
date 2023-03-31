@@ -23,7 +23,6 @@ const deleteImgEP = process.env.REACT_APP_SERVER_ADDRESS + '/images/drop';
 const CreatePost: React.FC = () => {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
-
   const params = useParams();
   const state = useAppSelector((state) => state);
   const [createPost] = postsApi.useSetPostMutation();

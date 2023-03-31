@@ -8,9 +8,11 @@ const Loading: React.FC = () => {
         <div
           style={{
             position: 'fixed',
+            height: '500vh',
             top: '50%',
             left: '50%',
             transform: 'translate(-50%, -50%)',
+            zIndex: '10',
           }}
         >
           <HashLoader color="#0069CA" />

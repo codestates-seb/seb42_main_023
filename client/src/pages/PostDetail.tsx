@@ -112,7 +112,7 @@ const PostDetail: React.FC = () => {
 
   // 게시글 조회 및 추가
   const postDetailQuery = postsApi.useGetPostQuery({ postId });
-  const { data, isSuccess, isLoading, refetch } = postDetailQuery;
+  const { data, isSuccess, refetch } = postDetailQuery;
   const [deletePost] = postsApi.useDeletePostMutation();
   // 게시글 좋아요 추가, 삭제
   const [addThumbUp] = postsApi.useAddPostThumbUpMutation();
@@ -497,6 +497,7 @@ const PostDetail: React.FC = () => {
           </ReportModal>
         </ModalContainer>
       ) : null}
+
       <Container onClick={handleClickOutside}>
         <PostContainer onClick={outClickIntroHandler}>
           <div className="post-title">
