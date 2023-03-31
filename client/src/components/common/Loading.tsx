@@ -11,9 +11,7 @@ const Loading: React.FC = () => {
             height: '2000px',
             zIndex: '10',
           }}
-        >
-          <HashLoader color="#0069CA" />
-        </div>
+        ></div>
       </div>
     </>
   );

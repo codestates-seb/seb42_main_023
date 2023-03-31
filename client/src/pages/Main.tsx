@@ -9,6 +9,7 @@ import { postListApi } from '../api/postListapi';
 import { setPostSetting } from '../slices/mainSlice';
 import Pagenation from '../components/common/Pagination';
 import { RiMoneyDollarCircleLine } from 'react-icons/ri';
+import Loading from '../components/common/Loading';
 
 const Main = () => {
   const dispatch = useAppDispatch();
@@ -31,6 +32,9 @@ const Main = () => {
     window.scrollTo(0, 0);
   }, []);
 
+  if (!isSuccess) {
+    return <Loading />;
+  }
   return (
     <>
       <Banner>
