@@ -464,6 +464,12 @@ const Comment: React.FC<
                         className="edit-content"
                         placeholder={comment.content}
                         ref={commentEditInput}
+                        style={{
+                          display:
+                            comment.content === '삭제된 댓글입니다.'
+                              ? 'none'
+                              : 'flex',
+                        }}
                         // value={comment.content}
                         onKeyDown={enterHandler}
                       ></input>
@@ -480,15 +486,17 @@ const Comment: React.FC<
                         }}
                       >
                         {comment?.content}
-                        {commentIsEdit &&
-                        comment?.content === '삭제된 댓글입니다.'
-                          ? null
-                          : commentIsEdit &&
-                            comment?.content === '신고된 댓글입니다.'
-                          ? null
-                          : commentIsEdit
-                          ? '(수정됨)'
-                          : null}
+                        <div className="edit-confirm">
+                          {commentIsEdit &&
+                          comment?.content === '삭제된 댓글입니다.'
+                            ? null
+                            : commentIsEdit &&
+                              comment?.content === '신고된 댓글입니다.'
+                            ? null
+                            : commentIsEdit
+                            ? '(수정됨)'
+                            : null}
+                        </div>
                       </div>
                     )}
                     {comment?.replyCount !== 0 ? (
@@ -719,6 +727,9 @@ const CommentContainer = styled.div`
     color: #0069ca;
     cursor: pointer;
   }
+  .edit-confirm {
+    font-size: 12px;
+  }
 `;
 
 const IntorductionContainer = styled.div`
@@ -732,6 +743,7 @@ const IntorductionContainer = styled.div`
   top: 50px;
   left: 18px;
   background-color: white;
+
   .introduction {
     font-size: 17x;
     color: gray;
@@ -779,7 +791,7 @@ const CommentInfo = styled.div`
 
 const CommentContent = styled.div`
   padding-left: 50px;
-  margin: 10px 0 10px 0;
+  margin: 10px 0 0 0;
   display: flex;
   flex-direction: column;
   width: 720px;

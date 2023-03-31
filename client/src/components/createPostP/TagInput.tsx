@@ -61,7 +61,7 @@ const TagInput: React.FC = () => {
         <TagInputContainer>
           <Input
             className="tag-input"
-            placeholder="태그를 입력하고 엔터를 치세요.(최대 5개)"
+            placeholder="Enter를 쳐서 태그를 추가하세요.(최소 1개, 최대 5개)"
             onChange={valueCheck}
             onKeyDown={addTagHandler}
             value={state.postInput.tagContent}
@@ -106,9 +106,9 @@ const Input = styled.input`
   border: 1px solid #d4d4d4;
   padding: 0 10px 0 10px;
   padding-left: 15px;
-  ::placeholder {
+  /* ::placeholder {
     font-style: italic;
-  }
+  } */
   :focus {
     outline: 2px solid #0069ca;
   }
