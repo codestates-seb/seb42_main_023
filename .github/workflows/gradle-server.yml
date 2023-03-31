@@ -33,7 +33,7 @@ jobs:
       - uses: actions/checkout@v3
       
       ## create properties file
-      - name: make application-local.yml
+      - name: make application-server.yml
         run: |
           # spring의 resources 경로로 이동
           cd ./server/src/main/resources 
@@ -46,10 +46,10 @@ jobs:
           echo "${{ secrets.APPLICATION_SERVER }}" > ./application.yml
           
           # application-local.yml 파일 생성
-          touch ./application-local.yml 
+          touch ./application-server.yml 
           
           # GitHub-Actions 에서 설정한 값으로 값 지정
-          echo "${{ secrets.APPLICATION_SERVER }}" > ./application-local.yml
+          echo "${{ secrets.APPLICATION_SERVER }}" > ./application-server.yml
           
         shell: bash
       
@@ -67,10 +67,10 @@ jobs:
           echo "${{ secrets.APPLICATION_SERVER }}" > ./application.yml
           
           # application-local.yml 파일 생성
-          touch ./application-local.yml 
+          touch ./application-server.yml 
           
           # GitHub-Actions 에서 설정한 값으로 값 지정
-          echo "${{ secrets.APPLICATION_SERVER }}" > ./application-local.yml
+          echo "${{ secrets.APPLICATION_SERVER }}" > ./application-server.yml
           
         shell: bash
       
@@ -80,6 +80,10 @@ jobs:
         with:
           java-version: '11'
           distribution: 'temurin'
+          
+      # 서버 빌드 로그옵션
+      - name: Build log with Gradle
+        run: cd server && ./gradlew test -i
 
       # 서버 빌드 수행
       - name: Build with Gradle
