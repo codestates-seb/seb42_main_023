@@ -34,7 +34,6 @@ const Reply: React.FC<Partial<ReplyProps & ReportProps>> = ({
   isReplyOpenIntro,
   setIsOpenReplyIntro,
 }: Partial<ReplyProps & ReportProps>) => {
-  const replyEditInput = useRef<HTMLTextAreaElement>(null);
   const dispatch = useAppDispatch();
   const state = useAppSelector(
     (
@@ -44,11 +43,27 @@ const Reply: React.FC<Partial<ReplyProps & ReportProps>> = ({
     },
   );
   const navigate = useNavigate();
+  const [editReply, setEditReply] = useState<string>('');
   const loginUserName = window.localStorage.getItem('name');
   const commentId = 'comment' in state && state.comment?.commentId;
   const replyId = 'reply' in state && state.reply?.replyId;
   const selectedMember = 'post' in state ? state.post.selectedMember : null;
+  const replyTextarea = document.getElementById(
+    'edit-reply',
+  ) as HTMLTextAreaElement;
+  const replyEditTextareaRef = useRef<HTMLTextAreaElement>(replyTextarea);
 
+  // Textarea 값 확인
+  const valueCheck = (event: React.ChangeEvent<HTMLTextAreaElement>): void => {
+    const data = event.target.value.replaceAll(/\n/g, '<br>');
+    setEditReply(data);
+  };
+  // textarea 높이 조절
+  const handleResizeHeight = () => {
+    replyEditTextareaRef!.current!.style.height = 'auto';
+    replyEditTextareaRef!.current!.style.height =
+      replyEditTextareaRef.current?.scrollHeight + 'px';
+  };
   // 답글
   const replyQuery = repliesApi.useGetReplyQuery({ commentId, replyPage });
   const replySucccess = replyQuery.isSuccess;
@@ -252,14 +267,14 @@ const Reply: React.FC<Partial<ReplyProps & ReportProps>> = ({
                   loginUserName === replyInfo?.memberName ? 'block' : 'none',
               }}
               onClick={(): void => {
-                if (!replyEditInput.current?.value) {
+                if (!replyEditTextareaRef.current?.value) {
                   dispatch(setIsEdit(idx!));
                   return;
                 }
                 dispatch(setIsEdit(idx!));
                 updateMutation({
                   replyId: replyInfo.replyId,
-                  content: replyEditInput.current?.value,
+                  content: editReply,
                 });
               }}
             >
@@ -376,9 +391,11 @@ const Reply: React.FC<Partial<ReplyProps & ReportProps>> = ({
           // 댓글 수정 시 생기는 textarea
           <InputWrap>
             <textarea
+              id="edit-reply"
               className="edit-reply"
-              ref={replyEditInput}
-              // onKeyDown={enterHandler}
+              ref={replyEditTextareaRef}
+              onChange={valueCheck}
+              onInput={handleResizeHeight}
             ></textarea>
           </InputWrap>
         ) : (
@@ -395,7 +412,7 @@ const Reply: React.FC<Partial<ReplyProps & ReportProps>> = ({
           >
             {parse(String(replyInfo?.content))}
 
-            <div>
+            <div className="edit-confirm">
               {replyIsEdit && replyInfo?.content === '삭제된 답글입니다.'
                 ? null
                 : replyIsEdit && replyInfo?.content === '신고된 답글입니다.'
@@ -437,7 +454,7 @@ const ReplyContainer = styled.div`
   }
   .reply-content {
     display: flex;
-    align-items: center;
+    align-items: flex-end;
     width: 600px;
     height: auto;
     display: flex;
@@ -495,6 +512,9 @@ const ReplyContainer = styled.div`
     font-size: 16px;
     font-weight: 450;
     cursor: pointer;
+  }
+  .edit-confirm {
+    font-size: 12px;
   }
 `;
 const IntorductionContainer = styled.div`
