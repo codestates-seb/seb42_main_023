@@ -59,7 +59,9 @@ const Comment: React.FC<
   );
   const navigate = useNavigate();
   const [page, setPage] = useState<number>(1);
+  const [commentData, setCommentData] = useState<Array<CommentType>>([]);
   const [editComment, setEditComment] = useState<string>('');
+  const [selectedComment, setSelectedComment] = useState<string>('');
   const loginUserName = window.localStorage.getItem('name');
   const params = useParams();
   const postId = params.postId;
@@ -74,7 +76,20 @@ const Comment: React.FC<
   const valueCheck = (event: React.ChangeEvent<HTMLTextAreaElement>): void => {
     const data = event.target.value.replaceAll(/\n/g, '<br>');
     setEditComment(data);
+    setSelectedComment(event.target.value);
   };
+
+  const initData = (event: React.MouseEvent<HTMLLIElement>): void => {
+    if (event.target instanceof HTMLElement) {
+      const data = event.target!.dataset!.comment!;
+      const parsedData = data.replaceAll(/<br>/g, '\n');
+      setSelectedComment(parsedData);
+    }
+  };
+
+  // useEffect(() => {
+  //   initData();
+  // }, []);
   // textarea 높이 조절
   const handleResizeHeight = () => {
     commentEditTextareaRef!.current.style!.height = 'auto';
@@ -222,7 +237,6 @@ const Comment: React.FC<
       event.target instanceof HTMLElement
     ) {
       setIsOpenCommentIntro?.(!isCommentOpenIntro!);
-      console.log('isOpenIntro', isCommentOpenIntro!);
       dispatch(setCommentId(Number(event.target.dataset.commentid)));
       dispatch(setSelectedMember(event.target.id));
     }
@@ -237,9 +251,9 @@ const Comment: React.FC<
   useEffect(() => {
     // 답글 데이터가 변경될 때마다 총 답글 데이터 반영
     dispatch(setTotalReplies(replyQuery.data?.replies || []));
-  }, [replyQuery.data]);
-  // // 수정 중인 답글 반영
-  // setEditComment(commentQuery.data?.comments);
+    setCommentData(commentQuery.data?.comments);
+  }, [replyQuery.data, commentQuery.data]);
+
   const minusCommentPage = () => {
     if (page >= 2) {
       setPage((prev) => (prev = prev - 1));
@@ -354,6 +368,9 @@ const Comment: React.FC<
                           <li
                             className="comment-update"
                             id="edit"
+                            data-comment={
+                              commentData && commentData![idx]?.content
+                            }
                             style={{
                               display:
                                 loginUserName === comment?.memberName
@@ -366,6 +383,7 @@ const Comment: React.FC<
                                 comment?.content !== '삭제된 댓글입니다.'
                               ) {
                                 dispatch(setIsEdit(idx));
+
                                 return;
                               }
                               dispatch(setIsEdit(idx));
@@ -381,15 +399,22 @@ const Comment: React.FC<
                         ) : (
                           <li
                             className="comment-update"
+                            data-comment={
+                              commentData && commentData![idx]?.content
+                            }
                             style={{
                               display:
                                 loginUserName == comment?.memberName
                                   ? 'block'
                                   : 'none',
                             }}
-                            onClick={(): void => {
-                              if (comment?.content !== '삭제된 댓글입니다.')
+                            onClick={(
+                              event: React.MouseEvent<HTMLLIElement>,
+                            ): void => {
+                              if (comment?.content !== '삭제된 댓글입니다.') {
                                 dispatch(setIsEdit(idx));
+                                initData(event);
+                              }
                             }}
                           >
                             {comment?.content === '삭제된 댓글입니다.' ||
@@ -496,6 +521,7 @@ const Comment: React.FC<
                               id="edit-comment"
                               className="edit-content"
                               ref={commentEditTextareaRef}
+                              value={selectedComment}
                               style={{
                                 display:
                                   comment.content === '삭제된 댓글입니다.'
