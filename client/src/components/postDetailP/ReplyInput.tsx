@@ -63,40 +63,44 @@ const ReplyInput: React.FC<CommentProps> = ({ commentInfo }: CommentProps) => {
   };
 
   return (
-    <ReplyInputContainer>
+    <ReplyInputContainer
+      style={{
+        width: 0,
+        height: 0,
+        display:
+          commentInfo.content === '삭제된 댓글입니다.'
+            ? 'none'
+            : commentInfo.content === '신고된 댓글입니다.'
+            ? 'none'
+            : 'inlineblock',
+      }}
+    >
       <InputWrap>
         <textarea
           id="reply"
-          placeholder="답글을 남겨 주세요"
-          ref={replyRef}
-          style={{
-            display:
-              commentInfo.content === '삭제된 댓글입니다.'
-                ? 'none'
-                : commentInfo.content === '신고된 댓글입니다.'
-                ? 'none'
-                : 'inlineblock',
-          }}
           onChange={valueCheck}
           onInput={handleResizeHeight}
         ></textarea>
       </InputWrap>
       <ButtonContainer>
-        <CanceReplyBtn onClick={cancelHandler}> 취소</CanceReplyBtn>
         {!replyRef.current?.value ? (
-          <AddReplyBtn
-            className="noReplyContent"
-            style={{
-              display:
-                commentInfo.content === '삭제된 댓글입니다.'
-                  ? 'none'
-                  : commentInfo.content === '신고된 댓글입니다.'
-                  ? 'none'
-                  : 'inlineblock',
-            }}
-          >
-            등록
-          </AddReplyBtn>
+          <>
+            <CanceReplyBtn
+              onClick={cancelHandler}
+              style={{
+                display:
+                  commentInfo.content === '삭제된 댓글입니다.'
+                    ? 'none'
+                    : commentInfo.content === '신고된 댓글입니다.'
+                    ? 'none'
+                    : 'inlineblock',
+              }}
+            >
+              {' '}
+              취소
+            </CanceReplyBtn>
+            <AddReplyBtn className="noReplyContent">등록</AddReplyBtn>
+          </>
         ) : (
           <AddReplyBtn
             className="isReplyContent"
