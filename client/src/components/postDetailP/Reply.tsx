@@ -20,6 +20,7 @@ import _ from 'lodash';
 import { membersApi } from '../../api/memberapi';
 import { useNavigate } from 'react-router-dom';
 import { setMemberName } from '../../slices/headerSlice';
+import parse from 'html-react-parser';
 
 const Reply: React.FC<Partial<ReplyProps & ReportProps>> = ({
   replyInfo,
@@ -33,7 +34,7 @@ const Reply: React.FC<Partial<ReplyProps & ReportProps>> = ({
   isReplyOpenIntro,
   setIsOpenReplyIntro,
 }: Partial<ReplyProps & ReportProps>) => {
-  const replyEditInput = useRef<HTMLInputElement>(null);
+  const replyEditInput = useRef<HTMLTextAreaElement>(null);
   const dispatch = useAppDispatch();
   const state = useAppSelector(
     (
@@ -186,16 +187,16 @@ const Reply: React.FC<Partial<ReplyProps & ReportProps>> = ({
   // 시간 계산
   const time = timeSince(replyInfo!.createdAt);
 
-  const enterHandler = (event: React.KeyboardEvent<HTMLInputElement>): void => {
-    if (!replyEditInput.current?.value) return;
-    if (event.key === 'Enter') {
-      dispatch(setIsEdit(idx!));
-      updateMutation({
-        replyId: replyInfo?.replyId,
-        content: replyEditInput.current?.value,
-      });
-    }
-  };
+  // const enterHandler = (event: React.KeyboardEvent<HTMLInputElement>): void => {
+  //   if (!replyEditInput.current?.value) return;
+  //   if (event.key === 'Enter') {
+  //     dispatch(setIsEdit(idx!));
+  //     updateMutation({
+  //       replyId: replyInfo?.replyId,
+  //       content: replyEditInput.current?.value,
+  //     });
+  //   }
+  // };
 
   return (
     <ReplyContainer onClick={outClickIntroHandler}>
@@ -250,7 +251,7 @@ const Reply: React.FC<Partial<ReplyProps & ReportProps>> = ({
                 display:
                   loginUserName === replyInfo?.memberName ? 'block' : 'none',
               }}
-              onClick={(event): void => {
+              onClick={(): void => {
                 if (!replyEditInput.current?.value) {
                   dispatch(setIsEdit(idx!));
                   return;
@@ -372,13 +373,14 @@ const Reply: React.FC<Partial<ReplyProps & ReportProps>> = ({
         {'reply' in state &&
         replyInfo!.replyId === replyId &&
         state.reply?.isEdit[idx!] ? (
-          // 댓글 수정 시 생기는 INPUT
-          <input
-            className="edit-reply"
-            placeholder={replyInfo && replyInfo.content}
-            ref={replyEditInput}
-            onKeyDown={enterHandler}
-          ></input>
+          // 댓글 수정 시 생기는 textarea
+          <InputWrap>
+            <textarea
+              className="edit-reply"
+              ref={replyEditInput}
+              // onKeyDown={enterHandler}
+            ></textarea>
+          </InputWrap>
         ) : (
           <div
             className="reply-content"
@@ -391,7 +393,8 @@ const Reply: React.FC<Partial<ReplyProps & ReportProps>> = ({
                   : '#000000',
             }}
           >
-            {replyInfo!.content}
+            {parse(String(replyInfo?.content))}
+
             <div>
               {replyIsEdit && replyInfo?.content === '삭제된 답글입니다.'
                 ? null
@@ -436,6 +439,9 @@ const ReplyContainer = styled.div`
     display: flex;
     align-items: center;
     width: 600px;
+    height: auto;
+    display: flex;
+    justify-content: flex-start;
     word-break: break-all;
     font-size: 17px;
   }
@@ -553,8 +559,8 @@ const ReplyContent = styled.div`
   flex-direction: column;
   padding: 15px 0 0 0;
   margin: 0px 0 20px 15px;
-  width: 580px;
-  height: 50px;
+  width: 660px;
+  height: auto;
   font-size: 17px;
 
   .edit-reply {
@@ -562,13 +568,31 @@ const ReplyContent = styled.div`
     font-size: 17px;
     height: 50px;
     border-bottom: 1px solid #d4d4d4;
-    padding: 3px 0 8px 0px;
 
     ::placeholder {
       color: #0275e1;
     }
+  }
+`;
+
+const InputWrap = styled.div`
+  display: flex;
+  textarea {
+    box-sizing: border-box;
+    width: 650px;
+    height: auto;
+    min-height: 58px;
+    resize: none;
+    border: 1px solid var(--border-color);
+    padding: 10px;
+    border-radius: 6px;
+    margin: 0 0 0 3px;
+
     :focus {
-      outline: none;
+      outline: 2px solid var(--point-blue-color);
+    }
+    ::placeholder {
+      font-size: 14px;
     }
   }
 `;

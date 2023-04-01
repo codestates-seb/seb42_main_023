@@ -32,6 +32,7 @@ import { CommentInputProps } from '../../types/PostDetail';
 import { setMemberName } from '../../slices/headerSlice';
 import { useNavigate } from 'react-router';
 import Loading from '../common/Loading';
+import parse from 'html-react-parser';
 
 const Comment: React.FC<
   Partial<CommentInputProps & ReportProps & CommentProps>
@@ -66,7 +67,7 @@ const Comment: React.FC<
 
   // 댓글 조회
   const commentQuery = commentsApi.useGetCommentQuery({ postId, page });
-  const { data, isLoading } = commentQuery;
+  const { isLoading } = commentQuery;
   // 댓글 업데이트
   const commentMutation = commentsApi.useUpdateCommentMutation();
   const [updateMutation] = commentMutation;
@@ -80,7 +81,7 @@ const Comment: React.FC<
     },
   );
   const { isSuccess } = replyQuery;
-  const commentEditInput = useRef<HTMLInputElement>(null);
+  const commentEditInput = useRef<HTMLTextAreaElement>(null);
 
   //  멤버 정보 조회
   const memberQuery = membersApi.useGetMemberQuery(
@@ -262,19 +263,19 @@ const Comment: React.FC<
                   });
                 // 시간 계산
                 const time = timeSince(comment.createdAt);
-                const enterHandler = (
-                  event: React.KeyboardEvent<HTMLInputElement>,
-                ): void => {
-                  if (!commentEditInput.current?.value) return;
-                  if (event.key === 'Enter') {
-                    dispatch(setIsEdit(idx));
-                    updateMutation({
-                      postId: postId,
-                      commentId: comment.commentId,
-                      content: commentEditInput.current?.value,
-                    });
-                  }
-                };
+                // const enterHandler = (
+                //   event: React.KeyboardEvent<HTMLInputElement>,
+                // ): void => {
+                //   if (!commentEditInput.current?.value) return;
+                //   if (event.key === 'Enter') {
+                //     dispatch(setIsEdit(idx));
+                //     updateMutation({
+                //       postId: postId,
+                //       commentId: comment.commentId,
+                //       content: commentEditInput.current?.value,
+                //     });
+                //   }
+                // };
 
                 // 답글 수정 여부
                 const commentIsEdit =
@@ -454,7 +455,7 @@ const Comment: React.FC<
                             <button
                               onClick={_.debounce(
                                 () => {
-                                  commentLiikeHandler(comment);
+                                  commentDislikeHandler(comment);
                                 },
                                 3000,
                                 { leading: true },
@@ -474,20 +475,21 @@ const Comment: React.FC<
                         {'comment' in state &&
                         state.comment.isEdit !== undefined &&
                         state.comment.isEdit[idx] ? (
-                          // 댓글 수정 시 생기는 INPUT
-                          <input
-                            className="edit-content"
-                            placeholder={comment.content}
-                            ref={commentEditInput}
-                            style={{
-                              display:
-                                comment.content === '삭제된 댓글입니다.'
-                                  ? 'none'
-                                  : 'flex',
-                            }}
-                            // value={comment.content}
-                            onKeyDown={enterHandler}
-                          ></input>
+                          // 댓글 수정 시 생기는 textarea
+                          <InputWrap>
+                            <textarea
+                              className="edit-content"
+                              ref={commentEditInput}
+                              style={{
+                                display:
+                                  comment.content === '삭제된 댓글입니다.'
+                                    ? 'none'
+                                    : 'flex',
+                              }}
+                              // value={comment.content}
+                              // onKeyDown={enterHandler}
+                            ></textarea>
+                          </InputWrap>
                         ) : (
                           <div
                             className="content"
@@ -500,7 +502,8 @@ const Comment: React.FC<
                                   : ' #000000',
                             }}
                           >
-                            {comment?.content}
+                            {/* //TODO */}
+                            {parse(String(comment?.content))}
                             <div className="edit-confirm">
                               {commentIsEdit &&
                               comment?.content === '삭제된 댓글입니다.'
@@ -823,7 +826,6 @@ const CommentContent = styled.div`
   flex-direction: column;
   width: 720px;
   height: auto;
-
   padding: 0 0 15px 0;
   border-bottom: 1px solid #d4d4d4;
 
@@ -851,7 +853,7 @@ const CommentContent = styled.div`
 
 const ReplyContainer = styled.div`
   width: 100%;
-  height: 100%;
+  height: auto;
   background-color: #ffffff;
   padding: 0 0 15px 0;
   /* border-bottom: 1px solid #d4d4d4; */
@@ -879,5 +881,26 @@ const ReplyBtn = styled.button`
     background-color: #0275e1;
     color: white;
     text-align: center;
+  }
+`;
+
+const InputWrap = styled.div`
+  display: flex;
+  textarea {
+    box-sizing: border-box;
+    width: 720px;
+    height: auto;
+    min-height: 58px;
+    resize: none;
+    border: 1px solid var(--border-color);
+    padding: 10px;
+    border-radius: 6px;
+    margin: 0 0 0 3px;
+    :focus {
+      outline: 2px solid var(--point-blue-color);
+    }
+    ::placeholder {
+      font-size: 14px;
+    }
   }
 `;
