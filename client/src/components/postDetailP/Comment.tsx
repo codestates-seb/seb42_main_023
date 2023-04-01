@@ -20,7 +20,12 @@ import {
   ReportProps,
   CommentProps,
 } from '../../types/PostDetail';
-import { setCommentId, isEdit, setIsEdit } from '../../slices/commentSlice';
+import {
+  setCommentId,
+  isEdit,
+  setIsEdit,
+  setCommentPage,
+} from '../../slices/commentSlice';
 import {
   isOpened,
   setIsOpened,
@@ -257,10 +262,12 @@ const Comment: React.FC<
   const minusCommentPage = () => {
     if (page >= 2) {
       setPage((prev) => (prev = prev - 1));
+      dispatch(setCommentPage(page - 1));
     }
   };
   const plusCommentPage = () => {
     setPage((prev) => prev + 1);
+    dispatch(setCommentPage(page + 1));
   };
   const minusReplyPage = () => {
     if (replyPage >= 2) {

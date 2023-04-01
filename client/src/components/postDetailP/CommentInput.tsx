@@ -2,8 +2,9 @@ import React, { useRef } from 'react';
 import { useParams } from 'react-router-dom';
 import styled from 'styled-components';
 import { commentsApi } from '../../api/commentApi';
-import { useAppDispatch } from '../../hooks';
+import { useAppDispatch, useAppSelector } from '../../hooks';
 import { addCommentEdit, setComment } from '../../slices/commentSlice';
+import { isOpened, setIsOpened } from '../../slices/replySlice';
 import { CommentInputProps } from '../../types/PostDetail';
 
 const CommentInput: React.FC<CommentInputProps> = ({
@@ -11,23 +12,38 @@ const CommentInput: React.FC<CommentInputProps> = ({
   commentCnt,
 }: CommentInputProps) => {
   const dispatch = useAppDispatch();
+  const state = useAppSelector((state) => {
+    return state;
+  });
   const commentRef = useRef<HTMLTextAreaElement>(null);
   const params = useParams();
   const postId = params.postId;
+  const page = state.comment && state.comment.page;
+  const commentQuery = commentsApi.useGetCommentQuery({ postId, page });
 
   // 댓글 추가 mutation
   const commetMutation = commentsApi.useSetCommentMutation();
   const [addComments] = commetMutation;
   const textarea = document.getElementById('comment') as HTMLTextAreaElement;
   const text = textarea?.value.replaceAll(/\n/g, '<br>');
+
   // 댓글 추가
   const addCommentHandler = () => {
+    const open = Array.from(
+      {
+        length: commentQuery.data?.comments?.length,
+      },
+      (el) => (el = false),
+    );
+
+    console.log('abc', open);
     addComments({
       postId: postId,
       content: text,
     })
       .unwrap()
       .then(() => {
+        dispatch(isOpened(open!));
         setCommentCnt(commentCnt + 1);
         dispatch(addCommentEdit(false));
         commentRef.current!.value = '';

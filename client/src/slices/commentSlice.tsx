@@ -48,8 +48,8 @@ const commentSlice = createSlice({
       state.isOpeneIntro = !state.isOpeneIntro;
     },
     // 댓글 페이지 번호 증가
-    setPage: (state): void => {
-      state.page = state.page + 1;
+    setCommentPage: (state, action: PayloadAction<number>): void => {
+      (state.page as unknown) = action.payload;
     },
     // edit 댓글 추가
     setCommentCnt: (state, action: PayloadAction<number>): void => {
@@ -68,6 +68,6 @@ export const {
   setIsEdit,
   addCommentEdit,
   setIsOpenIntro,
-  setPage,
+  setCommentPage,
   setCommentCnt,
 } = commentSlice.actions;
