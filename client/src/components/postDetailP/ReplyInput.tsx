@@ -43,6 +43,8 @@ const ReplyInput: React.FC<CommentProps> = ({ commentInfo }: CommentProps) => {
       .unwrap()
       .then(() => {
         replyRef.current!.value = '';
+        replyRef!.current!.style.height = '58px';
+
         refetch();
       });
   };
@@ -65,8 +67,6 @@ const ReplyInput: React.FC<CommentProps> = ({ commentInfo }: CommentProps) => {
   return (
     <ReplyInputContainer
       style={{
-        width: 0,
-        height: 0,
         display:
           commentInfo.content === '삭제된 댓글입니다.'
             ? 'none'
@@ -78,29 +78,24 @@ const ReplyInput: React.FC<CommentProps> = ({ commentInfo }: CommentProps) => {
       <InputWrap>
         <textarea
           id="reply"
+          placeholder="답글을 남겨 주세요"
+          ref={replyRef}
+          style={{
+            display:
+              commentInfo.content === '삭제된 댓글입니다.'
+                ? 'none'
+                : commentInfo.content === '신고된 댓글입니다.'
+                ? 'none'
+                : 'inlineblock',
+          }}
           onChange={valueCheck}
           onInput={handleResizeHeight}
         ></textarea>
       </InputWrap>
       <ButtonContainer>
+        <CanceReplyBtn onClick={cancelHandler}> 취소</CanceReplyBtn>
         {!replyRef.current?.value ? (
-          <>
-            <CanceReplyBtn
-              onClick={cancelHandler}
-              style={{
-                display:
-                  commentInfo.content === '삭제된 댓글입니다.'
-                    ? 'none'
-                    : commentInfo.content === '신고된 댓글입니다.'
-                    ? 'none'
-                    : 'inlineblock',
-              }}
-            >
-              {' '}
-              취소
-            </CanceReplyBtn>
-            <AddReplyBtn className="noReplyContent">등록</AddReplyBtn>
-          </>
+          <AddReplyBtn className="noReplyContent">등록</AddReplyBtn>
         ) : (
           <AddReplyBtn
             className="isReplyContent"
@@ -173,7 +168,6 @@ const ButtonContainer = styled.div`
   margin: 15px 0 15px 590px;
   .noReplyContent {
     cursor: default;
-
     background: var(--sub-font-color);
   }
   #isReplyContent {
@@ -193,7 +187,6 @@ const CanceReplyBtn = styled.button`
   border-radius: 10px;
   background-color: var(--background-color);
   cursor: pointer;
-
   :hover {
     color: var(--background-color);
     background-color: var(--hover-font-gray-color);
