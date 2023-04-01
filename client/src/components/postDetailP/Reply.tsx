@@ -64,14 +64,11 @@ const Reply: React.FC<Partial<ReplyProps & ReportProps>> = ({
     setSelectedReply(event.target.value);
   };
 
-  console.log(replyData);
   const initData = (event: React.MouseEvent<HTMLLIElement>): void => {
     if (event.target instanceof HTMLElement) {
-      console.log(event.target);
       const data = event.target!.dataset!.reply!;
       const parsedData = data?.replaceAll(/<br>/g, '\n');
       setSelectedReply(parsedData);
-      console.log('selected', selectedReply);
     }
   };
 
@@ -116,13 +113,11 @@ const Reply: React.FC<Partial<ReplyProps & ReportProps>> = ({
   const ReplyLiikeHandler = (reply: ReplyType): void => {
     const replyId = reply.replyId;
     if (reply?.isThumbup && !reply?.isThumbdown) {
-      console.log('좋아요 삭제');
       removeThumbUp({ replyId });
       return;
     }
     // 싫어요만 있는 경우
     if (!reply?.isThumbup && reply?.isThumbdown) {
-      console.log('싫어요 삭제 후 좋아요 추가');
       removeThumbDown({ replyId });
       setTimeout(() => {
         addThumbUp({ replyId });
@@ -132,7 +127,6 @@ const Reply: React.FC<Partial<ReplyProps & ReportProps>> = ({
     }
     // 둘 다 없는 경우
     if (!reply?.isThumbdown && !reply?.isThumbdown) {
-      console.log('좋아요 추가');
       addThumbUp({ replyId });
       return;
     }
@@ -144,7 +138,7 @@ const Reply: React.FC<Partial<ReplyProps & ReportProps>> = ({
     // 좋아요만 있는 경우
     if (reply?.isThumbup && !reply?.isThumbdown) {
       // 좋아요 제거, 싫어요 추가
-      console.log('좋아요 삭제 후 싫어요 추가');
+
       removeThumbUp({ replyId });
       setTimeout(() => {
         addThumbDown({ replyId });
@@ -154,14 +148,14 @@ const Reply: React.FC<Partial<ReplyProps & ReportProps>> = ({
     // 싫어요만 있는 경우
     if (!reply?.isThumbup && reply?.isThumbdown) {
       // 싫어요 제거
-      console.log('싫어요 삭제');
+
       removeThumbDown({ replyId });
       return;
     }
     // 둘 다 없는 경우
     if (!reply?.isThumbup && !reply?.isThumbdown) {
       // 싫어요 추가
-      console.log('싫어요 추가');
+
       addThumbDown({ replyId });
       return;
     }
@@ -210,7 +204,6 @@ const Reply: React.FC<Partial<ReplyProps & ReportProps>> = ({
     event.stopPropagation();
     if (event.target instanceof HTMLElement) {
       setIsOpenReplyIntro?.(false);
-      console.log(setIsOpenReplyIntro);
     }
   };
 
