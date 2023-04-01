@@ -263,7 +263,6 @@ const PostDetail: React.FC = () => {
     if (deleteType === '게시글') {
       deletePost({ postId });
       confirmDeleteHandler();
-
       navigate('/');
     }
     // 댓글 삭제 로직
