@@ -20,7 +20,7 @@ const TagInput: React.FC = () => {
     // 유효성 검사
     if (event.key === 'Enter' && event.nativeEvent.isComposing === false) {
       // 태그 중복 입력 방지
-      console.log(tagContent);
+
       if (tag.includes(tagContent)) {
         dispatch(setTagErr(''));
         return;

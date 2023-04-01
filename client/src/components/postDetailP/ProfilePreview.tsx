@@ -26,13 +26,5 @@ const ProfilePreviewContainer = styled.div`
 `;
 
 const ConfirmUserInfoBtn = styled.button`
-  /* width: 50px;
-  height: 30px;
-  padding: 0 10px 0 10px;
-  background-color: white;
-  position: absolute;
-  top: 10px;
-  right: 15px;
-  color: gray; */
   cursor: pointer;
 `;

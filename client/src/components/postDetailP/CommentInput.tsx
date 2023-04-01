@@ -36,7 +36,6 @@ const CommentInput: React.FC<CommentInputProps> = ({
       (el) => (el = false),
     );
 
-    console.log('abc', open);
     addComments({
       postId: postId,
       content: text,

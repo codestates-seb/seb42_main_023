@@ -64,7 +64,6 @@ const DropdownButton = ({
 
   const handleToggle = () => {
     if (!state.post.isOpenFilter) {
-      // console.log('a', !state.post.isOpenFilter);
       dispatch(setIsOpenFilter(state.post?.isOpenFilter));
     }
   };

@@ -35,7 +35,6 @@ const ReplyInput: React.FC<CommentProps> = ({ commentInfo }: CommentProps) => {
   const text = textarea?.value.replaceAll(/\n/g, '<br>');
   // 답글 추가
   const addReplyHandler = () => {
-    console.log(text);
     setReplys({
       commentId: commentId,
       content: text,
