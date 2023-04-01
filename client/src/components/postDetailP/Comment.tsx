@@ -838,9 +838,6 @@ const CommentContent = styled.div`
     ::placeholder {
       color: #0275e1;
     }
-    :focus {
-      outline: none;
-    }
   }
   .isReply {
     color: #0275e1;
