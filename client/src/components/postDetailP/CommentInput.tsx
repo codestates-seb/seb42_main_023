@@ -32,6 +32,8 @@ const CommentInput: React.FC<CommentInputProps> = ({
       .then(() => {
         setCommentCnt(commentCnt + 1);
         dispatch(addCommentEdit(false));
+        commentRef.current!.value = '';
+        commentRef!.current!.style.height = '58px';
       });
   };
 
