@@ -544,27 +544,6 @@ const PostDetail: React.FC = () => {
                         더보기
                       </button>
                     </div>
-                    {/* <IntroInfo>
-                      <ul className="intro-content-info">
-                        <li className="image">
-                          <img src={data?.memberImage}></img>
-                        </li>
-                        <li className="intro-nickname">{data?.memberName}</li>
-                      </ul>
-                    </IntroInfo>
-                    <label className="introduction">
-                      {memberQuery?.data?.member.intro ||
-                        '소개 내용이 없습니다.'}
-                    </label>
-                    <button
-                      className="intro-moreInfo"
-                      onClick={() => {
-                        dispatch(setMemberName(data?.memberName));
-                        navigate('/mypage');
-                      }}
-                    >
-                      더보기 》
-                    </button> */}
                   </IntorductionContainer>
                 ) : null}
 
@@ -763,8 +742,6 @@ const PostContent = styled.div`
   padding-top: 50px;
   width: 720px;
   height: 100%;
-  line-height: 30px;
-
   .likes {
     font-size: 16px;
     margin: 0 15px;

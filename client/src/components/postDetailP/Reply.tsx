@@ -217,17 +217,6 @@ const Reply: React.FC<Partial<ReplyProps & ReportProps>> = ({
   // 시간 계산
   const time = timeSince(replyInfo!.createdAt);
 
-  // const enterHandler = (event: React.KeyboardEvent<HTMLInputElement>): void => {
-  //   if (!replyEditInput.current?.value) return;
-  //   if (event.key === 'Enter') {
-  //     dispatch(setIsEdit(idx!));
-  //     updateMutation({
-  //       replyId: replyInfo?.replyId,
-  //       content: replyEditInput.current?.value,
-  //     });
-  //   }
-  // };
-
   return (
     <ReplyContainer onClick={outClickIntroHandler}>
       <ReplyInfo key={replyInfo?.replyId}>
@@ -243,27 +232,36 @@ const Reply: React.FC<Partial<ReplyProps & ReportProps>> = ({
           {'reply' in state &&
           isReplyOpenIntro &&
           replyInfo?.replyId === state.reply?.replyId ? (
-            <IntorductionContainer onClick={IntroHandler}>
-              <IntroInfo>
-                <ul className="intro-content-info">
-                  <li className="image">
-                    <img src={replyInfo.memberImage}></img>
-                  </li>
-                  <li className="intro-nickname">{replyInfo.memberName}</li>
-                </ul>
-              </IntroInfo>
-              <label className="introduction">
-                {memberQuery.data?.intro || '소개 내용이 없습니다.'}
-              </label>
-              <div
-                className="intro-moreInfo"
-                onClick={() => {
-                  dispatch(setMemberName(replyInfo.memberName));
-                  navigate('/mypage');
-                  scrollTo(0, 0);
-                }}
-              >
-                더보기 》
+            <IntorductionContainer>
+              <div className="card-image">
+                <img src={replyInfo?.memberImage}></img>
+              </div>
+              <div>{replyInfo?.memberName}</div>
+              <div className="introduction">
+                {memberQuery?.data?.member.intro || '소개 내용이 없습니다.'}
+              </div>
+              <div className="intro-moreInfo">
+                <span>
+                  게시글
+                  <span className="color">
+                    {memberQuery?.data?.membersCount.postCount}
+                  </span>
+                </span>
+                <span>
+                  댓글
+                  <span className="color">
+                    {memberQuery?.data?.membersCount.commentCount}
+                  </span>
+                </span>
+                <button
+                  className="intro-moreInfo"
+                  onClick={() => {
+                    dispatch(setMemberName(replyInfo?.memberName));
+                    navigate('/mypage');
+                  }}
+                >
+                  더보기
+                </button>
               </div>
             </IntorductionContainer>
           ) : null}
@@ -536,50 +534,54 @@ const ReplyContainer = styled.div`
     font-size: 12px;
   }
 `;
+
 const IntorductionContainer = styled.div`
+  position: absolute;
   display: flex;
   flex-direction: column;
-  position: absolute;
+  top: 45px;
+  left: 20px;
+  z-index: 2;
   width: 240px;
   height: 140px;
   border: 1px solid #d4d4d4;
-  z-index: 5;
-  top: 45px;
-  left: 18px;
+  padding: 16px;
+  border-radius: 10px;
+  box-shadow: 4px 4px 8px rgba(0, 0, 0, 0.15);
   background-color: white;
-
+  .card-image {
+    text-align: end;
+    img {
+      width: 42px;
+      height: 42px;
+      border-radius: 50%;
+    }
+  }
   .introduction {
-    font-size: 17x;
-    color: gray;
+    font-size: 13px;
+    margin-top: 4px;
     width: 175px;
-    margin: 10px 0 0 35px;
+    height: 50px;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
   }
   .intro-moreInfo {
-    font-size: 17x;
-    color: gray;
-    width: 100px;
-    margin: 5px 0 0 165px;
-    cursor: pointer;
+    span {
+      font-size: 13px;
+      margin-right: 6px;
+      .color {
+        color: var(--point-blue-color);
+        margin-left: 2px;
+      }
+    }
   }
-`;
-const IntroInfo = styled.div`
-  z-index: 5;
-  .intro-content-info {
-    width: 100%;
-    height: 50px;
-    display: flex;
-    align-items: center;
-    font-size: 12px;
-    padding: 10px 0 0 10px;
-  }
-  .intro-nickname {
-    width: 150px;
-    height: 30px;
-    font-size: 16px;
-    margin: 8px 0 0 10px;
+  button {
+    font-size: 13px;
+    color: var(--sub-font-color);
+    :hover {
+      color: var(--point-blue-color);
+    }
   }
 `;
 
