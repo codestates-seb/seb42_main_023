@@ -21,6 +21,7 @@ import { membersApi } from '../../api/memberapi';
 import { useNavigate } from 'react-router-dom';
 import { setMemberName } from '../../slices/headerSlice';
 import parse from 'html-react-parser';
+import { useEffect } from 'react';
 
 const Reply: React.FC<Partial<ReplyProps & ReportProps>> = ({
   replyInfo,
@@ -44,6 +45,8 @@ const Reply: React.FC<Partial<ReplyProps & ReportProps>> = ({
   );
   const navigate = useNavigate();
   const [editReply, setEditReply] = useState<string>('');
+  const [replyData, setReplyData] = useState<Array<ReplyType>>([]);
+  const [selectedReply, setSelectedReply] = useState<string>('');
   const loginUserName = window.localStorage.getItem('name');
   const commentId = 'comment' in state && state.comment?.commentId;
   const replyId = 'reply' in state && state.reply?.replyId;
@@ -57,7 +60,21 @@ const Reply: React.FC<Partial<ReplyProps & ReportProps>> = ({
   const valueCheck = (event: React.ChangeEvent<HTMLTextAreaElement>): void => {
     const data = event.target.value.replaceAll(/\n/g, '<br>');
     setEditReply(data);
+    // 기존에 서버에서 저장한 상태 값에 추가로 value값을 관리함
+    setSelectedReply(event.target.value);
   };
+
+  console.log(replyData);
+  const initData = (event: React.MouseEvent<HTMLLIElement>): void => {
+    if (event.target instanceof HTMLElement) {
+      console.log(event.target);
+      const data = event.target!.dataset!.reply!;
+      const parsedData = data?.replaceAll(/<br>/g, '\n');
+      setSelectedReply(parsedData);
+      console.log('selected', selectedReply);
+    }
+  };
+
   // textarea 높이 조절
   const handleResizeHeight = () => {
     replyEditTextareaRef!.current!.style.height = 'auto';
@@ -86,6 +103,11 @@ const Reply: React.FC<Partial<ReplyProps & ReportProps>> = ({
 
   //  멤버 정보 조회
   const memberQuery = membersApi.useGetMemberQuery({ name: selectedMember });
+
+  // 답글 정보 받아오기
+  useEffect(() => {
+    setReplyData(replyQuery.data?.replies);
+  }, [replyQuery.data]);
 
   // 답글 수정 여부
   const replyIsEdit =
@@ -262,6 +284,7 @@ const Reply: React.FC<Partial<ReplyProps & ReportProps>> = ({
             <li
               className="reply-update"
               id="edit"
+              data-reply={replyData && replyData![idx!]?.content}
               style={{
                 display:
                   loginUserName === replyInfo?.memberName ? 'block' : 'none',
@@ -286,14 +309,16 @@ const Reply: React.FC<Partial<ReplyProps & ReportProps>> = ({
           ) : (
             <li
               className="reply-update"
+              data-reply={replyData && replyData![idx!]?.content}
               style={{
                 display:
                   loginUserName === replyInfo?.memberName ? 'block' : 'none',
               }}
-              onClick={(): void => {
+              onClick={(event: React.MouseEvent<HTMLLIElement>): void => {
                 dispatch(setCommentId(replyInfo!.commentId));
                 dispatch(setReplyId(replyInfo!.replyId));
                 dispatch(setIsEdit(idx!));
+                initData(event);
               }}
             >
               {replyInfo?.content === '삭제된 답글입니다.' ||
@@ -394,6 +419,7 @@ const Reply: React.FC<Partial<ReplyProps & ReportProps>> = ({
               id="edit-reply"
               className="edit-reply"
               ref={replyEditTextareaRef}
+              value={selectedReply}
               onChange={valueCheck}
               onInput={handleResizeHeight}
             ></textarea>

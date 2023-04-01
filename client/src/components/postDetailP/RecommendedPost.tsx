@@ -79,7 +79,7 @@ const RecommendedPostContainer = styled.div`
     font-style: italic;
   }
   .icon {
-    margin-left: 10px;
+    margin: 3px 0 0 10px;
     svg {
       transform: translateY(2px);
     }
