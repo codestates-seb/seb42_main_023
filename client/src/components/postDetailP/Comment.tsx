@@ -337,29 +337,36 @@ const Comment: React.FC<
                         isCommentOpenIntro! &&
                         comment?.commentId === state.comment?.commentId ? (
                           <IntorductionContainer>
-                            <IntroInfo>
-                              <ul className="intro-content-info">
-                                <li className="image">
-                                  <img src={comment?.memberImage} id=""></img>
-                                </li>
-                                <li className="intro-nickname">
-                                  {comment?.memberName}
-                                </li>
-                              </ul>
-                            </IntroInfo>
-                            <label className="introduction">
+                            <div className="card-image">
+                              <img src={comment?.memberImage}></img>
+                            </div>
+                            <div>{comment?.memberName}</div>
+                            <div className="introduction">
                               {memberQuery?.data?.member.intro ||
                                 '소개 내용이 없습니다.'}
-                            </label>
-                            <div
-                              className="intro-moreInfo"
-                              onClick={() => {
-                                dispatch(setMemberName(comment?.memberName));
-                                navigate('/mypage');
-                                scrollTo(0, 0);
-                              }}
-                            >
-                              더보기 》
+                            </div>
+                            <div className="intro-moreInfo">
+                              <span>
+                                게시글
+                                <span className="color">
+                                  {memberQuery?.data?.membersCount.postCount}
+                                </span>
+                              </span>
+                              <span>
+                                댓글
+                                <span className="color">
+                                  {memberQuery?.data?.membersCount.commentCount}
+                                </span>
+                              </span>
+                              <button
+                                className="intro-moreInfo"
+                                onClick={() => {
+                                  dispatch(setMemberName(comment?.memberName));
+                                  navigate('/mypage');
+                                }}
+                              >
+                                더보기
+                              </button>
                             </div>
                           </IntorductionContainer>
                         ) : null}
@@ -783,7 +790,6 @@ const CommentContainer = styled.div`
   }
   .replyPageContainer {
     margin: 0 0 0 50px;
-
     display: flex;
     width: 180px;
     justify-content: space-between;
@@ -812,49 +818,52 @@ const CommentContainer = styled.div`
 `;
 
 const IntorductionContainer = styled.div`
+  position: absolute;
   display: flex;
   flex-direction: column;
-  position: absolute;
+  top: 45px;
+  left: 20px;
+  z-index: 2;
   width: 240px;
   height: 140px;
   border: 1px solid #d4d4d4;
-  z-index: 2;
-  top: 50px;
-  left: 18px;
+  padding: 16px;
+  border-radius: 10px;
+  box-shadow: 4px 4px 8px rgba(0, 0, 0, 0.15);
   background-color: white;
-
+  .card-image {
+    text-align: end;
+    img {
+      width: 42px;
+      height: 42px;
+      border-radius: 50%;
+    }
+  }
   .introduction {
-    font-size: 17x;
-    color: gray;
+    font-size: 13px;
+    margin-top: 4px;
     width: 175px;
-    margin: 10px 0 0 35px;
+    height: 50px;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
   }
   .intro-moreInfo {
-    font-size: 17x;
-    color: gray;
-    width: 100px;
-    margin: 5px 0 0 165px;
-    cursor: pointer;
+    span {
+      font-size: 13px;
+      margin-right: 6px;
+      .color {
+        color: var(--point-blue-color);
+        margin-left: 2px;
+      }
+    }
   }
-`;
-const IntroInfo = styled.div`
-  z-index: 5;
-  .intro-content-info {
-    width: 100%;
-    height: 50px;
-    display: flex;
-    align-items: center;
-    font-size: 12px;
-    padding: 10px 0 0 10px;
-  }
-  .intro-nickname {
-    width: 150px;
-    height: 30px;
-    font-size: 16px;
-    margin: 8px 0 0 10px;
+  button {
+    font-size: 13px;
+    color: var(--sub-font-color);
+    :hover {
+      color: var(--point-blue-color);
+    }
   }
 `;
 
@@ -902,7 +911,6 @@ const ReplyContainer = styled.div`
   height: auto;
   background-color: #ffffff;
   padding: 0 0 15px 0;
-  /* border-bottom: 1px solid #d4d4d4; */
   .isReply {
     color: #0275e1;
   }
