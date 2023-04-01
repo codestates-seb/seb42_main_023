@@ -20,7 +20,6 @@ const CommentInput: React.FC<CommentInputProps> = ({
   const [addComments] = commetMutation;
   const textarea = document.getElementById('comment') as HTMLTextAreaElement;
   const text = textarea?.value.replaceAll(/\n/g, '<br>');
-  // console.log(text);
   // 댓글 추가
   const addCommentHandler = () => {
     addComments({
@@ -135,10 +134,9 @@ const ButtonContainer = styled.div`
   margin: 15px 0 0 590px;
   .noCommentContent {
     cursor: default;
-
     background: var(--sub-font-color);
   }
-  #isCommentContent {
+  .isCommentContent {
     cursor: pointer;
     :hover {
       background-color: var(--hover-point-blue-color);
