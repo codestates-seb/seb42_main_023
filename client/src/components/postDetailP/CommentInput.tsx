@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useRef } from 'react';
 import { useParams } from 'react-router-dom';
 import styled from 'styled-components';
 import { commentsApi } from '../../api/commentApi';
@@ -17,14 +17,13 @@ const CommentInput: React.FC<CommentInputProps> = ({
 
   // 댓글 추가 mutation
   const commetMutation = commentsApi.useSetCommentMutation();
-  const [setComments] = commetMutation;
-
+  const [addComments] = commetMutation;
   const textarea = document.getElementById('comment') as HTMLTextAreaElement;
   const text = textarea?.value.replaceAll(/\n/g, '<br>');
-
+  // console.log(text);
   // 댓글 추가
   const addCommentHandler = () => {
-    setComments({
+    addComments({
       postId: postId,
       content: text,
     })

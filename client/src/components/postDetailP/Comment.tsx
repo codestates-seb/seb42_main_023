@@ -59,12 +59,28 @@ const Comment: React.FC<
   );
   const navigate = useNavigate();
   const [page, setPage] = useState<number>(1);
+  const [editComment, setEditComment] = useState<string>('');
   const loginUserName = window.localStorage.getItem('name');
   const params = useParams();
   const postId = params.postId;
   const commentId = 'comment' in state && state.comment?.commentId;
   const selectedMember = 'post' in state ? state.post.selectedMember : null;
+  const contentTextarea = document.getElementById(
+    'edit-comment',
+  ) as HTMLTextAreaElement;
+  const commentEditTextareaRef = useRef<HTMLTextAreaElement>(contentTextarea);
 
+  // Textarea 값 확인
+  const valueCheck = (event: React.ChangeEvent<HTMLTextAreaElement>): void => {
+    const data = event.target.value.replaceAll(/\n/g, '<br>');
+    setEditComment(data);
+  };
+  // textarea 높이 조절
+  const handleResizeHeight = () => {
+    commentEditTextareaRef!.current.style!.height = 'auto';
+    commentEditTextareaRef!.current.style!.height =
+      commentEditTextareaRef.current?.scrollHeight + 'px';
+  };
   // 댓글 조회
   const commentQuery = commentsApi.useGetCommentQuery({ postId, page });
   const { isLoading } = commentQuery;
@@ -81,7 +97,6 @@ const Comment: React.FC<
     },
   );
   const { isSuccess } = replyQuery;
-  const commentEditInput = useRef<HTMLTextAreaElement>(null);
 
   //  멤버 정보 조회
   const memberQuery = membersApi.useGetMemberQuery(
@@ -347,7 +362,7 @@ const Comment: React.FC<
                             }}
                             onClick={(): void => {
                               if (
-                                !commentEditInput.current?.value &&
+                                !commentEditTextareaRef.current?.value &&
                                 comment?.content !== '삭제된 댓글입니다.'
                               ) {
                                 dispatch(setIsEdit(idx));
@@ -357,7 +372,7 @@ const Comment: React.FC<
                               updateMutation({
                                 postId: postId,
                                 commentId: comment?.commentId,
-                                content: commentEditInput.current?.value,
+                                content: editComment,
                               });
                             }}
                           >
@@ -478,8 +493,9 @@ const Comment: React.FC<
                           // 댓글 수정 시 생기는 textarea
                           <InputWrap>
                             <textarea
+                              id="edit-comment"
                               className="edit-content"
-                              ref={commentEditInput}
+                              ref={commentEditTextareaRef}
                               style={{
                                 display:
                                   comment.content === '삭제된 댓글입니다.'
@@ -487,7 +503,8 @@ const Comment: React.FC<
                                     : 'flex',
                               }}
                               // value={comment.content}
-                              // onKeyDown={enterHandler}
+                              onChange={valueCheck}
+                              onInput={handleResizeHeight}
                             ></textarea>
                           </InputWrap>
                         ) : (
@@ -502,7 +519,6 @@ const Comment: React.FC<
                                   : ' #000000',
                             }}
                           >
-                            {/* //TODO */}
                             {parse(String(comment?.content))}
                             <div className="edit-confirm">
                               {commentIsEdit &&
@@ -672,7 +688,7 @@ const CommentContainer = styled.div`
   }
   .content {
     display: flex;
-    align-items: center;
+    align-items: flex-end;
     width: 700px;
     height: auto;
     padding-left: 10px;
@@ -837,9 +853,6 @@ const CommentContent = styled.div`
     padding: 5px 0 0 10px;
     ::placeholder {
       color: #0275e1;
-    }
-    :focus {
-      outline: none;
     }
   }
   .isReply {
