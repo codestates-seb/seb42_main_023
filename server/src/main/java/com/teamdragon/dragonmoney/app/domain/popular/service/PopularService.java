@@ -2,9 +2,11 @@ package com.teamdragon.dragonmoney.app.domain.popular.service;
 
 import com.teamdragon.dragonmoney.app.domain.popular.repository.BestAwardsRepository;
 import com.teamdragon.dragonmoney.app.domain.popular.entity.BestAwards;
+import com.teamdragon.dragonmoney.app.domain.posts.dto.PostsDto;
 import com.teamdragon.dragonmoney.app.domain.posts.entity.Posts;
 import com.teamdragon.dragonmoney.app.domain.posts.repository.PostsRepository;
 import lombok.Getter;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -19,6 +21,7 @@ import java.time.temporal.TemporalAdjusters;
 import java.util.ArrayList;
 import java.util.List;
 
+@Slf4j
 @Transactional
 @Service
 public class PopularService {
@@ -31,9 +34,9 @@ public class PopularService {
     @Getter
     private LocalDateTime countEndedAt;
 
-    private final int WEEKLY_POPULAR_MAX_SIZE = 3;
-    private final int RECOMMEND_POSTS_MAX_SIZE = 10;
-    private final int PAGE_ELEMENT_SIZE = 10;
+    private static final int WEEKLY_POPULAR_MAX_SIZE = 3;
+    private static final int RECOMMEND_POSTS_MAX_SIZE = 10;
+    private static final int PAGE_ELEMENT_SIZE = 10;
 
     public PopularService(PostsRepository postsRepository, BestAwardsRepository bestAwardsRepository) {
         this.postsRepository = postsRepository;
@@ -43,8 +46,13 @@ public class PopularService {
     }
 
     // 주간 인기 게시물 조회
-    public List<Posts> findWeeklyPopularList() {
-        return postsRepository.findWeeklyPopularList(WEEKLY_POPULAR_MAX_SIZE, countStartedAt, countEndedAt);
+    public PostsDto.WeeklyPopularRes findWeeklyPopularListDto() {
+        List<Posts> weeklyPopularList = postsRepository.findWeeklyPopularList(WEEKLY_POPULAR_MAX_SIZE, countStartedAt, countEndedAt);
+        return PostsDto.WeeklyPopularRes.builder()
+                .posts(weeklyPopularList)
+                .start(countStartedAt)
+                .end(countEndedAt)
+                .build();
     }
 
     // 명예의 전당 선정 : 매주 월요일 00시 수행
@@ -53,7 +61,9 @@ public class PopularService {
         List<Posts> weeklyPopularList = postsRepository.findWeeklyPopularList(WEEKLY_POPULAR_MAX_SIZE, countStartedAt, countEndedAt);
         ArrayList<BestAwards> bestAwards = new ArrayList<>();
         for (Posts posts : weeklyPopularList) {
-            bestAwards.add(new BestAwards(posts));
+            if (posts.getBestAwards() == null) {
+                bestAwards.add(new BestAwards(posts));
+            }
         }
         bestAwardsRepository.saveAll(bestAwards);
 
@@ -62,14 +72,16 @@ public class PopularService {
     }
 
     // 명예의 전당 목록 조회
-    public Page<Posts> findBestAwardsList(int page, Posts.OrderBy orderBy) {
+    public PostsDto.BestAwardsRes findBestAwardsList(int page, Posts.OrderBy orderBy) {
         Pageable pageable = PageRequest.of(page - 1 , PAGE_ELEMENT_SIZE, Sort.by(orderBy.getTargetProperty()).descending());
-        return postsRepository.findBestAwardsListByPage(pageable);
+        Page<Posts> bestAwardsList = postsRepository.findBestAwardsListByPage(pageable);
+        return new PostsDto.BestAwardsRes(bestAwardsList, orderBy.getOrderBy());
     }
 
     // 추천 게시물 목록 조회
-    public List<Posts> findRecommendPosts() {
-        return postsRepository.findRecommendPostsList(RECOMMEND_POSTS_MAX_SIZE);
+    public PostsDto.RecommendPostsListRes findRecommendPosts() {
+        List<Posts> recommendPostsList = postsRepository.findRecommendPostsList(RECOMMEND_POSTS_MAX_SIZE);
+        return new PostsDto.RecommendPostsListRes(recommendPostsList);
     }
 
     // 주간인기글 측정 시작시간 설정

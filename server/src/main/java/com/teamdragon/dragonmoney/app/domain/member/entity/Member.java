@@ -51,7 +51,7 @@ public class Member extends BaseTimeEntity {
     @JoinColumn(name = "DELETE_RESULT_ID")
     private DeleteResult deleteResult;
 
-    @ElementCollection(fetch = FetchType.EAGER)
+    @ElementCollection(fetch = FetchType.LAZY)
     private List<String> roles = new ArrayList<>();
 
     @OneToOne(fetch = FetchType.LAZY)

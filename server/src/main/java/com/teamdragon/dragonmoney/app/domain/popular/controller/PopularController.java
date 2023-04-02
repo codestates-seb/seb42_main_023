@@ -29,12 +29,7 @@ public class PopularController {
     // 주간 인기 게시물 조회
     @GetMapping("/posts/weekly-popular")
     public ResponseEntity<PostsDto.WeeklyPopularRes> findWeeklyPopularList() {
-        List<Posts> weeklyPopularList = popularService.findWeeklyPopularList();
-        PostsDto.WeeklyPopularRes response = PostsDto.WeeklyPopularRes.builder()
-                .posts(weeklyPopularList)
-                .start(popularService.getCountStartedAt())
-                .end(popularService.getCountEndedAt())
-                .build();
+        PostsDto.WeeklyPopularRes response = popularService.findWeeklyPopularListDto();
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
@@ -43,17 +38,14 @@ public class PopularController {
     public ResponseEntity<PostsDto.BestAwardsRes> findBestAwardsList(@Valid @Positive @RequestParam int page,
                                                                      @Valid @NotBlank @RequestParam String orderby) {
         Posts.OrderBy orderBy = checkOrderBy(orderby);
-        Page<Posts> bestAwardsList = popularService.findBestAwardsList(page, orderBy);
-        PostsDto.BestAwardsRes response = new PostsDto.BestAwardsRes(bestAwardsList, orderby);
+        PostsDto.BestAwardsRes response = popularService.findBestAwardsList(page, orderBy);
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
     // 추천 게시물 목록 조회
     @GetMapping("/posts/recommend")
     public ResponseEntity<PostsDto.RecommendPostsListRes> findRecommendPosts() {
-        List<Posts> recommendPosts = popularService.findRecommendPosts();
-        PostsDto.RecommendPostsListRes response = new PostsDto.RecommendPostsListRes(recommendPosts);
-
+        PostsDto.RecommendPostsListRes response = popularService.findRecommendPosts();
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 

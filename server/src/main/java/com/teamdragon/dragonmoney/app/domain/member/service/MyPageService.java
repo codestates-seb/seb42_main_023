@@ -20,6 +20,7 @@ public class MyPageService {
     private final PostsRepository postsRepository;
     private final CommentRepository commentRepository;
     private final CommentService commentService;
+    private static final String PAGE_ELEMENT_ORDER_BY = "latest";
 
     // 특정 회원의 글 개수
     public MyPageDto.MyPageCount findCount(String memberName) {
@@ -41,27 +42,32 @@ public class MyPageService {
     }
 
     // 특정 회원이 작성한 게시글 목록
-    public Page<Posts> findMemberPosts(int page, String memberName) {
-        return postsService.findPostsListByWriterPost(memberName, page, Posts.OrderBy.LATEST);
+    public MyPageDto.MyPageMemberPostsListRes findMemberPosts(int page, String memberName) {
+        Page<Posts> postsPage = postsService.findPostsListByWriterPost(memberName, page, Posts.OrderBy.LATEST);
+        return new MyPageDto.MyPageMemberPostsListRes(postsPage, PAGE_ELEMENT_ORDER_BY);
     }
 
     // 특정 회원이 작성한 댓글 목록
-    public Page<Comment> findMemberComments(int page, String memberName) {
-        return commentService.findCommentListByWriterComment(memberName, page, Comment.OrderBy.LATEST);
+    public MyPageDto.MyPageMemberCommentListRes findMemberComments(int page, String memberName) {
+        Page<Comment> commentPage = commentService.findCommentListByWriterComment(memberName, page, Comment.OrderBy.LATEST);
+        return new MyPageDto.MyPageMemberCommentListRes(commentPage, PAGE_ELEMENT_ORDER_BY);
     }
 
     // 특정 회원이 좋아요를 누른 게시글 목록
-    public Page<Posts> findMemberThumbUpPosts(int page, String memberName) {
-        return postsService.findPostsListByThumbUpPost(memberName, page, Posts.OrderBy.LATEST);
+    public MyPageDto.MyPageMemberPostsListRes findMemberThumbUpPosts(int page, String memberName) {
+        Page<Posts> postsPage = postsService.findPostsListByThumbUpPost(memberName, page, Posts.OrderBy.LATEST);
+        return new MyPageDto.MyPageMemberPostsListRes(postsPage, PAGE_ELEMENT_ORDER_BY);
     }
 
     // 특정 회원이 좋아요를 누른 댓글 목록
-    public Page<Comment> findMemberThumbUpComments(int page, String memberName) {
-        return commentService.findPostsListByThumbUpComment(memberName, page, Comment.OrderBy.LATEST);
+    public MyPageDto.MyPageMemberCommentListRes findMemberThumbUpComments(int page, String memberName) {
+        Page<Comment> commentPage = commentService.findPostsListByThumbUpComment(memberName, page, Comment.OrderBy.LATEST);
+        return new MyPageDto.MyPageMemberCommentListRes(commentPage, PAGE_ELEMENT_ORDER_BY);
     }
 
     // 특정 회원이 북마크를 누른 게시글 목록
-    public Page<Posts> findMemberBookmarks(int page, String memberName) {
-        return postsService.findPostsListByBookmarkPost(memberName, page, Posts.OrderBy.LATEST);
+    public MyPageDto.MyPageMemberPostsListRes findMemberBookmarks(int page, String memberName) {
+        Page<Posts> postsPage = postsService.findPostsListByBookmarkPost(memberName, page, Posts.OrderBy.LATEST);
+        return new MyPageDto.MyPageMemberPostsListRes(postsPage, PAGE_ELEMENT_ORDER_BY);
     }
 }

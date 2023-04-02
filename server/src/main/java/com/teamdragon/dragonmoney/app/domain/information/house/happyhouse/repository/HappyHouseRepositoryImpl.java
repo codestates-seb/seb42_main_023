@@ -59,7 +59,6 @@ public class HappyHouseRepositoryImpl implements HappyHouseRepositoryCustom{
                 .fetch();
         JPAQuery<Long> countQuery = queryFactory
                 .select(happyHouse.count())
-                .distinct()
                 .from(happyHouse)
                 .where(happyHouse.location.contains(location.getName()));
 

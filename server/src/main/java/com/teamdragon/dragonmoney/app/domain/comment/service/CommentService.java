@@ -118,7 +118,14 @@ public class CommentService implements ThumbCountService {
 
     // 목록 조회
     public Page<CommentDto.CommentListElement> findCommentList(int page, Long postsId, Comment.OrderBy orderBy, Long loginMemberId) {
-        Pageable pageable = PageRequest.of(page - 1 , PAGE_ELEMENT_SIZE, Sort.by(orderBy.getTargetProperty()).descending());
+        Pageable pageable;
+        if (orderBy == Comment.OrderBy.THUMBUP) {
+            pageable = PageRequest.of(page - 1 , PAGE_ELEMENT_SIZE,
+                    Sort.by(orderBy.getTargetProperty()).descending()
+                            .and(Sort.by(Comment.OrderBy.LATEST.getTargetProperty()).descending()));
+        } else {
+            pageable = PageRequest.of(page - 1 , PAGE_ELEMENT_SIZE, Sort.by(orderBy.getTargetProperty()).descending());
+        }
         if (loginMemberId == null ) {
             return commentRepository.findCommentListByPage(pageable, postsId);
         } else {

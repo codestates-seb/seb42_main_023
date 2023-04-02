@@ -30,7 +30,6 @@ public class MemberController {
     private final MemberMapper memberMapper;
     private final MyPageService myPageService;
     private final FinderService finderService;
-    private final String PAGE_ELEMENT_ORDER_BY = "latest";
 
     // 닉네임 중복 확인
     @PostMapping("/duplicated-name")
@@ -78,11 +77,7 @@ public class MemberController {
     public ResponseEntity getMemberPosts(@PathVariable("member-name") String memberName,
                                          @Valid @Positive @RequestParam int page) {
         finderService.findVerifiedMemberByName(memberName);
-
-        Page<Posts> postsPage = myPageService.findMemberPosts(page, memberName);
-        MyPageDto.MyPageMemberPostsListRes response
-                = new MyPageDto.MyPageMemberPostsListRes(postsPage, PAGE_ELEMENT_ORDER_BY);
-
+        MyPageDto.MyPageMemberPostsListRes response = myPageService.findMemberPosts(page, memberName);
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 
@@ -91,11 +86,7 @@ public class MemberController {
     public ResponseEntity getMemberComments(@PathVariable("member-name") String memberName,
                                             @Valid @Positive @RequestParam int page) {
         finderService.findVerifiedMemberByName(memberName);
-
-        Page<Comment> commentPage = myPageService.findMemberComments(page, memberName);
-        MyPageDto.MyPageMemberCommentListRes response
-                = new MyPageDto.MyPageMemberCommentListRes(commentPage, PAGE_ELEMENT_ORDER_BY);
-
+        MyPageDto.MyPageMemberCommentListRes response = myPageService.findMemberComments(page, memberName);
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 
@@ -104,11 +95,7 @@ public class MemberController {
     public ResponseEntity getMemberThumbUpPosts(@PathVariable("member-name") String memberName,
                                                 @Valid @Positive @RequestParam int page) {
         finderService.findVerifiedMemberByName(memberName);
-
-        Page<Posts> postsPage = myPageService.findMemberThumbUpPosts(page, memberName);
-        MyPageDto.MyPageMemberPostsListRes response
-                = new MyPageDto.MyPageMemberPostsListRes(postsPage, PAGE_ELEMENT_ORDER_BY);
-
+        MyPageDto.MyPageMemberPostsListRes response = myPageService.findMemberThumbUpPosts(page, memberName);
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 
@@ -117,11 +104,7 @@ public class MemberController {
     public ResponseEntity getMemberThumbUpComments(@PathVariable("member-name") String memberName,
                                                    @Valid @Positive @RequestParam int page) {
         finderService.findVerifiedMemberByName(memberName);
-
-        Page<Comment> commentPage = myPageService.findMemberThumbUpComments(page, memberName);
-        MyPageDto.MyPageMemberCommentListRes response
-                = new MyPageDto.MyPageMemberCommentListRes(commentPage, PAGE_ELEMENT_ORDER_BY);
-
+        MyPageDto.MyPageMemberCommentListRes response = myPageService.findMemberThumbUpComments(page, memberName);
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 
@@ -130,11 +113,7 @@ public class MemberController {
     public ResponseEntity getMemberBookmarks(@PathVariable("member-name") String memberName,
                                              @Valid @Positive @RequestParam int page) {
         finderService.findVerifiedMemberByName(memberName);
-
-        Page<Posts> postsPage = myPageService.findMemberBookmarks(page, memberName);
-        MyPageDto.MyPageMemberPostsListRes response
-                = new MyPageDto.MyPageMemberPostsListRes(postsPage, PAGE_ELEMENT_ORDER_BY);
-
+        MyPageDto.MyPageMemberPostsListRes response = myPageService.findMemberBookmarks(page, memberName);
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 
