@@ -40,21 +40,19 @@ public class ReportController {
     // 미처리 신고 목록 조회
     @GetMapping("/standby")
     public ResponseEntity getStandByReports(@Valid @Positive @RequestParam int page,
-                                            @RequestParam String orderby) {
-        Page<Report> reportPage = reportService.findListStandByReport(page, orderby);
-        ReportDto.ReportListRes reponse = new ReportDto.ReportListRes(reportPage, orderby);
+                                            @RequestParam String orderBy) {
+        ReportDto.ReportListRes response = reportService.findListStandByReport(page, orderBy);
 
-        return ResponseEntity.status(HttpStatus.OK).body(reponse);
+        return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 
     // 처리된 신고 목록 조회
     @GetMapping("/deleted")
     public ResponseEntity getDeletedReports(@Valid @Positive @RequestParam int page,
                                             @RequestParam String orderby) {
-        Page<Report> reportPage = reportService.findListDeletedReport(page, orderby);
-        ReportDto.ReportListRes reponse = new ReportDto.ReportListRes(reportPage, orderby);
+        ReportDto.ReportListRes response = reportService.findListDeletedReport(page, orderby);
 
-        return ResponseEntity.status(HttpStatus.OK).body(reponse);
+        return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 
     // 신고 대상 상태를 처리로 변경

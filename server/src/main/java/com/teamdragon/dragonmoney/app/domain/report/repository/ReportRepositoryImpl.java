@@ -65,7 +65,7 @@ public class ReportRepositoryImpl implements ReportRepositoryCustom{
     // 신고된 게시글 목록 조회
     @Override
     public Page<Report> findStandbyReportListByHandledState(String orderby, Report.State handledState, Pageable pageable) {
-        OrderSpecifier[] orders = getAllOrderSpecifiers(pageable, posts);
+        OrderSpecifier[] orders = getAllOrderSpecifiers(pageable, report);
 
         // 게시글 정렬
         if(orderby.equals("post")) {
@@ -75,6 +75,7 @@ public class ReportRepositoryImpl implements ReportRepositoryCustom{
                 .join(report.targetPosts, posts)
                 .where(report.handleState.eq(handledState), report.targetPosts.isNotNull())
                 .where(posts.state.eq(Posts.State.ACTIVE))
+                .orderBy(orders)
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
                 .fetch();
@@ -93,6 +94,7 @@ public class ReportRepositoryImpl implements ReportRepositoryCustom{
                     .join(report.targetComment, comment)
                     .where(report.handleState.eq(handledState), report.targetComment.isNotNull())
                     .where(comment.state.eq(Comment.State.ACTIVE))
+                    .orderBy(orders)
                     .offset(pageable.getOffset())
                     .limit(pageable.getPageSize())
                     .fetch();
@@ -111,6 +113,7 @@ public class ReportRepositoryImpl implements ReportRepositoryCustom{
                     .join(report.targetReply, reply)
                     .where(report.handleState.eq(handledState), report.targetReply.isNotNull())
                     .where(reply.state.eq(Reply.State.ACTIVE))
+                    .orderBy(orders)
                     .offset(pageable.getOffset())
                     .limit(pageable.getPageSize())
                     .fetch();
@@ -133,6 +136,7 @@ public class ReportRepositoryImpl implements ReportRepositoryCustom{
                     .where(report.targetPosts.state.eq(Posts.State.ACTIVE)
                             .or(report.targetComment.state.eq(Comment.State.ACTIVE))
                                     .or(report.targetReply.state.eq(Reply.State.ACTIVE)))
+                    .orderBy(orders)
                     .offset(pageable.getOffset())
                     .limit(pageable.getPageSize())
                     .fetch();
@@ -169,7 +173,7 @@ public class ReportRepositoryImpl implements ReportRepositoryCustom{
     // 처리된 게시글 목록 조회
     @Override
     public Page<Report> findDeletedReportListByHandledState(String orderby, Report.State handledState, Pageable pageable) {
-        OrderSpecifier[] orders = getAllOrderSpecifiers(pageable, posts);
+        OrderSpecifier[] orders = getAllOrderSpecifiers(pageable, report);
 
         // 게시글 정렬
         if(orderby.equals("post")) {
@@ -178,6 +182,7 @@ public class ReportRepositoryImpl implements ReportRepositoryCustom{
                     .distinct()
                     .join(report.targetPosts, posts)
                     .where(report.handleState.eq(handledState), report.targetPosts.isNotNull())
+                    .orderBy(orders)
                     .offset(pageable.getOffset())
                     .limit(pageable.getPageSize())
                     .fetch();
@@ -195,6 +200,7 @@ public class ReportRepositoryImpl implements ReportRepositoryCustom{
                     .distinct()
                     .join(report.targetComment, comment)
                     .where(report.handleState.eq(handledState), report.targetComment.isNotNull())
+                    .orderBy(orders)
                     .offset(pageable.getOffset())
                     .limit(pageable.getPageSize())
                     .fetch();
@@ -212,6 +218,7 @@ public class ReportRepositoryImpl implements ReportRepositoryCustom{
                     .distinct()
                     .join(report.targetReply, reply)
                     .where(report.handleState.eq(handledState), report.targetReply.isNotNull())
+                    .orderBy(orders)
                     .offset(pageable.getOffset())
                     .limit(pageable.getPageSize())
                     .fetch();
@@ -228,6 +235,7 @@ public class ReportRepositoryImpl implements ReportRepositoryCustom{
                     .selectFrom(report)
                     .distinct()
                     .where(report.handleState.eq(handledState))
+                    .orderBy(orders)
                     .offset(pageable.getOffset())
                     .limit(pageable.getPageSize())
                     .fetch();

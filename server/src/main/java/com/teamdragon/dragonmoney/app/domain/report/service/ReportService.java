@@ -92,22 +92,26 @@ public class ReportService {
     }
 
     // 미처리 신고 목록 조회
-    public Page<Report> findListStandByReport(int page, String orderBy) {
+    public ReportDto.ReportListRes findListStandByReport(int page, String orderBy) {
 
         if (orderBy.equals(POST_ENG) || orderBy.equals(COMMENT_ENG) || orderBy.equals(REPLY_ENG) || orderBy.equals(All_ENG)){
             Pageable pageable = PageRequest.of(page - 1, PAGE_ELEMENT_SIZE, Sort.by(SORT_PROPERTY).descending());
-            return reportRepository.findStandbyReportListByHandledState(orderBy, Report.State.STANDBY, pageable);
+            Page<Report> reportPage = reportRepository.findStandbyReportListByHandledState(orderBy, Report.State.STANDBY, pageable);
+
+            return new ReportDto.ReportListRes(reportPage, orderBy);
         } else {
             throw new BusinessLogicException(BusinessExceptionCode.BAD_REQUEST);
         }
     }
 
     // 처리된 신고 목록 조회
-    public Page<Report> findListDeletedReport(int page, String orderBy) {
+    public ReportDto.ReportListRes findListDeletedReport(int page, String orderBy) {
 
         if (orderBy.equals(POST_ENG) || orderBy.equals(COMMENT_ENG) || orderBy.equals(REPLY_ENG) || orderBy.equals(All_ENG)){
             Pageable pageable = PageRequest.of(page - 1, PAGE_ELEMENT_SIZE, Sort.by(SORT_PROPERTY).descending());
-            return reportRepository.findDeletedReportListByHandledState(orderBy, Report.State.DELETED, pageable);
+            Page<Report> reportPage = reportRepository.findDeletedReportListByHandledState(orderBy, Report.State.DELETED, pageable);
+
+            return new ReportDto.ReportListRes(reportPage, orderBy);
         } else {
             throw new BusinessLogicException(BusinessExceptionCode.BAD_REQUEST);
         }
