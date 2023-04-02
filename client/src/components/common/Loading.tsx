@@ -1,5 +1,4 @@
 import React from 'react';
-import HashLoader from 'react-spinners/HashLoader';
 
 const Loading: React.FC = () => {
   return (
