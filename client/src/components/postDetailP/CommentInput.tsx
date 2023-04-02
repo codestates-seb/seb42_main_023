@@ -1,8 +1,9 @@
 // 패키지 등
 import React, { useRef } from 'react';
 import styled from 'styled-components';
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import { useAppDispatch, useAppSelector } from '../../hooks';
+import Cookies from 'js-cookie';
 // API
 import { commentsApi } from '../../api/commentApi';
 // 타입
@@ -15,6 +16,7 @@ const CommentInput: React.FC<CommentInputProps> = ({
   setCommentCnt,
   commentCnt,
 }: CommentInputProps) => {
+  const navigate = useNavigate();
   const dispatch = useAppDispatch();
   const state = useAppSelector((state) => {
     return state;
@@ -25,6 +27,12 @@ const CommentInput: React.FC<CommentInputProps> = ({
   const page = state.comment && state.comment.page;
   const commentQuery = commentsApi.useGetCommentQuery({ postId, page });
 
+  // 로그인 확인
+  const auth = Cookies.get('Authorization');
+  const role = localStorage.getItem('role');
+  const name = localStorage.getItem('name');
+  const isLogin = auth && role && name;
+
   // 댓글 추가 mutation
   const commetMutation = commentsApi.useSetCommentMutation();
   const [addComments] = commetMutation;
@@ -33,6 +41,7 @@ const CommentInput: React.FC<CommentInputProps> = ({
 
   // 댓글 추가
   const addCommentHandler = () => {
+    if (!isLogin) navigate('/login');
     const open = Array.from(
       {
         length: commentQuery.data?.comments?.length,

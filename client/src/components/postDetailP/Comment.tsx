@@ -7,6 +7,8 @@ import { useNavigate } from 'react-router';
 import styled from 'styled-components';
 import _ from 'lodash';
 import parse from 'html-react-parser';
+import Cookies from 'js-cookie';
+
 // 컴포넌트
 import ReplyInput from './ReplyInput';
 import DislikeIcon from '../../assets/common/DislikeIcon';
@@ -60,6 +62,7 @@ const Comment: React.FC<
   isCommentOpenIntro,
   isReplyOpenIntro,
 }: Partial<CommentInputProps & ReportProps & CommentProps>) => {
+  const navigate = useNavigate();
   const dispatch = useAppDispatch();
   const state = useAppSelector(
     (
@@ -68,7 +71,7 @@ const Comment: React.FC<
       return state;
     },
   );
-  const navigate = useNavigate();
+
   const [page, setPage] = useState<number>(1);
   const [commentData, setCommentData] = useState<Array<CommentType>>([]);
   const [editComment, setEditComment] = useState<string>('');
@@ -83,6 +86,12 @@ const Comment: React.FC<
     'edit-comment',
   ) as HTMLTextAreaElement;
   const commentEditTextareaRef = useRef<HTMLTextAreaElement>(contentTextarea);
+
+  // 로그인 확인
+  const auth = Cookies.get('Authorization');
+  const role = localStorage.getItem('role');
+  const name = localStorage.getItem('name');
+  const isLogin = auth && role && name;
 
   // Textarea 값 확인
   const valueCheck = (event: React.ChangeEvent<HTMLTextAreaElement>): void => {
@@ -172,6 +181,7 @@ const Comment: React.FC<
   }
   // 댓글 좋아요 클릭 함수
   const commentLiikeHandler = (comment: CommentType): void => {
+    if (!isLogin) navigate('/login');
     const commentId = comment.commentId;
     // 좋아요만 있는 경우
     if (comment?.isThumbup && !comment?.isThumbdown) {
@@ -198,6 +208,7 @@ const Comment: React.FC<
 
   // 댓글 싫어요 클릭 함수
   const commentDislikeHandler = (comment: CommentType): void => {
+    if (!isLogin) navigate('/login');
     const commentId = comment.commentId;
     // 좋아요만 있는 경우
     if (comment.isThumbup && !comment?.isThumbdown) {
@@ -242,6 +253,7 @@ const Comment: React.FC<
       dispatch(setReportType(event.target.dataset.category!));
     }
   };
+
   // 소개 페이지 오픈
   const IntroHandler = (event: React.MouseEvent<HTMLElement>) => {
     event.stopPropagation();
@@ -478,6 +490,7 @@ const Comment: React.FC<
                                 : '3px 258px 0 5px',
                           }}
                           onClick={(event): void => {
+                            if (!isLogin) navigate('/login');
                             setIsOpenReport?.(!isOpenReport!);
                             reportTypeChecker(event);
                           }}
