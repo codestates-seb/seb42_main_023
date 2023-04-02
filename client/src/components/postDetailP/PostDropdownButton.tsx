@@ -13,7 +13,7 @@ interface Props {
   isOpenReport: boolean;
   isOpenDelete: boolean;
 }
-const DropdownButton = ({
+const PostDropdownButton = ({
   memberName,
   setIsOpenReport,
   setIsOpenDelete,
@@ -140,4 +140,4 @@ const ListItem = styled.li`
   }
 `;
 
-export default DropdownButton;
+export default PostDropdownButton;

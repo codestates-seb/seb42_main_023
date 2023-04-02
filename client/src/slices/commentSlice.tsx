@@ -1,5 +1,18 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
+interface Filter {
+  type: string;
+  payload: '최신순' | '좋아요순' | '조회순';
+}
+interface Open {
+  type: string;
+  payload: boolean;
+}
+interface Orderby {
+  type: string;
+  payload: 'latest' | 'thumbup' | 'view-count';
+}
+
 const commentSlice = createSlice({
   name: 'comment',
   initialState: {
@@ -11,6 +24,9 @@ const commentSlice = createSlice({
     isOpeneIntro: false,
     page: 1,
     commentCnt: undefined,
+    filter: '최신순',
+    filterOpen: false,
+    orderby: 'latest',
   },
   reducers: {
     // 댓글 좋아요
@@ -55,6 +71,18 @@ const commentSlice = createSlice({
     setCommentCnt: (state, action: PayloadAction<number>): void => {
       (state.commentCnt as unknown) = action.payload;
     },
+    // 정렬필터
+    setFilter: (state, action: Filter): void => {
+      state.filter = action.payload;
+    },
+    // 정렬옵션 선택창
+    setFilterOpen: (state, action: Open): void => {
+      state.filterOpen = action.payload;
+    },
+    // 정렬옵션 선택창
+    setOrderby: (state, action: Orderby): void => {
+      state.orderby = action.payload;
+    },
   },
 });
 
@@ -70,4 +98,7 @@ export const {
   setIsOpenIntro,
   setCommentPage,
   setCommentCnt,
+  setFilter,
+  setFilterOpen,
+  setOrderby,
 } = commentSlice.actions;

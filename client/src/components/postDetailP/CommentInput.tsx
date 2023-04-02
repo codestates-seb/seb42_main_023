@@ -6,7 +6,6 @@ import { useAppDispatch, useAppSelector } from '../../hooks';
 import { addCommentEdit, setComment } from '../../slices/commentSlice';
 import { isOpened, setIsOpened } from '../../slices/replySlice';
 import { CommentInputProps } from '../../types/PostDetail';
-
 const CommentInput: React.FC<CommentInputProps> = ({
   setCommentCnt,
   commentCnt,
@@ -68,7 +67,7 @@ const CommentInput: React.FC<CommentInputProps> = ({
 
   return (
     <CommentInputContainer>
-      <h1>댓글 {commentCnt}개 </h1>
+      <h1>댓글 {commentCnt}개 </h1>{' '}
       <InputWrap>
         <textarea
           id="comment"
@@ -183,16 +182,3 @@ const AddCommentBtn = styled.button`
   border-radius: 10px;
   background-color: var(--point-blue-color);
 `;
-
-/* const Textarea = styled.textarea`
-  box-sizing: border-box;
-  resize: none;
-  width: 720px;
-  height: 50px;
-  border: 1px solid #d4d4d4;
-  padding: 0 10px 0 10px;
-  margin-left: 3px;
-  :focus {
-    outline: 2px solid #0069ca;
-  }
-`; */
