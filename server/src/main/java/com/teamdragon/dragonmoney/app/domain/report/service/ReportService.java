@@ -33,15 +33,15 @@ public class ReportService {
     private final PostsService postsService;
     private final CommentService commentService;
     private final ReplyService replyService;
-    private final int PAGE_ELEMENT_SIZE = 14;
-    private final String POST_ENG = "post";
-    private final String COMMENT_ENG = "comment";
-    private final String REPLY_ENG = "reply";
-    private final String POST_KOR = "게시글";
-    private final String COMMENT_KOR = "댓글";
-    private final String REPLY_KOR = "답글";
-    private final String All_ENG = "all";
-    private final String SORT_PROPERTY = "handledAt";
+    private static final int PAGE_ELEMENT_SIZE = 14;
+    private static final String POST_ENG = "post";
+    private static final String COMMENT_ENG = "comment";
+    private static final String REPLY_ENG = "reply";
+    private static final String POST_KOR = "게시글";
+    private static final String COMMENT_KOR = "댓글";
+    private static final String REPLY_KOR = "답글";
+    private static final String All_ENG = "all";
+    private static final String SORT_PROPERTY = "handledAt";
 
     // 신고 요청
     public Report saveReport(ReportDto.ReportPostReq newReport) {

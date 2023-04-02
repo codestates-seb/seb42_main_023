@@ -107,7 +107,7 @@ public class ReplyRepositoryImpl implements ReplyRepositoryCustom{
         return queryFactory
                 .select(reply).distinct()
                 .from(reply)
-                .leftJoin(reply.writer, member).fetchJoin()
+                .leftJoin(reply.writer, member)
                 .where(reply.state.notIn(Reply.State.DELETED), reply.writer.name.eq(memberName))
                 .fetch();
     }

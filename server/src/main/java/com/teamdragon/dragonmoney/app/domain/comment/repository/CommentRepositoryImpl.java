@@ -106,6 +106,8 @@ public class CommentRepositoryImpl implements CommentRepositoryCustom {
 
         List<Comment> content = queryFactory
                 .selectFrom(comment).distinct()
+                .leftJoin(comment.writer, member).fetchJoin()
+                .leftJoin(comment.posts, posts).fetchJoin()
                 .where(comment.state.notIn(Comment.State.DELETED), comment.writer.name.eq(memberName))
                 .orderBy(orders)
                 .offset(pageable.getOffset())
