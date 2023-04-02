@@ -57,7 +57,12 @@
 | :----------------------------------------------------------: | :----------------------------------------------------------: | :----------------------------------------------------------: | :----------------------------------------------------------: | :----------------------------------------------------------: | :----------------------------------------------------------: | ------------------------------------------------------------ | ------------------------------------------------------------ | ------------------------------------------------------------ |
 | <div style="display: flex; align-items: flex-start;"><img src="https://techstack-generator.vercel.app/java-icon.svg" alt="icon" width="65" height="65" /></div> | <div style="display: flex; align-items: flex-start;"><img src="https://techstack-generator.vercel.app/aws-icon.svg" alt="icon" width="65" height="65" /></div> | <div style="display: flex; align-items: flex-start;"><img src="https://img.icons8.com/color/48/null/nginx.png" alt="icon" width="65" height="65" /></div> | <div style="display: flex; align-items: flex-start;"><img src="https://techstack-generator.vercel.app/mysql-icon.svg" alt="icon" width="65" height="65" /></div> | <div style="display: flex; align-items: flex-start;"><img src="https://media.discordapp.net/attachments/1090258986688843897/1091283675410346044/spring-security-project.png?width=500&height=500" alt="icon" width="65" height="65" /></div> | <img alt="spring-boot logo" src="https://t1.daumcdn.net/cfile/tistory/27034D4F58E660F616" width="65" height="65" > | <div style="display: flex; align-items: flex-start;"><img src="https://cdn.discordapp.com/attachments/1080464895268638743/1090900997271994448/spring-data.png" alt="icon" width="65" height="65" /></div> | <div style="display: flex; align-items: flex-start;"><img src="https://media.discordapp.net/attachments/1090258986688843897/1091283978385903687/gradle-knowledge-graph-logo.png?width=640&height=640" alt="icon" width="65" height="65" /></div> | <div style="display: flex; align-items: flex-start;"><img src="https://pbs.twimg.com/profile_images/378800000264014940/da8da0c0e6dfbfc596f787ade49381a6_400x400.png" alt="icon" width="65" height="65" /></div> |
 
-`버전 정보` Java = 11, Spring Boot = 2.7.9, Gradle = 7.6.1, MySQL = 8.0.3, Query DSL = 5.0.0
+`버전 정보` 
+Java 11
+Spring Boot v2.7.9
+Gradle v7.6.1
+MySQL v8.0.3
+Query DSL v5.0.0
 
 <br/>
 
