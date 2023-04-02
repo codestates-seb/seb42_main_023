@@ -41,8 +41,7 @@ public class PostsRepositoryImpl implements PostsRepositoryCustom {
                 .select(posts).distinct()
                 .from(posts)
                 .leftJoin(posts.writer, member).fetchJoin()
-                .leftJoin(posts.postsTags, postsTag).fetchJoin()
-                .leftJoin(postsTag.tag, tag).fetchJoin()
+                .leftJoin(posts.bestAwards, bestAwards).fetchJoin()
                 .where(posts.state.eq(Posts.State.ACTIVE), posts.createdAt.between(from, to))
                 .orderBy(
                         posts.viewCount.add(
@@ -66,10 +65,8 @@ public class PostsRepositoryImpl implements PostsRepositoryCustom {
         List<Posts> content = queryFactory
                 .select(posts).distinct()
                 .from(posts)
-                .leftJoin(posts.writer, member)
-                .leftJoin(posts.bestAwards, bestAwards)
-                .leftJoin(posts.postsTags, postsTag)
-                .leftJoin(postsTag.tag, tag)
+                .leftJoin(posts.writer, member).fetchJoin()
+                .leftJoin(posts.bestAwards, bestAwards).fetchJoin()
                 .where(posts.state.eq(Posts.State.ACTIVE), posts.bestAwards.isNotNull())
                 .orderBy(orders)
                 .offset(pageable.getOffset())
@@ -78,7 +75,6 @@ public class PostsRepositoryImpl implements PostsRepositoryCustom {
         JPAQuery<Long> countQuery = queryFactory
                 .select(posts.count()).distinct()
                 .from(posts)
-                .leftJoin(posts.bestAwards, bestAwards)
                 .where(posts.state.eq(Posts.State.ACTIVE), posts.bestAwards.isNotNull());
 
         return PageableExecutionUtils.getPage(content, pageable, countQuery::fetchOne);
@@ -146,9 +142,7 @@ public class PostsRepositoryImpl implements PostsRepositoryCustom {
                 .select(posts)
                 .distinct()
                 .from(posts)
-                .leftJoin(posts.writer, member)
-                .leftJoin(posts.postsTags, postsTag)
-                .leftJoin(postsTag.tag, tag)
+                .leftJoin(posts.writer, member).fetchJoin()
                 .where(posts.state.eq(Posts.State.ACTIVE))
                 .orderBy(orders)
                 .offset(pageable.getOffset())
@@ -187,9 +181,7 @@ public class PostsRepositoryImpl implements PostsRepositoryCustom {
         builder.and(posts.id.in(sub));
 
         List<Posts> content = queryFactory.selectFrom(posts).distinct()
-                .leftJoin(posts.writer, member)
-                .leftJoin(posts.postsTags, postsTag)
-                .leftJoin(postsTag.tag, tag)
+                .leftJoin(posts.writer, member).fetchJoin()
                 .where(posts.state.eq(Posts.State.ACTIVE), builder)
                 .orderBy(orders)
                 .offset(pageable.getOffset())
@@ -211,8 +203,6 @@ public class PostsRepositoryImpl implements PostsRepositoryCustom {
 
         List<Posts> content = queryFactory.selectFrom(posts).distinct()
                 .leftJoin(posts.writer, member).fetchJoin()
-                .leftJoin(posts.postsTags, postsTag).fetchJoin()
-                .leftJoin(postsTag.tag, tag).fetchJoin()
                 .where(posts.state.eq(Posts.State.ACTIVE), posts.title.containsIgnoreCase(keyword))
                 .orderBy(orders)
                 .offset(pageable.getOffset())
@@ -223,7 +213,8 @@ public class PostsRepositoryImpl implements PostsRepositoryCustom {
                 .from(posts)
                 .where(posts.state.eq(Posts.State.ACTIVE), posts.title.containsIgnoreCase(keyword));
 
-        return PageableExecutionUtils.getPage(content, pageable, countQuery::fetchOne);    }
+        return PageableExecutionUtils.getPage(content, pageable, countQuery::fetchOne);
+    }
 
     // Posts 목록 조회 : 유저이름 + 페이징
     @Override
@@ -235,8 +226,6 @@ public class PostsRepositoryImpl implements PostsRepositoryCustom {
                 .selectFrom(posts)
                 .distinct()
                 .leftJoin(posts.writer, member).fetchJoin()
-                .leftJoin(posts.postsTags, postsTag).fetchJoin()
-                .leftJoin(postsTag.tag, tag).fetchJoin()
                 .where(posts.state.notIn(Posts.State.DELETED), posts.writer.name.eq(memberName))
                 .orderBy(orders)
                 .offset(pageable.getOffset())

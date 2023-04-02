@@ -45,8 +45,8 @@ public class PostsService implements ThumbCountService {
     private final TagService tagService;
     private final ImageService imageService;
 
-    private final int PAGE_ELEMENT_SIZE = 10;
-    private final Long CURRENT_CATEGORY_ID = 1L;
+    private static final int PAGE_ELEMENT_SIZE = 10;
+    private static final Long CURRENT_CATEGORY_ID = 1L;
 
     // 게시글 생성
     public Posts savePosts(Member loginMember, Posts newPosts, List<Image> removedImages){
@@ -191,19 +191,22 @@ public class PostsService implements ThumbCountService {
     }
 
     // 게시글 목록 조회 : 요청페이지번호, 정렬기준
-    public Page<Posts> findPostsList(int page, Posts.OrderBy orderBy){
+    public PostsDto.PostsListRes findPostsList(int page, Posts.OrderBy orderBy){
         Pageable pageable = PageRequest.of(page - 1 , PAGE_ELEMENT_SIZE, Sort.by(orderBy.getTargetProperty()).descending());
-        return postsRepository.findPostsListByPage(pageable);
+        Page<Posts> postsList = postsRepository.findPostsListByPage(pageable);
+        return new PostsDto.PostsListRes(postsList, orderBy.getOrderBy());
     }
 
     // 게시글 목록 조회 : 검색기능 : 태그목록 + 제목
-    public Page<Posts> findPostsListByTagsAndTitle(String keyword, String[] tagNames, int page, Posts.OrderBy orderBy){
+    public PostsDto.PostsListRes findPostsListByTagsAndTitle(String keyword, String[] tagNames, int page, Posts.OrderBy orderBy){
         Pageable pageable = PageRequest.of(page - 1 , PAGE_ELEMENT_SIZE, Sort.by(orderBy.getTargetProperty()).descending());
+        Page<Posts> postsList;
         if (tagNames == null || tagNames.length == 0) {
-            return postsRepository.findPostsListBySearchWithoutTagNames(keyword, pageable);
+            postsList = postsRepository.findPostsListBySearchWithoutTagNames(keyword, pageable);
         } else {
-            return postsRepository.findPostsListBySearch(keyword, tagNames, pageable);
+            postsList = postsRepository.findPostsListBySearch(keyword, tagNames, pageable);
         }
+        return new PostsDto.PostsListRes(postsList, orderBy.getOrderBy());
     }
 
     // 게시글 목록 조회 : 작성자 닉네임

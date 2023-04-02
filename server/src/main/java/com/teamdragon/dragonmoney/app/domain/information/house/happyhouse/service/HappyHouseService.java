@@ -35,14 +35,14 @@ public class HappyHouseService {
 
     private final HappyHouseRepository happyHouseRepository;
 
-    private final String RENT_HOUSE_CODE = "06";
-    private final int API_PAGE_ELEMENT_SIZE = 10;
-    private final int API_PAGE_NUM = 1;
-    private final int PAGE_ELEMENT_SIZE = 5;
+    private static final String RENT_HOUSE_CODE = "06";
+    private static final int API_PAGE_ELEMENT_SIZE = 10;
+    private static final int API_PAGE_NUM = 1;
+    private static final int PAGE_ELEMENT_SIZE = 5;
 
     // 행복주택 목록 조회 : 요청페이지번호, 필터링기준
     public Page<HappyHouse> findHappyHouseList(int page, HappyHouseAreaCode location, HappyHouseState state){
-        Pageable pageable = PageRequest.of(page - 1 , PAGE_ELEMENT_SIZE, Sort.by("inquiryDate").descending());
+        Pageable pageable = PageRequest.of(page - 1 , PAGE_ELEMENT_SIZE, Sort.by("noticeEndDay").descending());
         if (state == HappyHouseState.ALL) {
             return happyHouseRepository.findHappyHouseListByPageAllState(pageable, location);
         } else {

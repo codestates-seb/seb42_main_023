@@ -102,8 +102,7 @@ public class PostsController {
     public ResponseEntity<PostsDto.PostsListRes> getPostsList(@Valid @Positive @RequestParam int page,
                                                               @Valid @NotBlank @RequestParam String orderby) {
         Posts.OrderBy orderBy = checkOrderBy(orderby);
-        Page<Posts> postsList = postsService.findPostsList(page, orderBy);
-        PostsDto.PostsListRes response = new PostsDto.PostsListRes(postsList, orderBy.getOrderBy());
+        PostsDto.PostsListRes response = postsService.findPostsList(page, orderBy);
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
@@ -114,8 +113,7 @@ public class PostsController {
                                                                     @Valid @Positive @RequestParam int page,
                                                                     @Valid @NotBlank @RequestParam String orderby) {
         Posts.OrderBy orderBy = checkOrderBy(orderby);
-        Page<Posts> postsList = postsService.findPostsListByTagsAndTitle(keyword, tags, page, orderBy);
-        PostsDto.PostsListRes response = new PostsDto.PostsListRes(postsList, orderby);
+        PostsDto.PostsListRes response = postsService.findPostsListByTagsAndTitle(keyword, tags, page, orderBy);
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
