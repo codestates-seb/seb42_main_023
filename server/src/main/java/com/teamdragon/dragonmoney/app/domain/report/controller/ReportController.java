@@ -40,8 +40,8 @@ public class ReportController {
     // 미처리 신고 목록 조회
     @GetMapping("/standby")
     public ResponseEntity getStandByReports(@Valid @Positive @RequestParam int page,
-                                            @RequestParam String orderBy) {
-        ReportDto.ReportListRes response = reportService.findListStandByReport(page, orderBy);
+                                            @RequestParam String orderby) {
+        ReportDto.ReportListRes response = reportService.findListStandByReport(page, orderby);
 
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
