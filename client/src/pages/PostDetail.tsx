@@ -276,6 +276,7 @@ const PostDetail: React.FC = () => {
     }
   };
 
+  // 바깥 부분 클릭
   const outClickIntroHandler = (event: React.MouseEvent<HTMLElement>) => {
     if (
       isOpenIntro &&
@@ -318,7 +319,10 @@ const PostDetail: React.FC = () => {
   const sendReportHandler = (): void => {
     // 유효성 검사
     if ('validation' in state && state.validation?.reportErr) return;
-    if ('post' in state && !state.post?.reportOption) return;
+    if ('post' in state && !state.post?.reportOption) {
+      dispatch(setReportErr('신고 이유를 선택해 주세요.'));
+      return;
+    }
     if (reportTextRef.current?.value === '') return;
 
     // 게시물 신고
@@ -895,6 +899,7 @@ const ReportModal = styled.div`
     resize: none;
     padding: 20px;
     margin: 15px 0 0 0;
+    z-index: 10;
     :focus {
       outline: 2px solid #0069ca;
     }

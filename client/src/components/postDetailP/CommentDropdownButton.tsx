@@ -75,6 +75,7 @@ const Dropdown = styled.div`
   position: relative;
   display: inline-block;
   z-index: 5;
+  width: 50px;
 `;
 
 const Button = styled.button`
