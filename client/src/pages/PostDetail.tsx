@@ -6,6 +6,7 @@ import parse from 'html-react-parser';
 import { useParams, useNavigate } from 'react-router';
 import { useAppDispatch, useAppSelector } from '../hooks';
 import { timeSince } from '../components/mainP/Timecalculator';
+import Cookies from 'js-cookie';
 // 컴포넌트
 import Comment from '../components/postDetailP/Comment';
 import CommentInput from '../components/postDetailP/CommentInput';
@@ -44,17 +45,26 @@ import {
 import { setReportErr } from '../slices/validationSlice';
 import { setMemberName } from '../slices/headerSlice';
 
-const reportOption = [
-  '영리목적/홍보성',
-  '저작권침해',
-  '음란성/선정성',
-  '욕설/인신공격',
-  '개인정보노출',
-  '도배',
-  '기타',
-];
-
 const PostDetail: React.FC = () => {
+  const navigate = useNavigate();
+  const dispatch = useAppDispatch();
+  const state = useAppSelector(
+    (
+      state:
+        | PostStateType
+        | CommentStateType
+        | ReplyStateType
+        | ValidationStateType,
+    ):
+      | PostStateType
+      | CommentStateType
+      | ReplyStateType
+      | ValidationStateType => {
+      return state;
+    },
+  );
+  // 신고 폼 Ref
+  const reportTextRef = useRef<HTMLTextAreaElement>(null);
   // 게시글 데이터
   const [isLike, setIsLike] = useState<boolean>();
   const [isDislike, setIsDislike] = useState<boolean>();
@@ -73,40 +83,12 @@ const PostDetail: React.FC = () => {
   const [isOpenCommentIntro, setIsOpenCommentIntro] = useState<boolean>(false);
   const [isOpenReplyIntro, setIsOpenReplyIntro] = useState<boolean>(false);
 
-  const handleSelectChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setCheckedElement(Number(event.target.value));
-    dispatch(setReportOption(event.target.id));
-  };
+  // 로그인 확인
+  const auth = Cookies.get('Authorization');
+  const role = localStorage.getItem('role');
+  const name = localStorage.getItem('name');
+  const isLogin = auth && role && name;
 
-  const handleSelected = (event: React.MouseEvent<HTMLButtonElement>) => {
-    setCheckedElement(Number(event.currentTarget.value));
-
-    dispatch(
-      setReportOption(
-        String(event.currentTarget?.parentElement?.children[0].id),
-      ),
-    );
-  };
-
-  const reportTextRef = useRef<HTMLTextAreaElement>(null);
-  const dispatch = useAppDispatch();
-  const state = useAppSelector(
-    (
-      state:
-        | PostStateType
-        | CommentStateType
-        | ReplyStateType
-        | ValidationStateType,
-    ):
-      | PostStateType
-      | CommentStateType
-      | ReplyStateType
-      | ValidationStateType => {
-      return state;
-    },
-  );
-
-  const navigate = useNavigate();
   const params = useParams();
   const postId = Number(params.postId);
   const commentId = 'comment' in state ? state.comment?.commentId : null;
@@ -180,6 +162,7 @@ const PostDetail: React.FC = () => {
 
   // 좋아요 클릭 함수
   const changeLiikeHandler = (): void => {
+    if (!isLogin) navigate('/login');
     // 좋아요만 있는 경우
     if (loginUserName) {
       if (isLike && !isDislike) {
@@ -210,6 +193,7 @@ const PostDetail: React.FC = () => {
 
   // 싫어요 클릭 함수
   const changeDislikeHandler = (): void => {
+    if (!isLogin) navigate('/login');
     if (loginUserName) {
       // 좋아요만 있는 경우
       if (isLike && !isDislike) {
@@ -242,6 +226,7 @@ const PostDetail: React.FC = () => {
   };
   // 북마크 클릭 함수
   const changeBookmarkHandler = (): void => {
+    if (!isLogin) navigate('/login');
     if (loginUserName) {
       if (isBookmark) {
         setBookmark(false);
@@ -300,6 +285,33 @@ const PostDetail: React.FC = () => {
     ) {
       setIsOpenIntro(false);
     }
+  };
+
+  // 신고 옵션
+  const reportOption = [
+    '영리목적/홍보성',
+    '저작권침해',
+    '음란성/선정성',
+    '욕설/인신공격',
+    '개인정보노출',
+    '도배',
+    '기타',
+  ];
+
+  // 신고 옵션 선택(텍스트)
+  const handleSelectChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setCheckedElement(Number(event.target.value));
+    dispatch(setReportOption(event.target.id));
+  };
+
+  // 신고 옵션 선택(체크 버튼)
+  const handleSelected = (event: React.MouseEvent<HTMLButtonElement>) => {
+    setCheckedElement(Number(event.currentTarget.value));
+    dispatch(
+      setReportOption(
+        String(event.currentTarget?.parentElement?.children[0].id),
+      ),
+    );
   };
 
   // 신고 보내기

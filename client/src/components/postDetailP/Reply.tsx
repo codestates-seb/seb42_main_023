@@ -6,6 +6,7 @@ import parse from 'html-react-parser';
 import _ from 'lodash';
 import { useNavigate } from 'react-router-dom';
 import { timeSince } from '../mainP/Timecalculator';
+import Cookies from 'js-cookie';
 // 컴포넌트
 import DislikeIcon from '../../assets/common/DislikeIcon';
 import LikeIcon from '../../assets/common/LikeIcon';
@@ -41,6 +42,7 @@ const Reply: React.FC<Partial<ReplyProps & ReportProps>> = ({
   isReplyOpenIntro,
   setIsOpenReplyIntro,
 }: Partial<ReplyProps & ReportProps>) => {
+  const navigate = useNavigate();
   const dispatch = useAppDispatch();
   const state = useAppSelector(
     (
@@ -49,7 +51,6 @@ const Reply: React.FC<Partial<ReplyProps & ReportProps>> = ({
       return state;
     },
   );
-  const navigate = useNavigate();
   const [editReply, setEditReply] = useState<string>('');
   const [replyData, setReplyData] = useState<Array<ReplyType>>([]);
   const [selectedReply, setSelectedReply] = useState<string>('');
@@ -61,6 +62,12 @@ const Reply: React.FC<Partial<ReplyProps & ReportProps>> = ({
     'edit-reply',
   ) as HTMLTextAreaElement;
   const replyEditTextareaRef = useRef<HTMLTextAreaElement>(replyTextarea);
+
+  // 로그인 확인
+  const auth = Cookies.get('Authorization');
+  const role = localStorage.getItem('role');
+  const name = localStorage.getItem('name');
+  const isLogin = auth && role && name;
 
   // Textarea 값 확인
   const valueCheck = (event: React.ChangeEvent<HTMLTextAreaElement>): void => {
@@ -117,6 +124,7 @@ const Reply: React.FC<Partial<ReplyProps & ReportProps>> = ({
     replyInfo?.createdAt !== replyInfo?.modifiedAt ? true : false;
   // 답글 좋아요 클릭 함수
   const ReplyLiikeHandler = (reply: ReplyType): void => {
+    if (!isLogin) navigate('/login');
     const replyId = reply.replyId;
     if (reply?.isThumbup && !reply?.isThumbdown) {
       removeThumbUp({ replyId });
@@ -140,6 +148,7 @@ const Reply: React.FC<Partial<ReplyProps & ReportProps>> = ({
 
   // 답글 싫어요 클릭 함수
   const ReplyDislikeHandler = (reply: ReplyType): void => {
+    if (!isLogin) navigate('/login');
     const replyId = reply.replyId;
     // 좋아요만 있는 경우
     if (reply?.isThumbup && !reply?.isThumbdown) {
@@ -360,6 +369,7 @@ const Reply: React.FC<Partial<ReplyProps & ReportProps>> = ({
                   : '3px 228px 0 5px',
             }}
             onClick={(event): void => {
+              if (!isLogin) navigate('/login');
               setIsOpenReport?.(!isOpenReport);
               reportTypeChecker(event);
             }}

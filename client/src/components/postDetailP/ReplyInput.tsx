@@ -1,10 +1,11 @@
 // 패키지 등
 import React, { useRef } from 'react';
 import styled from 'styled-components';
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import { useAppDispatch, useAppSelector } from '../../hooks';
+import Cookies from 'js-cookie';
+
 // API
-import { commentsApi } from '../../api/commentApi';
 import { repliesApi } from '../../api/replyApi';
 // slices
 import { setCommentId } from '../../slices/commentSlice';
@@ -24,7 +25,7 @@ const ReplyInput: React.FC<ReplyInputProps> = ({
   setReplyCnt,
   refetch,
 }: CommentProps) => {
-  const replyRef = useRef<HTMLTextAreaElement>(null);
+  const navigate = useNavigate();
   const dispatch = useAppDispatch();
   const state = useAppSelector(
     (
@@ -33,18 +34,25 @@ const ReplyInput: React.FC<ReplyInputProps> = ({
       return state;
     },
   );
+  const replyRef = useRef<HTMLTextAreaElement>(null);
   const params = useParams();
   const postId = params.postId;
   const commentId = commentInfo.commentId;
   const page = 'comment' in state && state.comment?.page;
   const replyMutation = repliesApi.useSetReplyMutation();
   const setReplys = replyMutation[0];
-  // const commentQuery = commentsApi.useGetCommentQuery({ postId, page });
-  // const { refetch } = commentQuery;
+
+  // 로그인 확인
+  const auth = Cookies.get('Authorization');
+  const role = localStorage.getItem('role');
+  const name = localStorage.getItem('name');
+  const isLogin = auth && role && name;
+
   const textarea = document.getElementById('reply') as HTMLTextAreaElement;
   const text = textarea?.value.replaceAll(/\n/g, '<br>');
   // 답글 추가
   const addReplyHandler = () => {
+    if (!isLogin) navigate('/login');
     setReplys({
       commentId: commentId,
       content: text,
