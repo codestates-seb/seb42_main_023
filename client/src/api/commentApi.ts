@@ -7,8 +7,9 @@ export const commentsApi = apiSlice
     endpoints: (builder) => ({
       // 댓글 조회
       getComment: builder.query({
-        query: ({ postId, page }) =>
-          `posts/${postId}/comments?page=${page}&orderby=latest`,
+        query: ({ postId, page, orderby = 'latest' }) =>
+          //latest, thumbup
+          `posts/${postId}/comments?page=${page}&orderby=${orderby}`,
         providesTags: ['Comment'],
       }),
       // 댓글 추가

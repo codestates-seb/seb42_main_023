@@ -35,6 +35,9 @@ export interface CommentStateType {
     isOpeneIntro: boolean;
     page: unknwon;
     comments: Array<object>;
+    filter: string;
+    filterOpen: boolean;
+    orderby: string;
   };
 }
 
@@ -127,16 +130,11 @@ export interface ReplyType {
   isThumbup: boolean;
   isThumbdown: boolean;
   content: string;
-
-  //
-  // isOpenIntro: boolean;
-  // isCommentOpenIntro: boolean;
-  // isReplyOpenIntro: boolean;
-  // setIsOpenReplyIntro?: (bool: boolean) => void;
 }
 
 export interface CommentProps {
   commentInfo: CommentType;
+  setPage?: (num: number) => void;
 }
 
 export interface ReplyProps {

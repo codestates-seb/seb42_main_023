@@ -38,6 +38,7 @@ import { setMemberName } from '../../slices/headerSlice';
 import { useNavigate } from 'react-router';
 import Loading from '../common/Loading';
 import parse from 'html-react-parser';
+import CommentDropdownButton from './CommentDropdownButton';
 
 const Comment: React.FC<
   Partial<CommentInputProps & ReportProps & CommentProps>
@@ -92,17 +93,19 @@ const Comment: React.FC<
     }
   };
 
-  // useEffect(() => {
-  //   initData();
-  // }, []);
   // textarea 높이 조절
   const handleResizeHeight = () => {
     commentEditTextareaRef!.current.style!.height = 'auto';
     commentEditTextareaRef!.current.style!.height =
       commentEditTextareaRef.current?.scrollHeight + 'px';
   };
+  const orderby = 'comment' in state && state.comment.orderby;
   // 댓글 조회
-  const commentQuery = commentsApi.useGetCommentQuery({ postId, page });
+  const commentQuery = commentsApi.useGetCommentQuery({
+    postId,
+    page,
+    orderby,
+  });
   const { isLoading } = commentQuery;
   // 댓글 업데이트
   const commentMutation = commentsApi.useUpdateCommentMutation();
@@ -283,6 +286,7 @@ const Comment: React.FC<
         <Loading />
       ) : (
         <CommentContainer onClick={outClickIntroHandler}>
+          <CommentDropdownButton setPage={setPage}></CommentDropdownButton>
           {commentQuery.data &&
             commentQuery.data?.comments?.map(
               (comment: CommentType, idx: number) => {
@@ -299,19 +303,6 @@ const Comment: React.FC<
                   });
                 // 시간 계산
                 const time = timeSince(comment.createdAt);
-                // const enterHandler = (
-                //   event: React.KeyboardEvent<HTMLInputElement>,
-                // ): void => {
-                //   if (!commentEditInput.current?.value) return;
-                //   if (event.key === 'Enter') {
-                //     dispatch(setIsEdit(idx));
-                //     updateMutation({
-                //       postId: postId,
-                //       commentId: comment.commentId,
-                //       content: commentEditInput.current?.value,
-                //     });
-                //   }
-                // };
 
                 // 답글 수정 여부
                 const commentIsEdit =

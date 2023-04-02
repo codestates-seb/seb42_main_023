@@ -9,7 +9,7 @@ import ViewIcon from '../assets/common/ViewIcon';
 import CommentIcon from '../assets/common/CommentIcon';
 import DislikeIcon from '../assets/common/DislikeIcon';
 import LikeIcon from '../assets/common/LikeIcon';
-import DropdownButton from '../components/postDetailP/DropdownButton';
+import PostDropdownButton from '../components/postDetailP/PostDropdownButton';
 import { BlueBtn, WhiteBtn } from '../components/common/Btn';
 import { ReactComponent as CheckedIcon } from '../assets/checked.svg';
 import { ReactComponent as NoCheckedIcon } from '../assets/noChecked.svg';
@@ -50,6 +50,7 @@ const reportOption = [
 ];
 
 const PostDetail: React.FC = () => {
+  // 게시글 데이터
   const [isLike, setIsLike] = useState<boolean>();
   const [isDislike, setIsDislike] = useState<boolean>();
   const [isBookmark, setBookmark] = useState<boolean>();
@@ -61,7 +62,6 @@ const PostDetail: React.FC = () => {
   // 신고, 삭제, 소개
   const [isOpenReport, setIsOpenReport] = useState<boolean>(false);
   const [isOpenReportErr] = useState<boolean>(false);
-  // const [isOpenFilter, setIsOpenFilter] = useState<boolean>(false);
   const [isOpenDelete, setIsOpenDelete] = useState<boolean>(false);
   const [deleteType, setDeleteType] = useState<string>('');
   const [isOpenIntro, setIsOpenIntro] = useState<boolean>(false);
@@ -113,7 +113,7 @@ const PostDetail: React.FC = () => {
 
   // 게시글 조회 및 추가
   const postDetailQuery = postsApi.useGetPostQuery({ postId });
-  const { data, isSuccess, isLoading, isFetching, refetch } = postDetailQuery;
+  const { data, isSuccess, isLoading, refetch } = postDetailQuery;
   const [deletePost] = postsApi.useDeletePostMutation();
   // 게시글 좋아요 추가, 삭제
   const [addThumbUp] = postsApi.useAddPostThumbUpMutation();
@@ -563,14 +563,14 @@ const PostDetail: React.FC = () => {
                   <BookmarkIcon checked={isBookmark!} />
                 </Bookmark>
                 {loginUserName ? (
-                  <DropdownButton
+                  <PostDropdownButton
                     memberName={data?.memberName}
                     isOpenReport={isOpenReport}
                     setIsOpenReport={setIsOpenReport}
                     isOpenDelete={isOpenDelete}
                     setIsOpenDelete={setIsOpenDelete}
                     setDeleteType={setDeleteType}
-                  ></DropdownButton>
+                  ></PostDropdownButton>
                 ) : null}
               </ul>
             </PostInfo>
