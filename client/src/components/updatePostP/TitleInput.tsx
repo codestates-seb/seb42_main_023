@@ -1,9 +1,11 @@
+// 패키지 등
 import React, { useRef } from 'react';
 import styled from 'styled-components';
+import { useParams } from 'react-router-dom';
 import { useAppDispatch, useAppSelector } from '../../hooks';
+// slices
 import { setIsEdit, setTitle } from '../../slices/postInputSlice';
 import { setTitleErr } from '../../slices/validationSlice';
-import { useParams } from 'react-router-dom';
 
 const TitleInput: React.FC = () => {
   const dispatch = useAppDispatch();
@@ -18,15 +20,16 @@ const TitleInput: React.FC = () => {
     validationTest();
   };
 
-  // 유효성 검사
   const validationTest = (): void => {
     const titleValue = title!.current?.value;
-    if (!titleValue?.length) {
-      dispatch(setTitleErr(''));
+    if (titleValue!.length === 0) {
+      dispatch(setTitleErr('제목을 작성해주세요.'));
     }
     if (titleValue) {
       if (titleValue.length < 5 || titleValue.length > 20) {
         dispatch(setTitleErr('제목은 5자 이상 20자 이하로 작성해주세요.'));
+      } else {
+        dispatch(setTitleErr(''));
       }
     }
   };

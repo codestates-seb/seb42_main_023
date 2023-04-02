@@ -1,16 +1,24 @@
+// 패키지 등
 import React, { useEffect, useRef, useState } from 'react';
 import { useParams } from 'react-router';
 import { useAppDispatch, useAppSelector } from '../../hooks';
+import { timeSince } from '../mainP/Timecalculator';
+import { useNavigate } from 'react-router';
 import styled from 'styled-components';
 import _ from 'lodash';
+import parse from 'html-react-parser';
+import Cookies from 'js-cookie';
+
+// 컴포넌트
 import ReplyInput from './ReplyInput';
 import DislikeIcon from '../../assets/common/DislikeIcon';
 import LikeIcon from '../../assets/common/LikeIcon';
 import TimeIcon from '../../assets/common/TimeIcon';
+import CommentDropdownButton from './CommentDropdownButton';
+import Loading from '../common/Loading';
 import Reply from './Reply';
-import { repliesApi } from '../../api/replyApi';
-import { commentsApi } from '../../api/commentApi';
-import { setReportType, setSelectedMember } from '../../slices/postSlice';
+// 타입
+import { CommentInputProps } from '../../types/PostDetail';
 import {
   PostStateType,
   CommentStateType,
@@ -20,18 +28,24 @@ import {
   ReportProps,
   CommentProps,
 } from '../../types/PostDetail';
-import { setCommentId, isEdit, setIsEdit } from '../../slices/commentSlice';
+// API
+import { commentsApi } from '../../api/commentApi';
+import { repliesApi } from '../../api/replyApi';
+import { membersApi } from '../../api/memberapi';
+// Slices
+import { setReportType, setSelectedMember } from '../../slices/postSlice';
+import {
+  setCommentId,
+  isEdit,
+  setIsEdit,
+  setCommentPage,
+} from '../../slices/commentSlice';
 import {
   isOpened,
   setIsOpened,
   setTotalReplies,
 } from '../../slices/replySlice';
-import { timeSince } from '../mainP/Timecalculator';
-import { membersApi } from '../../api/memberapi';
-import { CommentInputProps } from '../../types/PostDetail';
 import { setMemberName } from '../../slices/headerSlice';
-import { useNavigate } from 'react-router';
-import Loading from '../common/Loading';
 
 const Comment: React.FC<
   Partial<CommentInputProps & ReportProps & CommentProps>
@@ -48,6 +62,7 @@ const Comment: React.FC<
   isCommentOpenIntro,
   isReplyOpenIntro,
 }: Partial<CommentInputProps & ReportProps & CommentProps>) => {
+  const navigate = useNavigate();
   const dispatch = useAppDispatch();
   const state = useAppSelector(
     (
@@ -56,17 +71,57 @@ const Comment: React.FC<
       return state;
     },
   );
-  const navigate = useNavigate();
+
   const [page, setPage] = useState<number>(1);
+  const [commentData, setCommentData] = useState<Array<CommentType>>([]);
+  const [editComment, setEditComment] = useState<string>('');
+  const [selectedComment, setSelectedComment] = useState<string>('');
+  const [replyCnt, setReplyCnt] = useState<number>();
   const loginUserName = window.localStorage.getItem('name');
   const params = useParams();
   const postId = params.postId;
   const commentId = 'comment' in state && state.comment?.commentId;
   const selectedMember = 'post' in state ? state.post.selectedMember : null;
+  const contentTextarea = document.getElementById(
+    'edit-comment',
+  ) as HTMLTextAreaElement;
+  const commentEditTextareaRef = useRef<HTMLTextAreaElement>(contentTextarea);
 
+  // 로그인 확인
+  const auth = Cookies.get('Authorization');
+  const role = localStorage.getItem('role');
+  const name = localStorage.getItem('name');
+  const isLogin = auth && role && name;
+
+  // Textarea 값 확인
+  const valueCheck = (event: React.ChangeEvent<HTMLTextAreaElement>): void => {
+    const data = event.target.value.replaceAll(/\n/g, '<br>');
+    setEditComment(data);
+    setSelectedComment(event.target.value);
+  };
+
+  const initData = (event: React.MouseEvent<HTMLLIElement>): void => {
+    if (event.target instanceof HTMLElement) {
+      const data = event.target!.dataset!.comment!;
+      const parsedData = data.replaceAll(/<br>/g, '\n');
+      setSelectedComment(parsedData);
+    }
+  };
+
+  // textarea 높이 조절
+  const handleResizeHeight = () => {
+    commentEditTextareaRef!.current.style!.height = 'auto';
+    commentEditTextareaRef!.current.style!.height =
+      commentEditTextareaRef.current?.scrollHeight + 'px';
+  };
+  const orderby = 'comment' in state && state.comment.orderby;
   // 댓글 조회
-  const commentQuery = commentsApi.useGetCommentQuery({ postId, page });
-  const { data, isLoading } = commentQuery;
+  const commentQuery = commentsApi.useGetCommentQuery({
+    postId,
+    page,
+    orderby,
+  });
+  const { isLoading, refetch } = commentQuery;
   // 댓글 업데이트
   const commentMutation = commentsApi.useUpdateCommentMutation();
   const [updateMutation] = commentMutation;
@@ -80,7 +135,6 @@ const Comment: React.FC<
     },
   );
   const { isSuccess } = replyQuery;
-  const commentEditInput = useRef<HTMLInputElement>(null);
 
   //  멤버 정보 조회
   const memberQuery = membersApi.useGetMemberQuery(
@@ -93,6 +147,7 @@ const Comment: React.FC<
   const [addThumbUp] = addThumbUpMutation;
   const removeThumbUpMutation = commentsApi.useRemoveCommentThumbUpMutation();
   const [removeThumbUp] = removeThumbUpMutation;
+
   // 댓글 싫어요  추가, 삭제
   const addThumbDownMutation = commentsApi.useAddCommentThumbDownMutation();
   const [addThumbDown] = addThumbDownMutation;
@@ -100,7 +155,6 @@ const Comment: React.FC<
     commentsApi.useRemoveCommentThumbDownMutation();
   const [removeThumbDown] = removeThumbDownMutation;
 
-  // 유저 정보 조회
   // 답글 Open 여부 확인을 위한 배열 생성
   if (
     commentQuery.isSuccess &&
@@ -127,6 +181,7 @@ const Comment: React.FC<
   }
   // 댓글 좋아요 클릭 함수
   const commentLiikeHandler = (comment: CommentType): void => {
+    if (!isLogin) navigate('/login');
     const commentId = comment.commentId;
     // 좋아요만 있는 경우
     if (comment?.isThumbup && !comment?.isThumbdown) {
@@ -153,6 +208,7 @@ const Comment: React.FC<
 
   // 댓글 싫어요 클릭 함수
   const commentDislikeHandler = (comment: CommentType): void => {
+    if (!isLogin) navigate('/login');
     const commentId = comment.commentId;
     // 좋아요만 있는 경우
     if (comment.isThumbup && !comment?.isThumbdown) {
@@ -197,6 +253,7 @@ const Comment: React.FC<
       dispatch(setReportType(event.target.dataset.category!));
     }
   };
+
   // 소개 페이지 오픈
   const IntroHandler = (event: React.MouseEvent<HTMLElement>) => {
     event.stopPropagation();
@@ -206,7 +263,6 @@ const Comment: React.FC<
       event.target instanceof HTMLElement
     ) {
       setIsOpenCommentIntro?.(!isCommentOpenIntro!);
-      console.log('isOpenIntro', isCommentOpenIntro!);
       dispatch(setCommentId(Number(event.target.dataset.commentid)));
       dispatch(setSelectedMember(event.target.id));
     }
@@ -221,16 +277,19 @@ const Comment: React.FC<
   useEffect(() => {
     // 답글 데이터가 변경될 때마다 총 답글 데이터 반영
     dispatch(setTotalReplies(replyQuery.data?.replies || []));
-  }, [replyQuery.data]);
-  // // 수정 중인 답글 반영
-  // setEditComment(commentQuery.data?.comments);
+    setCommentData(commentQuery.data?.comments);
+  }, [replyQuery.data, commentQuery.data]);
+
+  // 댓글, 답글 페이지 이동
   const minusCommentPage = () => {
     if (page >= 2) {
       setPage((prev) => (prev = prev - 1));
+      dispatch(setCommentPage(page - 1));
     }
   };
   const plusCommentPage = () => {
     setPage((prev) => prev + 1);
+    dispatch(setCommentPage(page + 1));
   };
   const minusReplyPage = () => {
     if (replyPage >= 2) {
@@ -246,6 +305,9 @@ const Comment: React.FC<
         <Loading />
       ) : (
         <CommentContainer onClick={outClickIntroHandler}>
+          {commentQuery.data?.comments.length !== 0 ? (
+            <CommentDropdownButton setPage={setPage} />
+          ) : null}
           {commentQuery.data &&
             commentQuery.data?.comments?.map(
               (comment: CommentType, idx: number) => {
@@ -262,19 +324,6 @@ const Comment: React.FC<
                   });
                 // 시간 계산
                 const time = timeSince(comment.createdAt);
-                const enterHandler = (
-                  event: React.KeyboardEvent<HTMLInputElement>,
-                ): void => {
-                  if (!commentEditInput.current?.value) return;
-                  if (event.key === 'Enter') {
-                    dispatch(setIsEdit(idx));
-                    updateMutation({
-                      postId: postId,
-                      commentId: comment.commentId,
-                      content: commentEditInput.current?.value,
-                    });
-                  }
-                };
 
                 // 답글 수정 여부
                 const commentIsEdit =
@@ -300,29 +349,36 @@ const Comment: React.FC<
                         isCommentOpenIntro! &&
                         comment?.commentId === state.comment?.commentId ? (
                           <IntorductionContainer>
-                            <IntroInfo>
-                              <ul className="intro-content-info">
-                                <li className="image">
-                                  <img src={comment?.memberImage} id=""></img>
-                                </li>
-                                <li className="intro-nickname">
-                                  {comment?.memberName}
-                                </li>
-                              </ul>
-                            </IntroInfo>
-                            <label className="introduction">
+                            <div className="card-image">
+                              <img src={comment?.memberImage}></img>
+                            </div>
+                            <div>{comment?.memberName}</div>
+                            <div className="introduction">
                               {memberQuery?.data?.member.intro ||
                                 '소개 내용이 없습니다.'}
-                            </label>
-                            <div
-                              className="intro-moreInfo"
-                              onClick={() => {
-                                dispatch(setMemberName(comment?.memberName));
-                                navigate('/mypage');
-                                scrollTo(0, 0);
-                              }}
-                            >
-                              더보기 》
+                            </div>
+                            <div className="intro-moreInfo">
+                              <span>
+                                게시글
+                                <span className="color">
+                                  {memberQuery?.data?.membersCount.postCount}
+                                </span>
+                              </span>
+                              <span>
+                                댓글
+                                <span className="color">
+                                  {memberQuery?.data?.membersCount.commentCount}
+                                </span>
+                              </span>
+                              <button
+                                className="intro-moreInfo"
+                                onClick={() => {
+                                  dispatch(setMemberName(comment?.memberName));
+                                  navigate('/mypage');
+                                }}
+                              >
+                                더보기
+                              </button>
                             </div>
                           </IntorductionContainer>
                         ) : null}
@@ -338,6 +394,9 @@ const Comment: React.FC<
                           <li
                             className="comment-update"
                             id="edit"
+                            data-comment={
+                              commentData && commentData![idx]?.content
+                            }
                             style={{
                               display:
                                 loginUserName === comment?.memberName
@@ -346,17 +405,18 @@ const Comment: React.FC<
                             }}
                             onClick={(): void => {
                               if (
-                                !commentEditInput.current?.value &&
+                                !commentEditTextareaRef.current?.value &&
                                 comment?.content !== '삭제된 댓글입니다.'
                               ) {
                                 dispatch(setIsEdit(idx));
+
                                 return;
                               }
                               dispatch(setIsEdit(idx));
                               updateMutation({
                                 postId: postId,
                                 commentId: comment?.commentId,
-                                content: commentEditInput.current?.value,
+                                content: editComment,
                               });
                             }}
                           >
@@ -365,15 +425,22 @@ const Comment: React.FC<
                         ) : (
                           <li
                             className="comment-update"
+                            data-comment={
+                              commentData && commentData![idx]?.content
+                            }
                             style={{
                               display:
                                 loginUserName == comment?.memberName
                                   ? 'block'
                                   : 'none',
                             }}
-                            onClick={(): void => {
-                              if (comment?.content !== '삭제된 댓글입니다.')
+                            onClick={(
+                              event: React.MouseEvent<HTMLLIElement>,
+                            ): void => {
+                              if (comment?.content !== '삭제된 댓글입니다.') {
                                 dispatch(setIsEdit(idx));
+                                initData(event);
+                              }
                             }}
                           >
                             {comment?.content === '삭제된 댓글입니다.' ||
@@ -423,6 +490,7 @@ const Comment: React.FC<
                                 : '3px 258px 0 5px',
                           }}
                           onClick={(event): void => {
+                            if (!isLogin) navigate('/login');
                             setIsOpenReport?.(!isOpenReport!);
                             reportTypeChecker(event);
                           }}
@@ -454,7 +522,7 @@ const Comment: React.FC<
                             <button
                               onClick={_.debounce(
                                 () => {
-                                  commentLiikeHandler(comment);
+                                  commentDislikeHandler(comment);
                                 },
                                 3000,
                                 { leading: true },
@@ -474,20 +542,24 @@ const Comment: React.FC<
                         {'comment' in state &&
                         state.comment.isEdit !== undefined &&
                         state.comment.isEdit[idx] ? (
-                          // 댓글 수정 시 생기는 INPUT
-                          <input
-                            className="edit-content"
-                            placeholder={comment.content}
-                            ref={commentEditInput}
-                            style={{
-                              display:
-                                comment.content === '삭제된 댓글입니다.'
-                                  ? 'none'
-                                  : 'flex',
-                            }}
-                            // value={comment.content}
-                            onKeyDown={enterHandler}
-                          ></input>
+                          // 댓글 수정 시 생기는 textarea
+                          <InputWrap>
+                            <textarea
+                              id="edit-comment"
+                              className="edit-content"
+                              ref={commentEditTextareaRef}
+                              value={selectedComment}
+                              style={{
+                                display:
+                                  comment.content === '삭제된 댓글입니다.'
+                                    ? 'none'
+                                    : 'flex',
+                              }}
+                              // value={comment.content}
+                              onChange={valueCheck}
+                              onInput={handleResizeHeight}
+                            ></textarea>
+                          </InputWrap>
                         ) : (
                           <div
                             className="content"
@@ -500,7 +572,7 @@ const Comment: React.FC<
                                   : ' #000000',
                             }}
                           >
-                            {comment?.content}
+                            {parse(String(comment?.content))}
                             <div className="edit-confirm">
                               {commentIsEdit &&
                               comment?.content === '삭제된 댓글입니다.'
@@ -574,7 +646,12 @@ const Comment: React.FC<
                     state.reply?.isOpened[idx] ? (
                       <>
                         <ReplyContainer>
-                          <ReplyInput commentInfo={comment}></ReplyInput>
+                          <ReplyInput
+                            commentInfo={comment!}
+                            replyCnt={replyCnt!}
+                            setReplyCnt={setReplyCnt!}
+                            refetch={refetch}
+                          ></ReplyInput>
                           {filtered?.map((reply: ReplyType, idx: number) => {
                             return (
                               <>
@@ -589,6 +666,8 @@ const Comment: React.FC<
                                   setDeleteType={setDeleteType!}
                                   isOpenReport={isOpenReport!}
                                   isOpenDelete={isOpenDelete!}
+                                  isOpenIntro={isOpenIntro}
+                                  isCommentOpenIntro={isCommentOpenIntro}
                                   isReplyOpenIntro={isReplyOpenIntro!}
                                 ></Reply>
                               </>
@@ -669,7 +748,7 @@ const CommentContainer = styled.div`
   }
   .content {
     display: flex;
-    align-items: center;
+    align-items: flex-end;
     width: 700px;
     height: auto;
     padding-left: 10px;
@@ -731,7 +810,6 @@ const CommentContainer = styled.div`
   }
   .replyPageContainer {
     margin: 0 0 0 50px;
-
     display: flex;
     width: 180px;
     justify-content: space-between;
@@ -760,49 +838,52 @@ const CommentContainer = styled.div`
 `;
 
 const IntorductionContainer = styled.div`
+  position: absolute;
   display: flex;
   flex-direction: column;
-  position: absolute;
+  top: 45px;
+  left: 20px;
+  z-index: 2;
   width: 240px;
   height: 140px;
   border: 1px solid #d4d4d4;
-  z-index: 2;
-  top: 50px;
-  left: 18px;
+  padding: 16px;
+  border-radius: 10px;
+  box-shadow: 4px 4px 8px rgba(0, 0, 0, 0.15);
   background-color: white;
-
+  .card-image {
+    text-align: end;
+    img {
+      width: 42px;
+      height: 42px;
+      border-radius: 50%;
+    }
+  }
   .introduction {
-    font-size: 17x;
-    color: gray;
+    font-size: 13px;
+    margin-top: 4px;
     width: 175px;
-    margin: 10px 0 0 35px;
+    height: 50px;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
   }
   .intro-moreInfo {
-    font-size: 17x;
-    color: gray;
-    width: 100px;
-    margin: 5px 0 0 165px;
-    cursor: pointer;
+    span {
+      font-size: 13px;
+      margin-right: 6px;
+      .color {
+        color: var(--point-blue-color);
+        margin-left: 2px;
+      }
+    }
   }
-`;
-const IntroInfo = styled.div`
-  z-index: 5;
-  .intro-content-info {
-    width: 100%;
-    height: 50px;
-    display: flex;
-    align-items: center;
-    font-size: 12px;
-    padding: 10px 0 0 10px;
-  }
-  .intro-nickname {
-    width: 150px;
-    height: 30px;
-    font-size: 16px;
-    margin: 8px 0 0 10px;
+  button {
+    font-size: 13px;
+    color: var(--sub-font-color);
+    :hover {
+      color: var(--point-blue-color);
+    }
   }
 `;
 
@@ -823,7 +904,6 @@ const CommentContent = styled.div`
   flex-direction: column;
   width: 720px;
   height: auto;
-
   padding: 0 0 15px 0;
   border-bottom: 1px solid #d4d4d4;
 
@@ -835,9 +915,6 @@ const CommentContent = styled.div`
     padding: 5px 0 0 10px;
     ::placeholder {
       color: #0275e1;
-    }
-    :focus {
-      outline: none;
     }
   }
   .isReply {
@@ -851,10 +928,9 @@ const CommentContent = styled.div`
 
 const ReplyContainer = styled.div`
   width: 100%;
-  height: 100%;
+  height: auto;
   background-color: #ffffff;
   padding: 0 0 15px 0;
-  /* border-bottom: 1px solid #d4d4d4; */
   .isReply {
     color: #0275e1;
   }
@@ -879,5 +955,26 @@ const ReplyBtn = styled.button`
     background-color: #0275e1;
     color: white;
     text-align: center;
+  }
+`;
+
+const InputWrap = styled.div`
+  display: flex;
+  textarea {
+    box-sizing: border-box;
+    width: 720px;
+    height: auto;
+    min-height: 58px;
+    resize: none;
+    border: 1px solid var(--border-color);
+    padding: 10px;
+    border-radius: 6px;
+    margin: 0 0 0 3px;
+    :focus {
+      outline: 2px solid var(--point-blue-color);
+    }
+    ::placeholder {
+      font-size: 14px;
+    }
   }
 `;

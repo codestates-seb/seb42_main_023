@@ -1,9 +1,12 @@
+// 패키지 등
 import React, { useRef } from 'react';
 import styled from 'styled-components';
-import { useAppDispatch, useAppSelector } from '../../hooks';
-import { FiMoreHorizontal } from 'react-icons/fi';
-import { setIsOpenFilter, setReportType } from '../../slices/postSlice';
 import { useNavigate, useParams } from 'react-router-dom';
+import { useAppDispatch, useAppSelector } from '../../hooks';
+// 컴포넌트(아이콘)
+import { FiMoreHorizontal } from 'react-icons/fi';
+// slices
+import { setIsOpenFilter, setReportType } from '../../slices/postSlice';
 
 interface Props {
   memberName: string;
@@ -13,7 +16,7 @@ interface Props {
   isOpenReport: boolean;
   isOpenDelete: boolean;
 }
-const DropdownButton = ({
+const PostDropdownButton = ({
   memberName,
   setIsOpenReport,
   setIsOpenDelete,
@@ -64,7 +67,6 @@ const DropdownButton = ({
 
   const handleToggle = () => {
     if (!state.post.isOpenFilter) {
-      // console.log('a', !state.post.isOpenFilter);
       dispatch(setIsOpenFilter(state.post?.isOpenFilter));
     }
   };
@@ -141,4 +143,4 @@ const ListItem = styled.li`
   }
 `;
 
-export default DropdownButton;
+export default PostDropdownButton;

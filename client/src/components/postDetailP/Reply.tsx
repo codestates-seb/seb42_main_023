@@ -1,9 +1,16 @@
-import React, { useRef, useState } from 'react';
+// 패키지 등
+import React, { useRef, useState, useEffect } from 'react';
 import { useAppDispatch, useAppSelector } from '../../hooks';
 import styled from 'styled-components';
+import parse from 'html-react-parser';
+import _ from 'lodash';
+import { useNavigate } from 'react-router-dom';
+import { timeSince } from '../mainP/Timecalculator';
+import Cookies from 'js-cookie';
+// 컴포넌트
 import DislikeIcon from '../../assets/common/DislikeIcon';
 import LikeIcon from '../../assets/common/LikeIcon';
-import { isEdit, setIsEdit, setReplyId } from '../../slices/replySlice';
+// 타입
 import {
   PostStateType,
   ReplyStateType,
@@ -12,13 +19,13 @@ import {
   ReplyType,
   ReportProps,
 } from '../../types/PostDetail';
+// API
 import { repliesApi } from '../../api/replyApi';
-import { setReportType, setSelectedMember } from '../../slices/postSlice';
-import { timeSince } from '../mainP/Timecalculator';
-import { setCommentId } from '../../slices/commentSlice';
-import _ from 'lodash';
 import { membersApi } from '../../api/memberapi';
-import { useNavigate } from 'react-router-dom';
+// Slices
+import { setReportType, setSelectedMember } from '../../slices/postSlice';
+import { setCommentId } from '../../slices/commentSlice';
+import { isEdit, setIsEdit, setReplyId } from '../../slices/replySlice';
 import { setMemberName } from '../../slices/headerSlice';
 
 const Reply: React.FC<Partial<ReplyProps & ReportProps>> = ({
@@ -30,10 +37,12 @@ const Reply: React.FC<Partial<ReplyProps & ReportProps>> = ({
   setDeleteType,
   isOpenReport,
   isOpenDelete,
+  isOpenIntro,
+  isCommentOpenIntro,
   isReplyOpenIntro,
   setIsOpenReplyIntro,
 }: Partial<ReplyProps & ReportProps>) => {
-  const replyEditInput = useRef<HTMLInputElement>(null);
+  const navigate = useNavigate();
   const dispatch = useAppDispatch();
   const state = useAppSelector(
     (
@@ -42,20 +51,54 @@ const Reply: React.FC<Partial<ReplyProps & ReportProps>> = ({
       return state;
     },
   );
-  const navigate = useNavigate();
+  const [editReply, setEditReply] = useState<string>('');
+  const [replyData, setReplyData] = useState<Array<ReplyType>>([]);
+  const [selectedReply, setSelectedReply] = useState<string>('');
   const loginUserName = window.localStorage.getItem('name');
   const commentId = 'comment' in state && state.comment?.commentId;
   const replyId = 'reply' in state && state.reply?.replyId;
   const selectedMember = 'post' in state ? state.post.selectedMember : null;
+  const replyTextarea = document.getElementById(
+    'edit-reply',
+  ) as HTMLTextAreaElement;
+  const replyEditTextareaRef = useRef<HTMLTextAreaElement>(replyTextarea);
 
+  // 로그인 확인
+  const auth = Cookies.get('Authorization');
+  const role = localStorage.getItem('role');
+  const name = localStorage.getItem('name');
+  const isLogin = auth && role && name;
+
+  // Textarea 값 확인
+  const valueCheck = (event: React.ChangeEvent<HTMLTextAreaElement>): void => {
+    const data = event.target.value.replaceAll(/\n/g, '<br>');
+    setEditReply(data);
+    // 기존에 서버에서 저장한 상태 값에 추가로 value값을 관리함
+    setSelectedReply(event.target.value);
+  };
+
+  const initData = (event: React.MouseEvent<HTMLLIElement>): void => {
+    if (event.target instanceof HTMLElement) {
+      const data = event.target!.dataset!.reply!;
+      const parsedData = data?.replaceAll(/<br>/g, '\n');
+      setSelectedReply(parsedData);
+    }
+  };
+
+  // textarea 높이 조절
+  const handleResizeHeight = () => {
+    replyEditTextareaRef!.current!.style.height = 'auto';
+    replyEditTextareaRef!.current!.style.height =
+      replyEditTextareaRef.current?.scrollHeight + 'px';
+  };
   // 답글
   const replyQuery = repliesApi.useGetReplyQuery({ commentId, replyPage });
   const replySucccess = replyQuery.isSuccess;
   const replyMutation = repliesApi.useUpdataReplyMutation();
   const [updateMutation] = replyMutation;
   // 게시글, 댓글 작성자 소개페이지 오픈 여부
-  const isOpenCommentIntro = 'comment' in state && state?.comment.isOpeneIntro;
-  const isOpenPostIntro = 'post' in state && state?.post.isOpeneIntro;
+  const isOpenCommentIntro = isCommentOpenIntro;
+  const isOpenPostIntro = isOpenIntro;
 
   // 답글 좋아요 추가, 삭제
   const addThumbUpMutation = repliesApi.useAddRplyThumbUpMutation();
@@ -71,20 +114,24 @@ const Reply: React.FC<Partial<ReplyProps & ReportProps>> = ({
   //  멤버 정보 조회
   const memberQuery = membersApi.useGetMemberQuery({ name: selectedMember });
 
+  // 답글 정보 받아오기
+  useEffect(() => {
+    setReplyData(replyQuery.data?.replies);
+  }, [replyQuery.data]);
+
   // 답글 수정 여부
   const replyIsEdit =
     replyInfo?.createdAt !== replyInfo?.modifiedAt ? true : false;
   // 답글 좋아요 클릭 함수
   const ReplyLiikeHandler = (reply: ReplyType): void => {
+    if (!isLogin) navigate('/login');
     const replyId = reply.replyId;
     if (reply?.isThumbup && !reply?.isThumbdown) {
-      console.log('좋아요 삭제');
       removeThumbUp({ replyId });
       return;
     }
     // 싫어요만 있는 경우
     if (!reply?.isThumbup && reply?.isThumbdown) {
-      console.log('싫어요 삭제 후 좋아요 추가');
       removeThumbDown({ replyId });
       setTimeout(() => {
         addThumbUp({ replyId });
@@ -94,7 +141,6 @@ const Reply: React.FC<Partial<ReplyProps & ReportProps>> = ({
     }
     // 둘 다 없는 경우
     if (!reply?.isThumbdown && !reply?.isThumbdown) {
-      console.log('좋아요 추가');
       addThumbUp({ replyId });
       return;
     }
@@ -102,11 +148,12 @@ const Reply: React.FC<Partial<ReplyProps & ReportProps>> = ({
 
   // 답글 싫어요 클릭 함수
   const ReplyDislikeHandler = (reply: ReplyType): void => {
+    if (!isLogin) navigate('/login');
     const replyId = reply.replyId;
     // 좋아요만 있는 경우
     if (reply?.isThumbup && !reply?.isThumbdown) {
       // 좋아요 제거, 싫어요 추가
-      console.log('좋아요 삭제 후 싫어요 추가');
+
       removeThumbUp({ replyId });
       setTimeout(() => {
         addThumbDown({ replyId });
@@ -116,14 +163,14 @@ const Reply: React.FC<Partial<ReplyProps & ReportProps>> = ({
     // 싫어요만 있는 경우
     if (!reply?.isThumbup && reply?.isThumbdown) {
       // 싫어요 제거
-      console.log('싫어요 삭제');
+
       removeThumbDown({ replyId });
       return;
     }
     // 둘 다 없는 경우
     if (!reply?.isThumbup && !reply?.isThumbdown) {
       // 싫어요 추가
-      console.log('싫어요 추가');
+
       addThumbDown({ replyId });
       return;
     }
@@ -172,7 +219,6 @@ const Reply: React.FC<Partial<ReplyProps & ReportProps>> = ({
     event.stopPropagation();
     if (event.target instanceof HTMLElement) {
       setIsOpenReplyIntro?.(false);
-      console.log(setIsOpenReplyIntro);
     }
   };
 
@@ -185,17 +231,6 @@ const Reply: React.FC<Partial<ReplyProps & ReportProps>> = ({
   };
   // 시간 계산
   const time = timeSince(replyInfo!.createdAt);
-
-  const enterHandler = (event: React.KeyboardEvent<HTMLInputElement>): void => {
-    if (!replyEditInput.current?.value) return;
-    if (event.key === 'Enter') {
-      dispatch(setIsEdit(idx!));
-      updateMutation({
-        replyId: replyInfo?.replyId,
-        content: replyEditInput.current?.value,
-      });
-    }
-  };
 
   return (
     <ReplyContainer onClick={outClickIntroHandler}>
@@ -212,27 +247,36 @@ const Reply: React.FC<Partial<ReplyProps & ReportProps>> = ({
           {'reply' in state &&
           isReplyOpenIntro &&
           replyInfo?.replyId === state.reply?.replyId ? (
-            <IntorductionContainer onClick={IntroHandler}>
-              <IntroInfo>
-                <ul className="intro-content-info">
-                  <li className="image">
-                    <img src={replyInfo.memberImage}></img>
-                  </li>
-                  <li className="intro-nickname">{replyInfo.memberName}</li>
-                </ul>
-              </IntroInfo>
-              <label className="introduction">
-                {memberQuery.data?.intro || '소개 내용이 없습니다.'}
-              </label>
-              <div
-                className="intro-moreInfo"
-                onClick={() => {
-                  dispatch(setMemberName(replyInfo.memberName));
-                  navigate('/mypage');
-                  scrollTo(0, 0);
-                }}
-              >
-                더보기 》
+            <IntorductionContainer>
+              <div className="card-image">
+                <img src={replyInfo?.memberImage}></img>
+              </div>
+              <div>{replyInfo?.memberName}</div>
+              <div className="introduction">
+                {memberQuery?.data?.member.intro || '소개 내용이 없습니다.'}
+              </div>
+              <div className="intro-moreInfo">
+                <span>
+                  게시글
+                  <span className="color">
+                    {memberQuery?.data?.membersCount.postCount}
+                  </span>
+                </span>
+                <span>
+                  댓글
+                  <span className="color">
+                    {memberQuery?.data?.membersCount.commentCount}
+                  </span>
+                </span>
+                <button
+                  className="intro-moreInfo"
+                  onClick={() => {
+                    dispatch(setMemberName(replyInfo?.memberName));
+                    navigate('/mypage');
+                  }}
+                >
+                  더보기
+                </button>
               </div>
             </IntorductionContainer>
           ) : null}
@@ -246,19 +290,20 @@ const Reply: React.FC<Partial<ReplyProps & ReportProps>> = ({
             <li
               className="reply-update"
               id="edit"
+              data-reply={replyData && replyData![idx!]?.content}
               style={{
                 display:
                   loginUserName === replyInfo?.memberName ? 'block' : 'none',
               }}
-              onClick={(event): void => {
-                if (!replyEditInput.current?.value) {
+              onClick={(): void => {
+                if (!replyEditTextareaRef.current?.value) {
                   dispatch(setIsEdit(idx!));
                   return;
                 }
                 dispatch(setIsEdit(idx!));
                 updateMutation({
                   replyId: replyInfo.replyId,
-                  content: replyEditInput.current?.value,
+                  content: editReply,
                 });
               }}
             >
@@ -270,14 +315,16 @@ const Reply: React.FC<Partial<ReplyProps & ReportProps>> = ({
           ) : (
             <li
               className="reply-update"
+              data-reply={replyData && replyData![idx!]?.content}
               style={{
                 display:
                   loginUserName === replyInfo?.memberName ? 'block' : 'none',
               }}
-              onClick={(): void => {
+              onClick={(event: React.MouseEvent<HTMLLIElement>): void => {
                 dispatch(setCommentId(replyInfo!.commentId));
                 dispatch(setReplyId(replyInfo!.replyId));
                 dispatch(setIsEdit(idx!));
+                initData(event);
               }}
             >
               {replyInfo?.content === '삭제된 답글입니다.' ||
@@ -322,6 +369,7 @@ const Reply: React.FC<Partial<ReplyProps & ReportProps>> = ({
                   : '3px 228px 0 5px',
             }}
             onClick={(event): void => {
+              if (!isLogin) navigate('/login');
               setIsOpenReport?.(!isOpenReport);
               reportTypeChecker(event);
             }}
@@ -372,13 +420,17 @@ const Reply: React.FC<Partial<ReplyProps & ReportProps>> = ({
         {'reply' in state &&
         replyInfo!.replyId === replyId &&
         state.reply?.isEdit[idx!] ? (
-          // 댓글 수정 시 생기는 INPUT
-          <input
-            className="edit-reply"
-            placeholder={replyInfo && replyInfo.content}
-            ref={replyEditInput}
-            onKeyDown={enterHandler}
-          ></input>
+          // 댓글 수정 시 생기는 textarea
+          <InputWrap>
+            <textarea
+              id="edit-reply"
+              className="edit-reply"
+              ref={replyEditTextareaRef}
+              value={selectedReply}
+              onChange={valueCheck}
+              onInput={handleResizeHeight}
+            ></textarea>
+          </InputWrap>
         ) : (
           <div
             className="reply-content"
@@ -391,8 +443,9 @@ const Reply: React.FC<Partial<ReplyProps & ReportProps>> = ({
                   : '#000000',
             }}
           >
-            {replyInfo!.content}
-            <div>
+            {parse(String(replyInfo?.content))}
+
+            <div className="edit-confirm">
               {replyIsEdit && replyInfo?.content === '삭제된 답글입니다.'
                 ? null
                 : replyIsEdit && replyInfo?.content === '신고된 답글입니다.'
@@ -434,8 +487,11 @@ const ReplyContainer = styled.div`
   }
   .reply-content {
     display: flex;
-    align-items: center;
+    align-items: flex-end;
     width: 600px;
+    height: auto;
+    display: flex;
+    justify-content: flex-start;
     word-break: break-all;
     font-size: 17px;
   }
@@ -490,51 +546,58 @@ const ReplyContainer = styled.div`
     font-weight: 450;
     cursor: pointer;
   }
+  .edit-confirm {
+    font-size: 12px;
+  }
 `;
+
 const IntorductionContainer = styled.div`
+  position: absolute;
   display: flex;
   flex-direction: column;
-  position: absolute;
+  top: 45px;
+  left: 20px;
+  z-index: 2;
   width: 240px;
   height: 140px;
   border: 1px solid #d4d4d4;
-  z-index: 5;
-  top: 45px;
-  left: 18px;
+  padding: 16px;
+  border-radius: 10px;
+  box-shadow: 4px 4px 8px rgba(0, 0, 0, 0.15);
   background-color: white;
-
+  .card-image {
+    text-align: end;
+    img {
+      width: 42px;
+      height: 42px;
+      border-radius: 50%;
+    }
+  }
   .introduction {
-    font-size: 17x;
-    color: gray;
+    font-size: 13px;
+    margin-top: 4px;
     width: 175px;
-    margin: 10px 0 0 35px;
+    height: 50px;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
   }
   .intro-moreInfo {
-    font-size: 17x;
-    color: gray;
-    width: 100px;
-    margin: 5px 0 0 165px;
-    cursor: pointer;
+    span {
+      font-size: 13px;
+      margin-right: 6px;
+      .color {
+        color: var(--point-blue-color);
+        margin-left: 2px;
+      }
+    }
   }
-`;
-const IntroInfo = styled.div`
-  z-index: 5;
-  .intro-content-info {
-    width: 100%;
-    height: 50px;
-    display: flex;
-    align-items: center;
-    font-size: 12px;
-    padding: 10px 0 0 10px;
-  }
-  .intro-nickname {
-    width: 150px;
-    height: 30px;
-    font-size: 16px;
-    margin: 8px 0 0 10px;
+  button {
+    font-size: 13px;
+    color: var(--sub-font-color);
+    :hover {
+      color: var(--point-blue-color);
+    }
   }
 `;
 
@@ -553,8 +616,8 @@ const ReplyContent = styled.div`
   flex-direction: column;
   padding: 15px 0 0 0;
   margin: 0px 0 20px 15px;
-  width: 580px;
-  height: 50px;
+  width: 660px;
+  height: auto;
   font-size: 17px;
 
   .edit-reply {
@@ -562,13 +625,31 @@ const ReplyContent = styled.div`
     font-size: 17px;
     height: 50px;
     border-bottom: 1px solid #d4d4d4;
-    padding: 3px 0 8px 0px;
 
     ::placeholder {
       color: #0275e1;
     }
+  }
+`;
+
+const InputWrap = styled.div`
+  display: flex;
+  textarea {
+    box-sizing: border-box;
+    width: 650px;
+    height: auto;
+    min-height: 58px;
+    resize: none;
+    border: 1px solid var(--border-color);
+    padding: 10px;
+    border-radius: 6px;
+    margin: 0 0 0 3px;
+
     :focus {
-      outline: none;
+      outline: 2px solid var(--point-blue-color);
+    }
+    ::placeholder {
+      font-size: 14px;
     }
   }
 `;

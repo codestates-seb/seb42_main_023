@@ -1,9 +1,13 @@
+// 패키지 등
 import React from 'react';
 import styled from 'styled-components';
 import { Link } from 'react-router-dom';
-import { PostType } from '../../types/PostDetail';
-import { recommendedPostsApi } from '../../api/recommendPostApi';
+// 컴포넌트
 import CommentIcon from '../../assets/common/CommentIcon';
+// API
+import { recommendedPostsApi } from '../../api/recommendPostApi';
+// 타입
+import { PostType } from '../../types/PostDetail';
 
 const RecommendedPost: React.FC = () => {
   const recommendPostsQuery = recommendedPostsApi.useGetRomendedPostsQuery({
@@ -79,7 +83,7 @@ const RecommendedPostContainer = styled.div`
     font-style: italic;
   }
   .icon {
-    margin-left: 10px;
+    margin: 3px 0 0 10px;
     svg {
       transform: translateY(2px);
     }

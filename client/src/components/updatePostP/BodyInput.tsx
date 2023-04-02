@@ -1,13 +1,18 @@
+// 패키지 등
 import React, { useEffect, useMemo, useRef } from 'react';
 import ReactQuill from 'react-quill';
-import 'react-quill/dist/quill.snow.css';
 import axios from 'axios';
 import styled from 'styled-components';
+import _ from 'lodash';
+import Cookies from 'js-cookie';
 import { useAppDispatch, useAppSelector } from '../../hooks';
+import { useParams } from 'react-router-dom';
+import 'react-quill/dist/quill.snow.css';
+// API
+import { postsApi } from '../../api/postApi';
+// slices
 import { setBody, setIsEdit } from '../../slices/postInputSlice';
 import { setBodyErr } from '../../slices/validationSlice';
-import { postsApi } from '../../api/postApi';
-import { useParams } from 'react-router-dom';
 import {
   setCurrentImg,
   setRemovedImg,
@@ -15,8 +20,6 @@ import {
   setRemaindImg,
   setTotalmg,
 } from '../../slices/postSlice';
-import _ from 'lodash';
-import Cookies from 'js-cookie';
 
 interface ImgObj {
   imagedId: number;

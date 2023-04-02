@@ -1,9 +1,12 @@
+// 패키지 등
 import React, { useEffect, useMemo, useRef } from 'react';
 import ReactQuill from 'react-quill';
-import 'react-quill/dist/quill.snow.css';
 import axios from 'axios';
 import styled from 'styled-components';
 import { useAppDispatch, useAppSelector } from '../../hooks';
+import Cookies from 'js-cookie';
+import 'react-quill/dist/quill.snow.css';
+// slices
 import { setBody } from '../../slices/postInputSlice';
 import { setBodyErr } from '../../slices/validationSlice';
 import {
@@ -11,7 +14,6 @@ import {
   setRemovedImg,
   setAddedImg,
 } from '../../slices/postSlice';
-import Cookies from 'js-cookie';
 
 interface ImgObj {
   imagedId: number;
@@ -59,7 +61,6 @@ const BodyInput: React.FC = () => {
     const realValue = html.textContent;
 
     if (realValue) {
-      console.log(realValue.length);
       if (realValue?.length < 9 || realValue?.length === 0) {
         dispatch(setBodyErr('본문은 10자 이상 작성해주세요.'));
       }
@@ -87,7 +88,7 @@ const BodyInput: React.FC = () => {
       const file = input.files![0];
       const formData = new FormData();
       formData.append('image', file);
-      console.log('formData', formData);
+
       try {
         const result = await axios.post(url, formData, {
           headers: {
@@ -98,16 +99,13 @@ const BodyInput: React.FC = () => {
         });
 
         const { data } = result;
-        console.log('resData', data);
         const { imageId, imageName } = data;
-
         const ImgUrl = process.env.REACT_APP_S3_ADDRESS + '/' + imageName;
-        console.log('ImgUrl', ImgUrl);
         const imgObj = {
           imageId,
           imageName,
         };
-        console.log('imgObj', imgObj);
+
         dispatch(setAddedImg(imgObj));
         const editor = quillRef.current!.getEditor();
         const range = editor.getSelection();

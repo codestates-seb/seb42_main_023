@@ -1,9 +1,10 @@
 import React, { KeyboardEvent } from 'react';
 import styled from 'styled-components';
 import { useAppDispatch, useAppSelector } from '../../hooks';
+import Tag from '../common/Tag';
 import { setTagContent, setTag } from '../../slices/postInputSlice';
 import { setTagErr } from '../../slices/validationSlice';
-import Tag from '../common/Tag';
+
 // 공통 컴포넌트
 const TagInput: React.FC = () => {
   const dispatch = useAppDispatch();
@@ -20,7 +21,7 @@ const TagInput: React.FC = () => {
     // 유효성 검사
     if (event.key === 'Enter' && event.nativeEvent.isComposing === false) {
       // 태그 중복 입력 방지
-      console.log(tagContent);
+
       if (tag.includes(tagContent)) {
         dispatch(setTagErr(''));
         return;

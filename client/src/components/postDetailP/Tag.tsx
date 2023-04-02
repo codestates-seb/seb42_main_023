@@ -1,8 +1,5 @@
 import React from 'react';
 import styled from 'styled-components';
-import { MdCancel } from 'react-icons/md';
-import { useAppDispatch } from '../../hooks';
-import { deleteTag } from '../../slices/postInputSlice';
 
 interface Props {
   content: string;

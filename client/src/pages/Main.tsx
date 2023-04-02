@@ -26,10 +26,11 @@ const Main = () => {
     orderby: orderby,
     search: searchQuery,
   });
-  const { data, isSuccess } = postListquery;
+  const { data, isSuccess, refetch } = postListquery;
 
   useEffect(() => {
     window.scrollTo(0, 0);
+    refetch();
   }, []);
 
   if (!isSuccess) {

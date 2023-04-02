@@ -1,18 +1,42 @@
+// 패키지 등
 import React, { useEffect, useRef, useState } from 'react';
 import styled from 'styled-components';
-import CommentInput from '../components/postDetailP/CommentInput';
+import _ from 'lodash';
+import parse from 'html-react-parser';
+import { useParams, useNavigate } from 'react-router';
+import { useAppDispatch, useAppSelector } from '../hooks';
+import { timeSince } from '../components/mainP/Timecalculator';
+import Cookies from 'js-cookie';
+// 컴포넌트
 import Comment from '../components/postDetailP/Comment';
+import CommentInput from '../components/postDetailP/CommentInput';
 import RecommendedPost from '../components/postDetailP/RecommendedPost';
+import Tag from '../components/postDetailP/Tag';
+import Loading from '../components/common/Loading';
 import BookmarkIcon from '../assets/common/BookmarkIcon';
 import TimeIcon from '../assets/common/TimeIcon';
 import ViewIcon from '../assets/common/ViewIcon';
 import CommentIcon from '../assets/common/CommentIcon';
 import DislikeIcon from '../assets/common/DislikeIcon';
 import LikeIcon from '../assets/common/LikeIcon';
-import DropdownButton from '../components/postDetailP/DropdownButton';
+import PostDropdownButton from '../components/postDetailP/PostDropdownButton';
 import { BlueBtn, WhiteBtn } from '../components/common/Btn';
 import { ReactComponent as CheckedIcon } from '../assets/checked.svg';
 import { ReactComponent as NoCheckedIcon } from '../assets/noChecked.svg';
+// 타입
+import {
+  PostStateType,
+  CommentStateType,
+  ReplyStateType,
+  ValidationStateType,
+} from '../types/PostDetail';
+// API
+import { postsApi } from '../api/postApi';
+import { commentsApi } from '../api/commentApi';
+import { repliesApi } from '../api/replyApi';
+import { membersApi } from '../api/memberapi';
+import { reportApi } from '../api/reportApi';
+// slices
 import {
   setIsOpenFilter,
   setReportOption,
@@ -20,70 +44,9 @@ import {
 } from '../slices/postSlice';
 import { setReportErr } from '../slices/validationSlice';
 import { setMemberName } from '../slices/headerSlice';
-import { useAppDispatch, useAppSelector } from '../hooks';
-import {
-  PostStateType,
-  CommentStateType,
-  ReplyStateType,
-  ValidationStateType,
-} from '../types/PostDetail';
-import { useParams, useNavigate } from 'react-router';
-import { repliesApi } from '../api/replyApi';
-import { postsApi } from '../api/postApi';
-import { reportApi } from '../api/reportApi';
-import { commentsApi } from '../api/commentApi';
-import { timeSince } from '../components/mainP/Timecalculator';
-import { membersApi } from '../api/memberapi';
-import _ from 'lodash';
-import parse from 'html-react-parser';
-import Tag from '../components/postDetailP/Tag';
-import Loading from '../components/common/Loading';
-
-const reportOption = [
-  '영리목적/홍보성',
-  '저작권침해',
-  '음란성/선정성',
-  '욕설/인신공격',
-  '개인정보노출',
-  '도배',
-  '기타',
-];
 
 const PostDetail: React.FC = () => {
-  const [isLike, setIsLike] = useState<boolean>();
-  const [isDislike, setIsDislike] = useState<boolean>();
-  const [isBookmark, setBookmark] = useState<boolean>();
-  const [like, setLike] = useState<number>();
-  const [dislike, setDislike] = useState<number>();
-  const [views, setViews] = useState<number>();
-  const [commentCnt, setCommentCnt] = useState<number>();
-  const [checkedElement, setCheckedElement] = useState(-1);
-  // 신고, 삭제, 소개
-  const [isOpenReport, setIsOpenReport] = useState<boolean>(false);
-  const [isOpenReportErr] = useState<boolean>(false);
-  // const [isOpenFilter, setIsOpenFilter] = useState<boolean>(false);
-  const [isOpenDelete, setIsOpenDelete] = useState<boolean>(false);
-  const [deleteType, setDeleteType] = useState<string>('');
-  const [isOpenIntro, setIsOpenIntro] = useState<boolean>(false);
-  const [isOpenCommentIntro, setIsOpenCommentIntro] = useState<boolean>(false);
-  const [isOpenReplyIntro, setIsOpenReplyIntro] = useState<boolean>(false);
-
-  const handleSelectChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setCheckedElement(Number(event.target.value));
-    dispatch(setReportOption(event.target.id));
-  };
-
-  const handleSelected = (event: React.MouseEvent<HTMLButtonElement>) => {
-    setCheckedElement(Number(event.currentTarget.value));
-
-    dispatch(
-      setReportOption(
-        String(event.currentTarget?.parentElement?.children[0].id),
-      ),
-    );
-  };
-
-  const reportTextRef = useRef<HTMLTextAreaElement>(null);
+  const navigate = useNavigate();
   const dispatch = useAppDispatch();
   const state = useAppSelector(
     (
@@ -100,8 +63,32 @@ const PostDetail: React.FC = () => {
       return state;
     },
   );
+  // 신고 폼 Ref
+  const reportTextRef = useRef<HTMLTextAreaElement>(null);
+  // 게시글 데이터
+  const [isLike, setIsLike] = useState<boolean>();
+  const [isDislike, setIsDislike] = useState<boolean>();
+  const [isBookmark, setBookmark] = useState<boolean>();
+  const [like, setLike] = useState<number>();
+  const [dislike, setDislike] = useState<number>();
+  const [views, setViews] = useState<number>();
+  const [commentCnt, setCommentCnt] = useState<number>();
+  const [checkedElement, setCheckedElement] = useState(-1);
+  // 신고, 삭제, 소개
+  const [isOpenReport, setIsOpenReport] = useState<boolean>(false);
+  const [isOpenReportErr] = useState<boolean>(false);
+  const [isOpenDelete, setIsOpenDelete] = useState<boolean>(false);
+  const [deleteType, setDeleteType] = useState<string>('');
+  const [isOpenIntro, setIsOpenIntro] = useState<boolean>(false);
+  const [isOpenCommentIntro, setIsOpenCommentIntro] = useState<boolean>(false);
+  const [isOpenReplyIntro, setIsOpenReplyIntro] = useState<boolean>(false);
 
-  const navigate = useNavigate();
+  // 로그인 확인
+  const auth = Cookies.get('Authorization');
+  const role = localStorage.getItem('role');
+  const name = localStorage.getItem('name');
+  const isLogin = auth && role && name;
+
   const params = useParams();
   const postId = Number(params.postId);
   const commentId = 'comment' in state ? state.comment?.commentId : null;
@@ -113,7 +100,7 @@ const PostDetail: React.FC = () => {
 
   // 게시글 조회 및 추가
   const postDetailQuery = postsApi.useGetPostQuery({ postId });
-  const { data, isSuccess, isLoading, isFetching, refetch } = postDetailQuery;
+  const { data, isSuccess, isLoading, refetch } = postDetailQuery;
   const [deletePost] = postsApi.useDeletePostMutation();
   // 게시글 좋아요 추가, 삭제
   const [addThumbUp] = postsApi.useAddPostThumbUpMutation();
@@ -153,13 +140,15 @@ const PostDetail: React.FC = () => {
   // 게시글 서버 데이터 저장
   // 데이터 받아서 로컬 스테이트로 저장 ( 댓글, 좋아요, 싫어요, 북마크)
   useEffect(() => {
-    if (isSuccess) setIsLike(data?.isThumbup);
-    if (isSuccess) setIsDislike(data?.isThumbdown);
-    if (isSuccess) setLike(data?.thumbupCount);
-    if (isSuccess) setDislike(data?.thumbDownCount);
-    if (isSuccess) setBookmark(data?.isBookmarked);
-    if (isSuccess) setViews(data?.viewCount);
-    if (isSuccess) setCommentCnt(data?.commentCount);
+    if (isSuccess) {
+      setIsLike(data?.isThumbup);
+      setIsDislike(data?.isThumbdown);
+      setLike(data?.thumbupCount);
+      setDislike(data?.thumbDownCount);
+      setBookmark(data?.isBookmarked);
+      setViews(data?.viewCount);
+      setCommentCnt(data?.commentCount);
+    }
   }, [data]);
 
   // 페이지 이동 시 스크롤 최상단 이동
@@ -173,6 +162,7 @@ const PostDetail: React.FC = () => {
 
   // 좋아요 클릭 함수
   const changeLiikeHandler = (): void => {
+    if (!isLogin) navigate('/login');
     // 좋아요만 있는 경우
     if (loginUserName) {
       if (isLike && !isDislike) {
@@ -189,7 +179,6 @@ const PostDetail: React.FC = () => {
         addThumbUp({ postId });
         setIsLike(true);
         setLike((prev) => prev! + 1);
-
         return;
       }
       // 둘 다 없는 경우
@@ -204,6 +193,7 @@ const PostDetail: React.FC = () => {
 
   // 싫어요 클릭 함수
   const changeDislikeHandler = (): void => {
+    if (!isLogin) navigate('/login');
     if (loginUserName) {
       // 좋아요만 있는 경우
       if (isLike && !isDislike) {
@@ -214,7 +204,6 @@ const PostDetail: React.FC = () => {
         addThumbDown({ postId });
         setIsDislike(true);
         setDislike((prev) => prev! + 1);
-
         return;
       }
       // 싫어요만 있는 경우
@@ -237,6 +226,7 @@ const PostDetail: React.FC = () => {
   };
   // 북마크 클릭 함수
   const changeBookmarkHandler = (): void => {
+    if (!isLogin) navigate('/login');
     if (loginUserName) {
       if (isBookmark) {
         setBookmark(false);
@@ -263,7 +253,6 @@ const PostDetail: React.FC = () => {
     if (deleteType === '게시글') {
       deletePost({ postId });
       confirmDeleteHandler();
-
       navigate('/');
     }
     // 댓글 삭제 로직
@@ -287,6 +276,7 @@ const PostDetail: React.FC = () => {
     }
   };
 
+  // 바깥 부분 클릭
   const outClickIntroHandler = (event: React.MouseEvent<HTMLElement>) => {
     if (
       isOpenIntro &&
@@ -298,11 +288,41 @@ const PostDetail: React.FC = () => {
     }
   };
 
+  // 신고 옵션
+  const reportOption = [
+    '영리목적/홍보성',
+    '저작권침해',
+    '음란성/선정성',
+    '욕설/인신공격',
+    '개인정보노출',
+    '도배',
+    '기타',
+  ];
+
+  // 신고 옵션 선택(텍스트)
+  const handleSelectChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setCheckedElement(Number(event.target.value));
+    dispatch(setReportOption(event.target.id));
+  };
+
+  // 신고 옵션 선택(체크 버튼)
+  const handleSelected = (event: React.MouseEvent<HTMLButtonElement>) => {
+    setCheckedElement(Number(event.currentTarget.value));
+    dispatch(
+      setReportOption(
+        String(event.currentTarget?.parentElement?.children[0].id),
+      ),
+    );
+  };
+
   // 신고 보내기
   const sendReportHandler = (): void => {
     // 유효성 검사
     if ('validation' in state && state.validation?.reportErr) return;
-    if ('post' in state && !state.post?.reportOption) return;
+    if ('post' in state && !state.post?.reportOption) {
+      dispatch(setReportErr('신고 이유를 선택해 주세요.'));
+      return;
+    }
     if (reportTextRef.current?.value === '') return;
 
     // 게시물 신고
@@ -402,7 +422,6 @@ const PostDetail: React.FC = () => {
       dispatch(setSelectedMember(event.target.id));
     }
   };
-
   return (
     <>
       {isOpenDelete ? (
@@ -545,27 +564,6 @@ const PostDetail: React.FC = () => {
                         더보기
                       </button>
                     </div>
-                    {/* <IntroInfo>
-                      <ul className="intro-content-info">
-                        <li className="image">
-                          <img src={data?.memberImage}></img>
-                        </li>
-                        <li className="intro-nickname">{data?.memberName}</li>
-                      </ul>
-                    </IntroInfo>
-                    <label className="introduction">
-                      {memberQuery?.data?.member.intro ||
-                        '소개 내용이 없습니다.'}
-                    </label>
-                    <button
-                      className="intro-moreInfo"
-                      onClick={() => {
-                        dispatch(setMemberName(data?.memberName));
-                        navigate('/mypage');
-                      }}
-                    >
-                      더보기 》
-                    </button> */}
                   </IntorductionContainer>
                 ) : null}
 
@@ -585,14 +583,14 @@ const PostDetail: React.FC = () => {
                   <BookmarkIcon checked={isBookmark!} />
                 </Bookmark>
                 {loginUserName ? (
-                  <DropdownButton
+                  <PostDropdownButton
                     memberName={data?.memberName}
                     isOpenReport={isOpenReport}
                     setIsOpenReport={setIsOpenReport}
                     isOpenDelete={isOpenDelete}
                     setIsOpenDelete={setIsOpenDelete}
                     setDeleteType={setDeleteType}
-                  ></DropdownButton>
+                  ></PostDropdownButton>
                 ) : null}
               </ul>
             </PostInfo>
@@ -764,8 +762,6 @@ const PostContent = styled.div`
   padding-top: 50px;
   width: 720px;
   height: 100%;
-  line-height: 30px;
-
   .likes {
     font-size: 16px;
     margin: 0 15px;
@@ -903,6 +899,7 @@ const ReportModal = styled.div`
     resize: none;
     padding: 20px;
     margin: 15px 0 0 0;
+    z-index: 10;
     :focus {
       outline: 2px solid #0069ca;
     }
