@@ -25,7 +25,7 @@
 
 ## 📌 Deployment Architecture
 
-![deployment-architecture](https://user-images.githubusercontent.com/113220012/228780072-c273d4b3-d253-4bb3-88ea-7497a8f84a0a.png)
+![deployment-architecture](https://user-images.githubusercontent.com/62225840/229371321-26b0cffa-0743-4e76-a5cc-9dfa482db7b7.png)
 
 <br/>
 
