@@ -117,6 +117,9 @@ export interface ReplyType {
 export interface CommentProps {
   commentInfo: CommentType;
   setPage?: (num: number) => void;
+  replyCnt: number;
+  setReplyCnt: (cnt: number) => void;
+  refetch: () => void;
 }
 
 export interface ReplyProps {
@@ -132,6 +135,13 @@ export interface ReplyProps {
   replyCount: number;
 }
 
+export interface ReplyInputProps {
+  commentInfo: CommentType;
+  replyCnt: number;
+  setReplyCnt: (cnt: number) => void;
+  refetch: () => void;
+}
+
 export interface CommentInputProps {
   setCommentCnt: (cnt: number) => void;
   commentCnt: number;
@@ -144,7 +154,6 @@ export interface ReportProps {
   isOpenIntro: boolean;
   isOpenReport: boolean;
   isOpenDelete: boolean;
-
   isOpenIntro: boolean;
   isCommentOpenIntro: boolean;
   isReplyOpenIntro: boolean;

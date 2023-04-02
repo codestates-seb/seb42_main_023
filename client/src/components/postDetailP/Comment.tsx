@@ -73,6 +73,7 @@ const Comment: React.FC<
   const [commentData, setCommentData] = useState<Array<CommentType>>([]);
   const [editComment, setEditComment] = useState<string>('');
   const [selectedComment, setSelectedComment] = useState<string>('');
+  const [replyCnt, setReplyCnt] = useState<number>();
   const loginUserName = window.localStorage.getItem('name');
   const params = useParams();
   const postId = params.postId;
@@ -111,7 +112,7 @@ const Comment: React.FC<
     page,
     orderby,
   });
-  const { isLoading } = commentQuery;
+  const { isLoading, refetch } = commentQuery;
   // 댓글 업데이트
   const commentMutation = commentsApi.useUpdateCommentMutation();
   const [updateMutation] = commentMutation;
@@ -632,7 +633,12 @@ const Comment: React.FC<
                     state.reply?.isOpened[idx] ? (
                       <>
                         <ReplyContainer>
-                          <ReplyInput commentInfo={comment}></ReplyInput>
+                          <ReplyInput
+                            commentInfo={comment!}
+                            replyCnt={replyCnt!}
+                            setReplyCnt={setReplyCnt!}
+                            refetch={refetch}
+                          ></ReplyInput>
                           {filtered?.map((reply: ReplyType, idx: number) => {
                             return (
                               <>
