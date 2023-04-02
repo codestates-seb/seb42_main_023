@@ -34,7 +34,7 @@ public class CommentService implements ThumbCountService {
     private final FinderService finderService;
     private final ReplyService replyService;
 
-    private final int PAGE_ELEMENT_SIZE = 10;
+    private static final int PAGE_ELEMENT_SIZE = 10;
 
     // 단일 조회
     public Comment findOne(Long commentId) {
@@ -66,7 +66,6 @@ public class CommentService implements ThumbCountService {
     public Long removeComment(Member loginMember, Long commentId) {
         Comment findComment = checkOwner(loginMember, commentId);
         Posts parentPosts = findComment.getPosts();
-        parentPosts.minusCommentCount();
         DeleteResult deleteResult
                 = DeleteResult.builder().deleteReason(DeleteResult.Reason.SELF_DELETED).build();
         findComment.changeStateToDeleted(deleteResult);
@@ -85,7 +84,6 @@ public class CommentService implements ThumbCountService {
     // 신고로 인한 삭제
     public void removeReportComment(Comment comment) {
         Posts parentPosts = comment.getPosts();
-        parentPosts.minusCommentCount();
         DeleteResult deleteResult
                 = DeleteResult.builder().deleteReason(DeleteResult.Reason.DELETED_BY_REPORT).build();
         comment.changeStateToDeleted(deleteResult);
