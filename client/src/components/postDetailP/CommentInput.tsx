@@ -1,11 +1,16 @@
+// 패키지 등
 import React, { useRef } from 'react';
-import { useParams } from 'react-router-dom';
 import styled from 'styled-components';
-import { commentsApi } from '../../api/commentApi';
+import { useParams } from 'react-router-dom';
 import { useAppDispatch, useAppSelector } from '../../hooks';
-import { addCommentEdit, setComment } from '../../slices/commentSlice';
-import { isOpened, setIsOpened } from '../../slices/replySlice';
+// API
+import { commentsApi } from '../../api/commentApi';
+// 타입
 import { CommentInputProps } from '../../types/PostDetail';
+// Slices
+import { addCommentEdit, setComment } from '../../slices/commentSlice';
+import { isOpened } from '../../slices/replySlice';
+
 const CommentInput: React.FC<CommentInputProps> = ({
   setCommentCnt,
   commentCnt,

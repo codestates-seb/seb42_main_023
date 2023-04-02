@@ -1,19 +1,29 @@
-import React, { useEffect, useRef } from 'react';
+// 패키지 등
+import React, { useRef } from 'react';
 import styled from 'styled-components';
-import { repliesApi } from '../../api/replyApi';
-import { useAppDispatch, useAppSelector } from '../../hooks';
-import { setCommentId } from '../../slices/commentSlice';
-import { addReplyEdit, setReply } from '../../slices/replySlice';
-import { CommentProps } from '../../types/PostDetail';
 import { useParams } from 'react-router-dom';
+import { useAppDispatch, useAppSelector } from '../../hooks';
+// API
+import { commentsApi } from '../../api/commentApi';
+import { repliesApi } from '../../api/replyApi';
+// slices
+import { setCommentId } from '../../slices/commentSlice';
+import { setReply } from '../../slices/replySlice';
+// 타입
 import {
   PostStateType,
   ReplyStateType,
   CommentStateType,
+  CommentProps,
+  ReplyInputProps,
 } from '../../types/PostDetail';
-import { commentsApi } from '../../api/commentApi';
 
-const ReplyInput: React.FC<CommentProps> = ({ commentInfo }: CommentProps) => {
+const ReplyInput: React.FC<ReplyInputProps> = ({
+  commentInfo,
+  replyCnt,
+  setReplyCnt,
+  refetch,
+}: CommentProps) => {
   const replyRef = useRef<HTMLTextAreaElement>(null);
   const dispatch = useAppDispatch();
   const state = useAppSelector(
@@ -29,8 +39,8 @@ const ReplyInput: React.FC<CommentProps> = ({ commentInfo }: CommentProps) => {
   const page = 'comment' in state && state.comment?.page;
   const replyMutation = repliesApi.useSetReplyMutation();
   const setReplys = replyMutation[0];
-  const commentQuery = commentsApi.useGetCommentQuery({ postId, page });
-  const { refetch } = commentQuery;
+  // const commentQuery = commentsApi.useGetCommentQuery({ postId, page });
+  // const { refetch } = commentQuery;
   const textarea = document.getElementById('reply') as HTMLTextAreaElement;
   const text = textarea?.value.replaceAll(/\n/g, '<br>');
   // 답글 추가
@@ -43,7 +53,7 @@ const ReplyInput: React.FC<CommentProps> = ({ commentInfo }: CommentProps) => {
       .then(() => {
         replyRef.current!.value = '';
         replyRef!.current!.style.height = '58px';
-
+        setReplyCnt(replyCnt + 1);
         refetch();
       });
   };

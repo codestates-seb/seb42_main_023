@@ -1,9 +1,11 @@
+// 패키지 등
 import React, { useRef } from 'react';
 import styled from 'styled-components';
+import { useParams } from 'react-router-dom';
 import { useAppDispatch, useAppSelector } from '../../hooks';
+// slices
 import { setIsEdit, setTitle } from '../../slices/postInputSlice';
 import { setTitleErr } from '../../slices/validationSlice';
-import { useParams } from 'react-router-dom';
 
 const TitleInput: React.FC = () => {
   const dispatch = useAppDispatch();

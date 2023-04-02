@@ -1,9 +1,10 @@
 import React, { KeyboardEvent } from 'react';
 import styled from 'styled-components';
 import { useAppDispatch, useAppSelector } from '../../hooks';
+import Tag from '../common/Tag';
 import { setTagContent, setTag } from '../../slices/postInputSlice';
 import { setTagErr } from '../../slices/validationSlice';
-import Tag from '../common/Tag';
+
 // 공통 컴포넌트
 const TagInput: React.FC = () => {
   const dispatch = useAppDispatch();

@@ -27,7 +27,6 @@ const postInputSlice = createSlice({
     setTagContent: (state, action: PayloadAction<string>): void => {
       state.tagContent = action.payload;
     },
-
     // 게시글 태그
     setTag: (state, action: Tag): void => {
       (state.tag as Array<string>).push(action.payload);
@@ -38,6 +37,7 @@ const postInputSlice = createSlice({
         (tag) => tag !== action.payload,
       );
     },
+    // 내용 수정 여부
     setIsEdit: (state, action: PayloadAction<boolean>): void => {
       state.isEdit = action.payload;
     },

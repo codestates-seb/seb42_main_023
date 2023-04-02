@@ -1,9 +1,12 @@
+// 패키지 등
 import React, { useEffect, useMemo, useRef } from 'react';
 import ReactQuill from 'react-quill';
-import 'react-quill/dist/quill.snow.css';
 import axios from 'axios';
 import styled from 'styled-components';
 import { useAppDispatch, useAppSelector } from '../../hooks';
+import Cookies from 'js-cookie';
+import 'react-quill/dist/quill.snow.css';
+// slices
 import { setBody } from '../../slices/postInputSlice';
 import { setBodyErr } from '../../slices/validationSlice';
 import {
@@ -11,7 +14,6 @@ import {
   setRemovedImg,
   setAddedImg,
 } from '../../slices/postSlice';
-import Cookies from 'js-cookie';
 
 interface ImgObj {
   imagedId: number;
@@ -97,11 +99,8 @@ const BodyInput: React.FC = () => {
         });
 
         const { data } = result;
-
         const { imageId, imageName } = data;
-
         const ImgUrl = process.env.REACT_APP_S3_ADDRESS + '/' + imageName;
-
         const imgObj = {
           imageId,
           imageName,
