@@ -32,6 +32,7 @@ const NotFoundContainer = styled.div`
   align-items: center;
   > h1 {
     font-weight: 700;
+    font-size: 20px;
   }
 `;
 const GoBackBtn = styled(WhiteBtn)`

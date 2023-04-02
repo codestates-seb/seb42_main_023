@@ -53,7 +53,7 @@ const App: React.FC = () => {
                 <Route path="/reports/deleted" element={<ReportsDeleted />} />
                 <Route path="/recovery" element={<AccountRecovery />} />
                 <Route path="/search" element={<Search />} />
-                <Route path="/notfound" element={<NotFound />} />
+                <Route path="/*" element={<NotFound />} />
               </Routes>
             </main>
             <Footer />
