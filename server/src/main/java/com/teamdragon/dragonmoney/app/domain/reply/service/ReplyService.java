@@ -32,7 +32,7 @@ public class ReplyService implements ThumbCountService {
     private final ReplyRepository replyRepository;
     private final FinderService finderService;
 
-    private final int PAGE_ELEMENT_SIZE = 10;
+    private static final int PAGE_ELEMENT_SIZE = 10;
 
     // 단일 조회
     public Reply findOne(Long replyId) {

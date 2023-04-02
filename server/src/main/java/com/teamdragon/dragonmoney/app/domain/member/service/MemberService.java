@@ -29,7 +29,7 @@ public class MemberService {
     private final ReplyService replyService;
     private final ThumbService thumbService;
     private final BookmarkService bookmarkService;
-    private final String OAUTH2_KIND = "google";
+    private static final String OAUTH2_KIND = "google";
 
     // oAuth2 로그인 할 때 존재하는 회원인지 판별
     public Boolean checkOAuthMemberName(String email) {
