@@ -5,7 +5,7 @@
 - **`Project duration` :** 2023.03.03 - 2023.04.03
 - **`Team members` :** 임희연(팀장), 이민형, 임경아, 김예영(부팀장), 전진우
 - **`Link` :** [🌐 Dragon money](http://hp5234-dragonmoney-front.s3-website.ap-northeast-2.amazonaws.com/)
-- **`Service overview`:** [서비스 메뉴얼](https://file.notion.so/f/s/7184eb3b-c93f-4a68-8a6c-a57f7c191402/42%E1%84%80%E1%85%B5-Team023-%E1%84%89%E1%85%A5%E1%84%87%E1%85%B5%E1%84%89%E1%85%B3%E1%84%86%E1%85%A2%E1%84%82%E1%85%B2%E1%84%8B%E1%85%A5%E1%86%AF.pdf?id=9d636b91-667a-46d3-bc70-4f32a65c2ef7&table=block&spaceId=82d63a72-8254-4cde-bf1e-b2597b7c099c&expirationTimestamp=1680533792564&signature=2WsBX-ImxhVjbKqZmxhwhlpzQ5AMTurxS_DIhlyCPdU&downloadName=42%E1%84%80%E1%85%B5-Team023-%E1%84%89%E1%85%A5%E1%84%87%E1%85%B5%E1%84%89%E1%85%B3%E1%84%86%E1%85%A2%E1%84%82%E1%85%B2%E1%84%8B%E1%85%A5%E1%86%AF.pdf)
+- **`Service overview`:** [서비스 메뉴얼](https://file.notion.so/f/s/2dc6f24f-fcf4-4e66-9e34-4d1fead7acb2/42%E1%84%80%E1%85%B5-Team023-%E1%84%89%E1%85%A5%E1%84%87%E1%85%B5%E1%84%89%E1%85%B3%E1%84%86%E1%85%A2%E1%84%82%E1%85%B2%E1%84%8B%E1%85%A5%E1%86%AF.pdf?id=9d636b91-667a-46d3-bc70-4f32a65c2ef7&table=block&spaceId=82d63a72-8254-4cde-bf1e-b2597b7c099c&expirationTimestamp=1680246949989&signature=YM8FpC-kgF9A4y0wDQfIcTthNVR3rGQ8V-BQiDgi--k&downloadName=42%E1%84%80%E1%85%B5-Team023-%E1%84%89%E1%85%A5%E1%84%87%E1%85%B5%E1%84%89%E1%85%B3%E1%84%86%E1%85%A2%E1%84%82%E1%85%B2%E1%84%8B%E1%85%A5%E1%86%AF.pdf)
 - **`Tech presentation`:** [기술발표영상](https://www.youtube.com/watch?v=WSenS382Kbs)
 - **`Functional Requirement`:** [사용자 요구사항 정의서](https://docs.google.com/spreadsheets/d/1nr49L2OUG_jmOi0T24SNNtoj28_lDOy6M9Insm4-Lxg/edit#gid=0)
 - **`API Specification`:** [API 명세서](https://file.notion.so/f/s/6cf81032-8b52-41fc-8b4c-b88de4e50d31/API_%E1%84%86%E1%85%A7%E1%86%BC%E1%84%89%E1%85%A6%E1%84%89%E1%85%A5.pdf?id=74d16eec-8e25-455e-904a-35094c757c42&table=block&spaceId=82d63a72-8254-4cde-bf1e-b2597b7c099c&expirationTimestamp=1680331982129&signature=I5mkBOcyQ-f8hDgmS-Aem6h59MDrjwbV3raijGsbEiE&downloadName=API_%E1%84%86%E1%85%A7%E1%86%BC%E1%84%89%E1%85%A6%E1%84%89%E1%85%A5.pdf)
@@ -57,12 +57,18 @@
 | :----------------------------------------------------------: | :----------------------------------------------------------: | :----------------------------------------------------------: | :----------------------------------------------------------: | :----------------------------------------------------------: | :----------------------------------------------------------: | ------------------------------------------------------------ | ------------------------------------------------------------ | ------------------------------------------------------------ |
 | <div style="display: flex; align-items: flex-start;"><img src="https://techstack-generator.vercel.app/java-icon.svg" alt="icon" width="65" height="65" /></div> | <div style="display: flex; align-items: flex-start;"><img src="https://techstack-generator.vercel.app/aws-icon.svg" alt="icon" width="65" height="65" /></div> | <div style="display: flex; align-items: flex-start;"><img src="https://img.icons8.com/color/48/null/nginx.png" alt="icon" width="65" height="65" /></div> | <div style="display: flex; align-items: flex-start;"><img src="https://techstack-generator.vercel.app/mysql-icon.svg" alt="icon" width="65" height="65" /></div> | <div style="display: flex; align-items: flex-start;"><img src="https://media.discordapp.net/attachments/1090258986688843897/1091283675410346044/spring-security-project.png?width=500&height=500" alt="icon" width="65" height="65" /></div> | <img alt="spring-boot logo" src="https://t1.daumcdn.net/cfile/tistory/27034D4F58E660F616" width="65" height="65" > | <div style="display: flex; align-items: flex-start;"><img src="https://cdn.discordapp.com/attachments/1080464895268638743/1090900997271994448/spring-data.png" alt="icon" width="65" height="65" /></div> | <div style="display: flex; align-items: flex-start;"><img src="https://media.discordapp.net/attachments/1090258986688843897/1091283978385903687/gradle-knowledge-graph-logo.png?width=640&height=640" alt="icon" width="65" height="65" /></div> | <div style="display: flex; align-items: flex-start;"><img src="https://pbs.twimg.com/profile_images/378800000264014940/da8da0c0e6dfbfc596f787ade49381a6_400x400.png" alt="icon" width="65" height="65" /></div> |
 
-`버전 정보` </br>
-`Java` 11 </br>
-`Spring Boot` v2.7.9 </br>
-`Gradle` v7.6.1 </br>
-`MySQL` v8.0.3 </br>
-`Query DSL` v5.0.0 </br>
+`주요 사용 기술` <br/>
+- <img src="https://img.shields.io/badge/JAVA-007396?style=flat&logo=java&logoColor=white">  Java 11
+- <img src="https://img.shields.io/badge/Gradle-바탕색?style=flat&logo=Gradle&logoColor=white"/>  Spring Boot v2.7.9
+- <img src="https://img.shields.io/badge/Spring boot-바탕색?style=flat&logo=Spring boot&logoColor=white"/>  Spring Boot v2.7.9
+- <img src="https://img.shields.io/badge/Spring Data JPA-바탕색?style=flat&logo=Spring&logoColor=white"/>  Spring Data JPA
+- <img src="https://img.shields.io/badge/Spring Security-바탕색?style=flat&logo=Spring Security&logoColor=white"/>  Spring Security 
+- <img src="https://img.shields.io/badge/Query DSL-527FFF?style=flat&logoColor=white"/> Query DSL v5.0.0
+- <img src="https://img.shields.io/badge/MySQL-4479A1?style=flat&logo=MySQL&logoColor=white"/> MySQL v8.0.3
+- <img src="https://img.shields.io/badge/ AWS EC2-FF9900?style=flat&logo=Amazon EC2&logoColor=white"/> AWS EC2
+- <img src="https://img.shields.io/badge/ AWS S3-FF6666?style=flat&logo=Amazon S3&logoColor=white"/> AWS S3
+- <img src="https://img.shields.io/badge/ AWS RDS-527FFF?style=flat&logo=Amazon RDS&logoColor=white"/> AWS RDS
+- <img src="https://img.shields.io/badge/ AWS CodeDeploy-527FFF?style=flat&logo=Amazon AWS&logoColor=white"/> AWS CodeDeploy
 
 <br/>
 
