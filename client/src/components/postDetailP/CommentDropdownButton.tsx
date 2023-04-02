@@ -109,6 +109,7 @@ const List = styled.ul`
 const ListItem = styled.li`
   padding: 10px;
   font-size: 16px;
+  min-width: 80px;
   cursor: pointer;
   box-sizing: border-box;
   &:hover {

@@ -16,7 +16,6 @@ interface Props {
   setCurrentPage: React.Dispatch<React.SetStateAction<number>>;
 }
 
-//TODO: 첫클릭이 적용안됨
 const Pagination = ({
   pageInfo,
   pageOffset,
@@ -35,17 +34,9 @@ const Pagination = ({
   };
   const pageButtonHandler = (e: React.MouseEvent<HTMLButtonElement>) => {
     if (e.target instanceof HTMLButtonElement) {
-      console.log(e.target.value);
       setCurrentPage(parseInt(e.target.value));
     }
   };
-  //현재페이지 초기화
-  useEffect(() => {
-    return () => {
-      console.log('reset');
-      // setCurrentPage(1);
-    };
-  }, []);
 
   return (
     <PaginationContainer>
