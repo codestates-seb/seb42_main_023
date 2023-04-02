@@ -18,13 +18,13 @@ const ProfileEdit: React.FC<ProfileEditProps> = ({
     inputRef.current?.focus();
   });
 
-  const searchEnterHandler = (
-    event: React.KeyboardEvent<HTMLTextAreaElement>,
-  ): void => {
-    if (event.key === 'Enter') {
-      submitHandler();
-    }
-  };
+  // const searchEnterHandler = (
+  //   event: React.KeyboardEvent<HTMLTextAreaElement>,
+  // ): void => {
+  //   if (event.key === 'Enter') {
+  //     submitHandler();
+  //   }
+  // };
 
   return (
     <InputWrap>
@@ -34,7 +34,7 @@ const ProfileEdit: React.FC<ProfileEditProps> = ({
         onChange={(e) => {
           setContent(e.currentTarget.value);
         }}
-        onKeyDown={searchEnterHandler}
+        // onKeyDown={searchEnterHandler}
         rows={5}
         maxLength={499}
       ></textarea>

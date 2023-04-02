@@ -23,7 +23,7 @@ function SeoulRent() {
   const { data, isSuccess } = seoulrentquery;
 
   //툴팁 위치정보 저장
-  const [tooltipPosition, setTooltipPosition] = useState({ x: 0, y: 0 });
+  // const [tooltipPosition, setTooltipPosition] = useState({ x: 0, y: 0 });
   //클릭한 지역정보
   const [clickedArea, setClickedArea] = useState('');
   //클릭한 지역 월세
@@ -61,7 +61,7 @@ function SeoulRent() {
   const moveOnArea = (area: CustomArea, evt: AreaEvent) => {
     const coords = { x: evt.nativeEvent.clientX, y: evt.nativeEvent.clientY };
     setClickedArea(area.id as string);
-    setTooltipPosition(coords);
+    // setTooltipPosition(coords);
     const dataItem = data?.locationList.find(
       (el: Seoulrent) => el.location === area.id,
     );
@@ -96,11 +96,7 @@ function SeoulRent() {
         stayHighlighted={true}
       />
       {openTooltip ? (
-        <TooltipWrap
-        // ref={tooltipRef}
-        // left={tooltipPosition.x}
-        // top={tooltipPosition.y}
-        >
+        <TooltipWrap>
           <h1>
             <AiOutlineEnvironment size={18} />
             {clickedArea}
@@ -242,7 +238,7 @@ const Mention = styled.span`
   margin-top: 8px;
   color: var(--sub-font-color);
   padding-bottom: 70px;
-  font-weight: 300;
+  font-weight: 400;
 `;
 const TooltipWrap = styled.div`
   position: absolute;
