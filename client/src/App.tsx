@@ -19,6 +19,7 @@ import ReportsDeleted from './pages/ReportsDeleted';
 import AccountRecovery from './pages/AccountRecovery';
 import Search from './pages/Search';
 import Loading from './components/common/Loading';
+import NotFound from './pages/NotFound';
 
 const HeaderDefault = React.lazy(
   () => import('./components/common/HeaderDefault'),
@@ -52,6 +53,7 @@ const App: React.FC = () => {
                 <Route path="/reports/deleted" element={<ReportsDeleted />} />
                 <Route path="/recovery" element={<AccountRecovery />} />
                 <Route path="/search" element={<Search />} />
+                <Route path="/notfound" element={<NotFound />} />
               </Routes>
             </main>
             <Footer />
