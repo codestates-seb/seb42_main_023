@@ -1,9 +1,15 @@
-import React, { useRef, useState } from 'react';
+// 패키지 등
+import React, { useRef, useState, useEffect } from 'react';
 import { useAppDispatch, useAppSelector } from '../../hooks';
 import styled from 'styled-components';
+import parse from 'html-react-parser';
+import _ from 'lodash';
+import { useNavigate } from 'react-router-dom';
+import { timeSince } from '../mainP/Timecalculator';
+// 컴포넌트
 import DislikeIcon from '../../assets/common/DislikeIcon';
 import LikeIcon from '../../assets/common/LikeIcon';
-import { isEdit, setIsEdit, setReplyId } from '../../slices/replySlice';
+// 타입
 import {
   PostStateType,
   ReplyStateType,
@@ -12,16 +18,14 @@ import {
   ReplyType,
   ReportProps,
 } from '../../types/PostDetail';
+// API
 import { repliesApi } from '../../api/replyApi';
-import { setReportType, setSelectedMember } from '../../slices/postSlice';
-import { timeSince } from '../mainP/Timecalculator';
-import { setCommentId } from '../../slices/commentSlice';
-import _ from 'lodash';
 import { membersApi } from '../../api/memberapi';
-import { useNavigate } from 'react-router-dom';
+// Slices
+import { setReportType, setSelectedMember } from '../../slices/postSlice';
+import { setCommentId } from '../../slices/commentSlice';
+import { isEdit, setIsEdit, setReplyId } from '../../slices/replySlice';
 import { setMemberName } from '../../slices/headerSlice';
-import parse from 'html-react-parser';
-import { useEffect } from 'react';
 
 const Reply: React.FC<Partial<ReplyProps & ReportProps>> = ({
   replyInfo,
@@ -32,6 +36,8 @@ const Reply: React.FC<Partial<ReplyProps & ReportProps>> = ({
   setDeleteType,
   isOpenReport,
   isOpenDelete,
+  isOpenIntro,
+  isCommentOpenIntro,
   isReplyOpenIntro,
   setIsOpenReplyIntro,
 }: Partial<ReplyProps & ReportProps>) => {
@@ -84,8 +90,8 @@ const Reply: React.FC<Partial<ReplyProps & ReportProps>> = ({
   const replyMutation = repliesApi.useUpdataReplyMutation();
   const [updateMutation] = replyMutation;
   // 게시글, 댓글 작성자 소개페이지 오픈 여부
-  const isOpenCommentIntro = 'comment' in state && state?.comment.isOpeneIntro;
-  const isOpenPostIntro = 'post' in state && state?.post.isOpeneIntro;
+  const isOpenCommentIntro = isCommentOpenIntro;
+  const isOpenPostIntro = isOpenIntro;
 
   // 답글 좋아요 추가, 삭제
   const addThumbUpMutation = repliesApi.useAddRplyThumbUpMutation();

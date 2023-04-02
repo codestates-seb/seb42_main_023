@@ -1,11 +1,15 @@
+// 패키지 등
 import React, { KeyboardEvent } from 'react';
 import styled from 'styled-components';
+import { useParams } from 'react-router-dom';
 import { useAppDispatch, useAppSelector } from '../../hooks';
+// 컴포넌트
+import Tag from '../common/Tag';
+// API
+import { postsApi } from '../../api/postApi';
+// slices
 import { setIsEdit, setTag, setTagContent } from '../../slices/postInputSlice';
 import { setTagErr } from '../../slices/validationSlice';
-import Tag from '../common/Tag';
-import { postsApi } from '../../api/postApi';
-import { useParams } from 'react-router-dom';
 
 interface Input {
   className: string;

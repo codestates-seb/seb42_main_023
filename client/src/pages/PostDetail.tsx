@@ -1,8 +1,17 @@
+// 패키지 등
 import React, { useEffect, useRef, useState } from 'react';
 import styled from 'styled-components';
-import CommentInput from '../components/postDetailP/CommentInput';
+import _ from 'lodash';
+import parse from 'html-react-parser';
+import { useParams, useNavigate } from 'react-router';
+import { useAppDispatch, useAppSelector } from '../hooks';
+import { timeSince } from '../components/mainP/Timecalculator';
+// 컴포넌트
 import Comment from '../components/postDetailP/Comment';
+import CommentInput from '../components/postDetailP/CommentInput';
 import RecommendedPost from '../components/postDetailP/RecommendedPost';
+import Tag from '../components/postDetailP/Tag';
+import Loading from '../components/common/Loading';
 import BookmarkIcon from '../assets/common/BookmarkIcon';
 import TimeIcon from '../assets/common/TimeIcon';
 import ViewIcon from '../assets/common/ViewIcon';
@@ -13,6 +22,20 @@ import PostDropdownButton from '../components/postDetailP/PostDropdownButton';
 import { BlueBtn, WhiteBtn } from '../components/common/Btn';
 import { ReactComponent as CheckedIcon } from '../assets/checked.svg';
 import { ReactComponent as NoCheckedIcon } from '../assets/noChecked.svg';
+// 타입
+import {
+  PostStateType,
+  CommentStateType,
+  ReplyStateType,
+  ValidationStateType,
+} from '../types/PostDetail';
+// API
+import { postsApi } from '../api/postApi';
+import { commentsApi } from '../api/commentApi';
+import { repliesApi } from '../api/replyApi';
+import { membersApi } from '../api/memberapi';
+import { reportApi } from '../api/reportApi';
+// slices
 import {
   setIsOpenFilter,
   setReportOption,
@@ -20,24 +43,6 @@ import {
 } from '../slices/postSlice';
 import { setReportErr } from '../slices/validationSlice';
 import { setMemberName } from '../slices/headerSlice';
-import { useAppDispatch, useAppSelector } from '../hooks';
-import {
-  PostStateType,
-  CommentStateType,
-  ReplyStateType,
-  ValidationStateType,
-} from '../types/PostDetail';
-import { useParams, useNavigate } from 'react-router';
-import { repliesApi } from '../api/replyApi';
-import { postsApi } from '../api/postApi';
-import { reportApi } from '../api/reportApi';
-import { commentsApi } from '../api/commentApi';
-import { timeSince } from '../components/mainP/Timecalculator';
-import { membersApi } from '../api/memberapi';
-import _ from 'lodash';
-import parse from 'html-react-parser';
-import Tag from '../components/postDetailP/Tag';
-import Loading from '../components/common/Loading';
 
 const reportOption = [
   '영리목적/홍보성',
@@ -153,13 +158,15 @@ const PostDetail: React.FC = () => {
   // 게시글 서버 데이터 저장
   // 데이터 받아서 로컬 스테이트로 저장 ( 댓글, 좋아요, 싫어요, 북마크)
   useEffect(() => {
-    if (isSuccess) setIsLike(data?.isThumbup);
-    if (isSuccess) setIsDislike(data?.isThumbdown);
-    if (isSuccess) setLike(data?.thumbupCount);
-    if (isSuccess) setDislike(data?.thumbDownCount);
-    if (isSuccess) setBookmark(data?.isBookmarked);
-    if (isSuccess) setViews(data?.viewCount);
-    if (isSuccess) setCommentCnt(data?.commentCount);
+    if (isSuccess) {
+      setIsLike(data?.isThumbup);
+      setIsDislike(data?.isThumbdown);
+      setLike(data?.thumbupCount);
+      setDislike(data?.thumbDownCount);
+      setBookmark(data?.isBookmarked);
+      setViews(data?.viewCount);
+      setCommentCnt(data?.commentCount);
+    }
   }, [data]);
 
   // 페이지 이동 시 스크롤 최상단 이동
@@ -189,7 +196,6 @@ const PostDetail: React.FC = () => {
         addThumbUp({ postId });
         setIsLike(true);
         setLike((prev) => prev! + 1);
-
         return;
       }
       // 둘 다 없는 경우
@@ -214,7 +220,6 @@ const PostDetail: React.FC = () => {
         addThumbDown({ postId });
         setIsDislike(true);
         setDislike((prev) => prev! + 1);
-
         return;
       }
       // 싫어요만 있는 경우
@@ -401,7 +406,6 @@ const PostDetail: React.FC = () => {
       dispatch(setSelectedMember(event.target.id));
     }
   };
-
   return (
     <>
       {isOpenDelete ? (

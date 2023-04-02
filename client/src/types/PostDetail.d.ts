@@ -3,21 +3,12 @@ import { type } from '@testing-library/user-event/dist/type';
 
 export interface PostStateType {
   post: {
-    isLike: boolean;
-    isDislike: boolean;
-    isBookmark: boolean;
-    reommendPosts: unknown;
-    postDetail: unknown;
-    deleteType: unknown;
-    isOpenDelete: boolean;
     isOpenFilter: boolean;
-    isOpenReport: boolean;
     reportOption: unknown;
     reportType: unknown;
     currentImg: unknown;
     removedImg: unknown;
     totalImg: unknown;
-    isOpeneIntro: boolean;
     addedImg: unknown;
     remainImg: unknown;
     selectedMember: unknown;
@@ -26,32 +17,23 @@ export interface PostStateType {
 
 export interface CommentStateType {
   comment: {
-    isCommentLike: boolean;
-    isCommentDislike: boolean;
-    commentCnt: unknown;
     commentValue: string;
     commentId: unknown;
     isEdit: Array<boolean>;
-    isOpeneIntro: boolean;
-    page: unknwon;
-    comments: Array<object>;
     filter: string;
     filterOpen: boolean;
     orderby: string;
+    page: unknwon;
   };
 }
 
 export interface ReplyStateType {
   reply: {
-    isReplyLike: boolean;
-    isReplyDislike: boolean;
     replyValue: string;
     replyId: number;
     isEdit: Array<boolean>;
     isOpened: Array<boolean>;
     totalReplies: Array;
-    replyCont: number;
-    isOpeneIntro: boolean;
     page: number;
   };
 }

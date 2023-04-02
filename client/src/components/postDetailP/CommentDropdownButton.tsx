@@ -1,13 +1,17 @@
+// 패키지 등
 import React, { useRef, useEffect } from 'react';
 import styled from 'styled-components';
-import { BsFillCaretDownFill } from 'react-icons/bs';
 import { useAppDispatch, useAppSelector } from '../../hooks';
+// 컴포넌트(아이콘)
+import { BsFillCaretDownFill } from 'react-icons/bs';
+// 타입
+import { CommentProps } from '../../types/PostDetail';
+// slices
 import {
   setFilter,
   setFilterOpen,
   setOrderby,
 } from '../../slices/commentSlice';
-import { CommentProps } from '../../types/PostDetail';
 
 const CommentDropDropdownButton = ({ setPage }: Partial<CommentProps>) => {
   const dispatch = useAppDispatch();

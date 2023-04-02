@@ -1,17 +1,21 @@
-import React, { useEffect, useRef } from 'react';
+// 패키지 등
+import React, { useRef } from 'react';
 import styled from 'styled-components';
-import { repliesApi } from '../../api/replyApi';
-import { useAppDispatch, useAppSelector } from '../../hooks';
-import { setCommentId } from '../../slices/commentSlice';
-import { addReplyEdit, setReply } from '../../slices/replySlice';
-import { CommentProps } from '../../types/PostDetail';
 import { useParams } from 'react-router-dom';
+import { useAppDispatch, useAppSelector } from '../../hooks';
+// API
+import { commentsApi } from '../../api/commentApi';
+import { repliesApi } from '../../api/replyApi';
+// slices
+import { setCommentId } from '../../slices/commentSlice';
+import { setReply } from '../../slices/replySlice';
+// 타입
+import { CommentProps } from '../../types/PostDetail';
 import {
   PostStateType,
   ReplyStateType,
   CommentStateType,
 } from '../../types/PostDetail';
-import { commentsApi } from '../../api/commentApi';
 
 const ReplyInput: React.FC<CommentProps> = ({ commentInfo }: CommentProps) => {
   const replyRef = useRef<HTMLTextAreaElement>(null);

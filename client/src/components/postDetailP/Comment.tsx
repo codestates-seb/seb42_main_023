@@ -1,16 +1,22 @@
+// 패키지 등
 import React, { useEffect, useRef, useState } from 'react';
 import { useParams } from 'react-router';
 import { useAppDispatch, useAppSelector } from '../../hooks';
+import { timeSince } from '../mainP/Timecalculator';
+import { useNavigate } from 'react-router';
 import styled from 'styled-components';
 import _ from 'lodash';
+import parse from 'html-react-parser';
+// 컴포넌트
 import ReplyInput from './ReplyInput';
 import DislikeIcon from '../../assets/common/DislikeIcon';
 import LikeIcon from '../../assets/common/LikeIcon';
 import TimeIcon from '../../assets/common/TimeIcon';
+import CommentDropdownButton from './CommentDropdownButton';
+import Loading from '../common/Loading';
 import Reply from './Reply';
-import { repliesApi } from '../../api/replyApi';
-import { commentsApi } from '../../api/commentApi';
-import { setReportType, setSelectedMember } from '../../slices/postSlice';
+// 타입
+import { CommentInputProps } from '../../types/PostDetail';
 import {
   PostStateType,
   CommentStateType,
@@ -20,6 +26,12 @@ import {
   ReportProps,
   CommentProps,
 } from '../../types/PostDetail';
+// API
+import { commentsApi } from '../../api/commentApi';
+import { repliesApi } from '../../api/replyApi';
+import { membersApi } from '../../api/memberapi';
+// Slices
+import { setReportType, setSelectedMember } from '../../slices/postSlice';
 import {
   setCommentId,
   isEdit,
@@ -31,14 +43,7 @@ import {
   setIsOpened,
   setTotalReplies,
 } from '../../slices/replySlice';
-import { timeSince } from '../mainP/Timecalculator';
-import { membersApi } from '../../api/memberapi';
-import { CommentInputProps } from '../../types/PostDetail';
 import { setMemberName } from '../../slices/headerSlice';
-import { useNavigate } from 'react-router';
-import Loading from '../common/Loading';
-import parse from 'html-react-parser';
-import CommentDropdownButton from './CommentDropdownButton';
 
 const Comment: React.FC<
   Partial<CommentInputProps & ReportProps & CommentProps>
@@ -132,6 +137,7 @@ const Comment: React.FC<
   const [addThumbUp] = addThumbUpMutation;
   const removeThumbUpMutation = commentsApi.useRemoveCommentThumbUpMutation();
   const [removeThumbUp] = removeThumbUpMutation;
+
   // 댓글 싫어요  추가, 삭제
   const addThumbDownMutation = commentsApi.useAddCommentThumbDownMutation();
   const [addThumbDown] = addThumbDownMutation;
@@ -139,7 +145,6 @@ const Comment: React.FC<
     commentsApi.useRemoveCommentThumbDownMutation();
   const [removeThumbDown] = removeThumbDownMutation;
 
-  // 유저 정보 조회
   // 답글 Open 여부 확인을 위한 배열 생성
   if (
     commentQuery.isSuccess &&
@@ -262,6 +267,7 @@ const Comment: React.FC<
     setCommentData(commentQuery.data?.comments);
   }, [replyQuery.data, commentQuery.data]);
 
+  // 댓글, 답글 페이지 이동
   const minusCommentPage = () => {
     if (page >= 2) {
       setPage((prev) => (prev = prev - 1));
@@ -286,7 +292,9 @@ const Comment: React.FC<
         <Loading />
       ) : (
         <CommentContainer onClick={outClickIntroHandler}>
-          <CommentDropdownButton setPage={setPage}></CommentDropdownButton>
+          {commentQuery.data?.comments.length !== 0 ? (
+            <CommentDropdownButton setPage={setPage} />
+          ) : null}
           {commentQuery.data &&
             commentQuery.data?.comments?.map(
               (comment: CommentType, idx: number) => {
@@ -639,6 +647,8 @@ const Comment: React.FC<
                                   setDeleteType={setDeleteType!}
                                   isOpenReport={isOpenReport!}
                                   isOpenDelete={isOpenDelete!}
+                                  isOpenIntro={isOpenIntro}
+                                  isCommentOpenIntro={isCommentOpenIntro}
                                   isReplyOpenIntro={isReplyOpenIntro!}
                                 ></Reply>
                               </>
