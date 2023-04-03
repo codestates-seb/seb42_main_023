@@ -35,6 +35,7 @@ const Pagination = ({
   const pageButtonHandler = (e: React.MouseEvent<HTMLButtonElement>) => {
     if (e.target instanceof HTMLButtonElement) {
       setCurrentPage(parseInt(e.target.value));
+      window.scrollTo(0, 0);
     }
   };
 
