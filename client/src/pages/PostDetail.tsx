@@ -318,13 +318,17 @@ const PostDetail: React.FC = () => {
   // 신고 보내기
   const sendReportHandler = (): void => {
     // 유효성 검사
-    if ('validation' in state && state.validation?.reportErr) return;
     if ('post' in state && !state.post?.reportOption) {
       dispatch(setReportErr('신고 이유를 선택해 주세요.'));
       return;
+    } else {
+      dispatch(setReportErr(''));
     }
-    if (reportTextRef.current?.value === '') return;
-
+    if (reportTextRef.current?.value === '') {
+      dispatch(setReportErr('신고 내용을 작성해 주세요.'));
+      return;
+    }
+    if ('validation' in state && state.validation?.reportErr) return;
     // 게시물 신고
     if ('post' in state && state.post?.reportType === 'post') {
       sendReport({

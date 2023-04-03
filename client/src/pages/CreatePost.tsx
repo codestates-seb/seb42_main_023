@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import styled from 'styled-components';
 import TitleInput from '../components/createPostP/TitleInput';
 import BodyInput from '../components/createPostP/BodyInput';
@@ -30,6 +30,11 @@ const CreatePost: React.FC = () => {
     return { tagName };
   });
   const accsessToken = Cookies.get('Authorization');
+  // 로그인 확인
+  const auth = Cookies.get('Authorization');
+  const role = localStorage.getItem('role');
+  const name = localStorage.getItem('name');
+  const isLogin = auth && role && name;
 
   const reqBody = {
     saveImages: {
@@ -45,6 +50,7 @@ const CreatePost: React.FC = () => {
     removedImages: removedImg,
   };
   useEffect(() => {
+    if (!isLogin) navigate('/login');
     dispatch(setBodyErr(''));
     dispatch(setTitleErr(''));
   }, []);
