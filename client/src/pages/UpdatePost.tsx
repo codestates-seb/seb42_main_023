@@ -27,15 +27,8 @@ const UpdatePost: React.FC = () => {
   const navigate = useNavigate();
   const params = useParams();
   const postId = Number(params.postId);
-  const [updatePost] = postsApi.useUpdatePostMutation();
   const postQuery = postsApi.useGetPostQuery({ postId });
   const { data, isSuccess } = postQuery;
-
-  // 로그인 확인
-  const auth = Cookies.get('Authorization');
-  const role = localStorage.getItem('role');
-  const name = localStorage.getItem('name');
-  const isLogin = auth && role && name;
 
   // 서버에서 받아오는 데이터
   const title = data?.title;
@@ -51,6 +44,32 @@ const UpdatePost: React.FC = () => {
   const tagNames = tag.map((tagName) => {
     return { tagName };
   });
+  const remain = _.differenceBy(remainImg!, removedImg!, 'imageId');
+  const reqBody = {
+    postId: postId,
+    saveImages: {
+      remainImages: remain || [],
+      addedImages: addedImg || [],
+      removedImages: removedImg || [],
+    },
+    title: titleValue,
+    content: bodyValue,
+    tagNames: tagNames,
+  };
+
+  const deletedImg = {
+    removedImages: removedImg,
+  };
+
+  // 로그인 확인
+  const auth = Cookies.get('Authorization');
+  const role = localStorage.getItem('role');
+  const name = localStorage.getItem('name');
+  const isLogin = auth && role && name;
+
+  const [updatePost] = postsApi.useUpdatePostMutation();
+  const [deleteImage] = postsApi.useDeleteImagesMutation();
+
   const accsessToken = Cookies.get('Authorization');
   useEffect(() => {
     if (!isLogin) navigate('/login');
@@ -75,23 +94,6 @@ const UpdatePost: React.FC = () => {
     });
     dispatch(setIsEdit(false));
   }, [data]);
-
-  const remain = _.differenceBy(remainImg!, removedImg!, 'imageId');
-  const reqBody = {
-    postId: postId,
-    saveImages: {
-      remainImages: remain || [],
-      addedImages: addedImg || [],
-      removedImages: removedImg || [],
-    },
-    title: titleValue,
-    content: bodyValue,
-    tagNames: tagNames,
-  };
-
-  const deletedImg = {
-    removedImages: removedImg,
-  };
 
   const addPostHandler = (): void => {
     if (!state.postInput.isEdit) {
@@ -131,14 +133,7 @@ const UpdatePost: React.FC = () => {
 
   const preventClose = (e: BeforeUnloadEvent) => {
     e.preventDefault();
-    axios.post(deleteImgEP, {
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: accsessToken,
-      },
-      withCredentials: true,
-      data: deletedImg,
-    });
+    deleteImage({ deletedImg });
   };
 
   useEffect(() => {
@@ -150,17 +145,6 @@ const UpdatePost: React.FC = () => {
       window.removeEventListener('beforeunload', preventClose);
     };
   }, []);
-
-  const deleteImg = () => {
-    axios.post(deleteImgEP, {
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: accsessToken,
-      },
-      withCredentials: true,
-      data: deletedImg,
-    });
-  };
 
   const cancelAddHandler = (): void => {
     navigate('/');
@@ -178,7 +162,7 @@ const UpdatePost: React.FC = () => {
           <BtnContainer>
             <CancleBtn
               onClick={() => {
-                deleteImg();
+                deleteImage({ deletedImg });
                 cancelAddHandler();
               }}
             >
