@@ -173,6 +173,7 @@ public class PostsRepositoryImpl implements PostsRepositoryCustom {
                 .distinct()
                 .from(postsTag)
                 .join(postsTag.posts, posts)
+                .join(postsTag.tag, tag)
                 .where(tag.name.in(tagNames))
                 .groupBy(postsTag.posts.id)
                 .having(postsTag.posts.id.count().goe(tagNames.length));
