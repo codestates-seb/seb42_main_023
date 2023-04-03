@@ -1,31 +1,31 @@
 import React from 'react';
 import styled from 'styled-components';
+<<<<<<< HEAD
 import { BlueBtn } from '../../components/common/Btn';
 import { LogoSVG } from '../../assets/common/LogoSVG';
+=======
+import BlueBtn from '../common/BlueBtn';
+>>>>>>> 6038065ce9f8ca42c1f373aae8d2621ff9d4483d
 
-interface Props {
-  nextQuestionHandler: (next: number) => void;
-}
-
-const Intro: React.FC<Props> = ({ nextQuestionHandler }) => {
+const Intro: React.FC = () => {
   return (
     <IntroContainer>
       <LogoSVG />
       <Question>
         <h2>
           <strong>1~2%대</strong> 금리로 제공받을 수 있는 <br />
-          <strong>청년 대상 공공전월세 대출상품</strong>이 있다는 것 알고
-          계셨나요?
+          <strong>공공전월세 대출</strong>이 있다는 것 알고 계셨나요?
         </h2>
-        <p>간단한 설문을 통해 나에게 맞는 공공대출 상품을 찾아보세요!</p>
+        <p>간단한 설문을 통해 나에게 맞는 공공대출 상품을 찾아보세요</p>
       </Question>
-      <FindBtn
+      <BlueBtn
+        width="300px"
+        height="50px"
+        content="나에게 맞는 대출상품 찾기"
         onClick={() => {
-          nextQuestionHandler(0);
+          //   nextQuestionHandler(0);
         }}
-      >
-        나에게 맞는 대출상품 찾기
-      </FindBtn>
+      />
     </IntroContainer>
   );
 };
@@ -56,8 +56,4 @@ const Question = styled.div`
     color: #5c5c5c;
     margin-top: 30px;
   }
-`;
-const FindBtn = styled(BlueBtn)`
-  width: 300px;
-  height: 50px;
 `;

@@ -1,18 +1,26 @@
 // 패키지 등
 import React, { useRef } from 'react';
 import styled from 'styled-components';
+<<<<<<< HEAD
 import { useParams } from 'react-router-dom';
 import { useAppDispatch, useAppSelector } from '../../hooks';
 // slices
 import { setIsEdit, setTitle } from '../../slices/postInputSlice';
+=======
+import { useAppDispatch, useAppSelector } from '../../hooks';
+import { setTitle } from '../../slices/postInputSlice';
+>>>>>>> 6038065ce9f8ca42c1f373aae8d2621ff9d4483d
 import { setTitleErr } from '../../slices/validationSlice';
 
 const TitleInput: React.FC = () => {
   const dispatch = useAppDispatch();
   const state = useAppSelector((state) => state);
   const title = useRef<HTMLInputElement>(null);
+<<<<<<< HEAD
   const params = useParams();
   const postId = Number(params.postId);
+=======
+>>>>>>> 6038065ce9f8ca42c1f373aae8d2621ff9d4483d
 
   // 제목 value 확인
   const valueCheck = (event: React.ChangeEvent<HTMLInputElement>): void => {
@@ -21,7 +29,7 @@ const TitleInput: React.FC = () => {
   };
 
   const validationTest = (): void => {
-    const titleValue = title!.current?.value;
+    const titleValue = title.current?.value;
     if (titleValue!.length === 0) {
       dispatch(setTitleErr('제목을 작성해주세요.'));
     }
@@ -41,12 +49,17 @@ const TitleInput: React.FC = () => {
           <Input
             ref={title}
             className="title-input"
+<<<<<<< HEAD
             placeholder="제목을 입력하세요."
             onChange={(event) => {
               valueCheck(event);
               dispatch(setIsEdit(true));
             }}
             value={state.postInput?.title}
+=======
+            placeholder="제목을 입력해주세요."
+            onChange={valueCheck}
+>>>>>>> 6038065ce9f8ca42c1f373aae8d2621ff9d4483d
           ></Input>
         </TitleInputContainer>
       ) : (
@@ -55,12 +68,17 @@ const TitleInput: React.FC = () => {
           <Input
             ref={title}
             className="title-input"
+<<<<<<< HEAD
             placeholder="제목을 입력하세요."
             onChange={(event) => {
               valueCheck(event);
               dispatch(setIsEdit(true));
             }}
             value={state.postInput?.title}
+=======
+            placeholder="제목을 입력해주세요."
+            onChange={valueCheck}
+>>>>>>> 6038065ce9f8ca42c1f373aae8d2621ff9d4483d
           ></Input>
           <Error>{state.validation?.titleErr}</Error>
         </TitleInputContainer>

@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 import { validationStateType } from './PostDetail.d';
 import { type } from '@testing-library/user-event/dist/type';
 
@@ -54,6 +55,23 @@ export interface PostInputStateType {
     tagContent: string;
     title: string;
     isEdit: boolean;
+=======
+export interface StateType {
+  postSlice: {
+    isLike: boolean;
+    isDislike: boolean;
+    isBookmark: boolean;
+    isCommentLike: boolean;
+    isCommentDislike: boolean;
+    isReplyLike: boolean;
+    isReplyDislike: boolean;
+    popularPosts: unknown;
+    postDetail: unknown;
+    comments: unknown;
+    replies: unknown;
+    isOpend: unknown;
+    totalReplies: Array;
+>>>>>>> 6038065ce9f8ca42c1f373aae8d2621ff9d4483d
   };
 }
 
@@ -114,6 +132,7 @@ export interface ReplyType {
   content: string;
 }
 
+<<<<<<< HEAD
 export interface CommentProps {
   commentInfo: CommentType;
   setPage?: (num: number) => void;
@@ -163,4 +182,8 @@ export interface ReportProps {
 
 export interface OnClick {
   onClick(): void;
+=======
+interface Props {
+  replyInfo: ReplyType;
+>>>>>>> 6038065ce9f8ca42c1f373aae8d2621ff9d4483d
 }

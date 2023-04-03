@@ -1,6 +1,10 @@
+<<<<<<< HEAD
 // 패키지 등
 import React, { useRef, useState, useEffect } from 'react';
 import { useAppDispatch, useAppSelector } from '../../hooks';
+=======
+import React from 'react';
+>>>>>>> 6038065ce9f8ca42c1f373aae8d2621ff9d4483d
 import styled from 'styled-components';
 import parse from 'html-react-parser';
 import _ from 'lodash';
@@ -10,6 +14,7 @@ import Cookies from 'js-cookie';
 // 컴포넌트
 import DislikeIcon from '../../assets/common/DislikeIcon';
 import LikeIcon from '../../assets/common/LikeIcon';
+<<<<<<< HEAD
 // 타입
 import {
   PostStateType,
@@ -379,6 +384,78 @@ const Reply: React.FC<Partial<ReplyProps & ReportProps>> = ({
               : replyInfo?.content === '신고된 답글입니다.'
               ? null
               : '신고'}
+=======
+import { setReplyDislike, setReplyLike } from '../../slices/postSlice';
+import { useAppDispatch, useAppSelector } from '../../hooks';
+import { StateType, Props } from '../../types/PostDetail';
+
+const Reply: React.FC<Props> = ({ replyInfo }: Props) => {
+  const dispatch = useAppDispatch();
+  const state = useAppSelector((state: StateType): StateType => {
+    return state;
+  });
+  // 답글 좋아요 클릭 함수
+  const ReplyLiikeHandler = (): void => {
+    dispatch(setReplyLike(state.postSlice.isReplyLike));
+  };
+  // 답글 싫어요 클릭 함수
+  const ReplyDislikeHandler = (): void => {
+    dispatch(setReplyDislike(state.postSlice.isReplyDislike));
+  };
+
+  return (
+    <ReplyContainer>
+      {/* {replyInfo! &&
+        (replyInfo as Array<ReplyType>).map((reply: ReplyType) => {
+          return (
+            <>
+              <ReplyInfo key={reply.replyId}>
+                <ul className="reply-info">
+                  <li className="image">
+                    <img src={reply && reply.memberImage}></img>
+                  </li>
+                  <li className="nickname">{reply && reply.memberName}</li>
+                  <li className="reply-created-time">12시간 전</li>
+                  <li className="reply-update">수정</li>
+                  <li className="reply-delete">삭제</li>
+                  <button onClick={ReplyLiikeHandler}>
+                    <LikeIcon checked={reply && reply.isThumbup} />
+                  </button>
+                  <li className="reply-likes">{reply && reply.thumbupCount}</li>
+                  <button onClick={ReplyDislikeHandler}>
+                    <DislikeIcon checked={reply && reply.isThumbDown} />
+                  </button>
+                  <li className="reply-dislikes">
+                    {reply && reply.thumbupCount}
+                  </li>
+                </ul>
+              </ReplyInfo>
+              <ReplyContent>
+                <div className="content">{reply && reply.content}</div>
+              </ReplyContent>
+            </>
+          );
+        })} */}
+
+      <ReplyInfo key={replyInfo.replyId}>
+        <ul className="reply-info">
+          <li className="image">
+            <img src={replyInfo && replyInfo.memberImage}></img>
+          </li>
+          <li className="nickname">{replyInfo && replyInfo.memberName}</li>
+          <li className="reply-created-time">12시간 전</li>
+          <li className="reply-update">수정</li>
+          <li className="reply-delete">삭제</li>
+          <button onClick={ReplyLiikeHandler}>
+            <LikeIcon checked={replyInfo && replyInfo.isThumbup} />
+          </button>
+          <li className="reply-likes">{replyInfo && replyInfo.thumbupCount}</li>
+          <button onClick={ReplyDislikeHandler}>
+            <DislikeIcon checked={replyInfo && replyInfo.isThumbDown} />
+          </button>
+          <li className="reply-dislikes">
+            {replyInfo && replyInfo.thumbupCount}
+>>>>>>> 6038065ce9f8ca42c1f373aae8d2621ff9d4483d
           </li>
           {replyInfo?.content ===
           '삭제된 답글입니다.' ? null : replyInfo?.content ===
@@ -417,6 +494,7 @@ const Reply: React.FC<Partial<ReplyProps & ReportProps>> = ({
         </ul>
       </ReplyInfo>
       <ReplyContent>
+<<<<<<< HEAD
         {'reply' in state &&
         replyInfo!.replyId === replyId &&
         state.reply?.isEdit[idx!] ? (
@@ -456,6 +534,9 @@ const Reply: React.FC<Partial<ReplyProps & ReportProps>> = ({
             </div>
           </div>
         )}
+=======
+        <div className="content">{replyInfo && replyInfo.content}</div>
+>>>>>>> 6038065ce9f8ca42c1f373aae8d2621ff9d4483d
       </ReplyContent>
     </ReplyContainer>
   );
@@ -483,8 +564,8 @@ const ReplyContainer = styled.div`
 
     font-size: 12px;
     padding: 30px 0 30px 0;
-    position: relative;
   }
+<<<<<<< HEAD
   .reply-content {
     display: flex;
     align-items: flex-end;
@@ -494,36 +575,43 @@ const ReplyContainer = styled.div`
     justify-content: flex-start;
     word-break: break-all;
     font-size: 17px;
+=======
+  .content {
+    height: 100%;
+    width: 100%;
+    display: flex;
+    justify-content: flex-start;
+    color: black;
+>>>>>>> 6038065ce9f8ca42c1f373aae8d2621ff9d4483d
   }
   .nickname {
-    width: 130px;
     font-size: 16px;
     margin: 2px 15px 0 5px;
     font-size: 17px;
   }
   .reply-created-time {
+<<<<<<< HEAD
     width: 75px;
+=======
+>>>>>>> 6038065ce9f8ca42c1f373aae8d2621ff9d4483d
     font-size: 16px;
     margin: 3px 15px 0 5px;
     color: #94969b;
   }
   .reply-update {
-    width: 40px;
     font-size: 16px;
+<<<<<<< HEAD
     margin: 3px 15px 0 15px;
+=======
+    margin: 3px 15px 0 35px;
+    color: gray;
+>>>>>>> 6038065ce9f8ca42c1f373aae8d2621ff9d4483d
     cursor: pointer;
   }
   .reply-delete {
-    width: 40px;
     font-size: 16px;
-    margin: 3px 15px 0 5px;
-    cursor: pointer;
-  }
-  .reply-report {
-    width: 40px;
-    font-size: 16px;
-    margin: 3px 110px 0 5px;
-    color: #ca0000;
+    margin: 3px 164px 0 5px;
+    color: gray;
     cursor: pointer;
   }
   .reply-likes {
@@ -550,6 +638,7 @@ const ReplyContainer = styled.div`
     font-size: 12px;
   }
 `;
+<<<<<<< HEAD
 
 const IntorductionContainer = styled.div`
   position: absolute;
@@ -601,6 +690,8 @@ const IntorductionContainer = styled.div`
   }
 `;
 
+=======
+>>>>>>> 6038065ce9f8ca42c1f373aae8d2621ff9d4483d
 const ReplyInfo = styled.div`
   display: flex;
   flex-direction: column;
@@ -613,7 +704,9 @@ const ReplyInfo = styled.div`
 
 const ReplyContent = styled.div`
   display: flex;
+
   flex-direction: column;
+<<<<<<< HEAD
   padding: 15px 0 0 0;
   margin: 0px 0 20px 15px;
   width: 660px;
@@ -652,4 +745,8 @@ const InputWrap = styled.div`
       font-size: 14px;
     }
   }
+=======
+  width: 670px;
+  height: 100%;
+>>>>>>> 6038065ce9f8ca42c1f373aae8d2621ff9d4483d
 `;

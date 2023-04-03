@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 import React, { useEffect } from 'react';
 import styled from 'styled-components';
 import Profile from '../components/myPageP/Profile';
@@ -71,3 +72,12 @@ const ModalWrap = styled.div`
     }
   }
 `;
+=======
+import React from 'react';
+
+function MyPage() {
+  return <div></div>;
+}
+
+export default MyPage;
+>>>>>>> 6038065ce9f8ca42c1f373aae8d2621ff9d4483d

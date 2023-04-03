@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-// import Report from '../components/handleReport/Report';
+import Report from '../components/adminReport/Report';
 import { useState, ChangeEvent } from 'react';
 
 const AdminReport: React.FC = () => {
@@ -82,7 +82,7 @@ const AdminReport: React.FC = () => {
           })}
         </tbody>
       </table>
-      {/* {showReportForm ? <Report selectedReport={selectedReport} /> : null} */}
+      {showReportForm ? <Report selectedReport={selectedReport} /> : null}
     </AdminReportMain>
   );
 };

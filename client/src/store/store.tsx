@@ -1,10 +1,11 @@
 import { configureStore } from '@reduxjs/toolkit';
 import postSlice from '../slices/postSlice';
-import commentSlice from '../slices/commentSlice';
-import replySlice from '../slices/replySlice';
+import createSagaMiddleware from 'redux-saga';
+import { rootSaga } from '../sagas/rootSaga';
 import logger from 'redux-logger';
 import postInputSlice from '../slices/postInputSlice';
 import validationSlice from '../slices/validationSlice';
+<<<<<<< HEAD
 import headerSlice from '../slices/headerSlice';
 import mainSlice from '../slices/mainSlice';
 import mypageSlice from '../slices/mypageSlice';
@@ -16,15 +17,17 @@ import { tempTokenApi } from '../api/tempTokenAPi';
 import reportSlice from '../slices/reportSlice';
 import { apiSlice } from '../api/apiSlice';
 import { repliesApi } from '../api/replyApi';
+=======
+>>>>>>> 6038065ce9f8ca42c1f373aae8d2621ff9d4483d
 
+const sagaMiddleware = createSagaMiddleware();
+const middlewares = [sagaMiddleware, logger];
 const store = configureStore({
   reducer: {
-    // general Reducer
+    postSlice: postSlice.reducer,
     postInput: postInputSlice.reducer,
-    post: postSlice.reducer,
-    comment: commentSlice.reducer,
-    reply: replySlice.reducer,
     validation: validationSlice.reducer,
+<<<<<<< HEAD
     header: headerSlice.reducer,
     main: mainSlice.reducer,
     mypage: mypageSlice.reducer,
@@ -50,7 +53,13 @@ const store = configureStore({
       .concat(tempTokenApi.middleware)
       .concat(apiSlice.middleware), // TODO: 이거빼고 위에 concat은 다 지워도됌.
   // .concat(logger),
+=======
+  },
+  middleware: middlewares,
+>>>>>>> 6038065ce9f8ca42c1f373aae8d2621ff9d4483d
 });
+
+sagaMiddleware.run(rootSaga);
 
 export type RootState = ReturnType<typeof store.getState>;
 export type AppDispatch = typeof store.dispatch;

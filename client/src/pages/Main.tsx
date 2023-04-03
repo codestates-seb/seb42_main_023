@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import PostList from '../components/mainP/PostList';
@@ -94,11 +95,27 @@ const Main = () => {
           setCurrentPage={setCurrentPage}
         />
       )}
+=======
+import React from 'react';
+import NextPageIcon from '../assets/common/NextPageIcon';
+import PrevPageIcon from '../assets/common/PrevPageIcon';
+import Tag from '../components/common/Tag';
+import PostList from '../components/mainP/PostList';
+
+function Main() {
+  return (
+    <>
+      {console.log('render')}
+      <PostList />
+      <PrevPageIcon />
+      <NextPageIcon />
+>>>>>>> 6038065ce9f8ca42c1f373aae8d2621ff9d4483d
     </>
   );
-};
+}
 
 export default Main;
+<<<<<<< HEAD
 
 const ComuntyBtn = styled(NavBtn)`
   font-size: 16px;
@@ -141,3 +158,5 @@ const Banner = styled.div`
     margin-top: 8px;
   }
 `;
+=======
+>>>>>>> 6038065ce9f8ca42c1f373aae8d2621ff9d4483d

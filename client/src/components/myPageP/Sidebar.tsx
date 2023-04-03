@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 import React, { useEffect } from 'react';
 import styled from 'styled-components';
 import { useAppDispatch, useAppSelector } from '../../hooks';
@@ -86,3 +87,10 @@ const FilterBtn = styled(SidebarBtn)<{ current: boolean }>`
     color: ${({ current }) => (current ? '#0069CA' : '#94969b')};
   }
 `;
+=======
+function Sidebar() {
+  return <div></div>;
+}
+
+export default Sidebar;
+>>>>>>> 6038065ce9f8ca42c1f373aae8d2621ff9d4483d

@@ -6,7 +6,6 @@ const validationSlice = createSlice({
     titleErr: '',
     bodyErr: '',
     tagErr: '',
-    reportErr: '',
   },
   reducers: {
     // 제목 유효성 검사 에러
@@ -21,13 +20,8 @@ const validationSlice = createSlice({
     setTagErr: (state, action: PayloadAction<string>): void => {
       state.tagErr = action.payload;
     },
-    // 본문 유효성 검사 에러
-    setReportErr: (state, action: PayloadAction<string>): void => {
-      state.reportErr = action.payload;
-    },
   },
 });
 
 export default validationSlice;
-export const { setTitleErr, setBodyErr, setTagErr, setReportErr } =
-  validationSlice.actions;
+export const { setTitleErr, setBodyErr, setTagErr } = validationSlice.actions;

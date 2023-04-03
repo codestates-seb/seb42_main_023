@@ -2,7 +2,16 @@ import React from 'react';
 import styled from 'styled-components';
 import { useNavigate } from 'react-router-dom';
 
+const Btn = styled.button`
+  height: 40px;
+  width: 100px;
+  background-color: #0069ca;
+  color: #fff;
+  box-sizing: border-box;
+`;
+
 function PostBtn() {
+<<<<<<< HEAD
   const navigate = useNavigate();
   // 로그인 확인
 
@@ -16,11 +25,17 @@ function PostBtn() {
       >
         글쓰기
       </Btn>
+=======
+  return (
+    <>
+      <Btn>글쓰기</Btn>
+>>>>>>> 6038065ce9f8ca42c1f373aae8d2621ff9d4483d
     </>
   );
 }
 
 export default PostBtn;
+<<<<<<< HEAD
 const Btn = styled.button`
   padding: 4px 14px;
   box-sizing: border-box;
@@ -34,3 +49,5 @@ const Btn = styled.button`
     color: var(--hover-font-gray-color);
   }
 `;
+=======
+>>>>>>> 6038065ce9f8ca42c1f373aae8d2621ff9d4483d
