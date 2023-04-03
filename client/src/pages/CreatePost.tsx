@@ -10,12 +10,7 @@ import { postsApi } from '../api/postApi';
 import _ from 'lodash';
 import axios from 'axios';
 import Cookies from 'js-cookie';
-import {
-  deleteTag,
-  setBody,
-  setTitle,
-  setTagContent,
-} from '../slices/postInputSlice';
+import { deleteTag, setBody, setTagContent } from '../slices/postInputSlice';
 import { setBodyErr, setTitleErr } from '../slices/validationSlice';
 
 const deleteImgEP = process.env.REACT_APP_SERVER_ADDRESS + '/images/drop';
@@ -68,7 +63,7 @@ const CreatePost: React.FC = () => {
 
   const preventClose = (e: BeforeUnloadEvent) => {
     e.preventDefault();
-    axios.delete(deleteImgEP, {
+    axios.post(deleteImgEP, {
       headers: {
         'Content-Type': 'application/json',
         Authorization: accsessToken,
@@ -89,7 +84,7 @@ const CreatePost: React.FC = () => {
   }, []);
 
   const deleteImg = () => {
-    axios.delete(deleteImgEP, {
+    axios.post(deleteImgEP, {
       headers: {
         'Content-Type': 'application/json',
         Authorization: accsessToken,
@@ -141,7 +136,6 @@ const CreatePost: React.FC = () => {
       <BtnContainer>
         <CancelBtn
           onClick={() => {
-            //.TODO
             deleteImg();
             cancelAddHandler();
           }}
