@@ -121,31 +121,30 @@ const UpdatePost: React.FC = () => {
     scrollTo(0, 0);
   }, []);
 
-  //TODO 뒤로가기 등 버튼 눌릴 경우 이미지 삭제 로직 필요
-  // const preventClose = (e: BeforeUnloadEvent) => {
-  //   e.preventDefault();
-  //   axios.delete(deleteImgEP, {
-  //     headers: {
-  //       'Content-Type': 'application/json',
-  //       Authorization: accsessToken,
-  //     },
-  //     withCredentials: true,
-  //     data: deletedImg,
-  //   });
-  // };
+  const preventClose = (e: BeforeUnloadEvent) => {
+    e.preventDefault();
+    axios.post(deleteImgEP, {
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: accsessToken,
+      },
+      withCredentials: true,
+      data: deletedImg,
+    });
+  };
 
-  // useEffect(() => {
-  //   (() => {
-  //     window.addEventListener('beforeunload', preventClose);
-  //   })();
+  useEffect(() => {
+    (() => {
+      window.addEventListener('beforeunload', preventClose);
+    })();
 
-  //   return () => {
-  //     window.removeEventListener('beforeunload', preventClose);
-  //   };
-  // }, []);
+    return () => {
+      window.removeEventListener('beforeunload', preventClose);
+    };
+  }, []);
 
   const deleteImg = () => {
-    axios.delete(deleteImgEP, {
+    axios.post(deleteImgEP, {
       headers: {
         'Content-Type': 'application/json',
         Authorization: accsessToken,
