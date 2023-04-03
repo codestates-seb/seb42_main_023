@@ -8,19 +8,15 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { useAppDispatch, useAppSelector } from '../hooks';
 import { postsApi } from '../api/postApi';
 import _ from 'lodash';
-import axios from 'axios';
 import Cookies from 'js-cookie';
 import { deleteTag, setBody, setTagContent } from '../slices/postInputSlice';
 import { setBodyErr, setTitleErr } from '../slices/validationSlice';
-
-const deleteImgEP = process.env.REACT_APP_SERVER_ADDRESS + '/images/drop';
 
 const CreatePost: React.FC = () => {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const params = useParams();
   const state = useAppSelector((state) => state);
-  const [createPost] = postsApi.useSetPostMutation();
   const titleValue = state.postInput?.title;
   const bodyValue = state.postInput?.body;
   const addedImg = state.post?.addedImg;
@@ -29,12 +25,6 @@ const CreatePost: React.FC = () => {
   const tagNames = tag.map((tagName: string) => {
     return { tagName };
   });
-  const accsessToken = Cookies.get('Authorization');
-  // 로그인 확인
-  const auth = Cookies.get('Authorization');
-  const role = localStorage.getItem('role');
-  const name = localStorage.getItem('name');
-  const isLogin = auth && role && name;
 
   const reqBody = {
     saveImages: {
@@ -49,6 +39,16 @@ const CreatePost: React.FC = () => {
   const deletedImg = {
     removedImages: removedImg,
   };
+
+  const [createPost] = postsApi.useSetPostMutation();
+  const [deleteImage] = postsApi.useDeleteImagesMutation();
+
+  // 로그인 확인
+  const auth = Cookies.get('Authorization');
+  const role = localStorage.getItem('role');
+  const name = localStorage.getItem('name');
+  const isLogin = auth && role && name;
+
   useEffect(() => {
     if (!isLogin) navigate('/login');
     dispatch(setBodyErr(''));
@@ -69,14 +69,7 @@ const CreatePost: React.FC = () => {
 
   const preventClose = (e: BeforeUnloadEvent) => {
     e.preventDefault();
-    axios.post(deleteImgEP, {
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: accsessToken,
-      },
-      withCredentials: true,
-      data: deletedImg,
-    });
+    deleteImage({ deletedImg });
   };
 
   useEffect(() => {
@@ -88,17 +81,6 @@ const CreatePost: React.FC = () => {
       window.removeEventListener('beforeunload', preventClose);
     };
   }, []);
-
-  const deleteImg = () => {
-    axios.post(deleteImgEP, {
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: accsessToken,
-      },
-      withCredentials: true,
-      data: deletedImg,
-    });
-  };
 
   const addPostHandler = (): void => {
     if (
@@ -142,7 +124,7 @@ const CreatePost: React.FC = () => {
       <BtnContainer>
         <CancelBtn
           onClick={() => {
-            deleteImg();
+            deleteImage({ deletedImg });
             cancelAddHandler();
           }}
         >

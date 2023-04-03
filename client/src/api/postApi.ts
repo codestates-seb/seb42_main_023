@@ -1,5 +1,7 @@
 import { apiSlice } from './apiSlice';
 
+// const addImgEp = process.env.REACT_APP_SERVER_ADDRESS + '/images';
+const deleteImgEP = process.env.REACT_APP_SERVER_ADDRESS + '/images/drop';
 // 추천 게시물글 API
 export const recommendedPostsApi = apiSlice
   .enhanceEndpoints({ addTagTypes: ['RecomendedPosts'] })
@@ -52,6 +54,27 @@ export const postsApi = apiSlice
           };
         },
       }),
+      // 이미지 추가
+      // addImages: builder.mutation({
+      //   query: ({ postId }) => {
+      //     return {
+      //       url: `posts/${postId}`,
+      //       method: 'POST',
+      //     };
+      //   },
+      // }),
+
+      // 이미지 삭제
+      deleteImages: builder.mutation({
+        query: ({ deletedImg }) => {
+          return {
+            url: deleteImgEP,
+            method: 'POST',
+            body: deletedImg,
+          };
+        },
+      }),
+
       //게시글 좋아요 추가
       addPostThumbUp: builder.mutation({
         query: ({ postId }) => {
