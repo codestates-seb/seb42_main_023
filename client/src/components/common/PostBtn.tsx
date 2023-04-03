@@ -4,6 +4,8 @@ import { useNavigate } from 'react-router-dom';
 
 function PostBtn() {
   const navigate = useNavigate();
+  // 로그인 확인
+
   return (
     <>
       <Btn
