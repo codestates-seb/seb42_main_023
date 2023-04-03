@@ -2,7 +2,7 @@ name: React CI with npm
 
 on:
   push:
-    branches: ["fe-dev, action-test"]
+    branches: ["fe-dev"]
   pull_request:
     branches: ["fe-dev"]
 

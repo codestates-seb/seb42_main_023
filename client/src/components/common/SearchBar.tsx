@@ -1,5 +1,6 @@
-import React, { KeyboardEvent } from 'react';
+import React from 'react';
 import styled from 'styled-components';
+<<<<<<< HEAD
 import { useAppDispatch, useAppSelector } from '../../hooks';
 import {
   setInput,
@@ -108,9 +109,22 @@ const SearchBar: React.FC = () => {
   const searchClickHandler = (): void => {
     searchHandler();
   };
+=======
+import { useNavigate } from 'react-router-dom';
 
+const Btn = styled.button`
+  height: 40px;
+  width: 100px;
+  background-color: #0069ca;
+  color: #fff;
+  box-sizing: border-box;
+`;
+>>>>>>> 6038065ce9f8ca42c1f373aae8d2621ff9d4483d
+
+function SearchBar() {
   return (
     <>
+<<<<<<< HEAD
       {valid.tagErr === '' ? (
         <TagInputContainer>
           <InputWraper>
@@ -170,11 +184,15 @@ const SearchBar: React.FC = () => {
           <SearchBtn />
         </TagInputContainer>
       )}
+=======
+      <Btn>글쓰기</Btn>
+>>>>>>> 6038065ce9f8ca42c1f373aae8d2621ff9d4483d
     </>
   );
-};
+}
 
 export default SearchBar;
+<<<<<<< HEAD
 
 const TagInputContainer = styled.div`
   display: flex;
@@ -221,3 +239,5 @@ const Span = styled.span`
   font-size: 14px;
   margin-left: 14px;
 `;
+=======
+>>>>>>> 6038065ce9f8ca42c1f373aae8d2621ff9d4483d

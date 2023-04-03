@@ -1,23 +1,44 @@
 import React, { useEffect } from 'react';
 import styled from 'styled-components';
+<<<<<<< HEAD
 import Intro from '../components/recommendLoan/Intro';
 import Question from '../components/recommendLoan/Question';
 import Result from '../components/recommendLoan/Result';
 import { questionData } from '../data/surveyData';
 import { useAppDispatch, useAppSelector } from '../hooks';
 import { setCurrentQuestion, setResultId } from '../slices/surveySlice';
+=======
+import NavRealEstate from '../components/common/NavRealEstate';
+// import { questionData } from '../data/surveyData';
+// import Intro from '../components/recommendLoan/Intro';
+// import Question from '../components/recommendLoan/Question';
+// import { useState } from 'react';
+
+// interface questionData {
+//     id: number;
+//     question: string;
+//     answer: ({
+//         content: string;
+//         next: number;
+//         resultId?: undefined;
+//     } | {
+//         content: string;
+//         resultId: number;
+//         next?: undefined;
+//     })[];
+// }
+>>>>>>> 6038065ce9f8ca42c1f373aae8d2621ff9d4483d
 
 const RecommendLoan: React.FC = () => {
-  const dispatch = useAppDispatch();
-  const { currentQuestion, resultId } = useAppSelector((state) => state.survey);
-
+  //   const [currentQuestion, setCurrentQuestion] = useState(null);
   const nextQuestionHandler = (next: number) => {
-    dispatch(setCurrentQuestion(questionData[next]));
-  };
-
-  const showResultHandler = (result: string) => {
-    dispatch(setCurrentQuestion(null));
-    dispatch(setResultId(result));
+    // if (next === next) {
+    //   setCurrentQuestion(questionData[next]);
+    // } else if () {
+    //   next === resultId
+    //   move to result page.
+    // }
+    // }
   };
 
   // 설문 중간에 다른 페이지로 이동시 다시 인트로 화면으로 돌아가게 한다.
@@ -30,18 +51,13 @@ const RecommendLoan: React.FC = () => {
     <MainContainer>
       <div className="content-container">
         <SurveyBox>
-          {!currentQuestion && !resultId && (
+          {/* {currentQuestion! ? (
             <Intro nextQuestionHandler={nextQuestionHandler} />
-          )}
+          ) : (
+            <Question />
+          )} */}
 
-          {currentQuestion && (
-            <Question
-              nextQuestionHandler={nextQuestionHandler}
-              showResultHandler={showResultHandler}
-            />
-          )}
-
-          {resultId && <Result />}
+          {/* <Result /> */}
         </SurveyBox>
       </div>
     </MainContainer>
@@ -50,7 +66,7 @@ const RecommendLoan: React.FC = () => {
 
 export default RecommendLoan;
 
-export const MainContainer = styled.div`
+const MainContainer = styled.div`
   display: flex;
   > .content-container {
     border: 1px solid #d4d4d4;
@@ -65,7 +81,7 @@ export const MainContainer = styled.div`
   }
 `;
 
-export const SurveyBox = styled.div`
+const SurveyBox = styled.div`
   width: 80%;
   height: 95%;
   background-color: #fff;

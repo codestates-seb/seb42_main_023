@@ -1,5 +1,9 @@
+<<<<<<< HEAD
 // 패키지 등
 import React, { useEffect, useRef, useState } from 'react';
+=======
+import React, { useEffect } from 'react';
+>>>>>>> 6038065ce9f8ca42c1f373aae8d2621ff9d4483d
 import styled from 'styled-components';
 import _ from 'lodash';
 import parse from 'html-react-parser';
@@ -14,11 +18,13 @@ import RecommendedPost from '../components/postDetailP/RecommendedPost';
 import Tag from '../components/postDetailP/Tag';
 import Loading from '../components/common/Loading';
 import BookmarkIcon from '../assets/common/BookmarkIcon';
+import { BsThreeDots } from 'react-icons/bs';
 import TimeIcon from '../assets/common/TimeIcon';
 import ViewIcon from '../assets/common/ViewIcon';
 import CommentIcon from '../assets/common/CommentIcon';
 import DislikeIcon from '../assets/common/DislikeIcon';
 import LikeIcon from '../assets/common/LikeIcon';
+<<<<<<< HEAD
 import PostDropdownButton from '../components/postDetailP/PostDropdownButton';
 import { BlueBtn, WhiteBtn } from '../components/common/Btn';
 import { ReactComponent as CheckedIcon } from '../assets/checked.svg';
@@ -189,10 +195,81 @@ const PostDetail: React.FC = () => {
         return;
       }
     }
+=======
+import {
+  isOpened,
+  setBookmark,
+  setComments,
+  setDislike,
+  setLike,
+  setPopularPosts,
+  setPostDetail,
+} from '../slices/postSlice';
+import { useAppDispatch, useAppSelector } from '../hooks';
+import axios from 'axios';
+import { StateType, PostType, CommentType } from '../types/PostDetail';
+
+const PostDetail: React.FC = () => {
+  const dispatch = useAppDispatch();
+  const state = useAppSelector((state: StateType): StateType => {
+    return state;
+  });
+
+  // 게시글 조회
+  const getPost = async () => {
+    const response = await axios.get(
+      'https://main-project-d9049-default-rtdb.asia-southeast1.firebasedatabase.app/posts.json',
+    );
+    try {
+      const { data } = response;
+      dispatch(setPostDetail(data[0]));
+    } catch (err) {
+      console.log(err);
+    }
+  };
+  // 댓글 조회
+  const getComments = async () => {
+    const response = await axios.get(
+      'https://main-project-d9049-default-rtdb.asia-southeast1.firebasedatabase.app/comments.json',
+    );
+    try {
+      const { data } = response;
+      const isOpend = Array.from({ length: data.length }, (el) => (el = false));
+      dispatch(isOpened(isOpend));
+      dispatch(setComments(data));
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  // 추천 게시글 조회
+  const getPopularPost = async () => {
+    const response = await axios.get(
+      'https://main-project-d9049-default-rtdb.asia-southeast1.firebasedatabase.app/recommendedPosts.json',
+    );
+    try {
+      const { data } = response;
+      dispatch(setPopularPosts(data));
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  useEffect(() => {
+    getPost();
+    getComments();
+    getPopularPost();
+  }, []);
+
+  // 좋아요 클릭 함수
+  const changeLiikeHandler = (): void => {
+    dispatch(setLike(state.postSlice.isLike));
+>>>>>>> 6038065ce9f8ca42c1f373aae8d2621ff9d4483d
   };
 
   // 싫어요 클릭 함수
   const changeDislikeHandler = (): void => {
+<<<<<<< HEAD
     if (!isLogin) navigate('/login');
     if (loginUserName) {
       // 좋아요만 있는 경우
@@ -425,8 +502,16 @@ const PostDetail: React.FC = () => {
       setIsOpenIntro(!isOpenIntro);
       dispatch(setSelectedMember(event.target.id));
     }
+=======
+    dispatch(setDislike(state.postSlice.isDislike));
+  };
+  // 북마크 클릭 함수
+  const changeBookmarkHandler = (): void => {
+    dispatch(setBookmark(state.postSlice.isBookmark));
+>>>>>>> 6038065ce9f8ca42c1f373aae8d2621ff9d4483d
   };
   return (
+<<<<<<< HEAD
     <>
       {isOpenDelete ? (
         <ModalContainer>
@@ -659,15 +744,102 @@ const PostDetail: React.FC = () => {
         </Container>
       )}
     </>
+=======
+    <Container>
+      <PostContainer>
+        <h1>
+          {state.postSlice.postDetail! &&
+            (state.postSlice.postDetail as PostType).title}
+        </h1>
+        <PostInfo>
+          <ul className="post-info">
+            <li className="image">
+              <img
+                src={
+                  state.postSlice.postDetail! &&
+                  (state.postSlice.postDetail as PostType).memberImage
+                }
+              ></img>
+            </li>
+            <li className="nickname">
+              {state.postSlice.postDetail! &&
+                (state.postSlice.postDetail as PostType).memberName}
+            </li>
+            <TimeIcon />
+            <li className="created-time">12시간 전</li>
+            <ViewIcon />
+            <li className="views">
+              {state.postSlice.postDetail! &&
+                (state.postSlice.postDetail as PostType).viewCount}
+            </li>
+            <CommentIcon checked={true} />
+            <li className="comments">
+              {state.postSlice.comments! &&
+                (state.postSlice.comments as CommentType).length}
+            </li>
+            <button className="bookmark" onClick={changeBookmarkHandler}>
+              <BookmarkIcon
+                checked={
+                  state.postSlice.postDetail! &&
+                  (state.postSlice.postDetail! as PostType).isBookmarked
+                }
+              />
+            </button>
+            <BsThreeDots style={{ cursor: 'pointer' }} />
+          </ul>
+        </PostInfo>
+        <PostContent>
+          <div>
+            {state.postSlice.postDetail! &&
+              (state.postSlice.postDetail! as PostType).content}
+          </div>
+
+          <ul className="post-info">
+            <button onClick={changeLiikeHandler}>
+              <LikeIcon
+                checked={
+                  state.postSlice.postDetail! &&
+                  (state.postSlice.postDetail! as PostType).isThumbup
+                }
+              />
+            </button>
+            <li className="likes">
+              {state.postSlice.postDetail! &&
+                (state.postSlice.postDetail! as PostType).thumbupCount}
+            </li>
+            <button onClick={changeDislikeHandler}>
+              <DislikeIcon
+                checked={
+                  state.postSlice.postDetail! &&
+                  (state.postSlice.postDetail! as PostType).isThumbDown
+                }
+              />
+            </button>
+            <li className="dislikes">
+              {state.postSlice.postDetail! &&
+                (state.postSlice.postDetail! as PostType).thumbDownCount}
+            </li>
+          </ul>
+          <CommentInput></CommentInput>
+          <Comment></Comment>
+        </PostContent>
+      </PostContainer>
+      <RecommendedPostContainer>
+        <div className="recommended-post">
+          <RecommendedPost></RecommendedPost>
+        </div>
+      </RecommendedPostContainer>
+      {/* <ProfilePreview></ProfilePreview> */}
+    </Container>
+>>>>>>> 6038065ce9f8ca42c1f373aae8d2621ff9d4483d
   );
 };
 
 export default PostDetail;
 // 페이지 컨테이너
-const Container = styled.div<any>`
+const Container = styled.div`
   display: grid;
   grid-template-columns: 760px 340px;
-  position: relative;
   width: 100%;
   height: 100%;
   overflow: scroll;
@@ -682,6 +854,7 @@ const PostContainer = styled.div`
   width: 1100px;
   height: 100%;
 
+<<<<<<< HEAD
   .post-title {
     display: flex;
     align-items: center;
@@ -696,6 +869,8 @@ const PostContainer = styled.div`
       margin: 0 0 0 15px;
     }
   }
+=======
+>>>>>>> 6038065ce9f8ca42c1f373aae8d2621ff9d4483d
   h1 {
     font-size: 16px;
     margin-bottom: 15px;
@@ -709,16 +884,22 @@ const PostContainer = styled.div`
     font-size: 12px;
     padding: 30px 0 30px 0;
     border-bottom: 1px solid #d4d4d4;
-    position: relative;
   }
   .nickname {
+<<<<<<< HEAD
     max-width: 130px;
     width: 130px;
     text-align: left;
+=======
+    max-width: 100px;
+    width: 100px;
+    text-align: center;
+>>>>>>> 6038065ce9f8ca42c1f373aae8d2621ff9d4483d
     font-size: 16px;
     margin: 0 15px 0 2px;
   }
   .created-time {
+<<<<<<< HEAD
     width: 75px;
     font-size: 12px;
     margin: 3px 8px 0 5px;
@@ -735,6 +916,18 @@ const PostContainer = styled.div`
     font-size: 12px;
     margin: 1px 222px 0 5px;
     color: var(--sub-font-color);
+=======
+    font-size: 16px;
+    margin: 3px 15px 0 5px;
+  }
+  .views {
+    font-size: 16px;
+    margin: 1px 15px 0 5px;
+  }
+  .comments {
+    font-size: 16px;
+    margin: 1px 300px 0 5px;
+>>>>>>> 6038065ce9f8ca42c1f373aae8d2621ff9d4483d
   }
   .image {
     width: 30px;
@@ -784,7 +977,11 @@ const RecommendedPostContainer = styled.div`
   justify-content: center;
   width: 100%;
   height: 100%;
+<<<<<<< HEAD
 
+=======
+  padding-top: 80px;
+>>>>>>> 6038065ce9f8ca42c1f373aae8d2621ff9d4483d
   .recommended-post {
     display: flex;
     justify-content: center;
@@ -795,6 +992,7 @@ const RecommendedPostContainer = styled.div`
     border: 1px solid #d4d4d4;
   }
 `;
+<<<<<<< HEAD
 
 // 모달 컨테이너
 const ModalContainer = styled.div`
@@ -1010,3 +1208,5 @@ const TagConatiner = styled.div`
   justify-content: start;
   margin-top: 15px;
 `;
+=======
+>>>>>>> 6038065ce9f8ca42c1f373aae8d2621ff9d4483d

@@ -193,7 +193,13 @@ export default HappyHouse;
 
 const MainContainer = styled.div`
   > .content-container {
+<<<<<<< HEAD
     width: 100%;
+=======
+    border: 1px solid #d4d4d4;
+    margin-left: 20px;
+    width: calc(100% - 160px);
+>>>>>>> 6038065ce9f8ca42c1f373aae8d2621ff9d4483d
     height: 100%;
     padding: 20px;
     > .total-items {
@@ -239,6 +245,24 @@ const Title = styled.div`
 const Filter = styled.div`
   display: flex;
   justify-content: space-between;
+<<<<<<< HEAD
+=======
+  border-bottom: 1px solid #d4d4d4;
+  > div > button {
+    width: 130px;
+    height: 35px;
+    border: 1px solid #d4d4d4;
+    background-color: aliceblue;
+    cursor: pointer;
+  }
+`;
+
+const HouseItem = styled.a`
+  height: 50px;
+  background-color: #f8f8f8;
+  border-bottom: 1px solid #d4d4d4;
+  display: flex;
+>>>>>>> 6038065ce9f8ca42c1f373aae8d2621ff9d4483d
   align-items: center;
   margin-top: 10px;
   > .state-filter {
@@ -257,6 +281,7 @@ const Filter = styled.div`
     }
   }
 
+<<<<<<< HEAD
   > .location-filter {
     > select {
       border: 1px solid #d4d4d4;
@@ -269,6 +294,17 @@ const Filter = styled.div`
         outline: none;
       }
     }
+=======
+  > .house-location {
+    background-color: #0069ca;
+    color: #fff;
+    font-size: 12px;
+    width: max-content;
+    height: max-content;
+    padding: 5px;
+    border-radius: 7px;
+    margin: 0px 10px;
+>>>>>>> 6038065ce9f8ca42c1f373aae8d2621ff9d4483d
   }
 `;
 

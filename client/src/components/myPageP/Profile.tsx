@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 import React, { useRef, useEffect, useState } from 'react';
 import styled from 'styled-components';
 import LargeProfileImg from '../common/LargeProfileImg';
@@ -83,8 +84,14 @@ function Profile() {
       {isSuccess && data.member.memberName === loginuser && <DropdownButton />}
     </ProfileWrap>
   );
+=======
+function Profile() {
+  return <div></div>;
+>>>>>>> 6038065ce9f8ca42c1f373aae8d2621ff9d4483d
 }
+
 export default Profile;
+<<<<<<< HEAD
 const ProfileWrap = styled.div`
   padding-bottom: 40px;
   padding-left: 10px;
@@ -140,3 +147,5 @@ const Leng = styled.div`
   text-align: end;
   padding-top: 10px;
 `;
+=======
+>>>>>>> 6038065ce9f8ca42c1f373aae8d2621ff9d4483d

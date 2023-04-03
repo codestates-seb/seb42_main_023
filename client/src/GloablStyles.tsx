@@ -1,6 +1,7 @@
 import { createGlobalStyle } from 'styled-components';
 
 const GlobalStyles = createGlobalStyle`
+
       :root {
         --border-color: #D9D9D9; 
         --background-color: #fcfcfc;
@@ -20,11 +21,12 @@ const GlobalStyles = createGlobalStyle`
         --sub-font-size: 12px;
       }
 
+
     *{
         box-sizing : border-box ;
         padding: 0;
         margin: 0;
-        border:0;
+        border: 0;
         font-weight: 400;
         font-size: 16px;
         font-family: -apple-system, "system-ui", "Segoe UI Adjusted", "Segoe UI", "Liberations Sans", sans-serif;
@@ -39,26 +41,19 @@ const GlobalStyles = createGlobalStyle`
     
     a {
     text-decoration: none;
-    color:var(--main-font-color)
-    }
-    button{
-      background-color: #fff;
-      cursor: pointer;
-    }
-    img{
-      border: 0;
+    
     }
 
     header {
       position: fixed;
       width: 100vw;
+      height: 60px;
       margin: auto; 
     }
 
     main {
     max-width: 1100px;
     min-height: calc(100vh - 60px - 154px);
-    min-width: 1100px;
     height: 100%;
     margin:0 auto;  
     padding-top: 120px;

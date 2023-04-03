@@ -1,9 +1,10 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import styled from 'styled-components';
 import Cookies from 'js-cookie';
 import TitleInput from '../components/updatePostP/TitleInput';
 import BodyInput from '../components/updatePostP/BodyInput';
 import TagInput from '../components/updatePostP/TagInput';
+<<<<<<< HEAD
 import { BlueBtn, WhiteBtn } from '../components/common/Btn';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useAppDispatch, useAppSelector } from '../hooks';
@@ -19,12 +20,17 @@ import {
 import axios from 'axios';
 import Loading from '../components/common/Loading';
 import { setBodyErr, setTitleErr } from '../slices/validationSlice';
+=======
+import BlueBtn from '../components/common/BlueBtn';
+import WhiteBtn from '../components/common/WhiteBtn';
+import { useNavigate } from 'react-router-dom';
+import { useAppSelector } from '../hooks';
+>>>>>>> 6038065ce9f8ca42c1f373aae8d2621ff9d4483d
 
 const deleteImgEP = process.env.REACT_APP_SERVER_ADDRESS + '/images/drop';
 const UpdatePost: React.FC = () => {
-  const dispatch = useAppDispatch();
-  const state = useAppSelector((state) => state);
   const navigate = useNavigate();
+<<<<<<< HEAD
   const params = useParams();
   const postId = Number(params.postId);
   const postQuery = postsApi.useGetPostQuery({ postId });
@@ -95,6 +101,9 @@ const UpdatePost: React.FC = () => {
     dispatch(setIsEdit(false));
   }, [data]);
 
+=======
+  const state = useAppSelector((state) => state);
+>>>>>>> 6038065ce9f8ca42c1f373aae8d2621ff9d4483d
   const addPostHandler = (): void => {
     if (!state.postInput.isEdit) {
       alert('게시물에 변경사항이 없습니다.');
@@ -108,9 +117,14 @@ const UpdatePost: React.FC = () => {
       state.validation.bodyErr === '' &&
       state.validation.tagErr === ''
     ) {
+<<<<<<< HEAD
       updatePost(reqBody)
         .unwrap()
         .then(() => navigate(`/posts/${data.postId}`));
+=======
+      alert('게시글이 수정되었습니다.');
+      // navigate('수정된 게시글 페이지 경로');
+>>>>>>> 6038065ce9f8ca42c1f373aae8d2621ff9d4483d
     } else {
       if (state.validation.titleErr !== '' || state.postInput.title === '') {
         alert('제목을 다시 확인해 주세요.');
@@ -152,6 +166,7 @@ const UpdatePost: React.FC = () => {
 
   return (
     <Container>
+<<<<<<< HEAD
       {!isSuccess ? (
         <Loading></Loading>
       ) : (
@@ -172,6 +187,26 @@ const UpdatePost: React.FC = () => {
           </BtnContainer>
         </>
       )}
+=======
+      <TitleInput></TitleInput>
+      <BodyInput></BodyInput>
+      <TagInput></TagInput>
+
+      <BtnContainer>
+        <WhiteBtn
+          content="취소"
+          width="105px"
+          height="40px"
+          onClick={cancelAddHandler}
+        ></WhiteBtn>
+        <BlueBtn
+          content="수정"
+          width="105px"
+          height="40px"
+          onClick={addPostHandler}
+        ></BlueBtn>
+      </BtnContainer>
+>>>>>>> 6038065ce9f8ca42c1f373aae8d2621ff9d4483d
     </Container>
   );
 };
@@ -196,13 +231,4 @@ const BtnContainer = styled.div`
   height: 40px;
   margin-top: 70px;
   margin-bottom: 30px;
-`;
-const PostBtn = styled(BlueBtn)`
-  width: 105px;
-  height: 40px;
-`;
-
-const CancleBtn = styled(WhiteBtn)`
-  width: 105px;
-  height: 40px;
 `;

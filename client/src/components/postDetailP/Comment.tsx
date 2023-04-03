@@ -1,19 +1,29 @@
+<<<<<<< HEAD
 // 패키지 등
 import React, { useEffect, useRef, useState } from 'react';
 import { useParams } from 'react-router';
 import { useAppDispatch, useAppSelector } from '../../hooks';
 import { timeSince } from '../mainP/Timecalculator';
 import { useNavigate } from 'react-router';
+=======
+import React, { useCallback } from 'react';
+>>>>>>> 6038065ce9f8ca42c1f373aae8d2621ff9d4483d
 import styled from 'styled-components';
+import axios from 'axios';
 import _ from 'lodash';
+<<<<<<< HEAD
 import parse from 'html-react-parser';
 import Cookies from 'js-cookie';
 
 // 컴포넌트
+=======
+import Reply from './Reply';
+>>>>>>> 6038065ce9f8ca42c1f373aae8d2621ff9d4483d
 import ReplyInput from './ReplyInput';
 import DislikeIcon from '../../assets/common/DislikeIcon';
 import LikeIcon from '../../assets/common/LikeIcon';
 import TimeIcon from '../../assets/common/TimeIcon';
+<<<<<<< HEAD
 import CommentDropdownButton from './CommentDropdownButton';
 import Loading from '../common/Loading';
 import Reply from './Reply';
@@ -42,10 +52,22 @@ import {
 } from '../../slices/commentSlice';
 import {
   isOpened,
+=======
+import {
+  setCommentDislike,
+  setCommentLike,
+>>>>>>> 6038065ce9f8ca42c1f373aae8d2621ff9d4483d
   setIsOpened,
+  setReplies,
   setTotalReplies,
+<<<<<<< HEAD
 } from '../../slices/replySlice';
 import { setMemberName } from '../../slices/headerSlice';
+=======
+} from '../../slices/postSlice';
+import { useAppDispatch, useAppSelector } from '../../hooks';
+import { StateType, ReplyType, CommentType } from '../../types/PostDetail';
+>>>>>>> 6038065ce9f8ca42c1f373aae8d2621ff9d4483d
 
 const Comment: React.FC<
   Partial<CommentInputProps & ReportProps & CommentProps>
@@ -64,6 +86,7 @@ const Comment: React.FC<
 }: Partial<CommentInputProps & ReportProps & CommentProps>) => {
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
+<<<<<<< HEAD
   const state = useAppSelector(
     (
       state: PostStateType | CommentStateType | ReplyStateType,
@@ -204,9 +227,18 @@ const Comment: React.FC<
       addThumbUp({ commentId });
       return;
     }
-  };
+=======
+  const state = useAppSelector((state: StateType): StateType => {
+    return state;
+  });
 
+  // 댓글 좋아요 클릭 함수
+  const CommentLiikeHandler = (): void => {
+    dispatch(setCommentLike(state.postSlice.isCommentLike));
+>>>>>>> 6038065ce9f8ca42c1f373aae8d2621ff9d4483d
+  };
   // 댓글 싫어요 클릭 함수
+<<<<<<< HEAD
   const commentDislikeHandler = (comment: CommentType): void => {
     if (!isLogin) navigate('/login');
     const commentId = comment.commentId;
@@ -721,6 +753,112 @@ const Comment: React.FC<
         </CommentContainer>
       )}
     </>
+=======
+  const CommentDislikeHandler = (): void => {
+    dispatch(setCommentDislike(state.postSlice.isCommentDislike));
+  };
+
+  // 답글 조회
+  const getReply = async (id: Partial<CommentType>) => {
+    // 댓글 아이디를 통해서 특정 답글을 조회 => 답글 리스트를 받아서 props로 전달
+    const commentid = id;
+    const response = await axios.get(
+      'https://main-project-d9049-default-rtdb.asia-southeast1.firebasedatabase.app/reply.json',
+    );
+    try {
+      const { data } = response;
+
+      dispatch(setReplies(data));
+      dispatch(setTotalReplies(data));
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  // 답글 조회
+  const confirmRepliesHandler = useCallback(
+    (commentId: Partial<CommentType>): void => {
+      getReply(commentId);
+    },
+    [],
+  );
+
+  return (
+    <CommentContainer>
+      {state.postSlice.comments! &&
+        (state.postSlice.comments as object[]).map(
+          (comment: Partial<CommentType>, idx) => {
+            const filtered =
+              state.postSlice.totalReplies &&
+              (
+                _.uniqBy(
+                  state.postSlice.totalReplies,
+                  'replyId',
+                ) as Array<object>
+              ).filter((reply) => {
+                return (reply as ReplyType).commentId === comment.commentId;
+              });
+
+            return (
+              <>
+                <CommentInfo key={comment.commentId}>
+                  <ul className="content-info">
+                    <li className="image">
+                      <img src={comment.memberImage}></img>
+                    </li>
+                    <li className="nickname">{comment.memberName}</li>
+                    <TimeIcon />
+                    <li className="created-time">12시간 전</li>
+                    <li className="comment-update">수정</li>
+                    <li className="comment-delete">삭제</li>
+                    <button onClick={CommentLiikeHandler}>
+                      <LikeIcon checked={comment.isThumbup!} />
+                    </button>
+                    <li className="comment-likes">{comment.thumbupCount}</li>
+                    <button onClick={CommentDislikeHandler}>
+                      <DislikeIcon checked={comment.isThumbDown!} />
+                    </button>
+                    <li className="comment-dislikes">
+                      {comment.thumbDownCount}
+                    </li>
+                  </ul>
+                </CommentInfo>
+                <CommentContent>
+                  <div className="content">{comment.content}</div>
+                  <ReplyBtn
+                    onClick={(): void => {
+                      confirmRepliesHandler(
+                        comment.commentId as Partial<CommentType>,
+                      );
+                      dispatch(setIsOpened(idx));
+                    }}
+                  >
+                    답글 {comment.replyCount}
+                  </ReplyBtn>
+                </CommentContent>
+                {state.postSlice.isOpend &&
+                (state.postSlice.isOpend as Array<boolean>)[idx] ? (
+                  <ReplyContainer>
+                    <ReplyInput></ReplyInput>
+                    {filtered! &&
+                      (filtered as Array<ReplyType>).map((reply: ReplyType) => {
+                        return (
+                          <>
+                            <Reply
+                              key={reply.replyId}
+                              replyInfo={reply}
+                            ></Reply>
+                          </>
+                        );
+                      })}
+                  </ReplyContainer>
+                ) : null}
+              </>
+            );
+          },
+        )}
+    </CommentContainer>
+>>>>>>> 6038065ce9f8ca42c1f373aae8d2621ff9d4483d
   );
 };
 
@@ -744,48 +882,56 @@ const CommentContainer = styled.div`
     align-items: center;
     font-size: 12px;
     padding: 30px 0 30px 0;
-    position: relative;
   }
   .content {
+<<<<<<< HEAD
     display: flex;
     align-items: flex-end;
     width: 700px;
     height: auto;
     padding-left: 10px;
     margin-top: 12px;
+=======
+    height: 100%;
+    width: 100%;
+>>>>>>> 6038065ce9f8ca42c1f373aae8d2621ff9d4483d
     display: flex;
     justify-content: flex-start;
     word-break: break-all;
     font-size: 17px;
   }
   .nickname {
+<<<<<<< HEAD
     width: 130px;
     font-size: 17px;
     margin: 2px 15px 0 5px;
   }
   .created-time {
     width: 75px;
+=======
+    font-size: 16px;
+    margin: 2px 15px 0 5px;
+  }
+  .created-time {
+>>>>>>> 6038065ce9f8ca42c1f373aae8d2621ff9d4483d
     font-size: 16px;
     margin: 3px 15px 0 5px;
     color: #94969b;
   }
   .comment-update {
-    width: 40px;
     font-size: 16px;
+<<<<<<< HEAD
     margin: 3px 15px 0 15px;
+=======
+    margin: 3px 15px 0 35px;
+    color: gray;
+>>>>>>> 6038065ce9f8ca42c1f373aae8d2621ff9d4483d
     cursor: pointer;
   }
   .comment-delete {
-    width: 40px;
     font-size: 16px;
-    margin: 3px 15px 0 5px;
-    cursor: pointer;
-  }
-  .comment-report {
-    width: 40px;
-    font-size: 16px;
-    margin: 3px 148px 0 5px;
-    color: #ca0000;
+    margin: 3px 200px 0 5px;
+    color: gray;
     cursor: pointer;
   }
   .comment-likes {
@@ -800,6 +946,7 @@ const CommentContainer = styled.div`
     margin: 3px 15px 0 15px;
     color: var(--error-red-color);
   }
+<<<<<<< HEAD
 
   #edit {
     color: #0069ca;
@@ -887,6 +1034,9 @@ const IntorductionContainer = styled.div`
   }
 `;
 
+=======
+`;
+>>>>>>> 6038065ce9f8ca42c1f373aae8d2621ff9d4483d
 const CommentInfo = styled.div`
   display: flex;
   flex-direction: column;
@@ -904,6 +1054,7 @@ const CommentContent = styled.div`
   flex-direction: column;
   width: 720px;
   height: auto;
+<<<<<<< HEAD
   padding: 0 0 15px 0;
   border-bottom: 1px solid #d4d4d4;
 
@@ -924,16 +1075,25 @@ const CommentContent = styled.div`
   .noReply {
     font-weight: bold;
   }
+=======
+  margin-bottom: 10px;
+>>>>>>> 6038065ce9f8ca42c1f373aae8d2621ff9d4483d
 `;
 
 const ReplyContainer = styled.div`
   width: 100%;
   height: auto;
   background-color: #ffffff;
+<<<<<<< HEAD
   padding: 0 0 15px 0;
   .isReply {
     color: #0275e1;
   }
+=======
+  color: #5c5c5c;
+
+  cursor: pointer;
+>>>>>>> 6038065ce9f8ca42c1f373aae8d2621ff9d4483d
 `;
 
 const ReplyBtn = styled.button`

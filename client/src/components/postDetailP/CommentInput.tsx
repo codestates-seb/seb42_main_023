@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 // 패키지 등
 import React, { useRef } from 'react';
 import styled from 'styled-components';
@@ -119,6 +120,27 @@ const CommentInput: React.FC<CommentInputProps> = ({
           </AddCommentBtn>
         )}
       </ButtonContainer>
+=======
+import React from 'react';
+import styled from 'styled-components';
+import { useAppSelector } from '../../hooks';
+import { StateType, CommentType } from '../../types/PostDetail';
+
+const CommentInput: React.FC = () => {
+  const state = useAppSelector((state: StateType): StateType => {
+    return state;
+  });
+  return (
+    <CommentInputContainer>
+      <h1>
+        댓글{' '}
+        {state.postSlice.comments! &&
+          (state.postSlice.comments as CommentType).length}
+        개{' '}
+      </h1>
+      <Input type="text" placeholder="댓글을 남겨 주세요"></Input>
+      <AddCommentBtn>등록</AddCommentBtn>
+>>>>>>> 6038065ce9f8ca42c1f373aae8d2621ff9d4483d
     </CommentInputContainer>
   );
 };
@@ -156,6 +178,7 @@ const InputWrap = styled.div`
     }
   }
 `;
+<<<<<<< HEAD
 const ButtonContainer = styled.div`
   display: flex;
   width: 160px;
@@ -187,6 +210,8 @@ const CancelCommentBtn = styled.button`
     background-color: var(--hover-font-gray-color);
   }
 `;
+=======
+>>>>>>> 6038065ce9f8ca42c1f373aae8d2621ff9d4483d
 
 const AddCommentBtn = styled.button`
   width: 50px;

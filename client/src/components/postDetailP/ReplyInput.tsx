@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 // 패키지 등
 import React, { useRef } from 'react';
 import styled from 'styled-components';
@@ -142,6 +143,16 @@ const ReplyInput: React.FC<ReplyInputProps> = ({
           </AddReplyBtn>
         )}
       </ButtonContainer>
+=======
+import React from 'react';
+import styled from 'styled-components';
+
+const ReplyInput: React.FC = () => {
+  return (
+    <ReplyInputContainer>
+      <Input type="text" placeholder="답글을 남겨 주세요"></Input>
+      <AddCommentBtn>등록</AddCommentBtn>
+>>>>>>> 6038065ce9f8ca42c1f373aae8d2621ff9d4483d
     </ReplyInputContainer>
   );
 };
@@ -149,8 +160,12 @@ const ReplyInput: React.FC<ReplyInputProps> = ({
 export default ReplyInput;
 
 const ReplyInputContainer = styled.div`
+<<<<<<< HEAD
   display: flex;
   flex-direction: column;
+=======
+  position: relative;
+>>>>>>> 6038065ce9f8ca42c1f373aae8d2621ff9d4483d
   width: 720px;
   margin-top: 30px;
   h1 {
@@ -158,6 +173,7 @@ const ReplyInputContainer = styled.div`
     font-weight: 400;
   }
 `;
+<<<<<<< HEAD
 
 const InputWrap = styled.div`
   display: flex;
@@ -193,6 +209,13 @@ const ButtonContainer = styled.div`
       background-color: var(--hover-point-blue-color);
     }
   }
+=======
+const Input = styled.input`
+  width: 720px;
+  height: 50px;
+  border: 1px solid #d4d4d4;
+  padding: 0 10px 0 10px;
+>>>>>>> 6038065ce9f8ca42c1f373aae8d2621ff9d4483d
 `;
 
 const CanceReplyBtn = styled.button`

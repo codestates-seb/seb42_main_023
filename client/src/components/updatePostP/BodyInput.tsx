@@ -1,11 +1,16 @@
+<<<<<<< HEAD
 // 패키지 등
 import React, { useEffect, useMemo, useRef } from 'react';
+=======
+import React, { useMemo, useRef } from 'react';
+>>>>>>> 6038065ce9f8ca42c1f373aae8d2621ff9d4483d
 import ReactQuill from 'react-quill';
 import axios from 'axios';
 import styled from 'styled-components';
 import _ from 'lodash';
 import Cookies from 'js-cookie';
 import { useAppDispatch, useAppSelector } from '../../hooks';
+<<<<<<< HEAD
 import { useParams } from 'react-router-dom';
 import 'react-quill/dist/quill.snow.css';
 // API
@@ -20,6 +25,10 @@ import {
   setRemaindImg,
   setTotalmg,
 } from '../../slices/postSlice';
+=======
+import { setBody } from '../../slices/postInputSlice';
+import { setBodyErr } from '../../slices/validationSlice';
+>>>>>>> 6038065ce9f8ca42c1f373aae8d2621ff9d4483d
 
 interface ImgObj {
   imagedId: number;
@@ -31,6 +40,7 @@ const BodyInput: React.FC = () => {
   const dispatch = useAppDispatch();
   const quillRef = useRef<ReactQuill>();
   const state = useAppSelector((state) => state);
+<<<<<<< HEAD
   const params = useParams();
   const postId = Number(params.postId);
   const postQuery = postsApi.useGetPostQuery({ postId });
@@ -42,6 +52,8 @@ const BodyInput: React.FC = () => {
   const accsessToken = Cookies.get('Authorization');
 
   const img: Array<any> = _.cloneDeep(totalImg!);
+=======
+>>>>>>> 6038065ce9f8ca42c1f373aae8d2621ff9d4483d
 
   //  문자열을 HTML 요소로 변환
   const stringToHTML = function (str: string): HTMLElement {
@@ -51,10 +63,11 @@ const BodyInput: React.FC = () => {
   };
 
   // 본문 value 확인
-  function valueCheck(): void {
-    dispatch(setBody(quillRef?.current?.value as string));
+  function valueCheck(content: string): void {
+    dispatch(setBody(content));
     validationTest();
   }
+<<<<<<< HEAD
 
   // 본문 이미지 확인
   function imageCheck(): void {
@@ -69,6 +82,8 @@ const BodyInput: React.FC = () => {
     dispatch(setCurrentImg(currentImg));
     dispatch(setRemovedImg(_.uniqBy(removedImg!, 'imageId')));
   }
+=======
+>>>>>>> 6038065ce9f8ca42c1f373aae8d2621ff9d4483d
 
   // 유효성 검사
   const validationTest = (): void => {
@@ -108,9 +123,16 @@ const BodyInput: React.FC = () => {
     input.setAttribute('type', 'file');
     input.setAttribute('accept', 'image/*');
     input.click();
+    // input이 클릭되면 파일 선택창이 나타난다.
+
+    // input에 변화가 생길 경우  이미지를 선택
     input.addEventListener('change', async () => {
       const file = input.files![0];
+
+      // multer에 맞는 형식으로 데이터 가공
+      // 백엔드에 사항에 맞게 수정 필요
       const formData = new FormData();
+<<<<<<< HEAD
       formData.append('image', file);
       try {
         const result = await axios.post(url, formData, {
@@ -131,7 +153,21 @@ const BodyInput: React.FC = () => {
         };
         dispatch(setAddedImg(imgObj));
         dispatch(setTotalmg(imgObj));
+=======
+      formData.append('img', file);
+      console.log('formData', formData);
+
+      try {
+        // 백엔드 multer라우터에 이미지를 보낸다.
+        const result = await axios.post('http://localhost:4100/img', formData);
+        console.log('성공 시, 백엔드가 보내주는 데이터', result.data.url);
+        const IMG_URL = result.data.url;
+
+        // 에디터 객체
+>>>>>>> 6038065ce9f8ca42c1f373aae8d2621ff9d4483d
         const editor = quillRef.current!.getEditor();
+
+        // 현재 에디터 커서 위치값 추적 및 이미지 삽입
         const range = editor.getSelection();
 
         editor.insertEmbed(range!.index, 'image', ImgUrl);
@@ -196,12 +232,18 @@ const BodyInput: React.FC = () => {
                 }
               }}
               theme="snow"
+<<<<<<< HEAD
               placeholder="게시글 내용을 입력하세요.(2MB 이하의 이미지만  추가 가능합니다.)"
               value={state?.postInput.body}
               onChange={() => {
                 valueCheck();
                 dispatch(setIsEdit(true));
               }}
+=======
+              placeholder="게시글 내용을 입력하세요."
+              value={state.postInput.body}
+              onChange={valueCheck}
+>>>>>>> 6038065ce9f8ca42c1f373aae8d2621ff9d4483d
               modules={modules}
               formats={formats}
             />
@@ -218,12 +260,18 @@ const BodyInput: React.FC = () => {
                 }
               }}
               theme="snow"
+<<<<<<< HEAD
               placeholder="게시글 내용을 입력하세요.(2MB 이하의 이미지만  추가 가능합니다.)"
               value={state?.postInput.body}
               onChange={() => {
                 valueCheck();
                 dispatch(setIsEdit(true));
               }}
+=======
+              placeholder="게시글 내용을 입력하세요."
+              value={state.postInput.body}
+              onChange={valueCheck}
+>>>>>>> 6038065ce9f8ca42c1f373aae8d2621ff9d4483d
               modules={modules}
               formats={formats}
             />

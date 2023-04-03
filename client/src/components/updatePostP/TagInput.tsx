@@ -1,6 +1,7 @@
 // 패키지 등
 import React, { KeyboardEvent } from 'react';
 import styled from 'styled-components';
+<<<<<<< HEAD
 import { useParams } from 'react-router-dom';
 import { useAppDispatch, useAppSelector } from '../../hooks';
 // 컴포넌트
@@ -10,6 +11,12 @@ import { postsApi } from '../../api/postApi';
 // slices
 import { setIsEdit, setTag, setTagContent } from '../../slices/postInputSlice';
 import { setTagErr } from '../../slices/validationSlice';
+=======
+import { useAppDispatch, useAppSelector } from '../../hooks';
+import { setTagContent, setTag } from '../../slices/postInputSlice';
+import { setTagErr } from '../../slices/validationSlice';
+import Tag from '../common/Tag';
+>>>>>>> 6038065ce9f8ca42c1f373aae8d2621ff9d4483d
 
 interface Input {
   className: string;
@@ -25,10 +32,14 @@ const TagInput: React.FC = () => {
   const valueCheck = (event: React.ChangeEvent<HTMLInputElement>): void => {
     dispatch(setTagContent(event.target.value));
   };
+<<<<<<< HEAD
   const params = useParams();
   const postId = params.postId;
   const postQuery = postsApi.useGetPostQuery({ postId });
   // const { isFetching } = postQuery;
+=======
+
+>>>>>>> 6038065ce9f8ca42c1f373aae8d2621ff9d4483d
   //  테그 추가
   const addTagHandler = (event: KeyboardEvent<HTMLInputElement>): void => {
     const tag: Array<string> = state.postInput.tag;
@@ -45,11 +56,6 @@ const TagInput: React.FC = () => {
       // 공백 방지
       if (tagContent === '') {
         dispatch(setTagErr(''));
-        return;
-      }
-      // 태그 길이
-      if (tagContent.length > 10) {
-        dispatch(setTagErr('태그 길이는 최대 10 글자 입니다.'));
         return;
       }
       // 띄어쓰기 방지

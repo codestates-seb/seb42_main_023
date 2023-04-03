@@ -1,42 +1,10 @@
 import React, { useEffect } from 'react';
 import styled from 'styled-components';
-import { BlueBtn } from '../common/Btn';
-import { useAppDispatch, useAppSelector } from '../../hooks';
-import { setIsChecked, setNext } from '../../slices/surveySlice';
 
-interface Props {
-  nextQuestionHandler: (next: number) => void;
-  showResultHandler: (result: string) => void;
-}
-
-const Question: React.FC<Props> = ({
-  nextQuestionHandler,
-  showResultHandler,
-}) => {
-  const dispatch = useAppDispatch();
-
-  const currentQuestion = useAppSelector(
-    (state) => state.survey.currentQuestion,
-  );
-
-  const { isChecked, next } = useAppSelector((state) => state.survey);
-
-  const selectRadioHandler = (val: string | number) => {
-    dispatch(setIsChecked(true));
-    dispatch(setNext(val));
-  };
-
-  const moveOnToNextHanlder = () => {
-    if (typeof next === 'number') {
-      nextQuestionHandler(next);
-    } else if (typeof next === 'string') {
-      showResultHandler(next);
-    }
-    dispatch(setIsChecked(false));
-  };
-
+const Question: React.FC = () => {
   return (
     <QuestionContainer>
+<<<<<<< HEAD
       <div className="question-content">
         <h1>{currentQuestion!.question}</h1>
         <h2>{currentQuestion!.subinfo}</h2>
@@ -59,6 +27,12 @@ const Question: React.FC<Props> = ({
       </div>
       <div className="button">
         {isChecked && <NextBtn onClick={moveOnToNextHanlder}>Next</NextBtn>}
+=======
+      <h1>고객님은 만 19세 이상 34세 이하의 청년이십니까?</h1>
+      <div>
+        <AnswerBtn>네</AnswerBtn>
+        <AnswerBtn>아니요</AnswerBtn>
+>>>>>>> 6038065ce9f8ca42c1f373aae8d2621ff9d4483d
       </div>
     </QuestionContainer>
   );
@@ -71,15 +45,15 @@ const QuestionContainer = styled.div`
   height: 100%;
   display: flex;
   flex-direction: column;
-  justify-content: center;
   align-items: center;
-
-  > .question-content {
-    height: 70%;
-    width: 100%;
+  justify-content: center;
+  > h1 {
+    font-size: 18px;
+  }
+  > div {
     display: flex;
-    flex-direction: column;
     justify-content: center;
+<<<<<<< HEAD
     > h1 {
       font-size: 20px;
       font-weight: 700;
@@ -123,22 +97,26 @@ const QuestionContainer = styled.div`
 
   > .button {
     height: 30%;
+=======
+    margin-top: 50px;
+    width: 80%;
+>>>>>>> 6038065ce9f8ca42c1f373aae8d2621ff9d4483d
   }
 `;
 
-const NextBtn = styled(BlueBtn)`
-  width: 250px;
-  height: 50px;
-  opacity: 0;
-  animation-name: slow-mount-animation;
-  animation-duration: 1.5s;
-  animation-fill-mode: forwards;
-  @keyframes slow-mount-animation {
-    from {
-      opacity: 0;
-    }
-    to {
-      opacity: 1;
-    }
+const AnswerBtn = styled.button`
+  width: max-content;
+  min-width: 100px;
+  height: max-content;
+  min-height: 30px;
+  padding: 8px 14px;
+  border-radius: 3px;
+  margin-right: 12px;
+  cursor: pointer;
+  box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px;
+  background-color: #0069ca;
+  color: #fff;
+  &:hover {
+    opacity: 0.8;
   }
 `;

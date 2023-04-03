@@ -25,8 +25,11 @@ const Btn = styled.button`
   background-color: #fff;
   box-sizing: border-box;
   border: 1px solid #d9d9d9;
+<<<<<<< HEAD
   margin-left: 4px;
   font-weight: 600;
+=======
+>>>>>>> 6038065ce9f8ca42c1f373aae8d2621ff9d4483d
   :hover {
     background-color: #f9f6f6;
     transition: 0.3s;

@@ -1,6 +1,7 @@
 // 패키지 등
 import React from 'react';
 import styled from 'styled-components';
+<<<<<<< HEAD
 import { Link } from 'react-router-dom';
 // 컴포넌트
 import CommentIcon from '../../assets/common/CommentIcon';
@@ -14,10 +15,23 @@ const RecommendedPost: React.FC = () => {
     recommend: 'recommend',
   });
   const { data, isSuccess } = recommendPostsQuery;
+=======
+import { BsDot } from 'react-icons/bs';
+import { useAppSelector } from '../../hooks';
+import ReactHtmlParser from 'react-html-parser';
+import { Link } from 'react-router-dom';
+import { StateType, PostType } from '../../types/PostDetail';
+
+const RecommendedPost: React.FC = () => {
+  const state = useAppSelector((state: StateType): StateType => {
+    return state;
+  });
+>>>>>>> 6038065ce9f8ca42c1f373aae8d2621ff9d4483d
 
   return (
     <RecommendedPostContainer>
       <ul>
+<<<<<<< HEAD
         <h1>추천게시글</h1>
         {data?.recommends.map((post: Partial<PostType>, idx: number) => {
           const url = `/posts/${post.postId}`;
@@ -40,6 +54,22 @@ const RecommendedPost: React.FC = () => {
             </div>
           );
         })}
+=======
+        {state.postSlice.popularPosts! &&
+          (state.postSlice.popularPosts as object[]).map(
+            (post: Partial<PostType>) => {
+              const url = `/posts/${post.postId}`;
+              return (
+                <li key={post.postId}>
+                  <p>
+                    <BsDot></BsDot>
+                    <Link to={url}>{ReactHtmlParser(post.title!)}</Link>
+                  </p>
+                </li>
+              );
+            },
+          )}
+>>>>>>> 6038065ce9f8ca42c1f373aae8d2621ff9d4483d
       </ul>
     </RecommendedPostContainer>
   );

@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 import React, { useState, useRef, useEffect } from 'react';
 import styled from 'styled-components';
 import { MainContainer } from './RecommendLoan';
@@ -9,12 +10,16 @@ import { seoulrentApi } from '../api/seoulrentApi';
 import { AiFillHome } from 'react-icons/ai';
 import { AiOutlineEnvironment } from 'react-icons/ai';
 import Loading from '../components/common/Loading';
+=======
+import React from 'react';
+>>>>>>> 6038065ce9f8ca42c1f373aae8d2621ff9d4483d
 
 interface StyleProps {
   left: number;
   top: number;
 }
 function SeoulRent() {
+<<<<<<< HEAD
   const tooltipRef = useRef<HTMLDivElement>(null);
   // 데이터 api
   const seoulrentquery = seoulrentApi.useGetSeoulRentListQuery({
@@ -284,3 +289,9 @@ const BeforeClicked = styled(TooltipWrap)`
     margin: 4px 0;
   }
 `;
+=======
+  return <div></div>;
+}
+
+export default SeoulRent;
+>>>>>>> 6038065ce9f8ca42c1f373aae8d2621ff9d4483d

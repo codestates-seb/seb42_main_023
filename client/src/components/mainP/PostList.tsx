@@ -1,4 +1,5 @@
 import React from 'react';
+<<<<<<< HEAD
 import styled from 'styled-components';
 import WeeklyPopular from './WeeklyPopular';
 import { useAppSelector } from '../../hooks';
@@ -63,10 +64,42 @@ function PostList({ posts, currentPage }: Props) {
         );
       })}
     </List>
+=======
+import Post from './Post';
+import axios from 'axios';
+import { useEffect, useState } from 'react';
+import type { PostItem } from './Post';
+
+function PostList() {
+  const [data, setData] = useState<PostItem[]>([]);
+
+  useEffect(() => {
+    //post list 불러오기
+    axios
+      .get(
+        'https://main-project-d9049-default-rtdb.asia-southeast1.firebasedatabase.app/POST.json',
+      )
+      .then((response) => {
+        setData(response.data);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  }, []);
+  return (
+    <ul>
+      {data &&
+        data.map((post) => {
+          //key값 이후에 수정하기
+          return <Post key={post.writer_id} post={post} />;
+        })}
+    </ul>
+>>>>>>> 6038065ce9f8ca42c1f373aae8d2621ff9d4483d
   );
 }
 
 export default PostList;
+<<<<<<< HEAD
 
 const List = styled.ul`
   margin-top: -4px;
@@ -126,3 +159,5 @@ export const Tag = styled(TagItem)`
   background-color: #fff;
   border: 1px solid var(--point-blue-color);
 `;
+=======
+>>>>>>> 6038065ce9f8ca42c1f373aae8d2621ff9d4483d
