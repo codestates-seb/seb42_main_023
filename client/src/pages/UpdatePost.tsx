@@ -1,5 +1,6 @@
 import React, { useEffect } from 'react';
 import styled from 'styled-components';
+import Cookies from 'js-cookie';
 import TitleInput from '../components/updatePostP/TitleInput';
 import BodyInput from '../components/updatePostP/BodyInput';
 import TagInput from '../components/updatePostP/TagInput';
@@ -15,7 +16,6 @@ import {
   setTag,
   setTitle,
 } from '../slices/postInputSlice';
-import Cookies from 'js-cookie';
 import axios from 'axios';
 import Loading from '../components/common/Loading';
 import { setBodyErr, setTitleErr } from '../slices/validationSlice';
@@ -30,6 +30,13 @@ const UpdatePost: React.FC = () => {
   const [updatePost] = postsApi.useUpdatePostMutation();
   const postQuery = postsApi.useGetPostQuery({ postId });
   const { data, isSuccess } = postQuery;
+
+  // 로그인 확인
+  const auth = Cookies.get('Authorization');
+  const role = localStorage.getItem('role');
+  const name = localStorage.getItem('name');
+  const isLogin = auth && role && name;
+
   // 서버에서 받아오는 데이터
   const title = data?.title;
   const body = data?.content;
@@ -46,6 +53,7 @@ const UpdatePost: React.FC = () => {
   });
   const accsessToken = Cookies.get('Authorization');
   useEffect(() => {
+    if (!isLogin) navigate('/login');
     dispatch(setBodyErr(''));
     dispatch(setTitleErr(''));
   }, []);
@@ -121,31 +129,30 @@ const UpdatePost: React.FC = () => {
     scrollTo(0, 0);
   }, []);
 
-  //TODO 뒤로가기 등 버튼 눌릴 경우 이미지 삭제 로직 필요
-  // const preventClose = (e: BeforeUnloadEvent) => {
-  //   e.preventDefault();
-  //   axios.delete(deleteImgEP, {
-  //     headers: {
-  //       'Content-Type': 'application/json',
-  //       Authorization: accsessToken,
-  //     },
-  //     withCredentials: true,
-  //     data: deletedImg,
-  //   });
-  // };
+  const preventClose = (e: BeforeUnloadEvent) => {
+    e.preventDefault();
+    axios.post(deleteImgEP, {
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: accsessToken,
+      },
+      withCredentials: true,
+      data: deletedImg,
+    });
+  };
 
-  // useEffect(() => {
-  //   (() => {
-  //     window.addEventListener('beforeunload', preventClose);
-  //   })();
+  useEffect(() => {
+    (() => {
+      window.addEventListener('beforeunload', preventClose);
+    })();
 
-  //   return () => {
-  //     window.removeEventListener('beforeunload', preventClose);
-  //   };
-  // }, []);
+    return () => {
+      window.removeEventListener('beforeunload', preventClose);
+    };
+  }, []);
 
   const deleteImg = () => {
-    axios.delete(deleteImgEP, {
+    axios.post(deleteImgEP, {
       headers: {
         'Content-Type': 'application/json',
         Authorization: accsessToken,

@@ -75,7 +75,7 @@ const BodyInput: React.FC = () => {
     const bodyValue = state.postInput.body;
     const html = stringToHTML(bodyValue);
     const realValue = html.textContent;
-    // console.log(realValue?.length);
+
     if (realValue) {
       if (realValue?.length < 9 || realValue?.length === 0) {
         dispatch(setBodyErr('본문은 10자 이상 작성해주세요.'));
@@ -112,8 +112,6 @@ const BodyInput: React.FC = () => {
       const file = input.files![0];
       const formData = new FormData();
       formData.append('image', file);
-      // console.log('formData', formData);
-      // console.log('url', url);
       try {
         const result = await axios.post(url, formData, {
           headers: {
@@ -124,19 +122,15 @@ const BodyInput: React.FC = () => {
         });
 
         const { data } = result;
-        // console.log('resData', data);
         const { imageId, imageName } = data;
 
         const ImgUrl = process.env.REACT_APP_S3_ADDRESS + '/' + imageName;
-        // console.log('ImgUrl', ImgUrl);
         const imgObj = {
           imageId,
           imageName,
         };
-        // console.log('imgObj', imgObj);
         dispatch(setAddedImg(imgObj));
         dispatch(setTotalmg(imgObj));
-        // img!.push(imgObj);
         const editor = quillRef.current!.getEditor();
         const range = editor.getSelection();
 

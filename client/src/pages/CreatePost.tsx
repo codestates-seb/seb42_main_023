@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import styled from 'styled-components';
 import TitleInput from '../components/createPostP/TitleInput';
 import BodyInput from '../components/createPostP/BodyInput';
@@ -10,12 +10,7 @@ import { postsApi } from '../api/postApi';
 import _ from 'lodash';
 import axios from 'axios';
 import Cookies from 'js-cookie';
-import {
-  deleteTag,
-  setBody,
-  setTitle,
-  setTagContent,
-} from '../slices/postInputSlice';
+import { deleteTag, setBody, setTagContent } from '../slices/postInputSlice';
 import { setBodyErr, setTitleErr } from '../slices/validationSlice';
 
 const deleteImgEP = process.env.REACT_APP_SERVER_ADDRESS + '/images/drop';
@@ -35,6 +30,11 @@ const CreatePost: React.FC = () => {
     return { tagName };
   });
   const accsessToken = Cookies.get('Authorization');
+  // 로그인 확인
+  const auth = Cookies.get('Authorization');
+  const role = localStorage.getItem('role');
+  const name = localStorage.getItem('name');
+  const isLogin = auth && role && name;
 
   const reqBody = {
     saveImages: {
@@ -50,6 +50,7 @@ const CreatePost: React.FC = () => {
     removedImages: removedImg,
   };
   useEffect(() => {
+    if (!isLogin) navigate('/login');
     dispatch(setBodyErr(''));
     dispatch(setTitleErr(''));
   }, []);
@@ -68,7 +69,7 @@ const CreatePost: React.FC = () => {
 
   const preventClose = (e: BeforeUnloadEvent) => {
     e.preventDefault();
-    axios.delete(deleteImgEP, {
+    axios.post(deleteImgEP, {
       headers: {
         'Content-Type': 'application/json',
         Authorization: accsessToken,
@@ -89,7 +90,7 @@ const CreatePost: React.FC = () => {
   }, []);
 
   const deleteImg = () => {
-    axios.delete(deleteImgEP, {
+    axios.post(deleteImgEP, {
       headers: {
         'Content-Type': 'application/json',
         Authorization: accsessToken,
@@ -141,7 +142,6 @@ const CreatePost: React.FC = () => {
       <BtnContainer>
         <CancelBtn
           onClick={() => {
-            //.TODO
             deleteImg();
             cancelAddHandler();
           }}
