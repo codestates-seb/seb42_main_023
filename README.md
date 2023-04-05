@@ -113,7 +113,7 @@
 |                      **Community Page**                      |                     **Post Detail Page**                     |
 | <img alt='community-page' width="100%" src="https://user-images.githubusercontent.com/113220012/229968281-24f06eb2-8fb2-4f5f-8bbb-3ba8376a962f.png"/> | <img alt='post-detail-page' width="100%" src="https://user-images.githubusercontent.com/113220012/229968368-16459fa9-01f1-46f6-b771-fc4cee29a88e.png"/> |
 |                    **Write a Post Page**                     |                     **Edit a Post Page**                     |
-| <img alt='write-a-post-page' width="100%" src="https://user-images.githubusercontent.com/104547038/222381715-b6bd5bb2-e57a-4436-b62d-c7c3a17eac46.gif"/> | <img alt='edit-a-post-page' width="100%" src="https://user-images.githubusercontent.com/104547038/222381726-d322a447-e171-409b-a8f8-d54b20a35b7c.gif"/> |
+| <img alt='write-a-post-page' width="100%" src="https://user-images.githubusercontent.com/113220012/229969684-06b93c1d-a1fb-463a-91eb-6b3185cbad5b.png"/> | <img alt='edit-a-post-page' width="100%" src="https://user-images.githubusercontent.com/113220012/229969627-67dbaa3c-e81b-4848-8e8b-2e10e07e31bc.png"/> |
 |                          **MyPage**                          |                     **Seoul Rent Page**                      |
 | <img width="100%" src="https://user-images.githubusercontent.com/113220012/229968443-87b0122a-281e-494f-91df-1744fbdb8b56.png"/> | <img width="100%" src="https://user-images.githubusercontent.com/113220012/229968504-bf5296bb-40ae-45c6-94b2-1017960e62c2.png"/> |
 |                   **Recommend Loan Page**                    |                **Public Rental Housing Page**                |
