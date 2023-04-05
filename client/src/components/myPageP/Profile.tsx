@@ -25,7 +25,7 @@ function Profile() {
     refetch();
   }, []);
 
-  //자기소개 input토글
+  //자기소개 input토글//
   const EditOpenHandler = () => {
     setContent(data.member.intro);
     setEditOpen(!EditOpen);
