@@ -121,7 +121,7 @@
 |                        **Admin Page**                        |                        **Login Page**                        |
 | <img alt='admin-page' width="100%" src="https://user-images.githubusercontent.com/113220012/229968663-c690ee3b-7151-4842-965d-ed6e278c971d.png"/> | <img alt='login-page' width="100%" src="https://user-images.githubusercontent.com/113220012/229968705-b09612bf-68fd-4cac-bc14-141cd5a1105c.png"/> |
 |                    **Set Nickname Page**                     |                  **Account Recovery Page**                   |
-| <img alt='set-nickname-page' width="100%" src="https://user-images.githubusercontent.com/104547038/222381701-bcfd02f0-7d6b-40fd-b1bb-dd504410f6dd.gif"/> | <img alt='account-recovery-page' width="100%" src="https://user-images.githubusercontent.com/113220012/229968765-57979b99-f3a3-43a2-9d27-6f52b109add0.png"/> |
+| <img alt='set-nickname-page' width="100%" src="https://user-images.githubusercontent.com/113220012/229969958-3a3d9bce-19c6-4676-82a8-566cbf4f3b2e.png"/> | <img alt='account-recovery-page' width="100%" src="https://user-images.githubusercontent.com/113220012/229968765-57979b99-f3a3-43a2-9d27-6f52b109add0.png"/> |
 |                         **404 Page**                         |                                                              |
 | <img alt='not-found-page' width="100%" src="https://user-images.githubusercontent.com/113220012/229968811-31aa8d7e-c0ab-4688-be0d-df525927f33a.png"/> |                                                              |
 
