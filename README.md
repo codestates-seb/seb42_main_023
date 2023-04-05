@@ -110,14 +110,20 @@
 
 |                                                              |                                                              |
 | :----------------------------------------------------------: | :----------------------------------------------------------: |
-|           **Main page, search and filter results**           |                   **Login / Signup page**                    |
-| <img width="100%" src="https://user-images.githubusercontent.com/104547038/222377949-97f367bb-cc29-4315-b559-871e75a1f828.gif"/> | <img width="100%" src="https://user-images.githubusercontent.com/104547038/222377978-7a4b1444-8c5c-4f66-81eb-d613b3e4dda4.gif"/> |
-|                    **Ask question page**                     |                     **Delete question**                      |
-| <img width="100%" src="https://user-images.githubusercontent.com/104547038/222381715-b6bd5bb2-e57a-4436-b62d-c7c3a17eac46.gif"/> | <img width="100%" src="https://user-images.githubusercontent.com/104547038/222381726-d322a447-e171-409b-a8f8-d54b20a35b7c.gif"/> |
-|                 **Edit question and answer**                 |                   **Vote & Delete answer**                   |
-| <img width="100%" src="https://user-images.githubusercontent.com/104547038/222378036-3c552bd3-2b15-4b5c-844b-92b172a1aebe.gif"/> | <img width="100%" src="https://user-images.githubusercontent.com/104547038/222381701-bcfd02f0-7d6b-40fd-b1bb-dd504410f6dd.gif"/> |
+|                      **Community Page**                      |                     **Post Detail Page**                     |
+| <img alt='community-page' width="100%" src="https://user-images.githubusercontent.com/113220012/229968281-24f06eb2-8fb2-4f5f-8bbb-3ba8376a962f.png"/> | <img alt='post-detail-page' width="100%" src="https://user-images.githubusercontent.com/113220012/229968368-16459fa9-01f1-46f6-b771-fc4cee29a88e.png"/> |
+|                    **Write a Post Page**                     |                     **Edit a Post Page**                     |
+| <img alt='write-a-post-page' width="100%" src="https://user-images.githubusercontent.com/104547038/222381715-b6bd5bb2-e57a-4436-b62d-c7c3a17eac46.gif"/> | <img alt='edit-a-post-page' width="100%" src="https://user-images.githubusercontent.com/104547038/222381726-d322a447-e171-409b-a8f8-d54b20a35b7c.gif"/> |
+|                          **MyPage**                          |                     **Seoul Rent Page**                      |
+| <img width="100%" src="https://user-images.githubusercontent.com/113220012/229968443-87b0122a-281e-494f-91df-1744fbdb8b56.png"/> | <img width="100%" src="https://user-images.githubusercontent.com/113220012/229968504-bf5296bb-40ae-45c6-94b2-1017960e62c2.png"/> |
+|                   **Recommend Loan Page**                    |                **Public Rental Housing Page**                |
+| <img alt='recommend-loan-page' width="100%" src="https://user-images.githubusercontent.com/113220012/229968583-253e9d27-2798-4a2b-9ed8-a8bca049f7b4.png"/> | <img alt='public-rental-housing-page' width="100%" src="https://user-images.githubusercontent.com/113220012/229968618-f78cc7a3-2d4b-4b96-9943-e407d76b0abf.png"/> |
+|                        **Admin Page**                        |                        **Login Page**                        |
+| <img alt='admin-page' width="100%" src="https://user-images.githubusercontent.com/113220012/229968663-c690ee3b-7151-4842-965d-ed6e278c971d.png"/> | <img alt='login-page' width="100%" src="https://user-images.githubusercontent.com/113220012/229968705-b09612bf-68fd-4cac-bc14-141cd5a1105c.png"/> |
+|                    **Set Nickname Page**                     |                  **Account Recovery Page**                   |
+| <img alt='set-nickname-page' width="100%" src="https://user-images.githubusercontent.com/104547038/222381701-bcfd02f0-7d6b-40fd-b1bb-dd504410f6dd.gif"/> | <img alt='account-recovery-page' width="100%" src="https://user-images.githubusercontent.com/113220012/229968765-57979b99-f3a3-43a2-9d27-6f52b109add0.png"/> |
+|                         **404 Page**                         |                                                              |
+| <img alt='not-found-page' width="100%" src="https://user-images.githubusercontent.com/113220012/229968811-31aa8d7e-c0ab-4688-be0d-df525927f33a.png"/> |                                                              |
 
 <br/>
-
 <br/>
-
