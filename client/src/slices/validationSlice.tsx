@@ -1,0 +1,33 @@
+import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+
+const validationSlice = createSlice({
+  name: 'vaildation',
+  initialState: {
+    titleErr: '',
+    bodyErr: '',
+    tagErr: '',
+    reportErr: '',
+  },
+  reducers: {
+    // 제목 유효성 검사 에러
+    setTitleErr: (state, action: PayloadAction<string>): void => {
+      state.titleErr = action.payload;
+    },
+    // 본문 유효성 검사 에러
+    setBodyErr: (state, action: PayloadAction<string>): void => {
+      state.bodyErr = action.payload;
+    },
+    // 본문 유효성 검사 에러
+    setTagErr: (state, action: PayloadAction<string>): void => {
+      state.tagErr = action.payload;
+    },
+    // 본문 유효성 검사 에러
+    setReportErr: (state, action: PayloadAction<string>): void => {
+      state.reportErr = action.payload;
+    },
+  },
+});
+
+export default validationSlice;
+export const { setTitleErr, setBodyErr, setTagErr, setReportErr } =
+  validationSlice.actions;
