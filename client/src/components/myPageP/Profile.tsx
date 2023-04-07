@@ -27,7 +27,9 @@ function Profile() {
 
   //자기소개 input토글//
   const EditOpenHandler = () => {
-    setContent(data.member.intro);
+    if (data.member.intro) {
+      setContent(data.member.intro);
+    }
     setEditOpen(!EditOpen);
     if (divRef.current !== null) {
       dispatch(setEditWidth(divRef.current?.offsetWidth + 20));
