@@ -132,29 +132,6 @@ const Comment: React.FC<
     commentsApi.useDeleteCommentThumbDownMutation();
   const [deleteThumbDown] = removeThumbDownMutation;
 
-  if (
-    commentQuery.isSuccess &&
-    'reply' in state &&
-    state.reply?.isOpened === undefined
-  ) {
-    const open = Array.from(
-      { length: commentQuery.data?.comments?.length },
-      (el) => (el = false),
-    );
-    dispatch(isOpened(open));
-  }
-
-  if (
-    commentQuery.isSuccess &&
-    (state as CommentStateType).comment.isEdit === undefined
-  ) {
-    const edit = Array.from(
-      { length: commentQuery.data.comments?.length },
-      (el) => (el = false),
-    );
-    dispatch(isEdit(edit as Array<boolean>));
-  }
-
   const commentLiikeHandler = (comment: CommentType): void => {
     if (!isLogin) {
       navigate('/login');
@@ -237,11 +214,6 @@ const Comment: React.FC<
     }
   };
 
-  useEffect(() => {
-    dispatch(setTotalReplies(replyQuery.data?.replies || []));
-    setCommentData(commentQuery.data?.comments);
-  }, [replyQuery.data, commentQuery.data]);
-
   const minusCommentPage = () => {
     if (page >= 2) {
       setPage((prev) => (prev = prev - 1));
@@ -260,6 +232,36 @@ const Comment: React.FC<
   const plusReplyPage = () => {
     setReplyPage((prev) => prev + 1);
   };
+
+  useEffect(() => {
+    dispatch(setTotalReplies(replyQuery.data?.replies || []));
+    setCommentData(commentQuery.data?.comments);
+  }, [replyQuery.data, commentQuery.data]);
+
+  useEffect(() => {
+    if (
+      commentQuery.isSuccess &&
+      'reply' in state &&
+      state.reply?.isOpened === undefined
+    ) {
+      const open = Array.from(
+        { length: commentQuery.data?.comments?.length },
+        (el) => (el = false),
+      );
+      dispatch(isOpened(open));
+    }
+    if (
+      commentQuery.isSuccess &&
+      (state as CommentStateType).comment.isEdit === undefined
+    ) {
+      const edit = Array.from(
+        { length: commentQuery.data.comments?.length },
+        (el) => (el = false),
+      );
+      dispatch(isEdit(edit as Array<boolean>));
+    }
+  }, []);
+
   return (
     <>
       {isLoading ? (
@@ -287,7 +289,8 @@ const Comment: React.FC<
 
                 const commentIsEdit =
                   comment.modifiedAt !== comment.createdAt ? true : false;
-
+                const isDeleted = comment?.content === '삭제된 댓글입니다.';
+                const isReported = comment?.content === '신고된 댓글입니다.';
                 return (
                   <>
                     <CommentInfo key={comment?.commentId}>
@@ -365,7 +368,7 @@ const Comment: React.FC<
                             onClick={(): void => {
                               if (
                                 !commentEditTextareaRef.current?.value &&
-                                comment?.content !== '삭제된 댓글입니다.'
+                                !isDeleted
                               ) {
                                 dispatch(setIsEdit(idx));
 
@@ -396,16 +399,13 @@ const Comment: React.FC<
                             onClick={(
                               event: React.MouseEvent<HTMLLIElement>,
                             ): void => {
-                              if (comment?.content !== '삭제된 댓글입니다.') {
+                              if (!isDeleted) {
                                 dispatch(setIsEdit(idx));
                                 initData(event);
                               }
                             }}
                           >
-                            {comment?.content === '삭제된 댓글입니다.' ||
-                            comment?.content === '신고된 댓글입니다.'
-                              ? null
-                              : '수정'}
+                            {isDeleted || isReported ? null : '수정'}
                           </li>
                         )}
                         {loginUserName === comment?.memberName ? (
@@ -426,10 +426,7 @@ const Comment: React.FC<
                               confirmDeleteHandler();
                             }}
                           >
-                            {comment.content === '삭제된 댓글입니다.' ||
-                            comment.content === '신고된 댓글입니다.'
-                              ? null
-                              : '삭제'}
+                            {isDeleted || isReported ? null : '삭제'}
                           </li>
                         ) : null}
 
@@ -454,15 +451,9 @@ const Comment: React.FC<
                             reportTypeChecker(event);
                           }}
                         >
-                          {comment.content === '삭제된 댓글입니다.'
-                            ? null
-                            : comment.content === '신고된 댓글입니다.'
-                            ? null
-                            : '신고'}
+                          {isDeleted ? null : isReported ? null : '신고'}
                         </li>
-                        {comment.content ===
-                        '삭제된 댓글입니다.' ? null : comment.content ===
-                          '신고된 댓글입니다.' ? null : (
+                        {isDeleted ? null : isReported ? null : (
                           <>
                             <button
                               onClick={_.debounce(
@@ -508,10 +499,7 @@ const Comment: React.FC<
                               ref={commentEditTextareaRef}
                               value={selectedComment}
                               style={{
-                                display:
-                                  comment.content === '삭제된 댓글입니다.'
-                                    ? 'none'
-                                    : 'flex',
+                                display: isDeleted ? 'none' : 'flex',
                               }}
                               onChange={valueCheck}
                               onInput={handleResizeHeight}
@@ -521,21 +509,18 @@ const Comment: React.FC<
                           <div
                             className="content"
                             style={{
-                              color:
-                                comment?.content === '삭제된 댓글입니다.'
-                                  ? '#94969b'
-                                  : comment?.content === '신고된 댓글입니다.'
-                                  ? '#94969b'
-                                  : ' #000000',
+                              color: isDeleted
+                                ? '#94969b'
+                                : isReported
+                                ? '#94969b'
+                                : ' #000000',
                             }}
                           >
                             {parse(String(comment?.content))}
                             <div className="edit-confirm">
-                              {commentIsEdit &&
-                              comment?.content === '삭제된 댓글입니다.'
+                              {commentIsEdit && isDeleted
                                 ? null
-                                : commentIsEdit &&
-                                  comment?.content === '신고된 댓글입니다.'
+                                : commentIsEdit && isReported
                                 ? null
                                 : commentIsEdit
                                 ? '(수정됨)'

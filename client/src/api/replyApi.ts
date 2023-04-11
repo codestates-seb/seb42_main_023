@@ -1,5 +1,4 @@
 import { apiSlice } from './apiSlice';
-// 답글 API
 export const repliesApi = apiSlice
   .enhanceEndpoints({ addTagTypes: ['Reply'] })
   .injectEndpoints({
