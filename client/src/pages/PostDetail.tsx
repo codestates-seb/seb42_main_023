@@ -86,7 +86,7 @@ const PostDetail: React.FC = () => {
   const loginUserName = window.localStorage.getItem('name');
   const postDetailQuery = postsApi.useGetPostQuery({ postId });
   const { data, isSuccess, isLoading, refetch } = postDetailQuery;
-  const time = timeSince(isSuccess && data?.createdAt);
+  const time = getTimeSince(isSuccess && data?.createdAt);
   const isEdit = data?.modifiedAt !== data?.createdAt ? true : false;
   const parsedData = parse(String(data?.content));
   const deleteConfirm = `${deleteType}을 정말 삭제하시겠습니까?`;
@@ -106,17 +106,6 @@ const PostDetail: React.FC = () => {
       skip: !selectedMember,
     },
   );
-
-  // 시간 계산
-  const time = getTimeSince(isSuccess && data?.createdAt);
-  // 게시글 수정 여부
-  const isEdit = data?.modifiedAt !== data?.createdAt ? true : false;
-
-  //파싱된 데이터
-  const parsedData = parse(String(data?.content));
-
-  // 삭제 문구
-  const deleteConfirm = `${deleteType}을 정말 삭제하시겠습니까?`;
 
   // 게시글 서버 데이터 저장
   // 데이터 받아서 로컬 스테이트로 저장 ( 댓글, 좋아요, 싫어요, 북마크)
