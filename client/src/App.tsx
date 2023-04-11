@@ -11,15 +11,15 @@ import CreatePost from './pages/CreatePost';
 import UpdatePost from './pages/UpdatePost';
 import Main from './pages/Main';
 import store from './store/store';
-import TempToken from './pages/tempToken';
 import MyPage from './pages/MyPage';
 import SeoulRent from './pages/SeoulRent';
 import ReportsStandBy from './pages/ReportsStandBy';
 import ReportsDeleted from './pages/ReportsDeleted';
 import AccountRecovery from './pages/AccountRecovery';
 import Search from './pages/Search';
-import Loading from './components/common/Loading';
 import NotFound from './pages/NotFound';
+import TempToken from './pages/tempToken';
+import Loading from './components/common/Loading';
 
 const HeaderDefault = React.lazy(
   () => import('./components/common/HeaderDefault'),
