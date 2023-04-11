@@ -1,9 +1,6 @@
-// 패키지 등
 import React, { useRef } from 'react';
 import styled from 'styled-components';
-import { useParams } from 'react-router-dom';
 import { useAppDispatch, useAppSelector } from '../../hooks';
-// slices
 import { setIsEdit, setTitle } from '../../slices/postInputSlice';
 import { setTitleErr } from '../../slices/validationSlice';
 
@@ -11,16 +8,13 @@ const TitleInput: React.FC = () => {
   const dispatch = useAppDispatch();
   const state = useAppSelector((state) => state);
   const title = useRef<HTMLInputElement>(null);
-  const params = useParams();
-  const postId = Number(params.postId);
 
-  // 제목 value 확인
-  const valueCheck = (event: React.ChangeEvent<HTMLInputElement>): void => {
+  const checkValue = (event: React.ChangeEvent<HTMLInputElement>): void => {
     dispatch(setTitle(event.target.value));
-    validationTest();
+    validateTitle();
   };
 
-  const validationTest = (): void => {
+  const validateTitle = (): void => {
     const titleValue = title!.current?.value;
     if (titleValue!.length === 0) {
       dispatch(setTitleErr('제목을 작성해주세요.'));
@@ -43,7 +37,7 @@ const TitleInput: React.FC = () => {
             className="title-input"
             placeholder="제목을 입력하세요."
             onChange={(event) => {
-              valueCheck(event);
+              checkValue(event);
               dispatch(setIsEdit(true));
             }}
             value={state.postInput?.title}
@@ -57,7 +51,7 @@ const TitleInput: React.FC = () => {
             className="title-input"
             placeholder="제목을 입력하세요."
             onChange={(event) => {
-              valueCheck(event);
+              checkValue(event);
               dispatch(setIsEdit(true));
             }}
             value={state.postInput?.title}

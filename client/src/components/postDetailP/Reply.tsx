@@ -1,4 +1,3 @@
-// 패키지 등
 import React, { useRef, useState, useEffect } from 'react';
 import { useAppDispatch, useAppSelector } from '../../hooks';
 import styled from 'styled-components';
@@ -6,11 +5,8 @@ import parse from 'html-react-parser';
 import _ from 'lodash';
 import { useNavigate } from 'react-router-dom';
 import { timeSince } from '../mainP/Timecalculator';
-import Cookies from 'js-cookie';
-// 컴포넌트
 import DislikeIcon from '../../assets/common/DislikeIcon';
 import LikeIcon from '../../assets/common/LikeIcon';
-// 타입
 import {
   PostStateType,
   ReplyStateType,
@@ -19,14 +15,13 @@ import {
   ReplyType,
   ReportProps,
 } from '../../types/PostDetail';
-// API
 import { repliesApi } from '../../api/replyApi';
 import { membersApi } from '../../api/memberapi';
-// Slices
 import { setReportType, setSelectedMember } from '../../slices/postSlice';
 import { setCommentId } from '../../slices/commentSlice';
 import { isEdit, setIsEdit, setReplyId } from '../../slices/replySlice';
 import { setMemberName } from '../../slices/headerSlice';
+import { checkIsLogin } from '../../util/checkIsLogin';
 
 const Reply: React.FC<Partial<ReplyProps & ReportProps>> = ({
   replyInfo,
@@ -42,6 +37,7 @@ const Reply: React.FC<Partial<ReplyProps & ReportProps>> = ({
   isReplyOpenIntro,
   setIsOpenReplyIntro,
 }: Partial<ReplyProps & ReportProps>) => {
+  const isLogin = checkIsLogin();
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
   const state = useAppSelector(
@@ -63,17 +59,9 @@ const Reply: React.FC<Partial<ReplyProps & ReportProps>> = ({
   ) as HTMLTextAreaElement;
   const replyEditTextareaRef = useRef<HTMLTextAreaElement>(replyTextarea);
 
-  // 로그인 확인
-  const auth = Cookies.get('Authorization');
-  const role = localStorage.getItem('role');
-  const name = localStorage.getItem('name');
-  const isLogin = auth && role && name;
-
-  // Textarea 값 확인
   const valueCheck = (event: React.ChangeEvent<HTMLTextAreaElement>): void => {
     const data = event.target.value.replaceAll(/\n/g, '<br>');
     setEditReply(data);
-    // 기존에 서버에서 저장한 상태 값에 추가로 value값을 관리함
     setSelectedReply(event.target.value);
   };
 
@@ -85,97 +73,76 @@ const Reply: React.FC<Partial<ReplyProps & ReportProps>> = ({
     }
   };
 
-  // textarea 높이 조절
   const handleResizeHeight = () => {
     replyEditTextareaRef!.current!.style.height = 'auto';
     replyEditTextareaRef!.current!.style.height =
       replyEditTextareaRef.current?.scrollHeight + 'px';
   };
-  // 답글
   const replyQuery = repliesApi.useGetReplyQuery({ commentId, replyPage });
   const replySucccess = replyQuery.isSuccess;
   const replyMutation = repliesApi.useUpdataReplyMutation();
   const [updateMutation] = replyMutation;
-  // 게시글, 댓글 작성자 소개페이지 오픈 여부
   const isOpenCommentIntro = isCommentOpenIntro;
   const isOpenPostIntro = isOpenIntro;
-
-  // 답글 좋아요 추가, 삭제
-  const addThumbUpMutation = repliesApi.useAddRplyThumbUpMutation();
+  const addThumbUpMutation = repliesApi.useAddReplyThumbUpMutation();
   const [addThumbUp] = addThumbUpMutation;
-  const removeThumbUpMutation = repliesApi.useRemoveRplyThumbUpMutation();
-  const [removeThumbUp] = removeThumbUpMutation;
-  // 답글 싫어요  추가, 삭제
-  const addThumbDownMutation = repliesApi.useAddRplyThumbDownMutation();
+  const removeThumbUpMutation = repliesApi.useDeleteReplyThumbUpMutation();
+  const [deleteThumbUp] = removeThumbUpMutation;
+  const addThumbDownMutation = repliesApi.useAddReplyThumbDownMutation();
   const [addThumbDown] = addThumbDownMutation;
-  const removeThumbDownMutation = repliesApi.useRemoveRplyThumbDownMutation();
-  const [removeThumbDown] = removeThumbDownMutation;
-
-  //  멤버 정보 조회
+  const removeThumbDownMutation = repliesApi.useDeleteReplyThumbDownMutation();
+  const [deleteThumbDown] = removeThumbDownMutation;
   const memberQuery = membersApi.useGetMemberQuery({ name: selectedMember });
 
-  // 답글 정보 받아오기
   useEffect(() => {
     setReplyData(replyQuery.data?.replies);
   }, [replyQuery.data]);
 
-  // 답글 수정 여부
   const replyIsEdit =
     replyInfo?.createdAt !== replyInfo?.modifiedAt ? true : false;
-  // 답글 좋아요 클릭 함수
   const ReplyLiikeHandler = (reply: ReplyType): void => {
-    if (!isLogin) navigate('/login');
-    const replyId = reply.replyId;
-    if (reply?.isThumbup && !reply?.isThumbdown) {
-      removeThumbUp({ replyId });
+    if (!isLogin) {
+      navigate('/login');
       return;
     }
-    // 싫어요만 있는 경우
+    const replyId = reply.replyId;
+    if (reply?.isThumbup && !reply?.isThumbdown) {
+      deleteThumbUp({ replyId });
+      return;
+    }
     if (!reply?.isThumbup && reply?.isThumbdown) {
-      removeThumbDown({ replyId });
+      deleteThumbDown({ replyId });
       setTimeout(() => {
         addThumbUp({ replyId });
       }, 500);
 
       return;
     }
-    // 둘 다 없는 경우
     if (!reply?.isThumbdown && !reply?.isThumbdown) {
       addThumbUp({ replyId });
       return;
     }
   };
 
-  // 답글 싫어요 클릭 함수
   const ReplyDislikeHandler = (reply: ReplyType): void => {
     if (!isLogin) navigate('/login');
     const replyId = reply.replyId;
-    // 좋아요만 있는 경우
     if (reply?.isThumbup && !reply?.isThumbdown) {
-      // 좋아요 제거, 싫어요 추가
-
-      removeThumbUp({ replyId });
+      deleteThumbUp({ replyId });
       setTimeout(() => {
         addThumbDown({ replyId });
       }, 500);
       return;
     }
-    // 싫어요만 있는 경우
     if (!reply?.isThumbup && reply?.isThumbdown) {
-      // 싫어요 제거
-
-      removeThumbDown({ replyId });
+      deleteThumbDown({ replyId });
       return;
     }
-    // 둘 다 없는 경우
     if (!reply?.isThumbup && !reply?.isThumbdown) {
-      // 싫어요 추가
-
       addThumbDown({ replyId });
       return;
     }
   };
-  // 답글 Edit 여부 확인을 위한 배열 생성
   if (
     replyQuery.isSuccess &&
     (state as ReplyStateType).reply.isEdit === undefined
@@ -188,7 +155,6 @@ const Reply: React.FC<Partial<ReplyProps & ReportProps>> = ({
     dispatch(isEdit(edit as Array<boolean>));
   }
 
-  // 삭제 확인 모달창
   const confirmDeleteHandler = (): void => {
     setIsOpenDelete?.(!isOpenDelete!);
   };
@@ -199,7 +165,6 @@ const Reply: React.FC<Partial<ReplyProps & ReportProps>> = ({
     }
   };
 
-  // 소개 페이지 오픈
   const IntroHandler = (event: React.MouseEvent<HTMLElement>) => {
     event.stopPropagation();
 
@@ -222,14 +187,12 @@ const Reply: React.FC<Partial<ReplyProps & ReportProps>> = ({
     }
   };
 
-  // 신고 카테고리 확인
   const reportTypeChecker = (event: React.MouseEvent<HTMLElement>): void => {
     if (event.target instanceof HTMLElement) {
       dispatch(setReplyId(Number(event.target.dataset.replyid)));
       dispatch(setReportType(event.target.dataset.category!));
     }
   };
-  // 시간 계산
   const time = timeSince(replyInfo!.createdAt);
 
   return (
@@ -420,7 +383,6 @@ const Reply: React.FC<Partial<ReplyProps & ReportProps>> = ({
         {'reply' in state &&
         replyInfo!.replyId === replyId &&
         state.reply?.isEdit[idx!] ? (
-          // 댓글 수정 시 생기는 textarea
           <InputWrap>
             <textarea
               id="edit-reply"

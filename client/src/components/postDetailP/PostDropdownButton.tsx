@@ -1,11 +1,8 @@
-// 패키지 등
 import React, { useRef } from 'react';
 import styled from 'styled-components';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useAppDispatch, useAppSelector } from '../../hooks';
-// 컴포넌트(아이콘)
 import { FiMoreHorizontal } from 'react-icons/fi';
-// slices
 import { setIsOpenFilter, setReportType } from '../../slices/postSlice';
 
 interface Props {
@@ -37,7 +34,6 @@ const PostDropdownButton = ({
   const loginUserName = window.localStorage.getItem('name');
   const option = memberName === loginUserName ? writerOptions : viewerOptions;
 
-  // 삭제 확인 모달창
   const confirmDeleteHandler = (): void => {
     setIsOpenDelete(!isOpenDelete);
   };
@@ -48,13 +44,11 @@ const PostDropdownButton = ({
     }
   };
 
-  // 신고 모달창 오픈
   const reportHandler = (): void => {
     setIsOpenReport?.(!isOpenReport!);
   };
 
-  // Select option에 따른 로직
-  const handleSelect = (option: '신고하기' | '수정하기' | '삭제하기') => {
+  const selectHandler = (option: '신고하기' | '수정하기' | '삭제하기') => {
     if (option === '신고하기') {
       dispatch(setReportType('post'));
       reportHandler();
@@ -65,7 +59,7 @@ const PostDropdownButton = ({
     if (option === '삭제하기') confirmDeleteHandler();
   };
 
-  const handleToggle = () => {
+  const toggleHandler = () => {
     if (!state.post.isOpenFilter) {
       dispatch(setIsOpenFilter(state.post?.isOpenFilter));
     }
@@ -73,7 +67,7 @@ const PostDropdownButton = ({
 
   return (
     <Dropdown ref={dropdownRef}>
-      <Button onClick={handleToggle}>
+      <Button onClick={toggleHandler}>
         <FiMoreHorizontal />
       </Button>
       {state.post.isOpenFilter && (
@@ -83,7 +77,7 @@ const PostDropdownButton = ({
               id="게시글"
               key={option}
               onClick={(event: React.MouseEvent<HTMLElement>) => {
-                handleSelect(option);
+                selectHandler(option);
                 dispatch(setIsOpenFilter(false));
                 typeChecker(event);
               }}
