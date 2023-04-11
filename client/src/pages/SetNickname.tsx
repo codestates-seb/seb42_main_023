@@ -22,22 +22,24 @@ const SetNickname: React.FC = () => {
 
   const handleKeyUp = (event: React.KeyboardEvent<HTMLInputElement>) => {
     if (event.key === 'Enter') {
-      setNicknameHandler();
+      validateNicknameHandler();
     }
   };
 
-  const setNicknameHandler = () => {
+  const validateNicknameHandler = () => {
     const nickname = nicknameRef.current!.value;
     const specialCharacters = /[~!@#$%^&*()_+|<>?:{}]/;
 
     if (nickname.length < 2 || nickname.length > 8) {
       setNicknameErrMsg('2자 이상 8자 이하로 작성해주세요.');
-    } else if (
-      nickname.search(/\s/) != -1 ||
-      specialCharacters.test(nickname)
-    ) {
+      return;
+    }
+    if (nickname.search(/\s/) != -1 || specialCharacters.test(nickname)) {
       setNicknameErrMsg('공백이나 특수문자를 포함하면 안됩니다.');
-    } else {
+      return;
+    }
+
+    if (!nicknameErrMsg) {
       setNicknameErrMsg(null);
       postNickname({ name: nickname, tempName: tempName })
         .unwrap()
@@ -52,6 +54,7 @@ const SetNickname: React.FC = () => {
         .catch((err) => {
           console.log('err in nickname', err);
         });
+      return;
     }
   };
 
@@ -69,7 +72,7 @@ const SetNickname: React.FC = () => {
           />
           <p>{nicknameErrMsg}</p>
         </NicknameInput>
-        <SignupBtn onClick={setNicknameHandler}>가입하기</SignupBtn>
+        <SignupBtn onClick={validateNicknameHandler}>가입하기</SignupBtn>
       </FormContainer>
     </MainContainer>
   );
