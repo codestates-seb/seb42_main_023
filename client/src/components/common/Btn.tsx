@@ -21,7 +21,6 @@ export const WhiteBtn = styled.button`
     color: var(--hover-font-gray-color);
   }
 `;
-//검색하기 버튼
 export const SearchBtn = styled.button`
   padding: 4px 20px;
   box-sizing: border-box;
@@ -34,7 +33,6 @@ export const SearchBtn = styled.button`
     background-color: var(--hover-point-blue-color);
   }
 `;
-//검색취소 버튼
 export const ClickSearchBtn = styled(SearchBtn)`
   background-color: #fff;
   color: #000;
@@ -44,7 +42,6 @@ export const ClickSearchBtn = styled(SearchBtn)`
     color: var(--hover-font-gray-color);
   }
 `;
-//Header 집구하기, 뜨는주식, 세금계산기
 export const NavBtn = styled.button`
   background-color: #fff;
   font-size: 14px;
@@ -53,13 +50,11 @@ export const NavBtn = styled.button`
     transition: 0.3s;
   }
 `;
-//Header 집구하기, 뜨는주식, 세금계산기 중 현재 위치페이지
 export const NavBtnClicked = styled(NavBtn)`
   border-bottom: 1px solid var(--point-blue-color);
   font-size: 14px;
   color: var(--point-blue-color);
 `;
-//sidbarnav 버튼
 export const SidebarBtn = styled.button`
   width: 100%;
   padding: 10px;
@@ -74,7 +69,6 @@ export const SidebarBtn = styled.button`
     font-size: 12px;
   }
 `;
-//sidbarnav 버튼 클릭상태
 export const SidebarBtnClicked = styled(SidebarBtn)`
   background-color: var(--hover-button-color);
   color: var(--point-blue-color);
@@ -82,7 +76,6 @@ export const SidebarBtnClicked = styled(SidebarBtn)`
     color: var(--hover-point-blue-color);
   }
 `;
-//아이콘svg를 감싸고 있는 버튼
 export const IconBtn = styled.button`
   svg {
     :hover {

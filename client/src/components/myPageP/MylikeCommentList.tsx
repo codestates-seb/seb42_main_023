@@ -5,7 +5,7 @@ import { FaRegThumbsDown } from 'react-icons/fa';
 import { FaRegThumbsUp } from 'react-icons/fa';
 import TimeIcon from '../../assets/common/TimeIcon';
 import { membersCommentsListApi } from '../../api/memberapi';
-import { timeSince } from '../mainP/Timecalculator';
+import { getTimeSince } from '../common/timeCalculator';
 import { PostListWrap } from './MyPostList';
 import Pagination from '../common/Pagination';
 import { CommentType } from '../../types/PostList';
@@ -48,7 +48,7 @@ const MylikeCommentList = () => {
                   <CommentInfo>
                     <span>
                       <TimeIcon />
-                      {timeSince(item.createdAt)}
+                      {getTimeSince(item.createdAt)}
                     </span>
                     <span>
                       <FaRegThumbsUp size={13} />

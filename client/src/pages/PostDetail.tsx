@@ -5,7 +5,7 @@ import _ from 'lodash';
 import parse from 'html-react-parser';
 import { useParams, useNavigate } from 'react-router';
 import { useAppDispatch, useAppSelector } from '../hooks';
-import { timeSince } from '../components/mainP/Timecalculator';
+import { getTimeSince } from '../components/common/timeCalculator';
 import Cookies from 'js-cookie';
 // 컴포넌트
 import Comment from '../components/postDetailP/Comment';
@@ -127,7 +127,7 @@ const PostDetail: React.FC = () => {
   );
 
   // 시간 계산
-  const time = timeSince(isSuccess && data?.createdAt);
+  const time = getTimeSince(isSuccess && data?.createdAt);
   // 게시글 수정 여부
   const isEdit = data?.modifiedAt !== data?.createdAt ? true : false;
 

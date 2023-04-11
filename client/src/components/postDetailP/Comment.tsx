@@ -2,7 +2,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { useParams } from 'react-router';
 import { useAppDispatch, useAppSelector } from '../../hooks';
-import { timeSince } from '../mainP/Timecalculator';
+import { getTimeSince } from '../common/timeCalculator';
 import { useNavigate } from 'react-router';
 import styled from 'styled-components';
 import _ from 'lodash';
@@ -323,7 +323,7 @@ const Comment: React.FC<
                     return reply.commentId === comment.commentId;
                   });
                 // 시간 계산
-                const time = timeSince(comment.createdAt);
+                const time = getTimeSince(comment.createdAt);
 
                 // 답글 수정 여부
                 const commentIsEdit =

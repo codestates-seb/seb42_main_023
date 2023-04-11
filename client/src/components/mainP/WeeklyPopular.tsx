@@ -8,7 +8,7 @@ import { BsTrophy } from 'react-icons/bs';
 import { Link } from 'react-router-dom';
 import styled from 'styled-components';
 import { weeklyPopularApi } from '../../api/postListapi';
-import { timeSince } from '../mainP/Timecalculator';
+import { getTimeSince } from '../common/timeCalculator';
 import { Itemside, Info, Tag } from './PostList';
 import { PostListItem } from '../../types/PostList';
 import { FaRegThumbsUp } from 'react-icons/fa';
@@ -51,7 +51,7 @@ function WeeklyPopular() {
                       </span>
                       <span>
                         <TimeIcon />
-                        {timeSince(post.createdAt)}
+                        {getTimeSince(post.createdAt)}
                       </span>
                       <span>
                         <ViewIcon />

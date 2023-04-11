@@ -7,7 +7,7 @@ import Thumnail from '../common/Thumbnail';
 import CommentIcon from '../../assets/common/CommentIcon';
 import { Link } from 'react-router-dom';
 import { membersPostListApi } from '../../api/memberapi';
-import { timeSince } from '../mainP/Timecalculator';
+import { getTimeSince } from '../common/timeCalculator';
 import Pagination from '../common/Pagination';
 import { FaBookmark } from 'react-icons/fa';
 import { PostListItem } from '../../types/PostList';
@@ -76,7 +76,7 @@ function MyBookmarks() {
                         </span>
                         <span>
                           <TimeIcon />
-                          {timeSince(post.createdAt)}
+                          {getTimeSince(post.createdAt)}
                         </span>
                         <span>
                           <ViewIcon />

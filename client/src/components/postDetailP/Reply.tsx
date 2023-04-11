@@ -5,7 +5,7 @@ import styled from 'styled-components';
 import parse from 'html-react-parser';
 import _ from 'lodash';
 import { useNavigate } from 'react-router-dom';
-import { timeSince } from '../mainP/Timecalculator';
+import { getTimeSince } from '../common/timeCalculator';
 import Cookies from 'js-cookie';
 // 컴포넌트
 import DislikeIcon from '../../assets/common/DislikeIcon';
@@ -230,7 +230,7 @@ const Reply: React.FC<Partial<ReplyProps & ReportProps>> = ({
     }
   };
   // 시간 계산
-  const time = timeSince(replyInfo!.createdAt);
+  const time = getTimeSince(replyInfo!.createdAt);
 
   return (
     <ReplyContainer onClick={outClickIntroHandler}>

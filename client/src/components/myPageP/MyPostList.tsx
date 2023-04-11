@@ -8,7 +8,7 @@ import CommentIcon from '../../assets/common/CommentIcon';
 import { Tag } from '../mainP/PostList';
 import { Link } from 'react-router-dom';
 import { membersPostListApi } from '../../api/memberapi';
-import { timeSince } from '../mainP/Timecalculator';
+import { getTimeSince } from '../common/timeCalculator';
 import Pagination from '../common/Pagination';
 import { PostListItem } from '../../types/PostList';
 import { FaRegThumbsUp } from 'react-icons/fa';
@@ -73,7 +73,7 @@ function MyPostList() {
                         </span>
                         <span>
                           <TimeIcon />
-                          {timeSince(post.createdAt)}
+                          {getTimeSince(post.createdAt)}
                         </span>
                         <span>
                           <ViewIcon />

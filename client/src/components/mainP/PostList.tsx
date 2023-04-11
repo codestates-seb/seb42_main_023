@@ -8,7 +8,7 @@ import Thumnail from '../common/Thumbnail';
 import CommentIcon from '../../assets/common/CommentIcon';
 import { TagItem } from '../common/Tag';
 import { Link } from 'react-router-dom';
-import { timeSince } from '../mainP/Timecalculator';
+import { getTimeSince } from '../common/timeCalculator';
 import { PostListItem } from '../../types/PostList';
 import { FaRegThumbsUp } from 'react-icons/fa';
 
@@ -45,7 +45,7 @@ function PostList({ posts, currentPage }: Props) {
                     </span>
                     <span>
                       <TimeIcon />
-                      {timeSince(post.createdAt)}
+                      {getTimeSince(post.createdAt)}
                     </span>
                     <span>
                       <ViewIcon />
