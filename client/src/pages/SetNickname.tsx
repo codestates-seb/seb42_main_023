@@ -8,21 +8,17 @@ import { MainContainer, FormContainer } from '../components/common/Container';
 import { LogoSVG } from '../assets/common/LogoSVG';
 
 const SetNickname: React.FC = () => {
-  // Tools
   const navigate = useNavigate();
-  // const dispatch = useAppDispatch();
-  const [postNickname] = usePostNicknameMutation();
-
-  // 서버에 보내야 할 데이터 1: tempName -  서버는 회원가입이 완료된 유저를 닉네임 설정 페이지로 리다이렉트한다. uri에는 사용자를 임시로 식별할 수 있는 tempName을 담는다.
   const [tempName, setTempName] = useState('');
+  const nicknameRef = useRef<HTMLInputElement>(null);
+  const [postNickname] = usePostNicknameMutation();
+  const [nicknameErrMsg, setNicknameErrMsg] = useState<null | string>(null);
+
   useEffect(() => {
     const url = new URL(window.location.href);
     const tempName = url.searchParams.get('TempName') ?? '';
     setTempName(tempName);
   }, []);
-
-  // 서버에 보내야 할 데이터 2: nickname
-  const nicknameRef = useRef<HTMLInputElement>(null);
 
   const handleKeyUp = (event: React.KeyboardEvent<HTMLInputElement>) => {
     if (event.key === 'Enter') {
@@ -30,13 +26,8 @@ const SetNickname: React.FC = () => {
     }
   };
 
-  const [nicknameErrMsg, setNicknameErrMsg] = useState<null | string>(null);
-
-  // '가입하기' 버튼을 눌렀을 때 실행되는 함수
   const setNicknameHandler = () => {
     const nickname = nicknameRef.current!.value;
-
-    // validation에 성공할때만 서버에 post요청을 보낸다.
     const specialCharacters = /[~!@#$%^&*()_+|<>?:{}]/;
 
     if (nickname.length < 2 || nickname.length > 8) {
@@ -86,7 +77,6 @@ const SetNickname: React.FC = () => {
 
 export default SetNickname;
 
-// 닉네임 입력 label과 input 컨테이너
 const NicknameInput = styled.div`
   display: flex;
   flex-direction: column;
@@ -109,7 +99,6 @@ const NicknameInput = styled.div`
   }
 `;
 
-// 가입하기 버튼
 const SignupBtn = styled(BlueBtn)`
   width: 305px;
   height: 54px;
