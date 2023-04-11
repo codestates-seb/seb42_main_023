@@ -18,7 +18,7 @@ import ReportsDeleted from './pages/ReportsDeleted';
 import AccountRecovery from './pages/AccountRecovery';
 import Search from './pages/Search';
 import NotFound from './pages/NotFound';
-import TempToken from './pages/tempToken';
+import TempToken from './pages/TempToken';
 import Loading from './components/common/Loading';
 
 const HeaderDefault = React.lazy(
