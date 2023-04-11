@@ -20,9 +20,10 @@ const SetNickname: React.FC = () => {
     setTempName(tempName);
   }, []);
 
-  const handleKeyUp = (event: React.KeyboardEvent<HTMLInputElement>) => {
+  const handleKeyUp = (event: React.KeyboardEvent<HTMLInputElement>): void => {
     if (event.key === 'Enter') {
       validateNicknameHandler();
+      return;
     }
   };
 
