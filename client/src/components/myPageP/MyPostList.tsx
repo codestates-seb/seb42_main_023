@@ -5,7 +5,7 @@ import TimeIcon from '../../assets/common/TimeIcon';
 import ViewIcon from '../../assets/common/ViewIcon';
 import Thumnail from '../common/Thumbnail';
 import CommentIcon from '../../assets/common/CommentIcon';
-import { Tag } from '../common/PostList';
+import { Tag } from '../common/PostItem';
 import { Link } from 'react-router-dom';
 import { membersPostListApi } from '../../api/memberapi';
 import { getTimeSince } from '../common/timeCalculator';
@@ -13,7 +13,7 @@ import Pagination from '../common/Pagination';
 import { PostListItem } from '../../types/PostList';
 import { FaRegThumbsUp } from 'react-icons/fa';
 import Nolist from './Nolist';
-import { Item, Itemside, Info } from '../common/PostList';
+import { Item, Itemside, Info } from '../common/PostItem';
 
 function MyPostList() {
   const [pageOffset, setPageOffset] = useState(0);

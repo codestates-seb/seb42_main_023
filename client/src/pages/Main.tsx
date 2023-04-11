@@ -1,20 +1,22 @@
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
-import PostList from '../components/common/PostList';
 import DropdownButton from '../components/mainP/DropdownButton';
 import { AiOutlineTrophy } from 'react-icons/ai';
 import { NavBtn } from '../components/common/Btn';
 import { useAppDispatch, useAppSelector } from '../hooks';
 import { postListApi } from '../api/postListapi';
+import { weeklyPopularApi } from '../api/postListapi';
 import { setPostCategory } from '../slices/mainSlice';
 import Pagenation from '../components/common/Pagination';
 import { RiMoneyDollarCircleLine } from 'react-icons/ri';
 import Loading from '../components/common/Loading';
+import PostItem from '../components/common/PostItem';
+import { PostListItem } from '../types/PostList';
+import WeeklyPopularPost from '../components/mainP/WeeklyPopularPost';
 
 const Main = () => {
   const dispatch = useAppDispatch();
 
-  //페이지네이션
   const [pageOffset, setPageOffset] = useState(0);
   const [currentPage, setCurrentPage] = useState(1);
 
@@ -27,6 +29,10 @@ const Main = () => {
     search: searchQuery,
   });
   const { data, isSuccess, refetch } = postListquery;
+
+  const weeklyPopularquery = weeklyPopularApi.useGetWeekPostListQuery({
+    endpoint: 'weekly-popular',
+  });
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -85,7 +91,18 @@ const Main = () => {
           <DropdownButton />
         </div>
       </FilterWrap>
-      {isSuccess && <PostList posts={data.posts} />}
+      <List>
+        {weeklyPopularquery?.data?.posts.map(
+          (post: PostListItem, index: number) => {
+            return (
+              <WeeklyPopularPost post={post} index={index} key={post.postId} />
+            );
+          },
+        )}
+        {data?.posts.map((post: PostListItem) => {
+          return <PostItem post={post} key={post.postId} />;
+        })}
+      </List>
       {isSuccess && data.posts.length !== 0 && (
         <Pagenation
           pageInfo={data.pageInfo}
@@ -99,6 +116,11 @@ const Main = () => {
 };
 
 export default Main;
+
+export const List = styled.ul`
+  margin-top: -4px;
+  border-top: 1px solid var(--border-color);
+`;
 
 const ComuntyBtn = styled(NavBtn)`
   font-size: 16px;

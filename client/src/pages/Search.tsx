@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
-import PostList from '../components/common/PostList';
+import PostList from '../components/common/PostItem';
 import DropdownButton from '../components/mainP/DropdownButton';
 import { useAppSelector } from '../hooks';
 import { postListApi } from '../api/postListapi';

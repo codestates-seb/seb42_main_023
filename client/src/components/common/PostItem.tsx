@@ -10,63 +10,49 @@ import { getTimeSince } from './timeCalculator';
 import { PostListItem } from '../../types/PostList';
 import { FaRegThumbsUp } from 'react-icons/fa';
 
-interface Props {
-  posts: PostListItem[];
-}
-
-function PostList({ posts }: Props) {
+function PostItem({ post }: { post: PostListItem }) {
   return (
-    <List>
-      {posts.map((post: PostListItem) => {
-        return (
-          <Item key={post.postId}>
-            <Link to={`/posts/${post.postId}`}>
-              <div>
-                <Thumnail content={post.imgUrl} />
-              </div>
-              <div>
-                <h1>{post.title}</h1>
-                <Itemside>
-                  <div>
-                    {post.tags.map((tag, idx) => (
-                      <Tag key={idx}>{tag.tagName}</Tag>
-                    ))}
-                  </div>
-                  <Info>
-                    <span>{post.memberName}</span>
-                    <span>
-                      <CommentIcon checked={false} />
-                      {post.commentCount}
-                    </span>
-                    <span>
-                      <TimeIcon />
-                      {getTimeSince(post.createdAt)}
-                    </span>
-                    <span>
-                      <ViewIcon />
-                      {post.viewCount}
-                    </span>
-                    <span>
-                      <FaRegThumbsUp size={13} />
-                      {post.thumbupCount}
-                    </span>
-                  </Info>
-                </Itemside>
-              </div>
-            </Link>
-          </Item>
-        );
-      })}
-    </List>
+    <Item>
+      <Link to={`/posts/${post.postId}`}>
+        <div>
+          <Thumnail content={post.imgUrl} />
+        </div>
+        <div>
+          <h1>{post.title}</h1>
+          <Itemside>
+            <div>
+              {post.tags.map((tag, idx) => (
+                <Tag key={idx}>{tag.tagName}</Tag>
+              ))}
+            </div>
+            <Info>
+              <span>{post.memberName}</span>
+              <span>
+                <CommentIcon checked={false} />
+                {post.commentCount}
+              </span>
+              <span>
+                <TimeIcon />
+                {getTimeSince(post.createdAt)}
+              </span>
+              <span>
+                <ViewIcon />
+                {post.viewCount}
+              </span>
+              <span>
+                <FaRegThumbsUp size={13} />
+                {post.thumbupCount}
+              </span>
+            </Info>
+          </Itemside>
+        </div>
+      </Link>
+    </Item>
   );
 }
 
-export default PostList;
+export default PostItem;
 
-export const List = styled.ul`
-  margin-top: -4px;
-  border-top: 1px solid var(--border-color);
-`;
 export const Item = styled.li`
   a {
     height: 100px;
