@@ -21,7 +21,7 @@ public class HousePriceController {
 
     // 부동산 정보 조회
     @GetMapping("/rent-price/house/seoul")
-    public ResponseEntity<HousePriceDto.AllHousePriceRes> findAllHousePrice() {
+    public ResponseEntity<HousePriceDto.AllHousePriceRes> findHousePriceList() {
         List<HousePrice> allHousePrice = housePriceService.findAllHousePrice();
         HousePriceDto.AllHousePriceRes response = new HousePriceDto.AllHousePriceRes(allHousePrice);
         return new ResponseEntity<>(response, HttpStatus.OK);

@@ -27,8 +27,8 @@ public class OAuth2Controller {
 
     // 탈퇴한 회원 재가입
     @PostMapping("/comeback")
-    public ResponseEntity combackMember(@Valid @RequestBody TempAccessTokenDto tempAccessTokenDto) {
-        oAuth2Service.changedMemberState(tempAccessTokenDto.getTempAccessToken());
+    public ResponseEntity<LoginResponseDto> modifyMemberToActive(@Valid @RequestBody TempAccessTokenDto tempAccessTokenDto) {
+        oAuth2Service.changeMemberStateToActive(tempAccessTokenDto.getTempAccessToken());
 
         String accessToken = "Bearer " + oAuth2Service.delegateAccessToken(tempAccessTokenDto.getTempAccessToken());
         String refreshToken = oAuth2Service.delegateRefreshToken(tempAccessTokenDto.getTempAccessToken());
@@ -43,7 +43,7 @@ public class OAuth2Controller {
 
     // 정식 토큰 발급
     @PostMapping("/auth/callback/google")
-    public ResponseEntity getToken(@Valid @RequestBody TempAccessTokenDto tempAccessTokenDto) {
+    public ResponseEntity<LoginResponseDto> createAllToken(@Valid @RequestBody TempAccessTokenDto tempAccessTokenDto) {
         String accessToken = "Bearer " + oAuth2Service.delegateAccessToken(tempAccessTokenDto.getTempAccessToken());
         String refreshToken = oAuth2Service.delegateRefreshToken(tempAccessTokenDto.getTempAccessToken());
 
@@ -55,10 +55,10 @@ public class OAuth2Controller {
                 .body(response);
     }
 
-    // Refresh Token으로 Access Token 재발급
+    // Refresh Token 으로 Access Token 재발급
     @PostMapping("/auth/refresh/{member-name}")
-    public ResponseEntity issuedRefreshToken(@PathVariable("member-name") String name,
-                                             HttpServletRequest request) {
+    public ResponseEntity<Void> createAccessToken(@PathVariable("member-name") String name,
+                                                  HttpServletRequest request) {
         oAuth2Service.verifyJws(request);
         String memberNameGetRefreshToken = oAuth2Service.findRefreshTokenByMemberName(name);
 

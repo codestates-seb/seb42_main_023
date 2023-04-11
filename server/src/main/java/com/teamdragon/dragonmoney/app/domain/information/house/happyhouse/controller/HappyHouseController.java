@@ -29,9 +29,9 @@ public class HappyHouseController {
 
     // 목록 조회
     @GetMapping("/recruit/happy-house")
-    public ResponseEntity<HappyHouseDto.HappyHouseListRes> getPostsList(@Valid @Positive @RequestParam int page,
-                                                                        @Valid @NotBlank @RequestParam String location,
-                                                                        @Valid @NotBlank @RequestParam String state) {
+    public ResponseEntity<HappyHouseDto.HappyHouseListRes> findHappyHouseList(@Valid @Positive @RequestParam int page,
+                                                                              @Valid @NotBlank @RequestParam String location,
+                                                                              @Valid @NotBlank @RequestParam String state) {
         HappyHouseAreaCode locationEnum = checkLocation(location);
         HappyHouseState stateEnum = checkState(state);
         Page<HappyHouse> happyHouseList = happyHouseService.findHappyHouseList(page, locationEnum, stateEnum);

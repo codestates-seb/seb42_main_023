@@ -6,7 +6,6 @@ import com.teamdragon.dragonmoney.app.domain.information.house.price.dto.SeoulAp
 import com.teamdragon.dragonmoney.app.domain.information.house.price.entity.HousePrice;
 import com.teamdragon.dragonmoney.app.global.exception.ApiLogicException;
 import com.teamdragon.dragonmoney.app.global.exception.ApiLogicExceptionCode;
-import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.http.HttpHeaders;
@@ -37,80 +36,36 @@ public class HousePriceService {
 
     private final HousePriceRepository housePriceRepository;
 
-    private final String CONTENT_TYPE = "json";
-    private final int SEARCH_START_INDEX = 1;
-    private final int SEARCH_END_INDEX = 100;
-    private final String HOUSE_KIND_OFFICETELS = "오피스텔";
-    private final String HOUSE_KIND_TOWNHOUSE = "연립다세대";
-    private final String HOUSE_KIND_DETACHED_MULTI = "단독다가구";
-    private final String RENT_KIND_JEONSE = "전세";
-    private final String RENT_KIND_MONTHLY = "월세";
-
-    @Getter
-    private enum AreaCode {
-        JUNGNANG_GU(11260,"중랑구"),
-        NOWON_GU(11350,"노원구"),
-        EUNPYEONG_GU(11380,"은평구"),
-        SEODAEMUN_GU(11410,"서대문구"),
-        MAPO_GU(11440,"마포구"),
-        YANGCHEON_GU(11470,"양천구"),
-        GANGSEO_GU(11500,"강서구"),
-        GURO_GU(11530,"구로구"),
-        GEUMCHEON_GU(11545,"금천구"),
-        YEONGDEUNGPO_GU(11560,"영등포구"),
-        DONGJAK_GU(11590,"동작구"),
-        SONGPA_GU(11710,"송파구"),
-        GANGDONG_GU(11740,"강동구"),
-        JONGNO_GU(11110,"종로구"),
-        JUNG_GU(11140,"중구"),
-        YONGSAN_GU(11170,"용산구"),
-        SEONGDONG_GU(11200,"성동구"),
-        GWANGJIN_GU(11215,"광진구"),
-        DONGDAEMUN_GU(11230,"동대문구"),
-        SEONGBUK_GU(11290,"성북구"),
-        GANGBUK_GU(11305,"강북구"),
-        DOBONG_GU(11320,"도봉구"),
-        GWANAK_GU(11620,"관악구"),
-        SEOCHO_GU(11650,"서초구"),
-        GANGNAM_GU(11680,"강남구");
-
-        private int code;
-        private String name;
-
-        AreaCode(int code, String name) {
-            this.code = code;
-            this.name = name;
-        }
-    }
+    private static final String CONTENT_TYPE = "json";
+    private static final int SEARCH_START_INDEX = 1;
+    private static final int SEARCH_END_INDEX = 100;
+    private static final String HOUSE_KIND_OFFICETELS = "오피스텔";
+    private static final String HOUSE_KIND_TOWNHOUSE = "연립다세대";
+    private static final String HOUSE_KIND_DETACHED_MULTI = "단독다가구";
+    private static final String RENT_KIND_JEONSE = "전세";
+    private static final String RENT_KIND_MONTHLY = "월세";
 
     // 저장된 지역별부동산정보 조회
     public List<HousePrice> findAllHousePrice() {
         return housePriceRepository.findAll();
     }
 
-    // 지역별 데이터 갱신 요청
-    @Scheduled(cron = "0 0 5 * * TUE")
-    public void collectPriceByAreas() {
-        AreaCode[] areas = AreaCode.values();
-        for (AreaCode area : areas) {
-            Optional<HousePrice> optionalHousePrice = housePriceRepository.findByLocation(area.getName());
-            HousePrice housePrice = callFuncByHouseKind(area);
-            if (optionalHousePrice.isPresent()) {
-                HousePrice findHousePrice = optionalHousePrice.get();
-                findHousePrice.updateData(housePrice);
-                housePriceRepository.save(findHousePrice);
-            } else {
-                housePriceRepository.save(housePrice);
-            }
-        }
+    public HousePrice saveOrUpdateHousePrice(HousePrice findHousePrice) {
+        return housePriceRepository.save(findHousePrice);
     }
 
-    // 집 종류별 데이터 요청
-    private HousePrice callFuncByHouseKind(AreaCode areaCode){
+    public Optional<HousePrice> findByLocation(AreaCode area) {
+        return housePriceRepository.findByLocation(area.getName());
+    }
+
+    // 2. 집 종류별 데이터 요청
+    public HousePrice callFuncByHouseKind(AreaCode areaCode){
+        // 집 종류별 요청
         Map<String, HousePriceDto.TempHousePrice> resultByOfficetels = getAverageByHouseKind(areaCode, HOUSE_KIND_OFFICETELS);
         Map<String, HousePriceDto.TempHousePrice> resultByTownhouse = getAverageByHouseKind(areaCode, HOUSE_KIND_TOWNHOUSE);
         Map<String, HousePriceDto.TempHousePrice> resultByDetached = getAverageByHouseKind(areaCode, HOUSE_KIND_DETACHED_MULTI);
 
+        // 전세 월세 구분 집계
         HousePriceDto.TempHousePrice jeonseAverage
                 = collectAveragePrice(
                         List.of(resultByOfficetels.get(RENT_KIND_JEONSE),
@@ -133,7 +88,7 @@ public class HousePriceService {
                 .build();
     }
 
-    // 집 종류별 api 요청 및 평균 계산 요청
+    // 3-1. 집 종류별 api 요청 및 평균 계산 요청
     private Map<String, HousePriceDto.TempHousePrice> getAverageByHouseKind(AreaCode areaCode, String houseKind) {
         SeoulApiDto.HousePricePackage dtoByOfficetels = reqHousePriceApi(areaCode.getCode(), houseKind);
         if (!dtoByOfficetels.getApiPackage().getResult().getCode().equals("INFO-000")) {
@@ -141,11 +96,11 @@ public class HousePriceService {
             throw new ApiLogicException(ApiLogicExceptionCode.HOUSE_PRICE_API_GET_FAIL);
         }
         Map<String, HousePriceDto.TempHousePrice> resultByOfficetels
-                = calculateAverage(houseKind, dtoByOfficetels.getApiPackage().getRow());
+                = calculateAverageByHouseKind(dtoByOfficetels.getApiPackage().getRow());
         return resultByOfficetels;
     }
 
-    // 집 종류별 계산 결과 집계
+    // 3-2. 집 종류별 계산 결과 집계
     private HousePriceDto.TempHousePrice collectAveragePrice(List<HousePriceDto.TempHousePrice> averages){
         return HousePriceDto.TempHousePrice.builder()
                 .collectionSize(averages.stream().map(HousePriceDto.TempHousePrice::getCollectionSize).reduce(0, Integer::sum))
@@ -154,8 +109,8 @@ public class HousePriceService {
                 .build();
     }
 
-    // 집 종류별 평균 계산
-    private Map<String, HousePriceDto.TempHousePrice> calculateAverage(String houseKind, List<SeoulApiDto.PriceElement> row){
+    // 4. 집 종류별 평균 계산
+    private Map<String, HousePriceDto.TempHousePrice> calculateAverageByHouseKind(List<SeoulApiDto.PriceElement> row){
         int monthlyTotalCollectionSize = 0;
         Long monthlyTotalMonthlyFee = 0L;
         Long monthlyTotalDeposit = 0L;

@@ -11,7 +11,6 @@ import com.teamdragon.dragonmoney.app.domain.posts.service.PostsService;
 import com.teamdragon.dragonmoney.app.global.exception.ValidFailException;
 import com.teamdragon.dragonmoney.app.global.exception.ValidFailExceptionCode;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -37,8 +36,8 @@ public class PostsController {
 
     // 추가
     @PostMapping
-    public ResponseEntity<PostsDto.CreateRes> postPosts(@AuthenticationPrincipal Principal principal,
-                                                       @Valid @RequestBody PostsDto.CreateReq postsDto) {
+    public ResponseEntity<PostsDto.CreateRes> createPosts(@AuthenticationPrincipal Principal principal,
+                                                          @Valid @RequestBody PostsDto.CreateReq postsDto) {
         Member loginMember = memberService.findMember(principal.getName());
         // 이미지 처리
         PostsDto.CreatePostsImagesReq saveImages = postsDto.getSaveImages();
@@ -57,7 +56,7 @@ public class PostsController {
 
     // 삭제 :   주의 : RequestParam post-id <<< posts-id 가 아님
     @DeleteMapping("/{post-id}")
-    public ResponseEntity<Void> deletePosts(@AuthenticationPrincipal Principal principal,
+    public ResponseEntity<Void> removePosts(@AuthenticationPrincipal Principal principal,
                                             @Valid @Positive @PathVariable("post-id") Long postsId) {
         Member loginMember = memberService.findMember(principal.getName());
         postsService.removePosts(loginMember, postsId);
@@ -66,9 +65,9 @@ public class PostsController {
 
     // 수정
     @PatchMapping("/{post-id}")
-    public ResponseEntity<PostsDto.UpdateRes> patchPosts(@AuthenticationPrincipal Principal principal,
-                                                        @Valid @RequestBody PostsDto.UpdateReq updateReqDto,
-                                                        @Valid @Positive @PathVariable("post-id") Long postsId) {
+    public ResponseEntity<PostsDto.UpdateRes> modifyPosts(@AuthenticationPrincipal Principal principal,
+                                                          @Valid @RequestBody PostsDto.UpdateReq updateReqDto,
+                                                          @Valid @Positive @PathVariable("post-id") Long postsId) {
         Member loginMember = memberService.findMember(principal.getName());
         // 이미지 처리
         PostsDto.UpdatePostsImagesReq saveImages = updateReqDto.getSaveImages();
@@ -86,21 +85,21 @@ public class PostsController {
 
     // 상세 조회
     @GetMapping("/{post-id}")
-    public ResponseEntity<PostsDto.PostsDetailRes> getPostsDetail(@AuthenticationPrincipal Principal principal,
-                                                                  @Valid @Positive @PathVariable("post-id") Long postsId) {
+    public ResponseEntity<PostsDto.PostsDetailRes> findPostsDetails(@AuthenticationPrincipal Principal principal,
+                                                                    @Valid @Positive @PathVariable("post-id") Long postsId) {
         Long loginMemberId = null;
         if (principal != null) {
             Member loginMember = memberService.findMember(principal.getName());
             loginMemberId = loginMember.getId();
         }
-        PostsDto.PostsDetailRes postsDetail = postsService.findPostsDetail(postsId, loginMemberId);
+        PostsDto.PostsDetailRes postsDetail = postsService.findPostsDetails(postsId, loginMemberId);
         return new ResponseEntity<>(postsDetail, HttpStatus.OK);
     }
 
     // 목록 조회
     @GetMapping
-    public ResponseEntity<PostsDto.PostsListRes> getPostsList(@Valid @Positive @RequestParam int page,
-                                                              @Valid @NotBlank @RequestParam String orderby) {
+    public ResponseEntity<PostsDto.PostsListRes> findPostsList(@Valid @Positive @RequestParam int page,
+                                                               @Valid @NotBlank @RequestParam String orderby) {
         Posts.OrderBy orderBy = checkOrderBy(orderby);
         PostsDto.PostsListRes response = postsService.findPostsList(page, orderBy);
         return new ResponseEntity<>(response, HttpStatus.OK);
@@ -108,10 +107,10 @@ public class PostsController {
 
     // 검색
     @GetMapping("/search")
-    public ResponseEntity<PostsDto.PostsListRes> getSearchPostsList(@RequestParam String keyword,
-                                                                    @RequestParam String[] tags,
-                                                                    @Valid @Positive @RequestParam int page,
-                                                                    @Valid @NotBlank @RequestParam String orderby) {
+    public ResponseEntity<PostsDto.PostsListRes> findPostsListBySearch(@RequestParam String keyword,
+                                                                       @RequestParam String[] tags,
+                                                                       @Valid @Positive @RequestParam int page,
+                                                                       @Valid @NotBlank @RequestParam String orderby) {
         Posts.OrderBy orderBy = checkOrderBy(orderby);
         PostsDto.PostsListRes response = postsService.findPostsListByTagsAndTitle(keyword, tags, page, orderBy);
         return new ResponseEntity<>(response, HttpStatus.OK);

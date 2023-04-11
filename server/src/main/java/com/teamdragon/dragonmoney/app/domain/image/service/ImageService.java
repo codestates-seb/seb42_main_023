@@ -26,13 +26,13 @@ public class ImageService {
     private Integer FILE_MAX_SIZE;
 
     // 허용 이미지 확장자
-    private final String[] PERMISSION_FILE_EXT_ARR = {"GIF", "JPEG", "JPG", "PNG"};
+    private static final String[] PERMISSION_FILE_EXT_ARR = {"GIF", "JPEG", "JPG", "PNG"};
 
     private final S3Service s3Service;
     private final ImageRepository imageRepository;
 
     // 이미지 업로드
-    public Image saveImage(Member loginMember, MultipartFile multipartFile) {
+    public Image createImage(Member loginMember, MultipartFile multipartFile) {
         // 파일 크기 검사
         checkFileSize(multipartFile);
         // 확장자 검사
@@ -44,11 +44,11 @@ public class ImageService {
         // 클라우드 업로드
         String url = uploadImageToCloud(multipartFile, ext, storeFileName);
         // DB 업로드
-        return saveImageToDB(loginMember, url, ext, storeFileName);
+        return createImageToDB(loginMember, url, ext, storeFileName);
     }
 
     // 이미지들 검색
-    public List<Image> findImages(List<Image> images) {
+    public List<Image> findImageList(List<Image> images) {
         if (images == null || images.isEmpty()) {
             return null;
         }
@@ -59,7 +59,7 @@ public class ImageService {
     }
 
     // 이미지들 삭제
-    public void removeImages(Member loginMember, List<Image> removeImages) {
+    public void removeImageList(Member loginMember, List<Image> removeImages) {
         if (removeImages == null || removeImages.isEmpty()) {
             return;
         }
@@ -69,13 +69,13 @@ public class ImageService {
             return;
         }
         // DB 삭제
-        removeImageFromDB(findImages);
+        removeImageListFromDB(findImages);
         // 클라우드 복수 이미지 삭제
-        removeImagesFromCloud(findImages);
+        removeImageListFromCloud(findImages);
     }
 
     // 복수 이미지 삭제 : DB
-    public void removeImageFromDB(List<Image> removeImages) {
+    public void removeImageListFromDB(List<Image> removeImages) {
         List<Long> imageIds = removeImages.stream()
                 .map(Image::getId)
                 .collect(Collectors.toList());
@@ -83,22 +83,21 @@ public class ImageService {
     }
 
     // 복수 이미지 삭제 : 클라우드
-    public void removeImagesFromCloud(List<Image> removeImages) {
+    public void removeImageListFromCloud(List<Image> removeImages) {
         List<String> deleteFileNames = removeImages.stream()
                 .map(Image::getFileName)
                 .collect(Collectors.toList());
-        s3Service.removeFiles(deleteFileNames);
+        s3Service.removeFileList(deleteFileNames);
     }
 
     // 이미지 업로드 : 클라우드
     private String uploadImageToCloud(MultipartFile multipartFile, String ext, String storeFileName)  {
         String url = s3Service.uploadFile(multipartFile, ext, storeFileName);
-
         return url;
     }
 
     // 이미지 저장 : DB
-    private Image saveImageToDB(Member loginMember, String url, String ext, String storeFileName) {
+    private Image createImageToDB(Member loginMember, String url, String ext, String storeFileName) {
         Image image = Image.builder()
                 .url(url)
                 .uploader(loginMember)

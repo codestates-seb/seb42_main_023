@@ -4,7 +4,6 @@ import com.teamdragon.dragonmoney.app.domain.member.service.MemberService;
 import com.teamdragon.dragonmoney.app.global.auth.jwt.JwtTokenizer;
 import com.teamdragon.dragonmoney.app.global.auth.service.OAuth2Service;
 import com.teamdragon.dragonmoney.app.global.auth.utils.CustomAuthorityUtils;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler;
@@ -47,27 +46,27 @@ public class OAuth2MemberHandler extends SimpleUrlAuthenticationSuccessHandler {
         List<String> authorities = authorityUtils.createRoles(email);
 
         // 탈퇴 후 복구할 회원
-        if(memberService.checkDeletedName(email)) {
-            String name = memberService.getNameBySearchEmail(email);
+        if(memberService.isDeletedMemberByEmail(email)) {
+            String name = memberService.findMemberNameByEmail(email);
             String tempAccessToken = oAuth2Service.delegateTempAccessToken(name);
 
-            oAuth2Service.updatedTempAccessToken(name, tempAccessToken);
+            oAuth2Service.updateTempAccessToken(name, tempAccessToken);
 
             redirectForComeBackMember(request, response, tempAccessToken, authorities);
         }
         // 이미 있는 회원
-        else if(memberService.checkOAuthMemberName(email)) {
-            String name = memberService.getNameBySearchEmail(email);
+        else if(memberService.checkOAuthMemberByEmail(email)) {
+            String name = memberService.findMemberNameByEmail(email);
             String tempAccessToken = oAuth2Service.delegateTempAccessToken(name);
 
-            oAuth2Service.updatedTempAccessToken(name, tempAccessToken);
+            oAuth2Service.updateTempAccessToken(name, tempAccessToken);
 
             redirectForTempAccessToken(request, response, tempAccessToken, authorities);
         }
         // 신규 회원
        else {
             String tempName = UUID.randomUUID().toString();
-            memberService.saveMember("google", picture, tempName, email, authorities);
+            memberService.createMember("google", picture, tempName, email, authorities);
 
             redirectNameCheckPage(request, response, tempName);
         }

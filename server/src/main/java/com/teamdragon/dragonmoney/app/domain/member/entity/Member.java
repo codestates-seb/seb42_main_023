@@ -77,7 +77,7 @@ public class Member extends BaseTimeEntity {
         this.roles = roles;
     }
 
-    public static enum MemberState {
+    public enum MemberState {
         ACTIVE("활성"),
         DELETED("탈퇴");
 

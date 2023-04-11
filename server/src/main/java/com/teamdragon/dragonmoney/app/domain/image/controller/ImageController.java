@@ -32,17 +32,17 @@ public class ImageController {
                                                               @RequestParam("image") MultipartFile file) {
         Member loginMember = finderService.findVerifiedMemberByName(principal.getName());
 
-        Image saveImage = imageService.saveImage(loginMember, file);
+        Image saveImage = imageService.createImage(loginMember, file);
         ImageDto.ImageResponse imageResponse = imageMapper.imageToImageResponse(saveImage);
         return new ResponseEntity<>(imageResponse, HttpStatus.CREATED);
     }
 
     @PostMapping("/images/drop")
-    public ResponseEntity<Void> deleteImage(@AuthenticationPrincipal Principal principal,
+    public ResponseEntity<Void> removeImage(@AuthenticationPrincipal Principal principal,
                                             @Valid @RequestBody ImageDto.DeleteImagesReq imagesDto) {
         Member loginMember = finderService.findVerifiedMemberByName(principal.getName());
         List<Image> images = imageMapper.imageDtoListToImageList(imagesDto.getRemoveImages());
-        imageService.removeImages(loginMember, images);
+        imageService.removeImageList(loginMember, images);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 }

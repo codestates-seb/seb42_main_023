@@ -75,10 +75,10 @@ public class ReportService {
     // 신고한 글 세부 내용 조회
     public ReportDto.ReportDetailRes findReport(Long reportId) {
         Report report = findVerifiedReport(reportId);
-        String targetType = renameTheTargetType(report.getTargetType());
+        String targetType = renameTargetType(report.getTargetType());
         String content = findContent(report, targetType);
-        String writer = findReportContentWriter(reportId, targetType);
-        Long postId = findPostIdToReport(report, targetType);
+        String writer = findReportByContentWriter(reportId, targetType);
+        Long postId = findPostsIdByReport(report, targetType);
 
         ReportDto.ReportDetailRes reportDetailRes = ReportDto.ReportDetailRes.builder()
                 .report(report)
@@ -127,10 +127,10 @@ public class ReportService {
             postsService.removeRepostedPosts(targetPosts.getWriter(), targetPosts);
         } else if (report.getTargetComment() != null) {
             Comment targetComment = finderService.findVerifyCommentById(report.getTargetComment().getId());
-            commentService.removeReportComment(targetComment);
+            commentService.removeCommentByReport(targetComment);
         } else {
             Reply targetReply = finderService.findVerifyReplyById(report.getTargetReply().getId());
-            replyService.removeReportReply(targetReply);
+            replyService.removeReplyByReport(targetReply);
         }
 
         reportRepository.save(report);
@@ -147,7 +147,7 @@ public class ReportService {
     }
 
     // targetType 한글로 변환
-    private String renameTheTargetType (String targetType) {
+    private String renameTargetType(String targetType) {
         if(targetType.equals(POST_ENG)) {
             return targetType.replace(POST_ENG, POST_KOR);
         } else if (targetType.equals(COMMENT_ENG)) {
@@ -160,7 +160,7 @@ public class ReportService {
     }
 
     // 신고된 글을 쓴 작성자 조회
-    private String findReportContentWriter (Long reportId, String targetType) {
+    private String findReportByContentWriter(Long reportId, String targetType) {
         if(targetType.equals(POST_KOR)) {
             return reportRepository.findReportPostsWriter(reportId);
 
@@ -174,13 +174,11 @@ public class ReportService {
     }
 
     // 신고된 글 조회
-    private Long findPostIdToReport(Report report, String targetType) {
+    private Long findPostsIdByReport(Report report, String targetType) {
         if(targetType.equals(POST_KOR)) {
             return report.getTargetPosts().getId();
-
         } else if (targetType.equals(COMMENT_KOR)) {
             return report.getTargetComment().getPosts().getId();
-
         } else if (targetType.equals(REPLY_KOR)) {
             return report.getTargetReply().getComment().getPosts().getId();
         }

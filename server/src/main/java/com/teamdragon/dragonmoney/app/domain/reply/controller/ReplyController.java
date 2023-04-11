@@ -66,8 +66,8 @@ public class ReplyController {
 
     // 삭제
     @DeleteMapping("/replies/{reply-id}")
-    public ResponseEntity<Void> deleteReply(@AuthenticationPrincipal Principal principal,
-                                              @Valid @Positive @PathVariable("reply-id") Long replyId) {
+    public ResponseEntity<Void> removeReply(@AuthenticationPrincipal Principal principal,
+                                            @Valid @Positive @PathVariable("reply-id") Long replyId) {
         Member loginMember = memberService.findMember(principal.getName());
         replyService.removeReply(loginMember, replyId);
 
@@ -76,9 +76,9 @@ public class ReplyController {
 
     // 수정
     @PatchMapping("/replies/{reply-id}")
-    public ResponseEntity<ReplyDto.UpdateRes> updateReply(@AuthenticationPrincipal Principal principal,
-                                                              @Valid @RequestBody ReplyDto.UpdateReq replyDto,
-                                                              @Valid @Positive @PathVariable("reply-id") Long replyId) {
+    public ResponseEntity<ReplyDto.UpdateRes> modifyReply(@AuthenticationPrincipal Principal principal,
+                                                          @Valid @RequestBody ReplyDto.UpdateReq replyDto,
+                                                          @Valid @Positive @PathVariable("reply-id") Long replyId) {
         Member loginMember = memberService.findMember(principal.getName());
         Reply reply = replyMapper.updateDtoToReply(replyDto);
         Reply updateReply = replyService.updateReply(loginMember, replyId, reply);

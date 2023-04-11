@@ -34,11 +34,6 @@ public class ReplyService implements ThumbCountService {
 
     private static final int PAGE_ELEMENT_SIZE = 10;
 
-    // 단일 조회
-    public Reply findOne(Long replyId) {
-        return findVerifyReplyById(replyId);
-    }
-
     // 단일 조회 : Active 상태
     public Reply findOneStateActive(Long postsId) {
         Reply findReply = findVerifyReplyById(postsId);
@@ -71,7 +66,7 @@ public class ReplyService implements ThumbCountService {
     }
 
     // 여러 답글 삭제 : 부모 삭제로 인한 삭제
-    public void removeCommentsByParent(List<Reply> replies) {
+    public void removeReplyListByParent(List<Reply> replies) {
         for (Reply reply : replies) {
             reply.changeStateToDeleted(new DeleteResult(DeleteResult.Reason.DELETED_BY_PARENT));
         }
@@ -79,7 +74,7 @@ public class ReplyService implements ThumbCountService {
     }
 
     // 신고에 의한 삭제
-    public void removeReportReply(Reply reply) {
+    public void removeReplyByReport(Reply reply) {
         DeleteResult deleteResult
                 = DeleteResult.builder().deleteReason(DeleteResult.Reason.DELETED_BY_REPORT).build();
         reply.changeStateToDeleted(deleteResult);
@@ -119,7 +114,7 @@ public class ReplyService implements ThumbCountService {
     }
 
     @Override
-    public ThumbDto thumbupStateUpdate(Long replyId, boolean needInquiry, ThumbDto.ACTION action) {
+    public ThumbDto modifyThumbupState(Long replyId, boolean needInquiry, ThumbDto.ACTION action) {
         Reply findReply = findVerifyReplyById(replyId);
         if (action == ThumbDto.ACTION.PLUS) {
             findReply.plusThumbupCount();
@@ -134,7 +129,7 @@ public class ReplyService implements ThumbCountService {
     }
 
     @Override
-    public ThumbDto thumbdownStateUpdate(Long replyId, boolean needInquiry, ThumbDto.ACTION action) {
+    public ThumbDto modifyThumbdownState(Long replyId, boolean needInquiry, ThumbDto.ACTION action) {
         Reply findReply = findVerifyReplyById(replyId);
         if (action == ThumbDto.ACTION.PLUS) {
             findReply.plusThumbdownCount();
@@ -144,14 +139,6 @@ public class ReplyService implements ThumbCountService {
         Reply updateReply = replyRepository.save(findReply);
         if (needInquiry) {
             return updateReply.getThumbCount();
-        }
-        return null;
-    }
-
-    // 조회 필요 여부에 따른 좋아요,싫어요 정보 반환
-    private ThumbDto getThumbByNeedInquiry(boolean needInquiry, Long replyId) {
-        if (needInquiry) {
-            return findVerifyReplyById(replyId).getThumbCount();
         }
         return null;
     }

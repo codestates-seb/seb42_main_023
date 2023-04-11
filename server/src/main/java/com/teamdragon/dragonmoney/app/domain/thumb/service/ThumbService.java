@@ -162,11 +162,11 @@ public class ThumbService {
     private ThumbDto updateThumbupCount(ThumbDto.Target targetType, Long targetId, ThumbDto.ACTION action, boolean needInquiry) {
         switch (targetType) {
             case POSTS:
-                return postsService.thumbupStateUpdate(targetId, needInquiry, action);
+                return postsService.modifyThumbupState(targetId, needInquiry, action);
             case COMMENT:
-                return commentService.thumbupStateUpdate(targetId, needInquiry, action);
+                return commentService.modifyThumbupState(targetId, needInquiry, action);
             case REPLY:
-                return replyService.thumbupStateUpdate(targetId, needInquiry, action);
+                return replyService.modifyThumbupState(targetId, needInquiry, action);
         }
         throw new RuntimeException("Invalid Thumb TargetType");
     }
@@ -175,11 +175,11 @@ public class ThumbService {
     private ThumbDto updateThumbdownCount(ThumbDto.Target targetType, Long targetId, ThumbDto.ACTION action, boolean needInquiry) {
         switch (targetType) {
             case POSTS:
-                return postsService.thumbdownStateUpdate(targetId, needInquiry, action);
+                return postsService.modifyThumbdownState(targetId, needInquiry, action);
             case COMMENT:
-                return commentService.thumbdownStateUpdate(targetId, needInquiry, action);
+                return commentService.modifyThumbdownState(targetId, needInquiry, action);
             case REPLY:
-                return replyService.thumbdownStateUpdate(targetId, needInquiry, action);
+                return replyService.modifyThumbdownState(targetId, needInquiry, action);
         }
         throw new RuntimeException("Invalid Thumb TargetType");
     }
