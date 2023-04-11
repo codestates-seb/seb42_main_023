@@ -19,7 +19,6 @@ const Tag = ({ content }: Props) => {
 
 export default Tag;
 
-//삭제 버튼이 없는 태그
 export const TagItem = styled.button`
   position: relative;
   display: inline-flex;

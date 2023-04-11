@@ -1,6 +1,5 @@
 import React, { useEffect } from 'react';
 import styled from 'styled-components';
-import Cookies from 'js-cookie';
 import TitleInput from '../components/updatePostP/TitleInput';
 import BodyInput from '../components/updatePostP/BodyInput';
 import TagInput from '../components/updatePostP/TagInput';
@@ -16,12 +15,12 @@ import {
   setTag,
   setTitle,
 } from '../slices/postInputSlice';
-import axios from 'axios';
 import Loading from '../components/common/Loading';
 import { setBodyErr, setTitleErr } from '../slices/validationSlice';
+import { checkIsLogin } from '../../src/util/checkIsLogin';
 
-const deleteImgEP = process.env.REACT_APP_SERVER_ADDRESS + '/images/drop';
 const UpdatePost: React.FC = () => {
+  const isLogin = checkIsLogin();
   const dispatch = useAppDispatch();
   const state = useAppSelector((state) => state);
   const navigate = useNavigate();
@@ -29,12 +28,9 @@ const UpdatePost: React.FC = () => {
   const postId = Number(params.postId);
   const postQuery = postsApi.useGetPostQuery({ postId });
   const { data, isSuccess } = postQuery;
-
-  // 서버에서 받아오는 데이터
   const title = data?.title;
   const body = data?.content;
   const tags = data?.tags;
-  // 요청 보내는 데이터
   const titleValue = state.postInput?.title;
   const bodyValue = state.postInput?.body;
   const addedImg = state.post?.addedImg;
@@ -58,23 +54,32 @@ const UpdatePost: React.FC = () => {
   };
 
   const deletedImg = {
-    removedImages: removedImg,
+    removedImages: remain,
   };
-
-  // 로그인 확인
-  const auth = Cookies.get('Authorization');
-  const role = localStorage.getItem('role');
-  const name = localStorage.getItem('name');
-  const isLogin = auth && role && name;
-
   const [updatePost] = postsApi.useUpdatePostMutation();
   const [deleteImage] = postsApi.useDeleteImagesMutation();
 
-  const accsessToken = Cookies.get('Authorization');
   useEffect(() => {
-    if (!isLogin) navigate('/login');
+    scrollTo(0, 0);
+    if (!isLogin) {
+      navigate('/login');
+      return;
+    }
     dispatch(setBodyErr(''));
     dispatch(setTitleErr(''));
+
+    const cancelUpload = (e: BeforeUnloadEvent) => {
+      e.preventDefault();
+      deleteImage({ deletedImg });
+      e.returnValue = '';
+    };
+    (() => {
+      window.addEventListener('beforeunload', cancelUpload);
+    })();
+
+    return () => {
+      window.removeEventListener('beforeunload', cancelUpload);
+    };
   }, []);
 
   useEffect(() => {
@@ -95,6 +100,12 @@ const UpdatePost: React.FC = () => {
     dispatch(setIsEdit(false));
   }, [data]);
 
+  const canceldHandler = (): void => {
+    deleteImage({ deletedImg });
+    navigate('/');
+    return;
+  };
+
   const addPostHandler = (): void => {
     if (!state.postInput.isEdit) {
       alert('게시물에 변경사항이 없습니다.');
@@ -111,43 +122,19 @@ const UpdatePost: React.FC = () => {
       updatePost(reqBody)
         .unwrap()
         .then(() => navigate(`/posts/${data.postId}`));
-    } else {
-      if (state.validation.titleErr !== '' || state.postInput.title === '') {
-        alert('제목을 다시 확인해 주세요.');
-        return;
-      }
-      if (state.validation.bodyErr !== '' || state.postInput.body === '') {
-        alert('본문을 다시 확인해 주세요.');
-        return;
-      }
-      if (state.validation.tagErr !== '' || state.postInput.tag.length === 0) {
-        alert('태그를 1개 이상 추가해 주세요.');
-        return;
-      }
     }
-  };
-  // 페이지 이동 시 스크롤 최상단 이동
-  useEffect(() => {
-    scrollTo(0, 0);
-  }, []);
-
-  const preventClose = (e: BeforeUnloadEvent) => {
-    e.preventDefault();
-    deleteImage({ deletedImg });
-  };
-
-  useEffect(() => {
-    (() => {
-      window.addEventListener('beforeunload', preventClose);
-    })();
-
-    return () => {
-      window.removeEventListener('beforeunload', preventClose);
-    };
-  }, []);
-
-  const cancelAddHandler = (): void => {
-    navigate('/');
+    if (state.validation.titleErr !== '' || state.postInput.title === '') {
+      alert('제목을 다시 확인해 주세요.');
+      return;
+    }
+    if (state.validation.bodyErr !== '' || state.postInput.body === '') {
+      alert('본문을 다시 확인해 주세요.');
+      return;
+    }
+    if (state.validation.tagErr !== '' || state.postInput.tag.length === 0) {
+      alert('태그를 1개 이상 추가해 주세요.');
+      return;
+    }
   };
 
   return (
@@ -163,7 +150,7 @@ const UpdatePost: React.FC = () => {
             <CancleBtn
               onClick={() => {
                 deleteImage({ deletedImg });
-                cancelAddHandler();
+                canceldHandler();
               }}
             >
               취소
@@ -178,7 +165,6 @@ const UpdatePost: React.FC = () => {
 
 export default UpdatePost;
 
-// 페이지 컨테이너
 const Container = styled.div`
   display: flex;
   flex-direction: column;
