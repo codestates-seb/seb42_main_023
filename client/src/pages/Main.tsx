@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
-import PostList from '../components/mainP/PostList';
+import PostList from '../components/common/PostList';
 import DropdownButton from '../components/mainP/DropdownButton';
 import { AiOutlineTrophy } from 'react-icons/ai';
 import { NavBtn } from '../components/common/Btn';
@@ -85,7 +85,7 @@ const Main = () => {
           <DropdownButton />
         </div>
       </FilterWrap>
-      {isSuccess && <PostList posts={data.posts} currentPage={currentPage} />}
+      {isSuccess && <PostList posts={data.posts} />}
       {isSuccess && data.posts.length !== 0 && (
         <Pagenation
           pageInfo={data.pageInfo}

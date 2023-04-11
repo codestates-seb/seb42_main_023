@@ -1,27 +1,22 @@
 import React from 'react';
 import styled from 'styled-components';
-import WeeklyPopular from './WeeklyPopular';
-import { useAppSelector } from '../../hooks';
 import TimeIcon from '../../assets/common/TimeIcon';
 import ViewIcon from '../../assets/common/ViewIcon';
-import Thumnail from '../common/Thumbnail';
+import Thumnail from './Thumbnail';
 import CommentIcon from '../../assets/common/CommentIcon';
-import { TagItem } from '../common/Tag';
+import { TagItem } from './Tag';
 import { Link } from 'react-router-dom';
-import { getTimeSince } from '../common/timeCalculator';
+import { getTimeSince } from './timeCalculator';
 import { PostListItem } from '../../types/PostList';
 import { FaRegThumbsUp } from 'react-icons/fa';
 
 interface Props {
   posts: PostListItem[];
-  currentPage: number;
 }
 
-function PostList({ posts, currentPage }: Props) {
-  const { postCategory } = useAppSelector(({ main }) => main);
+function PostList({ posts }: Props) {
   return (
     <List>
-      {postCategory === '' && currentPage === 1 && <WeeklyPopular />}
       {posts.map((post: PostListItem) => {
         return (
           <Item key={post.postId}>
@@ -68,7 +63,7 @@ function PostList({ posts, currentPage }: Props) {
 
 export default PostList;
 
-const List = styled.ul`
+export const List = styled.ul`
   margin-top: -4px;
   border-top: 1px solid var(--border-color);
 `;

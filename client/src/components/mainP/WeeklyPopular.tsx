@@ -1,5 +1,4 @@
-import React, { useState, useEffect } from 'react';
-import LikeIcon from '../../assets/common/LikeIcon';
+import React from 'react';
 import TimeIcon from '../../assets/common/TimeIcon';
 import ViewIcon from '../../assets/common/ViewIcon';
 import CommentIcon from '../../assets/common/CommentIcon';
@@ -9,9 +8,10 @@ import { Link } from 'react-router-dom';
 import styled from 'styled-components';
 import { weeklyPopularApi } from '../../api/postListapi';
 import { getTimeSince } from '../common/timeCalculator';
-import { Itemside, Info, Tag } from './PostList';
+import { Itemside, Info, Tag } from '../common/PostList';
 import { PostListItem } from '../../types/PostList';
 import { FaRegThumbsUp } from 'react-icons/fa';
+import { Item } from '../common/PostList';
 
 function WeeklyPopular() {
   const weeklyPopularquery = weeklyPopularApi.useGetWeekPostListQuery({
@@ -20,7 +20,7 @@ function WeeklyPopular() {
   const { data, isSuccess } = weeklyPopularquery;
 
   return (
-    <>
+    <List>
       {isSuccess &&
         data.posts.map((post: PostListItem, index: number) => {
           return (
@@ -68,34 +68,23 @@ function WeeklyPopular() {
             </WeeklyBestItem>
           );
         })}
-    </>
+    </List>
   );
 }
 
 export default WeeklyPopular;
-const Item = styled.li`
+const List = styled.ul`
+  margin-top: -4px;
+  border-top: 1px solid var(--border-color);
+`;
+
+const WeeklyBestItem = styled(Item)`
+  background-color: var(--background-blue-color);
   a {
-    height: 100px;
-    border-bottom: 1px solid var(--border-color);
-    box-sizing: border-box;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    padding: 0 30px;
-    h1 {
-      font-size: 20px;
-      margin-bottom: 4px;
-    }
-    > div:nth-child(2) {
-      flex-grow: 1;
-    }
     :hover {
       background-color: var(--background-hover-blue-color);
     }
   }
-`;
-const WeeklyBestItem = styled(Item)`
-  background-color: var(--background-blue-color);
   h1 {
     div {
       position: relative;

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
-import PostList from '../components/mainP/PostList';
+import PostList from '../components/common/PostList';
 import DropdownButton from '../components/mainP/DropdownButton';
 import { useAppSelector } from '../hooks';
 import { postListApi } from '../api/postListapi';
@@ -8,7 +8,6 @@ import Pagenation from '../components/common/Pagination';
 import { AiOutlineExclamationCircle } from 'react-icons/ai';
 
 const Search = () => {
-  //페이지네이션
   const [pageOffset, setPageOffset] = useState(0);
   const [currentPage, setCurrentPage] = useState(1);
 
@@ -36,9 +35,7 @@ const Search = () => {
           <h1>검색결과가 없습니다.</h1>
         </Nodata>
       )}
-      {isSuccess && data.posts.length !== 0 && (
-        <PostList posts={data.posts} currentPage={currentPage} />
-      )}
+      {isSuccess && data.posts.length !== 0 && <PostList posts={data.posts} />}
       {isSuccess && data.posts.length !== 0 && (
         <Pagenation
           pageInfo={data.pageInfo}

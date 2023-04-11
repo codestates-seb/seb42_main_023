@@ -12,8 +12,8 @@ import Pagination from '../common/Pagination';
 import { FaBookmark } from 'react-icons/fa';
 import { PostListItem } from '../../types/PostList';
 import { FaRegThumbsUp } from 'react-icons/fa';
-import { Tag } from '../mainP/PostList';
-import { Item, Itemside, Info } from '../mainP/PostList';
+import { Tag } from '../common/PostList';
+import { Item, Itemside, Info } from '../common/PostList';
 import { PostListWrap } from './MyPostList';
 import Nolist from './Nolist';
 
