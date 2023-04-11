@@ -4,7 +4,7 @@ import styled from 'styled-components';
 import parse from 'html-react-parser';
 import _ from 'lodash';
 import { useNavigate } from 'react-router-dom';
-import { timeSince } from '../mainP/Timecalculator';
+import { getTimeSince } from '../common/timeCalculator';
 import DislikeIcon from '../../assets/common/DislikeIcon';
 import LikeIcon from '../../assets/common/LikeIcon';
 import {
@@ -16,7 +16,8 @@ import {
   ReportProps,
 } from '../../types/PostDetail';
 import { repliesApi } from '../../api/replyApi';
-import { membersApi } from '../../api/memberapi';
+import { membersApi } from '../../api/memberApi';
+// Slices
 import { setReportType, setSelectedMember } from '../../slices/postSlice';
 import { setCommentId } from '../../slices/commentSlice';
 import { isEdit, setIsEdit, setReplyId } from '../../slices/replySlice';
@@ -193,7 +194,8 @@ const Reply: React.FC<Partial<ReplyProps & ReportProps>> = ({
       dispatch(setReportType(event.target.dataset.category!));
     }
   };
-  const time = timeSince(replyInfo!.createdAt);
+  // 시간 계산
+  const time = getTimeSince(replyInfo!.createdAt);
 
   return (
     <ReplyContainer onClick={outClickIntroHandler}>

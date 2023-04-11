@@ -4,7 +4,7 @@ import _ from 'lodash';
 import parse from 'html-react-parser';
 import { useParams, useNavigate } from 'react-router';
 import { useAppDispatch, useAppSelector } from '../hooks';
-import { timeSince } from '../components/mainP/Timecalculator';
+import { getTimeSince } from '../components/common/timeCalculator';
 import Comment from '../components/postDetailP/Comment';
 import CommentInput from '../components/postDetailP/CommentInput';
 import RecommendedPost from '../components/postDetailP/RecommendedPost';
@@ -29,7 +29,7 @@ import {
 import { postsApi } from '../api/postApi';
 import { commentsApi } from '../api/commentApi';
 import { repliesApi } from '../api/replyApi';
-import { membersApi } from '../api/memberapi';
+import { membersApi } from '../api/memberApi';
 import { reportApi } from '../api/reportApi';
 import {
   setIsOpenFilter,
@@ -86,7 +86,7 @@ const PostDetail: React.FC = () => {
   const loginUserName = window.localStorage.getItem('name');
   const postDetailQuery = postsApi.useGetPostQuery({ postId });
   const { data, isSuccess, isLoading, refetch } = postDetailQuery;
-  const time = timeSince(isSuccess && data?.createdAt);
+  const time = getTimeSince(isSuccess && data?.createdAt);
   const isEdit = data?.modifiedAt !== data?.createdAt ? true : false;
   const parsedData = parse(String(data?.content));
   const deleteConfirm = `${deleteType}을 정말 삭제하시겠습니까?`;
@@ -107,6 +107,30 @@ const PostDetail: React.FC = () => {
     },
   );
 
+  // 게시글 서버 데이터 저장
+  // 데이터 받아서 로컬 스테이트로 저장 ( 댓글, 좋아요, 싫어요, 북마크)
+  useEffect(() => {
+    if (isSuccess) {
+      setIsLike(data?.isThumbup);
+      setIsDislike(data?.isThumbdown);
+      setLike(data?.thumbupCount);
+      setDislike(data?.thumbDownCount);
+      setBookmark(data?.isBookmarked);
+      setViews(data?.viewCount);
+      setCommentCnt(data?.commentCount);
+    }
+  }, [data]);
+
+  // 페이지 이동 시 스크롤 최상단 이동
+  useEffect(() => {
+    if ('post' in state && state.post.isOpenFilter) {
+      dispatch(setIsOpenFilter(true));
+    }
+    scrollTo(0, 0);
+    refetch();
+  }, [postId]);
+
+  // 좋아요 클릭 함수
   const changeLiikeHandler = (): void => {
     if (!isLogin) navigate('/login');
     if (loginUserName) {

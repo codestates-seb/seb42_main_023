@@ -21,10 +21,6 @@ interface Intro {
   type: string;
   payload: string;
 }
-interface Query {
-  type: string;
-  payload: string;
-}
 const mypageSlice = createSlice({
   name: 'mypagestates',
   initialState: {
@@ -37,27 +33,21 @@ const mypageSlice = createSlice({
     query: '',
   },
   reducers: {
-    // 정렬필터
     setFilter: (state, action: MemberPost): void => {
       state.filter = action.payload;
     },
-    // 정렬옵션 선택창
     setFilterOpen: (state, action: Open): void => {
       state.dropOpen = action.payload;
     },
-    // 자기소개 입력창
     setEditOpen: (state, action: Open): void => {
       state.EditOpen = action.payload;
     },
-    // 자기소개 div width
     setEditWidth: (state, action: Width): void => {
       state.EditWidth = action.payload;
     },
-    // 자기소개
     setContent: (state, action: Intro): void => {
       state.content = action.payload;
     },
-    // 회원탈퇴 확인창
     setDeleteAccountOpen: (state, action: Open): void => {
       state.deleteAccountOpen = action.payload;
     },

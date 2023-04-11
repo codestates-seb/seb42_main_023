@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { useParams } from 'react-router';
 import { useAppDispatch, useAppSelector } from '../../hooks';
-import { timeSince } from '../mainP/Timecalculator';
+import { getTimeSince } from '../common/timeCalculator';
 import { useNavigate } from 'react-router';
 import styled from 'styled-components';
 import _ from 'lodash';
@@ -25,7 +25,7 @@ import {
 } from '../../types/PostDetail';
 import { commentsApi } from '../../api/commentApi';
 import { repliesApi } from '../../api/replyApi';
-import { membersApi } from '../../api/memberapi';
+import { membersApi } from '../../api/memberApi';
 import { setReportType, setSelectedMember } from '../../slices/postSlice';
 import {
   setCommentId,
@@ -283,7 +283,8 @@ const Comment: React.FC<
                   ).filter((reply: Partial<ReplyType>) => {
                     return reply.commentId === comment.commentId;
                   });
-                const time = timeSince(comment.createdAt);
+                // 시간 계산
+                const time = getTimeSince(comment.createdAt);
 
                 const commentIsEdit =
                   comment.modifiedAt !== comment.createdAt ? true : false;
