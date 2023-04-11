@@ -1,12 +1,8 @@
-// 패키지 등
 import React from 'react';
 import styled from 'styled-components';
 import { Link } from 'react-router-dom';
-// 컴포넌트
 import CommentIcon from '../../assets/common/CommentIcon';
-// API
 import { recommendedPostsApi } from '../../api/recommendPostApi';
-// 타입
 import { PostType } from '../../types/PostDetail';
 
 const RecommendedPost: React.FC = () => {
