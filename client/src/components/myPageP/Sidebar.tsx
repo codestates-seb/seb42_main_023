@@ -14,23 +14,18 @@ function Sidebar() {
   });
   const { data, isSuccess } = membersQuery;
 
-  //작성한 글 요청핸들러
   const getMemberPost = () => {
     dispatch(setFilter('작성한 글'));
   };
-  //작성한 댓글 요청핸들러
   const getMemberComments = () => {
     dispatch(setFilter('작성한 댓글'));
   };
-  //작성한 좋아요한 글 요청핸들러
   const getMemberLikePost = () => {
     dispatch(setFilter('좋아요한 글'));
   };
-  //좋아요한 댓글 요청핸들러
   const getMemberLikeComments = () => {
     dispatch(setFilter('좋아요한 댓글'));
   };
-  //북마크 요청핸들러
   const getMemberBookmark = () => {
     dispatch(setFilter('북마크'));
   };

@@ -20,12 +20,10 @@ function Profile() {
   const { data, isSuccess, refetch } = membersQuery;
   const loginuser = localStorage.getItem('name');
 
-  //회원정보에 들어올 때마다 데이터 업데이트
   useEffect(() => {
     refetch();
   }, []);
 
-  //자기소개 input토글//
   const EditOpenHandler = () => {
     if (data.member.intro) {
       setContent(data.member.intro);
@@ -35,7 +33,7 @@ function Profile() {
       dispatch(setEditWidth(divRef.current?.offsetWidth + 20));
     }
   };
-  //자기소개 수정
+
   const updateMemberMutaion = membersApi.useUpdateMemberMutation();
   const [updateMember] = updateMemberMutaion;
   const submitHandler = () => {

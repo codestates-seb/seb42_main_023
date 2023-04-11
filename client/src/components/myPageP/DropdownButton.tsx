@@ -15,11 +15,9 @@ const DropdownButton = () => {
   const handleSelect = (option: '로그아웃' | '회원탈퇴') => {
     dispatch(setFilterOpen(false));
 
-    // 회원탈퇴 시 확인메세지창을 띄우고, '네'를 클릭시 회원탈퇴가 되며 저장되어 있던 쿠키와 유저정보를 제거한다.
     if (option === '회원탈퇴') {
       dispatch(setDeleteAccountOpen(true));
     }
-    // 로그아웃시 저장되어 있던 쿠키와, 로컬스토리지에 있던 유저 정보를 제거한다.
     if (option === '로그아웃') {
       Cookies.remove('Authorization');
       Cookies.remove('Refresh');
