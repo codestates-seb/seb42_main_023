@@ -31,7 +31,7 @@ import {
 // API
 import { commentsApi } from '../../api/commentApi';
 import { repliesApi } from '../../api/replyApi';
-import { membersApi } from '../../api/memberapi';
+import { membersApi } from '../../api/memberApi';
 // Slices
 import { setReportType, setSelectedMember } from '../../slices/postSlice';
 import {

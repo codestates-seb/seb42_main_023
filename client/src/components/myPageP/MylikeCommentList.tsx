@@ -1,16 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import { useAppSelector } from '../../hooks';
-import { FaRegThumbsDown } from 'react-icons/fa';
-import { FaRegThumbsUp } from 'react-icons/fa';
-import TimeIcon from '../../assets/common/TimeIcon';
-import { membersCommentsListApi } from '../../api/memberapi';
-import { getTimeSince } from '../common/timeCalculator';
+import { membersCommentsListApi } from '../../api/memberApi';
 import { PostListWrap } from './MyPostList';
 import Pagination from '../common/Pagination';
-import { CommentType } from '../../types/PostList';
-import { Link } from 'react-router-dom';
+import { CommentListItem } from '../../types/PostList';
 import Nolist from './Nolist';
+import CommentItem from './CommentItem';
 
 const MylikeCommentList = () => {
   const [pageOffset, setPageOffset] = useState(0);
@@ -36,32 +32,8 @@ const MylikeCommentList = () => {
         )}
         {isSuccess &&
           data.comments.length !== 0 &&
-          data.comments.map((item: CommentType) => {
-            return (
-              <li key={item.commentId}>
-                <Link to={`/posts/${item.postId}`}>
-                  {item.comment === '신고된 댓글입니다.' ? (
-                    <div style={{ color: '#94969b' }}>{item.comment}</div>
-                  ) : (
-                    <div>{item.comment}</div>
-                  )}
-                  <CommentInfo>
-                    <span>
-                      <TimeIcon />
-                      {getTimeSince(item.createdAt)}
-                    </span>
-                    <span>
-                      <FaRegThumbsUp size={13} />
-                      {item.thumbupCount}
-                    </span>
-                    <span>
-                      <FaRegThumbsDown size={13} />
-                      {item.thumbdownCount}
-                    </span>
-                  </CommentInfo>
-                </Link>
-              </li>
-            );
+          data.comments.map((item: CommentListItem) => {
+            return <CommentItem item={item} key={item.commentId} />;
           })}
       </List>
       {isSuccess && data.comments.length !== 0 && (

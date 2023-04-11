@@ -7,10 +7,10 @@ import { BsTrophy } from 'react-icons/bs';
 import { Link } from 'react-router-dom';
 import styled from 'styled-components';
 import { getTimeSince } from '../common/timeCalculator';
-import { Itemside, Info, Tag } from '../common/PostItem';
+import { Itemside, Info, Tag } from './PostItem';
 import { PostListItem } from '../../types/PostList';
 import { FaRegThumbsUp } from 'react-icons/fa';
-import { Item } from '../common/PostItem';
+import { Item } from './PostItem';
 
 function WeeklyPopularPost({
   post,

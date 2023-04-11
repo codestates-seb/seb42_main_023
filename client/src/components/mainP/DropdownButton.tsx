@@ -72,12 +72,12 @@ const DropdownButton = () => {
   );
 };
 
-const Dropdown = styled.div`
+export const Dropdown = styled.div`
   position: relative;
   display: inline-block;
 `;
 
-const Button = styled.button`
+export const Button = styled.button`
   border: none;
   cursor: pointer;
   width: 78px;
@@ -92,9 +92,9 @@ const Button = styled.button`
   }
 `;
 
-const List = styled.ul`
+export const List = styled.ul`
   position: absolute;
-  top: 100%;
+  top: 30px;
   left: 0;
   z-index: 1;
   list-style: none;
@@ -105,7 +105,7 @@ const List = styled.ul`
   box-shadow: 0 2px 8px 0 rgba(0, 0, 0, 0.2);
 `;
 
-const ListItem = styled.li`
+export const ListItem = styled.li`
   padding: 10px;
   font-size: 16px;
   cursor: pointer;

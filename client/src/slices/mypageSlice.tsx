@@ -21,10 +21,6 @@ interface Intro {
   type: string;
   payload: string;
 }
-interface Query {
-  type: string;
-  payload: string;
-}
 const mypageSlice = createSlice({
   name: 'mypagestates',
   initialState: {

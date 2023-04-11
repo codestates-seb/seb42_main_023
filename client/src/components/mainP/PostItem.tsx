@@ -2,23 +2,31 @@ import React from 'react';
 import styled from 'styled-components';
 import TimeIcon from '../../assets/common/TimeIcon';
 import ViewIcon from '../../assets/common/ViewIcon';
-import Thumnail from './Thumbnail';
+import Thumnail from '../common/Thumbnail';
 import CommentIcon from '../../assets/common/CommentIcon';
-import { TagItem } from './Tag';
+import { TagItem } from '../common/Tag';
 import { Link } from 'react-router-dom';
-import { getTimeSince } from './timeCalculator';
+import { getTimeSince } from '../common/timeCalculator';
 import { PostListItem } from '../../types/PostList';
 import { FaRegThumbsUp } from 'react-icons/fa';
 
 function PostItem({ post }: { post: PostListItem }) {
   return (
     <Item>
-      <Link to={`/posts/${post.postId}`}>
+      <Link
+        to={
+          post.title !== '신고된 게시글입니다.' ? `/posts/${post.postId}` : `#`
+        }
+      >
         <div>
           <Thumnail content={post.imgUrl} />
         </div>
         <div>
-          <h1>{post.title}</h1>
+          {post.title === '신고된 게시글입니다.' ? (
+            <h1 style={{ color: '#94969b' }}>{post.title}</h1>
+          ) : (
+            <h1>{post.title}</h1>
+          )}
           <Itemside>
             <div>
               {post.tags.map((tag, idx) => (
@@ -71,11 +79,6 @@ export const Item = styled.li`
     }
     :hover {
       background-color: var(--background-color);
-    }
-    .disabled-link {
-      pointer-events: none;
-      opacity: 0.5;
-      cursor: not-allowed;
     }
   }
 `;

@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import { useNavigate } from 'react-router-dom';
-import { membersApi } from '../../api/memberapi';
+import { membersApi } from '../../api/memberApi';
 import { useAppSelector, useAppDispatch } from '../../hooks';
 import { setMemberName } from '../../slices/headerSlice';
 import Cookies from 'js-cookie';

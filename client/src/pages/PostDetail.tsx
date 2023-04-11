@@ -34,7 +34,7 @@ import {
 import { postsApi } from '../api/postApi';
 import { commentsApi } from '../api/commentApi';
 import { repliesApi } from '../api/replyApi';
-import { membersApi } from '../api/memberapi';
+import { membersApi } from '../api/memberApi';
 import { reportApi } from '../api/reportApi';
 // slices
 import {

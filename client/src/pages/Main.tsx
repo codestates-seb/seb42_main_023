@@ -10,7 +10,7 @@ import { setPostCategory } from '../slices/mainSlice';
 import Pagenation from '../components/common/Pagination';
 import { RiMoneyDollarCircleLine } from 'react-icons/ri';
 import Loading from '../components/common/Loading';
-import PostItem from '../components/common/PostItem';
+import PostItem from '../components/mainP/PostItem';
 import { PostListItem } from '../types/PostList';
 import WeeklyPopularPost from '../components/mainP/WeeklyPopularPost';
 

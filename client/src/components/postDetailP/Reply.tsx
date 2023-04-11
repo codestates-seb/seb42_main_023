@@ -21,7 +21,7 @@ import {
 } from '../../types/PostDetail';
 // API
 import { repliesApi } from '../../api/replyApi';
-import { membersApi } from '../../api/memberapi';
+import { membersApi } from '../../api/memberApi';
 // Slices
 import { setReportType, setSelectedMember } from '../../slices/postSlice';
 import { setCommentId } from '../../slices/commentSlice';

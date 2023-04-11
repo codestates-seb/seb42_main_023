@@ -14,7 +14,7 @@ export interface PostListItem {
   thumbupCount: number;
   commentCount: number;
 }
-export interface CommentType {
+export interface CommentListItem {
   commentId: number;
   postId: number;
   memberName: string;
