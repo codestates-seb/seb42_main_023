@@ -12,10 +12,10 @@ const Search = () => {
   const [pageOffset, setPageOffset] = useState(0);
   const [currentPage, setCurrentPage] = useState(1);
 
-  const { postSetting, orderby } = useAppSelector(({ main }) => main);
+  const { postCategory, orderby } = useAppSelector(({ main }) => main);
   const { searchQuery } = useAppSelector(({ header }) => header);
   const postListquery = postListApi.useGetPostListQuery({
-    postSetting: postSetting,
+    postSetting: postCategory,
     page: currentPage,
     orderby: orderby,
     search: searchQuery,

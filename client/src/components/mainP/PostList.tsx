@@ -18,10 +18,10 @@ interface Props {
 }
 
 function PostList({ posts, currentPage }: Props) {
-  const { postSetting } = useAppSelector(({ main }) => main);
+  const { postCategory } = useAppSelector(({ main }) => main);
   return (
     <List>
-      {postSetting === '' && currentPage === 1 && <WeeklyPopular />}
+      {postCategory === '' && currentPage === 1 && <WeeklyPopular />}
       {posts.map((post: PostListItem) => {
         return (
           <Item key={post.postId}>

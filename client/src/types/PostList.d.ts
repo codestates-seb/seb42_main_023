@@ -24,9 +24,9 @@ export interface CommentType {
   isModified: boolean;
   replyCount: number;
   thumbupCount: number;
-  thumbdownCount: number; //thumbDownCount
+  thumbdownCount: number;
   isThumbup: boolean;
   isThumbdown: boolean;
   length: number;
-  comment: string; //content
+  comment: string;
 }

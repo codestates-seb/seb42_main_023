@@ -6,7 +6,7 @@ import { AiOutlineTrophy } from 'react-icons/ai';
 import { NavBtn } from '../components/common/Btn';
 import { useAppDispatch, useAppSelector } from '../hooks';
 import { postListApi } from '../api/postListapi';
-import { setPostSetting } from '../slices/mainSlice';
+import { setPostCategory } from '../slices/mainSlice';
 import Pagenation from '../components/common/Pagination';
 import { RiMoneyDollarCircleLine } from 'react-icons/ri';
 import Loading from '../components/common/Loading';
@@ -18,10 +18,10 @@ const Main = () => {
   const [pageOffset, setPageOffset] = useState(0);
   const [currentPage, setCurrentPage] = useState(1);
 
-  const { postSetting, orderby } = useAppSelector(({ main }) => main);
+  const { postCategory, orderby } = useAppSelector(({ main }) => main);
   const { searchQuery } = useAppSelector(({ header }) => header);
   const postListquery = postListApi.useGetPostListQuery({
-    postSetting: postSetting,
+    postSetting: postCategory,
     page: currentPage,
     orderby: orderby,
     search: searchQuery,
@@ -50,20 +50,20 @@ const Main = () => {
       </Banner>
       <FilterWrap>
         <div>
-          {postSetting === '' ? (
+          {postCategory === '' ? (
             <ClickComuntyBtn>커뮤니티</ClickComuntyBtn>
           ) : (
             <ComuntyBtn
               onClick={() => {
                 setCurrentPage(1);
                 setPageOffset(0);
-                dispatch(setPostSetting(''));
+                dispatch(setPostCategory(''));
               }}
             >
               커뮤니티
             </ComuntyBtn>
           )}
-          {postSetting === '/best-awards' ? (
+          {postCategory === '/best-awards' ? (
             <ClickComuntyBtn>
               <AiOutlineTrophy size={20} />
               명예의전당
@@ -73,7 +73,7 @@ const Main = () => {
               onClick={() => {
                 setCurrentPage(1);
                 setPageOffset(0);
-                dispatch(setPostSetting('/best-awards'));
+                dispatch(setPostCategory('/best-awards'));
               }}
             >
               <AiOutlineTrophy size={20} />

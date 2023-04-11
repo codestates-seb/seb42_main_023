@@ -1,13 +1,14 @@
-import React, { useRef, useEffect } from 'react';
+import React, { useRef, useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { BsFillCaretDownFill } from 'react-icons/bs';
-import { useAppDispatch, useAppSelector } from '../../hooks';
-import { setFilter, setFilterOpen, setOrderby } from '../../slices/mainSlice';
+import { useAppDispatch } from '../../hooks';
+import { setOrderby } from '../../slices/mainSlice';
 import { setCurrentPage } from '../../slices/mainSlice';
 
 const DropdownButton = () => {
   const dispatch = useAppDispatch();
-  const { filter, filterOpen } = useAppSelector(({ main }) => main);
+  const [filterOpen, setFilterOpen] = useState(false);
+  const [filter, setFilter] = useState('최신순');
   const dropdownRef = useRef<HTMLDivElement>(null);
   const options: ['최신순', '좋아요순', '조회순'] = [
     '최신순',
@@ -15,9 +16,9 @@ const DropdownButton = () => {
     '조회순',
   ];
 
-  const handleSelect = (option: '최신순' | '좋아요순' | '조회순') => {
-    dispatch(setFilter(option));
-    dispatch(setFilterOpen(false));
+  const selectFilterHandler = (option: '최신순' | '좋아요순' | '조회순') => {
+    setFilter(option);
+    setFilterOpen(false);
     if (option === '최신순') {
       dispatch(setCurrentPage(1));
       dispatch(setOrderby('latest'));
@@ -32,36 +33,36 @@ const DropdownButton = () => {
     }
   };
 
-  const handleToggle = () => {
-    dispatch(setFilterOpen(!filterOpen));
+  const openFilterHandler = () => {
+    setFilterOpen(!filterOpen);
   };
 
-  const handleClickOutside = (event: MouseEvent) => {
+  const clickOutsideHandler = (event: MouseEvent) => {
     if (
       dropdownRef.current &&
       !dropdownRef.current.contains(event.target as Node)
     ) {
-      dispatch(setFilterOpen(false));
+      setFilterOpen(false);
     }
   };
 
   useEffect(() => {
-    document.addEventListener('mousedown', handleClickOutside);
+    document.addEventListener('mousedown', clickOutsideHandler);
     return () => {
-      document.removeEventListener('mousedown', handleClickOutside);
+      document.removeEventListener('mousedown', clickOutsideHandler);
     };
   }, []);
 
   return (
     <Dropdown ref={dropdownRef}>
-      <Button onClick={handleToggle}>
+      <Button onClick={openFilterHandler}>
         {filter}
         <BsFillCaretDownFill />
       </Button>
       {filterOpen && (
         <List>
           {options.map((option) => (
-            <ListItem key={option} onClick={() => handleSelect(option)}>
+            <ListItem key={option} onClick={() => selectFilterHandler(option)}>
               {option}
             </ListItem>
           ))}
