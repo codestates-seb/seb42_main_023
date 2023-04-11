@@ -44,7 +44,7 @@ const SetNickname: React.FC = () => {
       setNicknameErrMsg(null);
       postNickname({ name: nickname, tempName: tempName })
         .unwrap()
-        .then((response) => {
+        .then((response: { useable: boolean }) => {
           console.log('res in nickname', response);
           if (response.useable) {
             navigate('/login');
@@ -52,7 +52,7 @@ const SetNickname: React.FC = () => {
             setNicknameErrMsg('중복된 닉네임입니다.');
           }
         })
-        .catch((err) => {
+        .catch((err: Error) => {
           console.log('err in nickname', err);
         });
       return;
