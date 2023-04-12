@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useAppDispatch, useAppSelector } from '../../hooks';
 import { commentsApi } from '../../api/commentApi';
-import { CommentInputProps } from '../../types/PostDetail';
+import { CommentInputProps } from '../../types/Post';
 import { addCommentEdit, setComment } from '../../slices/commentSlice';
 import { isOpened } from '../../slices/replySlice';
 import { checkIsLogin } from '../../util/checkIsLogin';

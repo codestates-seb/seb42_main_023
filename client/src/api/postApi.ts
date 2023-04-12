@@ -51,15 +51,6 @@ export const postsApi = apiSlice
           };
         },
       }),
-      // 이미지 추가
-      // addImages: builder.mutation({
-      //   query: ({ postId }) => {
-      //     return {
-      //       url: `posts/${postId}`,
-      //       method: 'POST',
-      //     };
-      //   },
-      // }),
 
       deleteImages: builder.mutation({
         query: ({ deletedImg }) => {

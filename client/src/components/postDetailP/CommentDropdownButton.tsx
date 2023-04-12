@@ -2,7 +2,7 @@ import React, { useRef, useEffect } from 'react';
 import styled from 'styled-components';
 import { useAppDispatch, useAppSelector } from '../../hooks';
 import { BsFillCaretDownFill } from 'react-icons/bs';
-import { CommentProps } from '../../types/PostDetail';
+import { CommentProps } from '../../types/Post';
 import {
   setFilter,
   setFilterOpen,
