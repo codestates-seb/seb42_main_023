@@ -23,7 +23,7 @@ import { ReactComponent as NoCheckedIcon } from '../assets/noChecked.svg';
 import { postsApi } from '../api/postApi';
 import { commentsApi } from '../api/commentApi';
 import { repliesApi } from '../api/replyApi';
-import { membersApi } from '../api/memberapi';
+import { membersApi } from '../api/membersApi';
 import { reportApi } from '../api/reportApi';
 import {
   setIsOpenFilter,
