@@ -11,7 +11,7 @@ import { AiOutlineSearch } from 'react-icons/ai';
 import { TagItemWidthDelete } from '../common/Tag';
 import { MdCancel } from 'react-icons/md';
 import SearchBtn from './SearchToggle';
-import { setPostSetting } from '../../slices/mainSlice';
+import { setPostCategory } from '../../slices/mainSlice';
 import { setSearchQuery } from '../../slices/headerSlice';
 import { useNavigate } from 'react-router-dom';
 
@@ -80,7 +80,7 @@ const SearchBar: React.FC = () => {
     if (input[0] === '#') {
       validation();
     } else {
-      dispatch(setPostSetting('/search'));
+      dispatch(setPostCategory('/search'));
       //tag x keyword o
       if (tag.length === 0 && input.length !== 0) {
         dispatch(setSearchQuery(`&keyword=${input}&tags=`));

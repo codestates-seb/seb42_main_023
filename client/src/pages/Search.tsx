@@ -1,45 +1,43 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import styled from 'styled-components';
-import PostList from '../components/mainP/PostList';
+import PostItem from '../components/mainP/PostItem';
 import DropdownButton from '../components/mainP/DropdownButton';
 import { useAppSelector } from '../hooks';
 import { postListApi } from '../api/postListapi';
 import Pagenation from '../components/common/Pagination';
-import { AiOutlineExclamationCircle } from 'react-icons/ai';
+import { PostListItem } from '../types/PostList';
+import { List } from '../pages/Main';
+import Nolist from '../components/myPageP/Nolist';
 
 const Search = () => {
-  //페이지네이션
   const [pageOffset, setPageOffset] = useState(0);
   const [currentPage, setCurrentPage] = useState(1);
 
-  const { postSetting, orderby } = useAppSelector(({ main }) => main);
+  const { postCategory, orderby } = useAppSelector(({ main }) => main);
   const { searchQuery } = useAppSelector(({ header }) => header);
   const postListquery = postListApi.useGetPostListQuery({
-    postSetting: postSetting,
+    postSetting: postCategory,
     page: currentPage,
     orderby: orderby,
     search: searchQuery,
   });
-  const { data, isSuccess } = postListquery;
+  const { data } = postListquery;
 
   return (
     <>
       <FilterWrap>
-        {isSuccess && <h1>검색결과 {data.posts.length}개</h1>}
+        <h1>검색결과 {data?.posts.length}개</h1>
         <DropdownButton />
       </FilterWrap>
-      {isSuccess && data.posts.length === 0 && (
-        <Nodata>
-          <div>
-            <AiOutlineExclamationCircle size={80} />
-          </div>
-          <h1>검색결과가 없습니다.</h1>
-        </Nodata>
+      {data?.posts.length === 0 && <Nolist name={'검색결과가'} />}
+      {data?.posts.length !== 0 && (
+        <List>
+          {data?.posts.map((post: PostListItem) => {
+            return <PostItem post={post} key={post.postId} />;
+          })}
+        </List>
       )}
-      {isSuccess && data.posts.length !== 0 && (
-        <PostList posts={data.posts} currentPage={currentPage} />
-      )}
-      {isSuccess && data.posts.length !== 0 && (
+      {data && data.posts.length !== 0 && (
         <Pagenation
           pageInfo={data.pageInfo}
           pageOffset={pageOffset}
@@ -59,19 +57,5 @@ const FilterWrap = styled.div`
   h1 {
     font-size: 20px;
     font-weight: 400;
-  }
-`;
-const Nodata = styled.div`
-  display: flex;
-  align-items: center;
-  justify-items: center;
-  flex-direction: column;
-  margin-top: 80px;
-  svg {
-    color: var(--border-color);
-    margin-bottom: 20px;
-  }
-  h1 {
-    font-size: 24px;
   }
 `;

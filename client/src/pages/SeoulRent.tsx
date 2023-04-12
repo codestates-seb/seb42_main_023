@@ -16,32 +16,22 @@ interface StyleProps {
 }
 function SeoulRent() {
   const tooltipRef = useRef<HTMLDivElement>(null);
-  // 데이터 api
   const seoulrentquery = seoulrentApi.useGetSeoulRentListQuery({
     query: '',
   });
   const { data, isSuccess } = seoulrentquery;
 
-  //툴팁 위치정보 저장
-  // const [tooltipPosition, setTooltipPosition] = useState({ x: 0, y: 0 });
-  //클릭한 지역정보
   const [clickedArea, setClickedArea] = useState('');
-  //클릭한 지역 월세
   const [monthlyRent, setMonthlyRent] = useState('');
-  //클릭한 지역 전세
   const [jeonse, setJeonse] = useState('');
-  //보증금
   const [diposit, setDiposit] = useState('');
-  //tooltip open
   const [openTooltip, setOpentooltip] = useState(false);
 
-  //1000단위 콤마표시
   function numberWithCommas(str: string): string {
-    const num: number = parseInt(str.replace(/[^0-9]/g, ''), 10); // 숫자 이외의 문자 제거 후 정수형으로 변환
-    return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ','); // 1000 단위로 콤마 추가
+    const num: number = parseInt(str.replace(/[^0-9]/g, ''), 10);
+    return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
   }
 
-  //바깥 클릭시 tooltip 닫힘
   const handleClickOutside = (event: MouseEvent) => {
     if (
       tooltipRef.current &&

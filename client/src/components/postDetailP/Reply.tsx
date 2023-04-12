@@ -4,7 +4,7 @@ import styled from 'styled-components';
 import parse from 'html-react-parser';
 import _ from 'lodash';
 import { useNavigate } from 'react-router-dom';
-import { timeSince } from '../mainP/Timecalculator';
+import { getTimeSince } from '../common/timeCalculator';
 import DislikeIcon from '../../assets/common/DislikeIcon';
 import LikeIcon from '../../assets/common/LikeIcon';
 import {
@@ -193,7 +193,7 @@ const Reply: React.FC<Partial<ReplyProps & ReportProps>> = ({
       dispatch(setReportType(event.target.dataset.category!));
     }
   };
-  const time = timeSince(replyInfo!.createdAt);
+  const time = getTimeSince(replyInfo!.createdAt);
   const isDeleted = replyInfo?.content === '삭제된 답글입니다.';
   const isReported = replyInfo?.content === '신고된 답글입니다.';
   return (
