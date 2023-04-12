@@ -2,9 +2,9 @@ name: React CI with npm
 
 on:
   push:
-    branches: ["main, fe-dev"]
+    branches: ["fe-dev"]
   pull_request:
-    branches: ["main, fe-dev"]
+    branches: ["fe-dev"]
 
 # 리전, 버킷 이름
 permissions:

@@ -5,7 +5,7 @@ import { useAppDispatch } from '../../hooks';
 import { repliesApi } from '../../api/replyApi';
 import { setCommentId } from '../../slices/commentSlice';
 import { setReply } from '../../slices/replySlice';
-import { CommentProps, ReplyInputProps } from '../../types/PostDetail';
+import { CommentProps, ReplyInputProps } from '../../types/Post';
 import { checkIsLogin } from '../../util/checkIsLogin';
 
 const ReplyInput: React.FC<ReplyInputProps> = ({
@@ -67,7 +67,7 @@ const ReplyInput: React.FC<ReplyInputProps> = ({
             : 'inlineblock',
       }}
     >
-      <InputWrap>
+      <InputContainer>
         <textarea
           id="reply"
           placeholder="답글을 남겨 주세요"
@@ -83,7 +83,7 @@ const ReplyInput: React.FC<ReplyInputProps> = ({
           onChange={checkValue}
           onInput={resizeHeightHandler}
         ></textarea>
-      </InputWrap>
+      </InputContainer>
       <ButtonContainer>
         <CanceReplyBtn onClick={cancelHandler}> 취소</CanceReplyBtn>
         {!replyRef.current?.value ? (
@@ -134,7 +134,7 @@ const ReplyInputContainer = styled.div`
   }
 `;
 
-const InputWrap = styled.div`
+const InputContainer = styled.div`
   display: flex;
   textarea {
     box-sizing: border-box;

@@ -1,62 +1,3 @@
-import { validationStateType } from './PostDetail.d';
-import { type } from '@testing-library/user-event/dist/type';
-
-export interface PostStateType {
-  post: {
-    isOpenFilter: boolean;
-    reportOption: unknown;
-    reportType: unknown;
-    currentImg: unknown;
-    removedImg: unknown;
-    totalImg: unknown;
-    addedImg: unknown;
-    remainImg: unknown;
-    selectedMember: unknown;
-  };
-}
-
-export interface CommentStateType {
-  comment: {
-    commentValue: string;
-    commentId: unknown;
-    isEdit: Array<boolean>;
-    filter: string;
-    filterOpen: boolean;
-    orderby: string;
-    page: unknwon;
-  };
-}
-
-export interface ReplyStateType {
-  reply: {
-    replyValue: string;
-    replyId: number;
-    isEdit: Array<boolean>;
-    isOpened: Array<boolean>;
-    totalReplies: Array;
-    page: number;
-  };
-}
-
-export interface ValidationStateType {
-  validation: {
-    titleErr: string;
-    bodyErr: string;
-    tagErr: string;
-    reportErr: string;
-  };
-}
-
-export interface PostInputStateType {
-  postInput: {
-    body: string;
-    tag: Array<object>;
-    tagContent: string;
-    title: string;
-    isEdit: boolean;
-  };
-}
-
 export interface PostType {
   recommends: Array<PostType>;
   commentCount: number;
@@ -159,6 +100,19 @@ export interface ReportProps {
   isReplyOpenIntro: boolean;
   setIsOpenCommentIntro?: (bool: boolean) => void;
   setIsOpenReplyIntro?: (bool: boolean) => void;
+}
+
+export interface PostListItem {
+  postId: number;
+  imgUrl: string;
+  title: string;
+  tags: Tags[];
+  memberName: string;
+  createdAt: string;
+  modified_at: string;
+  viewCount: number;
+  thumbupCount: number;
+  commentCount: number;
 }
 
 export interface OnClick {

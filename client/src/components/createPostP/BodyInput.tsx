@@ -18,7 +18,7 @@ interface ImgObj {
   imageName: string;
 }
 
-const url = process.env.REACT_APP_SERVER_ADDRESS + '/images';
+const uploadImgEp = process.env.REACT_APP_SERVER_ADDRESS + '/images';
 const BodyInput: React.FC = () => {
   const dispatch = useAppDispatch();
   const state = useAppSelector((state) => state);
@@ -27,7 +27,6 @@ const BodyInput: React.FC = () => {
   const addedImg = state.post?.addedImg;
   const accsessToken = Cookies.get('Authorization');
 
-  //  문자열을 HTML currentImg 변환
   const stringToHTML = function (str: string): HTMLElement {
     const dom = document.createElement('div');
     dom.innerHTML = str;
@@ -71,7 +70,6 @@ const BodyInput: React.FC = () => {
     checkImage();
   }, [bodyValue]);
 
-  // 에디터 이미지
   const imageHandler = (): void => {
     const input = document.createElement('input');
     input.setAttribute('type', 'file');
@@ -83,7 +81,7 @@ const BodyInput: React.FC = () => {
       formData.append('image', file);
 
       try {
-        const result = await axios.post(url, formData, {
+        const result = await axios.post(uploadImgEp, formData, {
           headers: {
             'Content-Type': 'multipart/form-data',
             Authorization: accsessToken,

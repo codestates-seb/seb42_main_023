@@ -7,17 +7,9 @@ import { useNavigate } from 'react-router-dom';
 import { getTimeSince } from '../../util/timeCalculator';
 import DislikeIcon from '../../assets/common/DislikeIcon';
 import LikeIcon from '../../assets/common/LikeIcon';
-import {
-  PostStateType,
-  ReplyStateType,
-  CommentStateType,
-  ReplyProps,
-  ReplyType,
-  ReportProps,
-} from '../../types/PostDetail';
+import { ReplyProps, ReplyType, ReportProps } from '../../types/Post';
 import { repliesApi } from '../../api/replyApi';
 import { membersApi } from '../../api/memberApi';
-// Slices
 import { setReportType, setSelectedMember } from '../../slices/postSlice';
 import { setCommentId } from '../../slices/commentSlice';
 import { isEdit, setIsEdit, setReplyId } from '../../slices/replySlice';
@@ -41,13 +33,8 @@ const Reply: React.FC<Partial<ReplyProps & ReportProps>> = ({
   const isLogin = checkIsLogin();
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
-  const state = useAppSelector(
-    (
-      state: PostStateType | ReplyStateType,
-    ): PostStateType | ReplyStateType | CommentStateType => {
-      return state;
-    },
-  );
+  const state = useAppSelector((state) => state);
+
   const [editReply, setEditReply] = useState<string>('');
   const [replyData, setReplyData] = useState<Array<ReplyType>>([]);
   const [selectedReply, setSelectedReply] = useState<string>('');
@@ -144,10 +131,7 @@ const Reply: React.FC<Partial<ReplyProps & ReportProps>> = ({
       return;
     }
   };
-  if (
-    replyQuery.isSuccess &&
-    (state as ReplyStateType).reply.isEdit === undefined
-  ) {
+  if (replyQuery.isSuccess && state.reply?.isEdit === undefined) {
     const edit = Array.from(
       { length: replyQuery.data?.replies.length },
       (el) => (el = false),
@@ -194,9 +178,9 @@ const Reply: React.FC<Partial<ReplyProps & ReportProps>> = ({
       dispatch(setReportType(event.target.dataset.category!));
     }
   };
-  // 시간 계산
   const time = getTimeSince(replyInfo!.createdAt);
-
+  const isDeleted = replyInfo?.content === '삭제된 답글입니다.';
+  const isReported = replyInfo?.content === '신고된 답글입니다.';
   return (
     <ReplyContainer onClick={outClickIntroHandler}>
       <ReplyInfo key={replyInfo?.replyId}>
@@ -236,7 +220,7 @@ const Reply: React.FC<Partial<ReplyProps & ReportProps>> = ({
                 <button
                   className="intro-moreInfo"
                   onClick={() => {
-                    dispatch(setMemberName(replyInfo?.memberName));
+                    dispatch(setMemberName(replyInfo!.memberName));
                     navigate('/mypage');
                   }}
                 >
@@ -251,7 +235,7 @@ const Reply: React.FC<Partial<ReplyProps & ReportProps>> = ({
           {'reply' in state &&
           replyInfo?.replyId === replyId &&
           ((replySucccess && state.reply.isEdit !== undefined) || null) &&
-          state.reply.isEdit[idx!] ? (
+          state.reply!.isEdit![idx!] ? (
             <li
               className="reply-update"
               id="edit"
@@ -267,15 +251,12 @@ const Reply: React.FC<Partial<ReplyProps & ReportProps>> = ({
                 }
                 dispatch(setIsEdit(idx!));
                 updateMutation({
-                  replyId: replyInfo.replyId,
+                  replyId: replyInfo!.replyId,
                   content: editReply,
                 });
               }}
             >
-              {replyInfo.content === '삭제된 답글입니다.' ||
-              replyInfo.content === '신고된 답글입니다.'
-                ? null
-                : '변경'}
+              {isDeleted || isReported ? null : '변경'}
             </li>
           ) : (
             <li
@@ -292,10 +273,7 @@ const Reply: React.FC<Partial<ReplyProps & ReportProps>> = ({
                 initData(event);
               }}
             >
-              {replyInfo?.content === '삭제된 답글입니다.' ||
-              replyInfo?.content === '신고된 답글입니다.'
-                ? null
-                : '수정'}
+              {isDeleted || isReported ? null : '수정'}
             </li>
           )}
           {loginUserName === replyInfo?.memberName ? (
@@ -314,10 +292,7 @@ const Reply: React.FC<Partial<ReplyProps & ReportProps>> = ({
                 confirmDeleteHandler();
               }}
             >
-              {replyInfo?.content === '삭제된 답글입니다.' ||
-              replyInfo?.content === '신고된 답글입니다.'
-                ? null
-                : '삭제'}
+              {isDeleted || isReported ? null : '삭제'}
             </li>
           ) : null}
 
@@ -339,15 +314,9 @@ const Reply: React.FC<Partial<ReplyProps & ReportProps>> = ({
               reportTypeChecker(event);
             }}
           >
-            {replyInfo?.content === '삭제된 답글입니다.'
-              ? null
-              : replyInfo?.content === '신고된 답글입니다.'
-              ? null
-              : '신고'}
+            {isDeleted ? null : isReported ? null : '신고'}
           </li>
-          {replyInfo?.content ===
-          '삭제된 답글입니다.' ? null : replyInfo?.content ===
-            '신고된 답글입니다.' ? null : (
+          {isDeleted ? null : isReported ? null : (
             <>
               <button
                 onClick={_.debounce(
@@ -383,9 +352,9 @@ const Reply: React.FC<Partial<ReplyProps & ReportProps>> = ({
       </ReplyInfo>
       <ReplyContent>
         {'reply' in state &&
-        replyInfo!.replyId === replyId &&
-        state.reply?.isEdit[idx!] ? (
-          <InputWrap>
+        replyInfo?.replyId === replyId &&
+        state.reply!.isEdit![idx!] ? (
+          <InputContainer>
             <textarea
               id="edit-reply"
               className="edit-reply"
@@ -394,25 +363,20 @@ const Reply: React.FC<Partial<ReplyProps & ReportProps>> = ({
               onChange={valueCheck}
               onInput={handleResizeHeight}
             ></textarea>
-          </InputWrap>
+          </InputContainer>
         ) : (
           <div
             className="reply-content"
             style={{
-              color:
-                replyInfo?.content === '삭제된 답글입니다.'
-                  ? '#94969b'
-                  : replyInfo?.content === '신고된 답글입니다.'
-                  ? '#94969b'
-                  : '#000000',
+              color: isDeleted ? '#94969b' : isReported ? '#94969b' : '#000000',
             }}
           >
             {parse(String(replyInfo?.content))}
 
             <div className="edit-confirm">
-              {replyIsEdit && replyInfo?.content === '삭제된 답글입니다.'
+              {replyIsEdit && isDeleted
                 ? null
-                : replyIsEdit && replyInfo?.content === '신고된 답글입니다.'
+                : replyIsEdit && isReported
                 ? null
                 : replyIsEdit
                 ? '(수정됨)'
@@ -596,7 +560,7 @@ const ReplyContent = styled.div`
   }
 `;
 
-const InputWrap = styled.div`
+const InputContainer = styled.div`
   display: flex;
   textarea {
     box-sizing: border-box;
