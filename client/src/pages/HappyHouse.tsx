@@ -17,15 +17,43 @@ interface House {
   noticeEndDay: string;
   recruitDay: string;
 }
+
+type NoticeState =
+  | 'all'
+  | 'open'
+  | 'receiving'
+  | 'close'
+  | 'consult'
+  | 'modified';
+
+type Location =
+  | 'seoul'
+  | 'busan'
+  | 'daegu'
+  | 'incheon'
+  | 'gwangju'
+  | 'daejeon'
+  | 'ulsan'
+  | 'sejong'
+  | 'jeju'
+  | 'gangwondo'
+  | 'gyeonggido'
+  | 'chungcheongnamdo'
+  | 'chungcheongbukdo'
+  | 'jeollanamdo'
+  | 'jeollabukdo'
+  | 'gyengsangnamdo'
+  | 'gyengsangbukdo';
+
 const HappyHouse: React.FC = () => {
   useEffect(() => {
     window.scrollTo(0, 0);
   }, []);
 
-  const [currentPage, setCurrentPage] = useState(1);
-  const [pageOffset, setPageOffset] = useState(0);
-  const [state, setState] = useState('all');
-  const [location, setLocation] = useState('seoul');
+  const [currentPage, setCurrentPage] = useState<number>(1);
+  const [pageOffset, setPageOffset] = useState<number>(0);
+  const [state, setState] = useState<NoticeState>('all');
+  const [location, setLocation] = useState<Location>('seoul');
 
   const { data, isSuccess } = useGetHappyHouseQuery({
     page: currentPage,
@@ -33,28 +61,16 @@ const HappyHouse: React.FC = () => {
     location: location,
   });
 
-  const filterByStateHandler = (state: string) => {
-    if (state === 'all') {
-      setState('all');
-    } else if (state === 'open') {
-      setState('open');
-    } else if (state === 'receiving') {
-      setState('receiving');
-    } else if (state === 'close') {
-      setState('close');
-    } else if (state === 'consult') {
-      setState('consult');
-    } else if (state === 'modified') {
-      setState('modified');
-    }
+  const filterByStateHandler = (state: NoticeState) => {
+    setState(state);
   };
 
   const changeSelectHandler = (event: React.ChangeEvent<HTMLSelectElement>) => {
-    setLocation(event.target.value);
+    setLocation(event.target.value as Location);
   };
 
   return (
-    <MainContainer>
+    <Container>
       <div className="content-container">
         <Head>
           <h1>청년들을 위한 임대 · 행복주택공고</h1>
@@ -185,13 +201,13 @@ const HappyHouse: React.FC = () => {
           />
         )}
       </div>
-    </MainContainer>
+    </Container>
   );
 };
 
 export default HappyHouse;
 
-const MainContainer = styled.div`
+const Container = styled.div`
   > .content-container {
     width: 100%;
     height: 100%;
@@ -204,7 +220,7 @@ const MainContainer = styled.div`
     }
   }
 `;
-// 행복주택 페이지 상단에 제목 컨테이너
+
 const Head = styled.div`
   h1 {
     font-size: 24px;
@@ -215,7 +231,7 @@ const Head = styled.div`
     margin-bottom: 40px;
   }
 `;
-// 행복주택 페이지 상단에 설명을 담는 컨테이너
+
 const Title = styled.div`
   margin-bottom: 60px;
   background-color: var(--background-dark-color);
@@ -235,7 +251,6 @@ const Title = styled.div`
   }
 `;
 
-// 공고상태와 지역 필터링
 const Filter = styled.div`
   display: flex;
   justify-content: space-between;
@@ -272,7 +287,6 @@ const Filter = styled.div`
   }
 `;
 
-// 공고 리스트
 const Table = styled.table`
   width: 100%;
   margin-top: -1px;
@@ -302,7 +316,6 @@ const Table = styled.table`
   }
 `;
 
-// '보기'버튼
 const SeeDetailBtn = styled(WhiteBtn)`
   width: 40px;
   height: 20px;
