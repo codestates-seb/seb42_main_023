@@ -1,10 +1,10 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { useParams } from 'react-router';
 import { useAppDispatch, useAppSelector } from '../../hooks';
+import { useNavigate, useParams } from 'react-router-dom';
 import { getTimeSince } from '../common/timeCalculator';
-import { useNavigate } from 'react-router';
+import debounce from 'lodash/debounce';
+import uniqBy from 'lodash/uniqBy';
 import styled from 'styled-components';
-import _ from 'lodash';
 import parse from 'html-react-parser';
 import ReplyInput from './ReplyInput';
 import DislikeIcon from '../../assets/common/DislikeIcon';
@@ -228,22 +228,20 @@ const Comment: React.FC<
     setCommentData(commentQuery.data?.comments);
   }, [replyQuery.data, commentQuery.data]);
 
-  useEffect(() => {
-    if (commentQuery.isSuccess && state.reply?.isOpened === undefined) {
-      const open = Array.from(
-        { length: commentQuery.data?.comments?.length },
-        (el) => (el = false),
-      );
-      dispatch(isOpened(open));
-    }
-    if (commentQuery.isSuccess && state.comment.isEdit === undefined) {
-      const edit = Array.from(
-        { length: commentQuery.data.comments?.length },
-        (el) => (el = false),
-      );
-      dispatch(isEdit(edit as Array<boolean>));
-    }
-  }, []);
+  if (commentQuery.isSuccess && state.reply?.isOpened === undefined) {
+    const open = Array.from(
+      { length: commentQuery.data?.comments?.length },
+      (el) => (el = false),
+    );
+    dispatch(isOpened(open));
+  }
+  if (commentQuery.isSuccess && state.comment?.isEdit === undefined) {
+    const edit = Array.from(
+      { length: commentQuery.data.comments?.length },
+      (el) => (el = false),
+    );
+    dispatch(isEdit(edit as Array<boolean>));
+  }
 
   return (
     <>
@@ -260,10 +258,7 @@ const Comment: React.FC<
                 const filtered: Array<ReplyType> =
                   state.reply.totalReplies! &&
                   (
-                    _.uniqBy(
-                      state.reply.totalReplies,
-                      'replyId',
-                    ) as Array<object>
+                    uniqBy(state.reply.totalReplies, 'replyId') as Array<object>
                   ).filter((reply: Partial<ReplyType>) => {
                     return reply.commentId === comment.commentId;
                   });
@@ -353,11 +348,11 @@ const Comment: React.FC<
                                 !commentEditTextareaRef.current?.value &&
                                 !isDeleted
                               ) {
-                                dispatch(setIsEdit(idx));
+                                dispatch(setIsEdit(idx!));
 
                                 return;
                               }
-                              dispatch(setIsEdit(idx));
+                              dispatch(setIsEdit(idx!));
                               updateMutation({
                                 postId: postId,
                                 commentId: comment?.commentId,
@@ -439,7 +434,7 @@ const Comment: React.FC<
                         {isDeleted ? null : isReported ? null : (
                           <>
                             <button
-                              onClick={_.debounce(
+                              onClick={debounce(
                                 () => {
                                   commentLiikeHandler(comment);
                                 },
@@ -453,7 +448,7 @@ const Comment: React.FC<
                               {comment.thumbupCount}
                             </li>
                             <button
-                              onClick={_.debounce(
+                              onClick={debounce(
                                 () => {
                                   commentDislikeHandler(comment);
                                 },

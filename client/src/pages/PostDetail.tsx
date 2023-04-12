@@ -1,10 +1,11 @@
 import React, { useEffect, useRef, useState } from 'react';
 import styled from 'styled-components';
-import _ from 'lodash';
+import throttle from 'lodash/throttle';
 import parse from 'html-react-parser';
 import { useParams, useNavigate } from 'react-router';
 import { useAppDispatch, useAppSelector } from '../hooks';
 import { getTimeSince } from '../components/common/timeCalculator';
+import debounce from 'lodash/debounce';
 import Comment from '../components/postDetailP/Comment';
 import CommentInput from '../components/postDetailP/CommentInput';
 import RecommendedPost from '../components/postDetailP/RecommendedPost';
@@ -531,7 +532,7 @@ const PostDetail: React.FC = () => {
                 <li className="comments">{commentCnt}</li>
                 <Bookmark
                   className="bookmark"
-                  onClick={_.throttle(() => {
+                  onClick={throttle(() => {
                     changeBookmarkHandler();
                   }, 300)}
                 >
@@ -558,7 +559,7 @@ const PostDetail: React.FC = () => {
                   })}
                 </TagConatiner>
                 <button
-                  onClick={_.debounce(
+                  onClick={debounce(
                     () => {
                       changeLiikeHandler();
                     },
@@ -570,7 +571,7 @@ const PostDetail: React.FC = () => {
                 </button>
                 <li className="likes">{like!}</li>
                 <button
-                  onClick={_.debounce(
+                  onClick={debounce(
                     () => {
                       changeDislikeHandler();
                     },
