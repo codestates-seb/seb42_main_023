@@ -1,7 +1,7 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { useNavigate, useLocation } from 'react-router-dom';
-import { useAppSelector, useAppDispatch } from '../../hooks';
+import { useAppSelector } from '../../hooks';
 import LoginBtn from './LoginBtn';
 import SearchBar from './SearchBar';
 import SearchBtn from './SearchToggle';
@@ -9,24 +9,21 @@ import PostBtn from './PostBtn';
 import MediumProfileImg from './MediumProfileImg';
 import HeaderNav from './HeaderNav';
 import { MdManageAccounts } from 'react-icons/md';
-import { setMemberImg, setMemberName } from '../../slices/headerSlice';
 import Cookies from 'js-cookie';
 
 function HeaderDefault() {
   const navigate = useNavigate();
-  const header = useAppSelector(({ header }) => header);
   const { pathname } = useLocation();
-  const dispatch = useAppDispatch();
+  const header = useAppSelector(({ header }) => header);
   const auth = Cookies.get('Authorization');
   const adim = localStorage.getItem('role');
+  const [memberImg, setMemberImg] = useState('');
 
   useEffect(() => {
     if (auth !== undefined) {
-      const memberImg = localStorage.getItem('picture');
-      const memberName = localStorage.getItem('name');
-      if (memberImg && memberName) {
-        dispatch(setMemberImg(memberImg));
-        dispatch(setMemberName(memberName));
+      const Img = localStorage.getItem('picture');
+      if (Img) {
+        setMemberImg(Img);
       }
     }
   }, []);
@@ -43,13 +40,13 @@ function HeaderDefault() {
           {auth === undefined && <LoginBtn />}
           {auth !== undefined && adim !== 'ADMIN' && (
             <>
-              <PostBtn /> <MediumProfileImg />
+              <PostBtn /> <MediumProfileImg memberImg={memberImg} />
             </>
           )}
           {auth !== undefined && adim === 'ADMIN' && (
             <Adminwrap>
               <PostBtn />
-              <MediumProfileImg />
+              <MediumProfileImg memberImg={memberImg} />
               <button onClick={() => navigate('reports/standby')}>
                 <MdManageAccounts size={30} />
               </button>

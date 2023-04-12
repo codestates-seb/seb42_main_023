@@ -2,7 +2,7 @@ import React, { useRef, useEffect } from 'react';
 import styled from 'styled-components';
 import { useAppDispatch } from '../../hooks';
 import { setDeleteAccountOpen } from '../../slices/mypageSlice';
-import { useDeleteMemberMutation } from '../../api/memberApi';
+import { useDeleteMemberMutation } from '../../api/memberapi';
 import { BlueBtn, WhiteBtn } from '../../components/common/Btn';
 import Cookies from 'js-cookie';
 
@@ -20,15 +20,15 @@ function DeleteModal() {
     window.location.href = '/';
   };
 
-  const handleClickOutside = (event: MouseEvent) => {
+  const clickOutsideHandler = (event: MouseEvent) => {
     if (modalRef.current && !modalRef.current.contains(event.target as Node)) {
       dispatch(setDeleteAccountOpen(false));
     }
   };
   useEffect(() => {
-    document.addEventListener('mousedown', handleClickOutside);
+    document.addEventListener('mousedown', clickOutsideHandler);
     return () => {
-      document.removeEventListener('mousedown', handleClickOutside);
+      document.removeEventListener('mousedown', clickOutsideHandler);
     };
   }, []);
   return (

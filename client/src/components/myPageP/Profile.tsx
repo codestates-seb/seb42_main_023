@@ -5,7 +5,7 @@ import DropdownButton from './DropdownButton';
 import ProfileEdit from './ProfileEdit';
 import { useAppDispatch, useAppSelector } from '../../hooks';
 import { setEditWidth } from '../../slices/mypageSlice';
-import { membersApi } from '../../api/memberApi';
+import { membersApi, useUpdateMemberMutation } from '../../api/memberapi';
 
 function Profile() {
   const dispatch = useAppDispatch();
@@ -34,8 +34,7 @@ function Profile() {
     }
   };
 
-  const updateMemberMutaion = membersApi.useUpdateMemberMutation();
-  const [updateMember] = updateMemberMutaion;
+  const [updateMember] = useUpdateMemberMutation();
   const submitHandler = () => {
     if (content.length === 0) {
       setBlank('소개글이 비어 있습니다.');
@@ -68,11 +67,7 @@ function Profile() {
         )}
         {EditOpen ? (
           <>
-            <ProfileEdit
-              content={content}
-              setContent={setContent}
-              submitHandler={submitHandler}
-            />
+            <ProfileEdit content={content} setContent={setContent} />
             <Leng>{content.length}/500</Leng>
           </>
         ) : (

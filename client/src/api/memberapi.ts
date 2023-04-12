@@ -61,4 +61,4 @@ export const membersCommentsListApi = apiSlice.injectEndpoints({
   }),
 });
 
-export const { useDeleteMemberMutation } = membersApi;
+export const { useDeleteMemberMutation, useUpdateMemberMutation } = membersApi;
