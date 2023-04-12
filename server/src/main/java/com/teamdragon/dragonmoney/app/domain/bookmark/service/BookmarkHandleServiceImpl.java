@@ -5,22 +5,23 @@ import com.teamdragon.dragonmoney.app.domain.bookmark.repository.BookmarkReposit
 import com.teamdragon.dragonmoney.app.domain.member.entity.Member;
 import com.teamdragon.dragonmoney.app.domain.posts.entity.Posts;
 import com.teamdragon.dragonmoney.app.domain.posts.service.PostsService;
-import com.teamdragon.dragonmoney.app.global.exception.BusinessExceptionCode;
-import com.teamdragon.dragonmoney.app.global.exception.BusinessLogicException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
 
-@Transactional
 @RequiredArgsConstructor
+@Transactional
 @Service
-public class BookmarkService {
+public class BookmarkHandleServiceImpl implements BookmarkHandleService {
+
     private final PostsService postsService;
+    private final BookmarkFindService bookmarkFindService;
     private final BookmarkRepository bookmarkRepository;
 
     // 북마크 중복 조회
+    @Override
     public void duplicateCheckBookmark(Member loginMember, Long postsId) {
         Optional<Bookmark> bookmark
                 = bookmarkRepository.findByMember_IdAndPosts_Id(loginMember.getId(), postsId);
@@ -30,6 +31,7 @@ public class BookmarkService {
     }
 
     // 북마크 저장
+    @Override
     public Bookmark createBookmark(Member loginMember, Long postsId) {
         Posts posts = postsService.findOne(postsId);
         posts.plusBookmarkCount();
@@ -43,8 +45,9 @@ public class BookmarkService {
     }
 
     // 북마크 삭제
+    @Override
     public void removeBookmark(Member loginMember, Long postsId) {
-        Bookmark bookmark = findBookmark(loginMember, postsId);
+        Bookmark bookmark = bookmarkFindService.findBookmark(loginMember, postsId);
         Posts posts = bookmark.getPosts();
         postsService.minusBookmarkCount(posts);
 
@@ -52,17 +55,8 @@ public class BookmarkService {
     }
 
     // 회원 탈퇴 시 북마크 삭제
+    @Override
     public void removeAllBookmarkByMemberId(Long memberId) {
         bookmarkRepository.deleteByMember_Id(memberId);
-    }
-
-    // 북마크 조회
-    private Bookmark findBookmark(Member loginMember, Long postsId) {
-        Long memberId = loginMember.getId();
-
-        Optional<Bookmark> bookmark = bookmarkRepository.findByMember_IdAndPosts_Id(memberId, postsId);
-
-        return bookmark
-                .orElseThrow( () -> new BusinessLogicException(BusinessExceptionCode.BOOKMARK_NOT_FOUND));
     }
 }

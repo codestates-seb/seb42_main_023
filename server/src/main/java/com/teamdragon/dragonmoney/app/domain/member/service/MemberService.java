@@ -1,6 +1,7 @@
 package com.teamdragon.dragonmoney.app.domain.member.service;
 
-import com.teamdragon.dragonmoney.app.domain.bookmark.service.BookmarkService;
+import com.teamdragon.dragonmoney.app.domain.bookmark.service.BookmarkHandleService;
+import com.teamdragon.dragonmoney.app.domain.bookmark.service.BookmarkHandleServiceImpl;
 import com.teamdragon.dragonmoney.app.domain.comment.service.CommentService;
 import com.teamdragon.dragonmoney.app.domain.member.entity.Member;
 import com.teamdragon.dragonmoney.app.domain.member.repository.MemberRepository;
@@ -28,7 +29,7 @@ public class MemberService {
     private final CommentService commentService;
     private final ReplyService replyService;
     private final ThumbService thumbService;
-    private final BookmarkService bookmarkService;
+    private final BookmarkHandleService bookmarkHandleService;
     private static final String OAUTH2_KIND = "google";
 
     // oAuth2 로그인 할 때 존재하는 회원인지 판별
@@ -86,7 +87,7 @@ public class MemberService {
 
         Long memberId = findMember(name).getId();
         thumbService.removeAllThumbByMemberId(memberId);
-        bookmarkService.removeAllBookmarkByMemberId(memberId);
+        bookmarkHandleService.removeAllBookmarkByMemberId(memberId);
 
         Member deletedMember = findVerifiedMemberName(name);
 

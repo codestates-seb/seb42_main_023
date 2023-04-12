@@ -19,7 +19,7 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 @Transactional
 @Service
-public class ImageService {
+public class ImageHandleServiceImpl implements ImageHandleService{
 
     // 이미지 최대 크기 : 2MB : 2,000,000
     @Value("${file.upload-max-size}")
@@ -32,6 +32,7 @@ public class ImageService {
     private final ImageRepository imageRepository;
 
     // 이미지 업로드
+    @Override
     public Image createImage(Member loginMember, MultipartFile multipartFile) {
         // 파일 크기 검사
         checkFileSize(multipartFile);
@@ -47,18 +48,8 @@ public class ImageService {
         return createImageToDB(loginMember, url, ext, storeFileName);
     }
 
-    // 이미지들 검색
-    public List<Image> findImageList(List<Image> images) {
-        if (images == null || images.isEmpty()) {
-            return null;
-        }
-        List<Long> imageIds = images.stream()
-                .map(Image::getId)
-                .collect(Collectors.toList());
-        return imageRepository.findAllByIds(imageIds);
-    }
-
     // 이미지들 삭제
+    @Override
     public void removeImageList(Member loginMember, List<Image> removeImages) {
         if (removeImages == null || removeImages.isEmpty()) {
             return;
@@ -75,6 +66,7 @@ public class ImageService {
     }
 
     // 복수 이미지 삭제 : DB
+    @Override
     public void removeImageListFromDB(List<Image> removeImages) {
         List<Long> imageIds = removeImages.stream()
                 .map(Image::getId)
@@ -83,6 +75,7 @@ public class ImageService {
     }
 
     // 복수 이미지 삭제 : 클라우드
+    @Override
     public void removeImageListFromCloud(List<Image> removeImages) {
         List<String> deleteFileNames = removeImages.stream()
                 .map(Image::getFileName)
@@ -109,6 +102,7 @@ public class ImageService {
     }
 
     // 이미지 크기 확인
+    @Override
     public Boolean checkFileSize(MultipartFile multipartFile) {
 
         if (multipartFile.isEmpty()) {

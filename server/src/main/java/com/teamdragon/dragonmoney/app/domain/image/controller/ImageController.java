@@ -4,7 +4,7 @@ import com.teamdragon.dragonmoney.app.domain.common.service.FinderService;
 import com.teamdragon.dragonmoney.app.domain.image.dto.ImageDto;
 import com.teamdragon.dragonmoney.app.domain.image.entity.Image;
 import com.teamdragon.dragonmoney.app.domain.image.mapper.ImageMapper;
-import com.teamdragon.dragonmoney.app.domain.image.service.ImageService;
+import com.teamdragon.dragonmoney.app.domain.image.service.ImageHandleService;
 import com.teamdragon.dragonmoney.app.domain.member.entity.Member;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -24,7 +24,7 @@ import java.util.List;
 public class ImageController {
 
     private final FinderService finderService;
-    private final ImageService imageService;
+    private final ImageHandleService imageHandleService;
     private final ImageMapper imageMapper;
 
     @PostMapping("/images")
@@ -32,7 +32,7 @@ public class ImageController {
                                                               @RequestParam("image") MultipartFile file) {
         Member loginMember = finderService.findVerifiedMemberByName(principal.getName());
 
-        Image saveImage = imageService.createImage(loginMember, file);
+        Image saveImage = imageHandleService.createImage(loginMember, file);
         ImageDto.ImageResponse imageResponse = imageMapper.imageToImageResponse(saveImage);
         return new ResponseEntity<>(imageResponse, HttpStatus.CREATED);
     }
@@ -42,7 +42,7 @@ public class ImageController {
                                             @Valid @RequestBody ImageDto.DeleteImagesReq imagesDto) {
         Member loginMember = finderService.findVerifiedMemberByName(principal.getName());
         List<Image> images = imageMapper.imageDtoListToImageList(imagesDto.getRemoveImages());
-        imageService.removeImageList(loginMember, images);
+        imageHandleService.removeImageList(loginMember, images);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 }

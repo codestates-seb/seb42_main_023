@@ -1,7 +1,7 @@
 package com.teamdragon.dragonmoney.app.domain.bookmark.controller;
 
 import com.teamdragon.dragonmoney.app.domain.bookmark.dto.BookmarkDto;
-import com.teamdragon.dragonmoney.app.domain.bookmark.service.BookmarkService;
+import com.teamdragon.dragonmoney.app.domain.bookmark.service.BookmarkHandleService;
 import com.teamdragon.dragonmoney.app.domain.common.service.FinderService;
 import com.teamdragon.dragonmoney.app.domain.member.entity.Member;
 import com.teamdragon.dragonmoney.app.domain.member.service.MemberService;
@@ -20,7 +20,7 @@ import java.security.Principal;
 @Validated
 @RestController
 public class BookmarkController {
-    private final BookmarkService bookmarkService;
+    private final BookmarkHandleService bookmarkHandleService;
     private final FinderService finderService;
     private final MemberService memberService;
 
@@ -32,7 +32,7 @@ public class BookmarkController {
 
         memberService.bookmarkMemberCompareLoginMember(principal.getName(), memberName);
         Member loginMember = finderService.findVerifiedMemberByName(principal.getName());
-        bookmarkService.duplicateCheckBookmark(loginMember, postsId);
+        bookmarkHandleService.duplicateCheckBookmark(loginMember, postsId);
 
         BookmarkDto response = new BookmarkDto(true);
 
@@ -47,7 +47,7 @@ public class BookmarkController {
 
         memberService.bookmarkMemberCompareLoginMember(principal.getName(), memberName);
         Member loginMember = finderService.findVerifiedMemberByName(principal.getName());
-        bookmarkService.removeBookmark(loginMember, postsId);
+        bookmarkHandleService.removeBookmark(loginMember, postsId);
 
         BookmarkDto response = new BookmarkDto(false);
 

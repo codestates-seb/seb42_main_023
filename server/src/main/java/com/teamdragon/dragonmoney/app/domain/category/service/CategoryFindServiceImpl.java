@@ -4,24 +4,21 @@ import com.teamdragon.dragonmoney.app.domain.category.entity.Category;
 import com.teamdragon.dragonmoney.app.domain.category.repository.CategoryRepository;
 import com.teamdragon.dragonmoney.app.global.exception.BusinessExceptionCode;
 import com.teamdragon.dragonmoney.app.global.exception.BusinessLogicException;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
 
+@RequiredArgsConstructor
+@Transactional
 @Service
-public class CategoryService {
+public class CategoryFindServiceImpl implements CategoryFindService {
 
     private final CategoryRepository categoryRepository;
 
-    public CategoryService(CategoryRepository categoryRepository) {
-        this.categoryRepository = categoryRepository;
-        Optional<Category> findCategory = categoryRepository.findById(1L);
-        if(findCategory.isEmpty()) {
-            categoryRepository.save(new Category("firstCategoryTitle", "firstCategoryContent"));
-        }
-    }
-
     // 카테고리 단일 조회 : id
+    @Override
     public Category findCategoryById(Long categoryId) {
         return findVerifyCategory(categoryId);
     }

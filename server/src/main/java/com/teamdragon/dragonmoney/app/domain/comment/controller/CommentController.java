@@ -3,7 +3,8 @@ package com.teamdragon.dragonmoney.app.domain.comment.controller;
 import com.teamdragon.dragonmoney.app.domain.comment.dto.CommentDto;
 import com.teamdragon.dragonmoney.app.domain.comment.entity.Comment;
 import com.teamdragon.dragonmoney.app.domain.comment.mapper.CommentMapper;
-import com.teamdragon.dragonmoney.app.domain.comment.service.CommentService;
+import com.teamdragon.dragonmoney.app.domain.comment.service.CommentFindService;
+import com.teamdragon.dragonmoney.app.domain.comment.service.CommentHandleService;
 import com.teamdragon.dragonmoney.app.domain.member.entity.Member;
 import com.teamdragon.dragonmoney.app.domain.member.service.MemberService;
 import com.teamdragon.dragonmoney.app.global.exception.ValidFailException;
@@ -26,7 +27,8 @@ import java.security.Principal;
 @RestController
 public class CommentController {
 
-    private final CommentService commentService;
+    private final CommentHandleService commentHandleService;
+    private final CommentFindService commentFindService;
     private final CommentMapper commentMapper;
     private final MemberService memberService;
 
@@ -38,7 +40,7 @@ public class CommentController {
         Member loginMember = memberService.findMember(principal.getName());
         Comment newComment = commentMapper.createDtoToComment(commentDto);
 
-        Comment saveComment = commentService.createComment(postsId, loginMember, newComment);
+        Comment saveComment = commentHandleService.createComment(postsId, loginMember, newComment);
         CommentDto.CreateRes response = new CommentDto.CreateRes(saveComment.getId());
 
         return new ResponseEntity<>(response, HttpStatus.CREATED);
@@ -58,7 +60,7 @@ public class CommentController {
 
         Comment.OrderBy orderBy = checkOrderBy(orderby);
 
-        Page<CommentDto.CommentListElement> commentList = commentService.findCommentList(page, postsId, orderBy, loginMemberId);
+        Page<CommentDto.CommentListElement> commentList = commentFindService.findCommentList(page, postsId, orderBy, loginMemberId);
         CommentDto.CommentListRes response = new CommentDto.CommentListRes(commentList, orderby);
 
         return new ResponseEntity<>(response, HttpStatus.OK);
@@ -69,7 +71,7 @@ public class CommentController {
     public ResponseEntity<Void> removeComment(@AuthenticationPrincipal Principal principal,
                                               @Valid @Positive @PathVariable("comment-id") Long commentId) {
         Member loginMember = memberService.findMember(principal.getName());
-        commentService.removeComment(loginMember, commentId);
+        commentHandleService.removeComment(loginMember, commentId);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
@@ -80,7 +82,7 @@ public class CommentController {
                                                               @Valid @Positive @PathVariable("comment-id") Long commentId) {
         Member loginMember = memberService.findMember(principal.getName());
         Comment comment = commentMapper.updateDtoToComment(commentDto);
-        Comment updateComment = commentService.modifyComment(loginMember, commentId, comment);
+        Comment updateComment = commentHandleService.modifyComment(loginMember, commentId, comment);
         CommentDto.UpdateRes response = new CommentDto.UpdateRes(updateComment.getId());
         return new ResponseEntity<>(response, HttpStatus.OK);
     }

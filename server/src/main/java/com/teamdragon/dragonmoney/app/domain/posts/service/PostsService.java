@@ -4,7 +4,7 @@ import com.teamdragon.dragonmoney.app.domain.category.entity.Category;
 import com.teamdragon.dragonmoney.app.domain.comment.service.CommentService;
 import com.teamdragon.dragonmoney.app.domain.common.service.FinderService;
 import com.teamdragon.dragonmoney.app.domain.image.entity.Image;
-import com.teamdragon.dragonmoney.app.domain.image.service.ImageService;
+import com.teamdragon.dragonmoney.app.domain.image.service.ImageHandleServiceImpl;
 import com.teamdragon.dragonmoney.app.domain.member.entity.Member;
 import com.teamdragon.dragonmoney.app.domain.posts.dto.PostsDto;
 import com.teamdragon.dragonmoney.app.domain.posts.entity.Posts;
@@ -43,7 +43,7 @@ public class PostsService implements ThumbCountService {
     private final FinderService finderService;
     private final CommentService commentService;
     private final TagService tagService;
-    private final ImageService imageService;
+    private final ImageHandleServiceImpl imageService;
 
     private static final int PAGE_ELEMENT_SIZE = 10;
     private static final Long CURRENT_CATEGORY_ID = 1L;
