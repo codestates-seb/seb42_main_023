@@ -1,6 +1,3 @@
-import { validationStateType } from './PostDetail.d';
-import { type } from '@testing-library/user-event/dist/type';
-
 export interface PostStateType {
   post: {
     isOpenFilter: boolean;
@@ -13,9 +10,6 @@ export interface PostStateType {
     remainImg: unknown;
     selectedMember: unknown;
   };
-}
-
-export interface CommentStateType {
   comment: {
     commentValue: string;
     commentId: unknown;
@@ -25,18 +19,29 @@ export interface CommentStateType {
     orderby: string;
     page: unknwon;
   };
-}
 
-export interface ReplyStateType {
   reply: {
     replyValue: string;
     replyId: number;
     isEdit: Array<boolean>;
     isOpened: Array<boolean>;
-    totalReplies: Array;
+    totalReplies: Array<ReplyType>;
+    isOpeneIntro: boolean;
     page: number;
   };
+
+  postInput: {
+    body: string;
+    tag: Array<object>;
+    tagContent: string;
+    title: string;
+    isEdit: boolean;
+  };
 }
+
+// export interface CommentStateType {}
+
+// export interface ReplyStateType {}
 
 export interface ValidationStateType {
   validation: {
@@ -47,15 +52,7 @@ export interface ValidationStateType {
   };
 }
 
-export interface PostInputStateType {
-  postInput: {
-    body: string;
-    tag: Array<object>;
-    tagContent: string;
-    title: string;
-    isEdit: boolean;
-  };
-}
+// export interface PostInputStateType {}
 
 export interface PostType {
   recommends: Array<PostType>;
@@ -161,6 +158,39 @@ export interface ReportProps {
   setIsOpenReplyIntro?: (bool: boolean) => void;
 }
 
+export interface PostListItem {
+  postId: number;
+  imgUrl: string;
+  title: string;
+  tags: Tags[];
+  memberName: string;
+  createdAt: string;
+  modified_at: string;
+  viewCount: number;
+  thumbupCount: number;
+  commentCount: number;
+}
+// export interface CommentType {
+//   commentId: number;
+//   postId: number;
+//   memberName: string;
+//   memberImage: string;
+//   createdAt: string;
+//   modifiedAt: string;
+//   isModified: boolean;
+//   replyCount: number;
+//   thumbupCount: number;
+//   thumbdownCount: number; //thumbDownCount
+//   isThumbup: boolean;
+//   isThumbdown: boolean;
+//   length: number;
+//   comment: string; //content
+// }
+
 export interface OnClick {
   onClick(): void;
+}
+
+interface Tags {
+  tagName: string;
 }
