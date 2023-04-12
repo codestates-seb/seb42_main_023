@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { useParams } from 'react-router';
 import { useAppDispatch, useAppSelector } from '../../hooks';
-import { getTimeSince } from '../common/timeCalculator';
+import { getTimeSince } from '../../util/timeCalculator';
 import { useNavigate } from 'react-router';
 import styled from 'styled-components';
 import _ from 'lodash';

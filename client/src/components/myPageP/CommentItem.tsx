@@ -5,7 +5,7 @@ import { CommentListItem } from '../../types/PostList';
 import { FaRegThumbsDown } from 'react-icons/fa';
 import { FaRegThumbsUp } from 'react-icons/fa';
 import TimeIcon from '../../assets/common/TimeIcon';
-import { getTimeSince } from '../common/timeCalculator';
+import { getTimeSince } from '../../util/timeCalculator';
 
 const CommentItem = ({ item }: { item: CommentListItem }) => {
   return (

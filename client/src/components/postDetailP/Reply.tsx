@@ -4,7 +4,7 @@ import styled from 'styled-components';
 import parse from 'html-react-parser';
 import _ from 'lodash';
 import { useNavigate } from 'react-router-dom';
-import { getTimeSince } from '../common/timeCalculator';
+import { getTimeSince } from '../../util/timeCalculator';
 import DislikeIcon from '../../assets/common/DislikeIcon';
 import LikeIcon from '../../assets/common/LikeIcon';
 import {

@@ -113,7 +113,7 @@ const SearchBar: React.FC = () => {
     <>
       {valid.tagErr === '' ? (
         <TagInputContainer>
-          <InputWraper>
+          <InputContainer>
             <Input
               className="tag-input"
               placeholder="관심있는 내용을 검색해보세요."
@@ -137,12 +137,12 @@ const SearchBar: React.FC = () => {
                 );
               })}
             </TagConatiner>
-          </InputWraper>
+          </InputContainer>
           <SearchBtn />
         </TagInputContainer>
       ) : (
         <TagInputContainer>
-          <InputWraper>
+          <InputContainer>
             <Input
               className="tag-input"
               placeholder="관심있는 내용을 검색해보세요."
@@ -166,7 +166,7 @@ const SearchBar: React.FC = () => {
                 );
               })}
             </TagConatiner>
-          </InputWraper>
+          </InputContainer>
           <SearchBtn />
         </TagInputContainer>
       )}
@@ -182,7 +182,7 @@ const TagInputContainer = styled.div`
   height: 53px;
 `;
 
-const InputWraper = styled.div`
+const InputContainer = styled.div`
   position: relative;
 `;
 const Input = styled.input`

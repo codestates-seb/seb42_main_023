@@ -1,5 +1,5 @@
 import React, { useRef } from 'react';
-import { Dropdown, Button, List, ListItem } from '../mainP/DropdownButton';
+import { Dropdown, Btn, List, ListItem } from '../mainP/DropdownButton';
 import { useAppDispatch, useAppSelector } from '../../hooks';
 import { setFilterOpen, setDeleteAccountOpen } from '../../slices/mypageSlice';
 import { FiMoreHorizontal } from 'react-icons/fi';
@@ -47,9 +47,9 @@ const DropdownButton = () => {
 
   return (
     <Dropdown ref={dropdownRef}>
-      <Button onClick={handleToggle}>
+      <Btn onClick={handleToggle}>
         <FiMoreHorizontal />
-      </Button>
+      </Btn>
       {dropOpen && (
         <List>
           {options.map((option) => (

@@ -4,7 +4,7 @@ import _ from 'lodash';
 import parse from 'html-react-parser';
 import { useParams, useNavigate } from 'react-router';
 import { useAppDispatch, useAppSelector } from '../hooks';
-import { getTimeSince } from '../components/common/timeCalculator';
+import { getTimeSince } from '../util/timeCalculator';
 import Comment from '../components/postDetailP/Comment';
 import CommentInput from '../components/postDetailP/CommentInput';
 import RecommendedPost from '../components/postDetailP/RecommendedPost';
