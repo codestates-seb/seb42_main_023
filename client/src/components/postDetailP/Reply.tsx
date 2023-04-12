@@ -7,16 +7,9 @@ import { useNavigate } from 'react-router-dom';
 import { getTimeSince } from '../common/timeCalculator';
 import DislikeIcon from '../../assets/common/DislikeIcon';
 import LikeIcon from '../../assets/common/LikeIcon';
-import {
-  PostStateType,
-  // ReplyStateType,
-  // CommentStateType,
-  ReplyProps,
-  ReplyType,
-  ReportProps,
-} from '../../types/Post';
+import { ReplyProps, ReplyType, ReportProps } from '../../types/Post';
 import { repliesApi } from '../../api/replyApi';
-import { membersApi } from '../../api/memberapi';
+import { membersApi } from '../../api/memberApi';
 import { setReportType, setSelectedMember } from '../../slices/postSlice';
 import { setCommentId } from '../../slices/commentSlice';
 import { isEdit, setIsEdit, setReplyId } from '../../slices/replySlice';
@@ -40,13 +33,8 @@ const Reply: React.FC<Partial<ReplyProps & ReportProps>> = ({
   const isLogin = checkIsLogin();
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
-  const state = useAppSelector(
-    (
-      state: PostStateType | ReplyStateType,
-    ): PostStateType | ReplyStateType | CommentStateType => {
-      return state;
-    },
-  );
+  const state = useAppSelector((state) => state);
+
   const [editReply, setEditReply] = useState<string>('');
   const [replyData, setReplyData] = useState<Array<ReplyType>>([]);
   const [selectedReply, setSelectedReply] = useState<string>('');
@@ -143,10 +131,7 @@ const Reply: React.FC<Partial<ReplyProps & ReportProps>> = ({
       return;
     }
   };
-  if (
-    replyQuery.isSuccess &&
-    (state as ReplyStateType).reply.isEdit === undefined
-  ) {
+  if (replyQuery.isSuccess && state.reply?.isEdit === undefined) {
     const edit = Array.from(
       { length: replyQuery.data?.replies.length },
       (el) => (el = false),
@@ -235,7 +220,7 @@ const Reply: React.FC<Partial<ReplyProps & ReportProps>> = ({
                 <button
                   className="intro-moreInfo"
                   onClick={() => {
-                    dispatch(setMemberName(replyInfo?.memberName));
+                    dispatch(setMemberName(replyInfo!.memberName));
                     navigate('/mypage');
                   }}
                 >
@@ -250,7 +235,7 @@ const Reply: React.FC<Partial<ReplyProps & ReportProps>> = ({
           {'reply' in state &&
           replyInfo?.replyId === replyId &&
           ((replySucccess && state.reply.isEdit !== undefined) || null) &&
-          state.reply.isEdit[idx!] ? (
+          state.reply!.isEdit![idx!] ? (
             <li
               className="reply-update"
               id="edit"
@@ -266,7 +251,7 @@ const Reply: React.FC<Partial<ReplyProps & ReportProps>> = ({
                 }
                 dispatch(setIsEdit(idx!));
                 updateMutation({
-                  replyId: replyInfo.replyId,
+                  replyId: replyInfo!.replyId,
                   content: editReply,
                 });
               }}
@@ -367,8 +352,8 @@ const Reply: React.FC<Partial<ReplyProps & ReportProps>> = ({
       </ReplyInfo>
       <ReplyContent>
         {'reply' in state &&
-        replyInfo!.replyId === replyId &&
-        state.reply?.isEdit[idx!] ? (
+        replyInfo?.replyId === replyId &&
+        state.reply!.isEdit![idx!] ? (
           <InputContainer>
             <textarea
               id="edit-reply"

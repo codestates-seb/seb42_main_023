@@ -15,9 +15,6 @@ import Loading from '../common/Loading';
 import Reply from './Reply';
 import { CommentInputProps } from '../../types/Post';
 import {
-  PostStateType,
-  // CommentStateType,
-  // ReplyStateType,
   CommentType,
   ReplyType,
   ReportProps,
@@ -25,7 +22,7 @@ import {
 } from '../../types/Post';
 import { commentsApi } from '../../api/commentApi';
 import { repliesApi } from '../../api/replyApi';
-import { membersApi } from '../../api/memberapi';
+import { membersApi } from '../../api/memberApi';
 import { setReportType, setSelectedMember } from '../../slices/postSlice';
 import {
   setCommentId,

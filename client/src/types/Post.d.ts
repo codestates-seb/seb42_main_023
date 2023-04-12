@@ -1,59 +1,3 @@
-export interface PostStateType {
-  post: {
-    isOpenFilter: boolean;
-    reportOption: unknown;
-    reportType: unknown;
-    currentImg: unknown;
-    removedImg: unknown;
-    totalImg: unknown;
-    addedImg: unknown;
-    remainImg: unknown;
-    selectedMember: unknown;
-  };
-  comment: {
-    commentValue: string;
-    commentId: unknown;
-    isEdit: Array<boolean>;
-    filter: string;
-    filterOpen: boolean;
-    orderby: string;
-    page: unknwon;
-  };
-
-  reply: {
-    replyValue: string;
-    replyId: number;
-    isEdit: Array<boolean>;
-    isOpened: Array<boolean>;
-    totalReplies: Array<ReplyType>;
-    isOpeneIntro: boolean;
-    page: number;
-  };
-
-  postInput: {
-    body: string;
-    tag: Array<object>;
-    tagContent: string;
-    title: string;
-    isEdit: boolean;
-  };
-}
-
-// export interface CommentStateType {}
-
-// export interface ReplyStateType {}
-
-export interface ValidationStateType {
-  validation: {
-    titleErr: string;
-    bodyErr: string;
-    tagErr: string;
-    reportErr: string;
-  };
-}
-
-// export interface PostInputStateType {}
-
 export interface PostType {
   recommends: Array<PostType>;
   commentCount: number;
@@ -170,27 +114,7 @@ export interface PostListItem {
   thumbupCount: number;
   commentCount: number;
 }
-// export interface CommentType {
-//   commentId: number;
-//   postId: number;
-//   memberName: string;
-//   memberImage: string;
-//   createdAt: string;
-//   modifiedAt: string;
-//   isModified: boolean;
-//   replyCount: number;
-//   thumbupCount: number;
-//   thumbdownCount: number; //thumbDownCount
-//   isThumbup: boolean;
-//   isThumbdown: boolean;
-//   length: number;
-//   comment: string; //content
-// }
 
 export interface OnClick {
   onClick(): void;
-}
-
-interface Tags {
-  tagName: string;
 }

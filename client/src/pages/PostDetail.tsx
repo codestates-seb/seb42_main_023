@@ -20,12 +20,6 @@ import PostDropdownButton from '../components/postDetailP/PostDropdownButton';
 import { BlueBtn, WhiteBtn } from '../components/common/Btn';
 import { ReactComponent as CheckedIcon } from '../assets/checked.svg';
 import { ReactComponent as NoCheckedIcon } from '../assets/noChecked.svg';
-import {
-  PostStateType,
-  // CommentStateType,
-  // ReplyStateType,
-  ValidationStateType,
-} from '../types/Post';
 import { postsApi } from '../api/postApi';
 import { commentsApi } from '../api/commentApi';
 import { repliesApi } from '../api/replyApi';
@@ -44,21 +38,7 @@ const PostDetail: React.FC = () => {
   const isLogin = checkIsLogin();
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
-  const state = useAppSelector(
-    (
-      state:
-        | PostStateType
-        | CommentStateType
-        | ReplyStateType
-        | ValidationStateType,
-    ):
-      | PostStateType
-      | CommentStateType
-      | ReplyStateType
-      | ValidationStateType => {
-      return state;
-    },
-  );
+  const state = useAppSelector((state) => state);
   const reportTextRef = useRef<HTMLTextAreaElement>(null);
   const [isLike, setIsLike] = useState<boolean>();
   const [isDislike, setIsDislike] = useState<boolean>();
@@ -78,11 +58,11 @@ const PostDetail: React.FC = () => {
 
   const params = useParams();
   const postId = Number(params.postId);
-  const commentId = 'comment' in state ? state.comment?.commentId : null;
-  const replyId = 'reply' in state ? state.reply?.replyId : null;
-  const reportReason = 'post' in state ? state.post.reportOption : null;
-  const reportErr = 'validation' in state ? state.validation.reportErr : null;
-  const selectedMember = 'post' in state ? state.post.selectedMember : null;
+  const commentId = state.comment?.commentId;
+  const replyId = state.reply?.replyId;
+  const reportReason = state.post.reportOption;
+  const reportErr = state.validation.reportErr;
+  const selectedMember = state.post.selectedMember;
   const loginUserName = window.localStorage.getItem('name');
   const postDetailQuery = postsApi.useGetPostQuery({ postId });
   const { data, isSuccess, isLoading, refetch } = postDetailQuery;
@@ -107,8 +87,6 @@ const PostDetail: React.FC = () => {
     },
   );
 
-  // 게시글 서버 데이터 저장
-  // 데이터 받아서 로컬 스테이트로 저장 ( 댓글, 좋아요, 싫어요, 북마크)
   useEffect(() => {
     if (isSuccess) {
       setIsLike(data?.isThumbup);
@@ -121,16 +99,14 @@ const PostDetail: React.FC = () => {
     }
   }, [data]);
 
-  // 페이지 이동 시 스크롤 최상단 이동
   useEffect(() => {
-    if ('post' in state && state.post.isOpenFilter) {
+    if (state.post.isOpenFilter) {
       dispatch(setIsOpenFilter(true));
     }
     scrollTo(0, 0);
     refetch();
   }, [postId]);
 
-  // 좋아요 클릭 함수
   const changeLiikeHandler = (): void => {
     if (!isLogin) navigate('/login');
     if (loginUserName) {
@@ -228,8 +204,8 @@ const PostDetail: React.FC = () => {
   };
 
   const handleClickOutside = (event: MouseEvent) => {
-    if ('post' in state && state.post?.isOpenFilter) {
-      dispatch(setIsOpenFilter('post' in state && state.post?.isOpenFilter));
+    if (state.post?.isOpenFilter) {
+      dispatch(setIsOpenFilter(state.post?.isOpenFilter));
     } else {
       return;
     }
@@ -271,7 +247,7 @@ const PostDetail: React.FC = () => {
   };
 
   const sendReportHandler = (): void => {
-    if ('post' in state && !state.post?.reportOption) {
+    if (!state.post?.reportOption) {
       dispatch(setReportErr('신고 이유를 선택해 주세요.'));
       return;
     } else {
@@ -281,8 +257,8 @@ const PostDetail: React.FC = () => {
       dispatch(setReportErr('신고 내용을 작성해 주세요.'));
       return;
     }
-    if ('validation' in state && state.validation?.reportErr) return;
-    if ('post' in state && state.post?.reportType === 'post') {
+    if (state.validation?.reportErr) return;
+    if (state.post?.reportType === 'post') {
       sendReport({
         reportReason: reportReason,
         description: reportTextRef.current?.value,
@@ -305,7 +281,7 @@ const PostDetail: React.FC = () => {
       return;
     }
 
-    if ('post' in state && state.post?.reportType === 'comment') {
+    if (state.post?.reportType === 'comment') {
       sendReport({
         reportReason: reportReason,
         description: reportTextRef.current?.value,
@@ -328,7 +304,7 @@ const PostDetail: React.FC = () => {
       return;
     }
 
-    if ('post' in state && state.post.reportType === 'reply') {
+    if (state.post.reportType === 'reply') {
       sendReport({
         reportReason: reportReason,
         description: reportTextRef.current?.value,
@@ -354,7 +330,7 @@ const PostDetail: React.FC = () => {
 
   const checkValidation = (): void => {
     const reportValue = reportTextRef.current?.value;
-    if ('post' in state && !state.post?.reportOption) {
+    if (!state.post?.reportOption) {
       dispatch(setReportErr('신고 이유를 선택해 주세요'));
     }
     if (reportValue?.length === 0) {
@@ -394,7 +370,7 @@ const PostDetail: React.FC = () => {
   }, [data]);
 
   useEffect(() => {
-    if ('post' in state && state.post.isOpenFilter) {
+    if (state.post?.isOpenFilter) {
       dispatch(setIsOpenFilter(true));
     }
     scrollTo(0, 0);
