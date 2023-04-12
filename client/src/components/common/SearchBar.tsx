@@ -28,36 +28,29 @@ const SearchBar: React.FC = () => {
   const valid = useAppSelector(({ validation }) => validation);
   const navigation = useNavigate();
 
-  //검색 인풋창 데이터 입력
   const valueCheck = (event: React.ChangeEvent<HTMLInputElement>): void => {
     dispatch(setInput(event.target.value));
   };
 
-  //유효성 검사 로직
   const validation = () => {
     const tag: Array<string> = header.tag;
     const input = header.input;
-    // 태그 글자수 제한
     if (input.length > 10) {
       dispatch(setTagErr('태그는 10자 이내로 입력해주세요.'));
       return;
     }
-    // 태그 중복 입력 방지
     if (tag.includes(input)) {
       dispatch(setTagErr(''));
       return;
     }
-    // 공백 방지
     if (input === '' && tag.length === 0) {
       dispatch(setTagErr(''));
       return;
     }
-    // 띄어쓰기 방지
     if (input.includes(' ')) {
       dispatch(setTagErr('태그에 띄어쓰기를 포함할 수 없습니다.'));
       return;
     }
-    // 태그 개수 제한
     if (tag.length >= 5) {
       dispatch(setTagErr('태그는 5개까지만 입력 가능합니다.'));
       return;
@@ -68,29 +61,23 @@ const SearchBar: React.FC = () => {
     }
   };
 
-  //검색 방식 분기
   const searchHandler = () => {
     const tag: Array<string> = header.tag;
     const input = header.input;
-    //tag와 input 둘다 비었을 때
     if (tag.length === 0 && input === '') {
       return;
     }
-    //태그 추가하기
     if (input[0] === '#') {
       validation();
     } else {
       dispatch(setPostCategory('/search'));
-      //tag x keyword o
       if (tag.length === 0 && input.length !== 0) {
         dispatch(setSearchQuery(`&keyword=${input}&tags=`));
       }
-      //tag o keyword x
       if (tag.length !== 0 && input.length === 0) {
         const tagstring = tag.join();
         dispatch(setSearchQuery(`&keyword=&tags=${tagstring}`));
       }
-      //tag o keyword o
       if (tag.length !== 0 && input.length !== 0) {
         const tagstring = tag.join();
         dispatch(setSearchQuery(`&keyword=${input}&tags=${tagstring}`));
@@ -98,13 +85,11 @@ const SearchBar: React.FC = () => {
       navigation('/search');
     }
   };
-  //엔터로 검색
   const searchEnterHandler = (event: KeyboardEvent<HTMLInputElement>): void => {
     if (event.key === 'Enter' && event.nativeEvent.isComposing === false) {
       searchHandler();
     }
   };
-  //클릭으로 검색
   const searchClickHandler = (): void => {
     searchHandler();
   };
