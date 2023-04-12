@@ -4,7 +4,7 @@ import NavAdmin from '../components/AdminP/NavAdmin';
 import ReportList from '../components/AdminP/ReportList';
 import { useGetReportsDeletedQuery } from '../api/reportApi';
 
-const ReportsDeleted = () => {
+const ReportsDeleted: React.FC = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [orderby, setOrderby] = useState('all');
 
@@ -14,7 +14,7 @@ const ReportsDeleted = () => {
   });
 
   return (
-    <AdminMain>
+    <Container>
       <NavAdmin />
       <ReportList
         reportData={data}
@@ -23,14 +23,13 @@ const ReportsDeleted = () => {
         setCurrentPage={setCurrentPage}
         setOrderby={setOrderby}
       />
-    </AdminMain>
+    </Container>
   );
 };
 
 export default ReportsDeleted;
 
-// Admin 페이지의 main
-const AdminMain = styled.div`
+const Container = styled.div`
   width: 100%;
   height: 100%;
   display: flex;
