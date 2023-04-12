@@ -8,16 +8,11 @@ interface Tag {
   type: string;
   payload: string;
 }
-interface UserState {
-  type: string;
-  payload: '' | 'login' | 'admin';
-}
 
 const headerSlice = createSlice({
   name: 'headerstate',
   initialState: {
     search: false,
-    login: '',
     input: '',
     tag: [],
     memberName: '',
@@ -27,9 +22,6 @@ const headerSlice = createSlice({
   reducers: {
     setSearch: (state, action: Header): void => {
       state.search = action.payload;
-    },
-    setLogin: (state, action: UserState): void => {
-      state.login = action.payload;
     },
     setInput: (state, action: Tag): void => {
       state.input = action.payload;
@@ -48,9 +40,6 @@ const headerSlice = createSlice({
     setMemberName: (state, action: Tag): void => {
       state.memberName = action.payload;
     },
-    setMemberImg: (state, action: Tag): void => {
-      state.memberImg = action.payload;
-    },
     setSearchQuery: (state, action: Tag): void => {
       state.searchQuery = action.payload;
     },
@@ -60,12 +49,10 @@ const headerSlice = createSlice({
 export default headerSlice;
 export const {
   setSearch,
-  setLogin,
   setInput,
   setSearchTag,
   deleteSarchTag,
   deleteAllSarchTag,
   setMemberName,
-  setMemberImg,
   setSearchQuery,
 } = headerSlice.actions;

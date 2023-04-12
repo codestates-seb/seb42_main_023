@@ -20,15 +20,15 @@ function DeleteModal() {
     window.location.href = '/';
   };
 
-  const handleClickOutside = (event: MouseEvent) => {
+  const clickOutsideHandler = (event: MouseEvent) => {
     if (modalRef.current && !modalRef.current.contains(event.target as Node)) {
       dispatch(setDeleteAccountOpen(false));
     }
   };
   useEffect(() => {
-    document.addEventListener('mousedown', handleClickOutside);
+    document.addEventListener('mousedown', clickOutsideHandler);
     return () => {
-      document.removeEventListener('mousedown', handleClickOutside);
+      document.removeEventListener('mousedown', clickOutsideHandler);
     };
   }, []);
   return (

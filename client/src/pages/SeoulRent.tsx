@@ -32,26 +32,8 @@ function SeoulRent() {
     return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
   }
 
-  const handleClickOutside = (event: MouseEvent) => {
-    if (
-      tooltipRef.current &&
-      !tooltipRef.current.contains(event.target as Node)
-    ) {
-      setOpentooltip(false);
-    }
-  };
-
-  useEffect(() => {
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => {
-      document.removeEventListener('mousedown', handleClickOutside);
-    };
-  }, []);
-
   const moveOnArea = (area: CustomArea, evt: AreaEvent) => {
-    const coords = { x: evt.nativeEvent.clientX, y: evt.nativeEvent.clientY };
     setClickedArea(area.id as string);
-    // setTooltipPosition(coords);
     const dataItem = data?.locationList.find(
       (el: Seoulrent) => el.location === area.id,
     );

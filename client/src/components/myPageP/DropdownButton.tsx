@@ -11,7 +11,7 @@ const DropdownButton = () => {
   const dropdownRef = useRef<HTMLDivElement>(null);
   const options: ['로그아웃', '회원탈퇴'] = ['로그아웃', '회원탈퇴'];
 
-  const handleSelect = (option: '로그아웃' | '회원탈퇴') => {
+  const selectFilterHandler = (option: '로그아웃' | '회원탈퇴') => {
     dispatch(setFilterOpen(false));
 
     if (option === '회원탈퇴') {
@@ -25,11 +25,11 @@ const DropdownButton = () => {
     }
   };
 
-  const handleToggle = () => {
+  const openFilterHandler = () => {
     dispatch(setFilterOpen(!dropOpen));
   };
 
-  const handleClickOutside = (event: MouseEvent) => {
+  const clickOutsideHandler = (event: MouseEvent) => {
     if (
       dropdownRef.current &&
       !dropdownRef.current.contains(event.target as Node)
@@ -39,21 +39,21 @@ const DropdownButton = () => {
   };
 
   React.useEffect(() => {
-    document.addEventListener('mousedown', handleClickOutside);
+    document.addEventListener('mousedown', clickOutsideHandler);
     return () => {
-      document.removeEventListener('mousedown', handleClickOutside);
+      document.removeEventListener('mousedown', clickOutsideHandler);
     };
   }, []);
 
   return (
     <Dropdown ref={dropdownRef}>
-      <Btn onClick={handleToggle}>
+      <Btn onClick={openFilterHandler}>
         <FiMoreHorizontal />
       </Btn>
       {dropOpen && (
         <List>
           {options.map((option) => (
-            <ListItem key={option} onClick={() => handleSelect(option)}>
+            <ListItem key={option} onClick={() => selectFilterHandler(option)}>
               {option}
             </ListItem>
           ))}
