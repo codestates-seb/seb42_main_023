@@ -8,11 +8,12 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { useAppDispatch, useAppSelector } from '../hooks';
 import { postsApi } from '../api/postApi';
 import _ from 'lodash';
-import Cookies from 'js-cookie';
 import { deleteTag, setBody, setTagContent } from '../slices/postInputSlice';
 import { setBodyErr, setTitleErr } from '../slices/validationSlice';
+import { checkIsLogin } from '../../src/util/checkIsLogin';
 
 const CreatePost: React.FC = () => {
+  const isLogin = checkIsLogin();
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const params = useParams();
@@ -25,7 +26,6 @@ const CreatePost: React.FC = () => {
   const tagNames = tag.map((tagName: string) => {
     return { tagName };
   });
-
   const reqBody = {
     saveImages: {
       addedImages: addedImg,
@@ -35,52 +35,49 @@ const CreatePost: React.FC = () => {
     content: bodyValue,
     tagNames: tagNames,
   };
-
   const deletedImg = {
     removedImages: removedImg,
   };
-
-  const [createPost] = postsApi.useSetPostMutation();
+  const [addPost] = postsApi.useAddPostMutation();
   const [deleteImage] = postsApi.useDeleteImagesMutation();
 
-  // 로그인 확인
-  const auth = Cookies.get('Authorization');
-  const role = localStorage.getItem('role');
-  const name = localStorage.getItem('name');
-  const isLogin = auth && role && name;
-
   useEffect(() => {
-    if (!isLogin) navigate('/login');
+    if (!isLogin) {
+      navigate('/login');
+      return;
+    }
     dispatch(setBodyErr(''));
     dispatch(setTitleErr(''));
-  }, []);
 
-  // 페이지 이동 시 state 관리 및 스크롤 이동
-  useEffect(() => {
-    if ('postInput' in state && state.postInput?.body) dispatch(setBody(''));
-    if ('postInput' in state && state.postInput?.tagContent) {
-      dispatch(setTagContent(''));
-    }
-    if ('postInput' in state && state.postInput?.tag) {
-      tag.forEach((tag) => dispatch(deleteTag(tag)));
-    }
-    scrollTo(0, 0);
-  }, [params]);
-
-  const preventClose = (e: BeforeUnloadEvent) => {
-    e.preventDefault();
-    deleteImage({ deletedImg });
-  };
-
-  useEffect(() => {
+    const cancelUpload = (e: BeforeUnloadEvent) => {
+      e.preventDefault();
+      deleteImage({ deletedImg });
+      e.returnValue = '';
+    };
     (() => {
-      window.addEventListener('beforeunload', preventClose);
+      window.addEventListener('beforeunload', cancelUpload);
     })();
 
     return () => {
-      window.removeEventListener('beforeunload', preventClose);
+      window.removeEventListener('beforeunload', cancelUpload);
     };
   }, []);
+
+  useEffect(() => {
+    if ('postInput' in state && state.postInput?.body) {
+      dispatch(setBody(''));
+      return;
+    }
+    if ('postInput' in state && state.postInput?.tagContent) {
+      dispatch(setTagContent(''));
+      return;
+    }
+    if ('postInput' in state && state.postInput?.tag) {
+      tag.forEach((tag) => dispatch(deleteTag(tag)));
+      return;
+    }
+    scrollTo(0, 0);
+  }, [params]);
 
   const addPostHandler = (): void => {
     if (
@@ -91,27 +88,27 @@ const CreatePost: React.FC = () => {
       state.validation.bodyErr === '' &&
       state.validation.tagErr === ''
     ) {
-      createPost(reqBody)
+      addPost(reqBody)
         .unwrap()
         .then((data) => {
           navigate(`/posts/${data.postsId}`);
         });
-    } else {
-      if (state.validation.titleErr !== '' || !state.postInput.title.length) {
-        alert('제목을 다시 확인해 주세요.');
-        return;
-      }
-      if (state.validation.bodyErr !== '' || !state.postInput.body) {
-        alert('본문을 다시 확인해 주세요.');
-        return;
-      }
-      if (state.validation.tagErr !== '' || state.postInput.tag.length === 0) {
-        alert('태그를 1개 이상 추가해 주세요.');
-        return;
-      }
+    }
+    if (state.validation.titleErr !== '' || !state.postInput.title.length) {
+      alert('제목을 다시 확인해 주세요.');
+      return;
+    }
+    if (state.validation.bodyErr !== '' || !state.postInput.body) {
+      alert('본문을 다시 확인해 주세요.');
+      return;
+    }
+    if (state.validation.tagErr !== '' || state.postInput.tag.length === 0) {
+      alert('태그를 1개 이상 추가해 주세요.');
+      return;
     }
   };
-  const cancelAddHandler = (): void => {
+  const cancelHandler = (): void => {
+    deleteImage({ deletedImg });
     navigate('/');
   };
 
@@ -125,7 +122,7 @@ const CreatePost: React.FC = () => {
         <CancelBtn
           onClick={() => {
             deleteImage({ deletedImg });
-            cancelAddHandler();
+            cancelHandler();
           }}
         >
           취소
@@ -137,8 +134,6 @@ const CreatePost: React.FC = () => {
 };
 
 export default CreatePost;
-
-// 페이지 컨테이너
 const Container = styled.div`
   display: flex;
   flex-direction: column;

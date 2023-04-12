@@ -1,23 +1,12 @@
-// 패키지 등
 import React, { useRef } from 'react';
 import styled from 'styled-components';
-import { useParams, useNavigate } from 'react-router-dom';
-import { useAppDispatch, useAppSelector } from '../../hooks';
-import Cookies from 'js-cookie';
-
-// API
+import { useNavigate } from 'react-router-dom';
+import { useAppDispatch } from '../../hooks';
 import { repliesApi } from '../../api/replyApi';
-// slices
 import { setCommentId } from '../../slices/commentSlice';
 import { setReply } from '../../slices/replySlice';
-// 타입
-import {
-  PostStateType,
-  ReplyStateType,
-  CommentStateType,
-  CommentProps,
-  ReplyInputProps,
-} from '../../types/PostDetail';
+import { CommentProps, ReplyInputProps } from '../../types/PostDetail';
+import { checkIsLogin } from '../../util/checkIsLogin';
 
 const ReplyInput: React.FC<ReplyInputProps> = ({
   commentInfo,
@@ -25,34 +14,21 @@ const ReplyInput: React.FC<ReplyInputProps> = ({
   setReplyCnt,
   refetch,
 }: CommentProps) => {
+  const isLogin = checkIsLogin();
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
-  const state = useAppSelector(
-    (
-      state: PostStateType | ReplyStateType | CommentStateType,
-    ): PostStateType | ReplyStateType | CommentStateType => {
-      return state;
-    },
-  );
   const replyRef = useRef<HTMLTextAreaElement>(null);
-  const params = useParams();
-  const postId = params.postId;
   const commentId = commentInfo.commentId;
-  const page = 'comment' in state && state.comment?.page;
   const replyMutation = repliesApi.useSetReplyMutation();
   const setReplys = replyMutation[0];
-
-  // 로그인 확인
-  const auth = Cookies.get('Authorization');
-  const role = localStorage.getItem('role');
-  const name = localStorage.getItem('name');
-  const isLogin = auth && role && name;
-
   const textarea = document.getElementById('reply') as HTMLTextAreaElement;
   const text = textarea?.value.replaceAll(/\n/g, '<br>');
-  // 답글 추가
+
   const addReplyHandler = () => {
-    if (!isLogin) navigate('/login');
+    if (!isLogin) {
+      navigate('/login');
+      return;
+    }
     setReplys({
       commentId: commentId,
       content: text,
@@ -65,17 +41,16 @@ const ReplyInput: React.FC<ReplyInputProps> = ({
         refetch();
       });
   };
-  // textarea 높이 조절
-  const handleResizeHeight = () => {
+
+  const resizeHeightHandler = () => {
     replyRef!.current!.style.height = 'auto';
     replyRef!.current!.style.height = replyRef.current?.scrollHeight + 'px';
   };
 
-  const valueCheck = (event: React.ChangeEvent<HTMLTextAreaElement>): void => {
+  const checkValue = (event: React.ChangeEvent<HTMLTextAreaElement>): void => {
     dispatch(setReply(event.target.value));
   };
 
-  // 댓글 입력 취소
   const cancelHandler = () => {
     replyRef.current!.value = '';
     replyRef!.current!.style.height = '58px';
@@ -105,8 +80,8 @@ const ReplyInput: React.FC<ReplyInputProps> = ({
                 ? 'none'
                 : 'inlineblock',
           }}
-          onChange={valueCheck}
-          onInput={handleResizeHeight}
+          onChange={checkValue}
+          onInput={resizeHeightHandler}
         ></textarea>
       </InputWrap>
       <ButtonContainer>

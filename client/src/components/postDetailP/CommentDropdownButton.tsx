@@ -1,12 +1,8 @@
-// 패키지 등
 import React, { useRef, useEffect } from 'react';
 import styled from 'styled-components';
 import { useAppDispatch, useAppSelector } from '../../hooks';
-// 컴포넌트(아이콘)
 import { BsFillCaretDownFill } from 'react-icons/bs';
-// 타입
 import { CommentProps } from '../../types/PostDetail';
-// slices
 import {
   setFilter,
   setFilterOpen,
@@ -19,7 +15,7 @@ const CommentDropDropdownButton = ({ setPage }: Partial<CommentProps>) => {
   const dropdownRef = useRef<HTMLDivElement>(null);
   const options: ['최신순', '좋아요순'] = ['최신순', '좋아요순'];
 
-  const handleSelect = (option: '최신순' | '좋아요순') => {
+  const selectHandler = (option: '최신순' | '좋아요순') => {
     dispatch(setFilter(option));
     dispatch(setFilterOpen(false));
     if (option === '최신순') {
@@ -31,11 +27,9 @@ const CommentDropDropdownButton = ({ setPage }: Partial<CommentProps>) => {
       setPage!(1);
     }
   };
-
-  const handleToggle = () => {
+  const toggleHandler = () => {
     dispatch(setFilterOpen(!filterOpen));
   };
-
   const handleClickOutside = (event: MouseEvent) => {
     if (
       dropdownRef.current &&
@@ -54,14 +48,14 @@ const CommentDropDropdownButton = ({ setPage }: Partial<CommentProps>) => {
 
   return (
     <Dropdown ref={dropdownRef}>
-      <Button onClick={handleToggle}>
+      <Button onClick={toggleHandler}>
         {filter}
         <BsFillCaretDownFill />
       </Button>
       {filterOpen && (
         <List>
           {options.map((option) => (
-            <ListItem key={option} onClick={() => handleSelect(option)}>
+            <ListItem key={option} onClick={() => selectHandler(option)}>
               {option}
             </ListItem>
           ))}

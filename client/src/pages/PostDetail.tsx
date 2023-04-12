@@ -1,13 +1,10 @@
-// 패키지 등
 import React, { useEffect, useRef, useState } from 'react';
 import styled from 'styled-components';
 import _ from 'lodash';
 import parse from 'html-react-parser';
 import { useParams, useNavigate } from 'react-router';
 import { useAppDispatch, useAppSelector } from '../hooks';
-import { timeSince } from '../components/mainP/Timecalculator';
-import Cookies from 'js-cookie';
-// 컴포넌트
+import { getTimeSince } from '../components/common/timeCalculator';
 import Comment from '../components/postDetailP/Comment';
 import CommentInput from '../components/postDetailP/CommentInput';
 import RecommendedPost from '../components/postDetailP/RecommendedPost';
@@ -23,20 +20,17 @@ import PostDropdownButton from '../components/postDetailP/PostDropdownButton';
 import { BlueBtn, WhiteBtn } from '../components/common/Btn';
 import { ReactComponent as CheckedIcon } from '../assets/checked.svg';
 import { ReactComponent as NoCheckedIcon } from '../assets/noChecked.svg';
-// 타입
 import {
   PostStateType,
   CommentStateType,
   ReplyStateType,
   ValidationStateType,
 } from '../types/PostDetail';
-// API
 import { postsApi } from '../api/postApi';
 import { commentsApi } from '../api/commentApi';
 import { repliesApi } from '../api/replyApi';
-import { membersApi } from '../api/memberapi';
+import { membersApi } from '../api/memberApi';
 import { reportApi } from '../api/reportApi';
-// slices
 import {
   setIsOpenFilter,
   setReportOption,
@@ -44,8 +38,10 @@ import {
 } from '../slices/postSlice';
 import { setReportErr } from '../slices/validationSlice';
 import { setMemberName } from '../slices/headerSlice';
+import { checkIsLogin } from '../../src/util/checkIsLogin';
 
 const PostDetail: React.FC = () => {
+  const isLogin = checkIsLogin();
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
   const state = useAppSelector(
@@ -63,9 +59,7 @@ const PostDetail: React.FC = () => {
       return state;
     },
   );
-  // 신고 폼 Ref
   const reportTextRef = useRef<HTMLTextAreaElement>(null);
-  // 게시글 데이터
   const [isLike, setIsLike] = useState<boolean>();
   const [isDislike, setIsDislike] = useState<boolean>();
   const [isBookmark, setBookmark] = useState<boolean>();
@@ -74,7 +68,6 @@ const PostDetail: React.FC = () => {
   const [views, setViews] = useState<number>();
   const [commentCnt, setCommentCnt] = useState<number>();
   const [checkedElement, setCheckedElement] = useState(-1);
-  // 신고, 삭제, 소개
   const [isOpenReport, setIsOpenReport] = useState<boolean>(false);
   const [isOpenReportErr] = useState<boolean>(false);
   const [isOpenDelete, setIsOpenDelete] = useState<boolean>(false);
@@ -82,12 +75,6 @@ const PostDetail: React.FC = () => {
   const [isOpenIntro, setIsOpenIntro] = useState<boolean>(false);
   const [isOpenCommentIntro, setIsOpenCommentIntro] = useState<boolean>(false);
   const [isOpenReplyIntro, setIsOpenReplyIntro] = useState<boolean>(false);
-
-  // 로그인 확인
-  const auth = Cookies.get('Authorization');
-  const role = localStorage.getItem('role');
-  const name = localStorage.getItem('name');
-  const isLogin = auth && role && name;
 
   const params = useParams();
   const postId = Number(params.postId);
@@ -97,45 +84,28 @@ const PostDetail: React.FC = () => {
   const reportErr = 'validation' in state ? state.validation.reportErr : null;
   const selectedMember = 'post' in state ? state.post.selectedMember : null;
   const loginUserName = window.localStorage.getItem('name');
-
-  // 게시글 조회 및 추가
   const postDetailQuery = postsApi.useGetPostQuery({ postId });
   const { data, isSuccess, isLoading, refetch } = postDetailQuery;
+  const time = getTimeSince(isSuccess && data?.createdAt);
+  const isEdit = data?.modifiedAt !== data?.createdAt ? true : false;
+  const parsedData = parse(String(data?.content));
+  const deleteConfirm = `${deleteType}을 정말 삭제하시겠습니까?`;
   const [deletePost] = postsApi.useDeletePostMutation();
-  // 게시글 좋아요 추가, 삭제
   const [addThumbUp] = postsApi.useAddPostThumbUpMutation();
-  const [removeThumbUp] = postsApi.useRemovePostThumbUpMutation();
-  // 게시글 싫어요  추가, 삭제
+  const [deleteThumbUp] = postsApi.useDeletePostThumbUpMutation();
   const [addThumbDown] = postsApi.useAddPostThumbDownMutation();
-  const [removeThumbDown] = postsApi.useRemovePostThumbDownMutation();
-  // 북마크 추가, 삭제
+  const [deleteThumbDown] = postsApi.useDeletePostThumbDownMutation();
   const [addBookmark] = postsApi.useAddBookmarkMutation();
   const [removeBookmark] = postsApi.useRemoveBookmarkMutation();
-
-  // 댓글 삭제
   const [deleteComment] = commentsApi.useDeleteCommentMutation();
-  // 답글 삭제
   const [deleteReply] = repliesApi.useDeleteReplyMutation();
-  // 신고 추가
   const [sendReport] = reportApi.usePostReportMutation();
-  //  멤버 정보 조회
   const memberQuery = membersApi.useGetMemberQuery(
     { name: selectedMember },
     {
       skip: !selectedMember,
     },
   );
-
-  // 시간 계산
-  const time = timeSince(isSuccess && data?.createdAt);
-  // 게시글 수정 여부
-  const isEdit = data?.modifiedAt !== data?.createdAt ? true : false;
-
-  //파싱된 데이터
-  const parsedData = parse(String(data?.content));
-
-  // 삭제 문구
-  const deleteConfirm = `${deleteType}을 정말 삭제하시겠습니까?`;
 
   // 게시글 서버 데이터 저장
   // 데이터 받아서 로컬 스테이트로 저장 ( 댓글, 좋아요, 싫어요, 북마크)
@@ -163,17 +133,16 @@ const PostDetail: React.FC = () => {
   // 좋아요 클릭 함수
   const changeLiikeHandler = (): void => {
     if (!isLogin) navigate('/login');
-    // 좋아요만 있는 경우
     if (loginUserName) {
       if (isLike && !isDislike) {
-        removeThumbUp({ postId });
+        deleteThumbUp({ postId });
         setIsLike(false);
         setLike((prev) => prev! - 1);
         return;
       }
-      // 싫어요만 있는 경우
+
       if (!isLike && isDislike) {
-        removeThumbDown({ postId });
+        deleteThumbDown({ postId });
         setIsDislike(false);
         setDislike((prev) => prev! - 1);
         addThumbUp({ postId });
@@ -181,7 +150,6 @@ const PostDetail: React.FC = () => {
         setLike((prev) => prev! + 1);
         return;
       }
-      // 둘 다 없는 경우
       if (!isLike && !isDislike) {
         addThumbUp({ postId });
         setIsLike(true);
@@ -191,14 +159,14 @@ const PostDetail: React.FC = () => {
     }
   };
 
-  // 싫어요 클릭 함수
   const changeDislikeHandler = (): void => {
-    if (!isLogin) navigate('/login');
+    if (!isLogin) {
+      navigate('/login');
+      return;
+    }
     if (loginUserName) {
-      // 좋아요만 있는 경우
       if (isLike && !isDislike) {
-        // 좋아요 제거, 싫어요 추가
-        removeThumbUp({ postId });
+        deleteThumbUp({ postId });
         setIsLike(false);
         setLike((prev) => prev! - 1);
         addThumbDown({ postId });
@@ -206,17 +174,13 @@ const PostDetail: React.FC = () => {
         setDislike((prev) => prev! + 1);
         return;
       }
-      // 싫어요만 있는 경우
       if (!isLike && isDislike) {
-        // 싫어요 제거
-        removeThumbDown({ postId });
+        deleteThumbDown({ postId });
         setIsDislike(false);
         setDislike((prev) => prev! - 1);
         return;
       }
-      // 둘 다 없는 경우
       if (!isLike && !isDislike) {
-        // 싫어요 추가
         addThumbDown({ postId });
         setIsDislike(true);
         setDislike((prev) => prev! + 1);
@@ -224,7 +188,6 @@ const PostDetail: React.FC = () => {
       }
     }
   };
-  // 북마크 클릭 함수
   const changeBookmarkHandler = (): void => {
     if (!isLogin) navigate('/login');
     if (loginUserName) {
@@ -238,36 +201,32 @@ const PostDetail: React.FC = () => {
     }
   };
 
-  // 삭제 확인 모달창 오픈
   const confirmDeleteHandler = (): void => {
     setIsOpenDelete(!isOpenDelete);
   };
-  // 신고 모달창 오픈
   const reportHandler = (): void => {
     setIsOpenReport(!isOpenReport);
   };
 
-  // 데이터 삭제(게시글, 댓글, 답글)
   const deleteData = (): void => {
-    // 게시글 삭제 로직
     if (deleteType === '게시글') {
       deletePost({ postId });
       confirmDeleteHandler();
       navigate('/');
+      return;
     }
-    // 댓글 삭제 로직
     if (deleteType === '댓글') {
       deleteComment({ commentId });
       confirmDeleteHandler();
+      return;
     }
-    // 답글 삭제 로직
     if (deleteType === '답글') {
       deleteReply({ replyId });
       confirmDeleteHandler();
+      return;
     }
   };
 
-  // 드롭다운 클로즈
   const handleClickOutside = (event: MouseEvent) => {
     if ('post' in state && state.post?.isOpenFilter) {
       dispatch(setIsOpenFilter('post' in state && state.post?.isOpenFilter));
@@ -276,7 +235,6 @@ const PostDetail: React.FC = () => {
     }
   };
 
-  // 바깥 부분 클릭
   const outClickIntroHandler = (event: React.MouseEvent<HTMLElement>) => {
     if (
       isOpenIntro &&
@@ -288,7 +246,6 @@ const PostDetail: React.FC = () => {
     }
   };
 
-  // 신고 옵션
   const reportOption = [
     '영리목적/홍보성',
     '저작권침해',
@@ -299,14 +256,12 @@ const PostDetail: React.FC = () => {
     '기타',
   ];
 
-  // 신고 옵션 선택(텍스트)
-  const handleSelectChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const selectChangeHandler = (event: React.ChangeEvent<HTMLInputElement>) => {
     setCheckedElement(Number(event.target.value));
     dispatch(setReportOption(event.target.id));
   };
 
-  // 신고 옵션 선택(체크 버튼)
-  const handleSelected = (event: React.MouseEvent<HTMLButtonElement>) => {
+  const selectHandler = (event: React.MouseEvent<HTMLButtonElement>) => {
     setCheckedElement(Number(event.currentTarget.value));
     dispatch(
       setReportOption(
@@ -315,9 +270,7 @@ const PostDetail: React.FC = () => {
     );
   };
 
-  // 신고 보내기
   const sendReportHandler = (): void => {
-    // 유효성 검사
     if ('post' in state && !state.post?.reportOption) {
       dispatch(setReportErr('신고 이유를 선택해 주세요.'));
       return;
@@ -329,7 +282,6 @@ const PostDetail: React.FC = () => {
       return;
     }
     if ('validation' in state && state.validation?.reportErr) return;
-    // 게시물 신고
     if ('post' in state && state.post?.reportType === 'post') {
       sendReport({
         reportReason: reportReason,
@@ -349,9 +301,10 @@ const PostDetail: React.FC = () => {
       setIsOpenReport(isOpenReportErr);
       dispatch(setReportErr(''));
       setCheckedElement(-1);
+
+      return;
     }
 
-    // 댓글 신고
     if ('post' in state && state.post?.reportType === 'comment') {
       sendReport({
         reportReason: reportReason,
@@ -371,9 +324,10 @@ const PostDetail: React.FC = () => {
       setIsOpenReport(isOpenReportErr);
       dispatch(setReportErr(''));
       setCheckedElement(-1);
+
+      return;
     }
 
-    // 답글 신고
     if ('post' in state && state.post.reportType === 'reply') {
       sendReport({
         reportReason: reportReason,
@@ -393,13 +347,13 @@ const PostDetail: React.FC = () => {
       setIsOpenReport(isOpenReportErr);
       dispatch(setReportErr(''));
       setCheckedElement(-1);
+
+      return;
     }
   };
 
-  //  신고 유효성 검사
-  const validationTest = (): void => {
+  const checkValidation = (): void => {
     const reportValue = reportTextRef.current?.value;
-
     if ('post' in state && !state.post?.reportOption) {
       dispatch(setReportErr('신고 이유를 선택해 주세요'));
     }
@@ -409,13 +363,13 @@ const PostDetail: React.FC = () => {
     if (reportValue) {
       if (reportValue.length < 10 || reportValue.length > 40) {
         dispatch(setReportErr('신고내용은 10자 이상 40자 이하이어야 합니다. '));
-      } else {
-        dispatch(setReportErr(''));
+        return;
       }
+
+      dispatch(setReportErr(''));
     }
   };
 
-  // 소개페이지 명함
   const IntroHandler = (event: React.MouseEvent<HTMLElement>) => {
     if (
       !isOpenCommentIntro &&
@@ -426,6 +380,27 @@ const PostDetail: React.FC = () => {
       dispatch(setSelectedMember(event.target.id));
     }
   };
+
+  useEffect(() => {
+    if (isSuccess) {
+      setIsLike(data?.isThumbup);
+      setIsDislike(data?.isThumbdown);
+      setLike(data?.thumbupCount);
+      setDislike(data?.thumbDownCount);
+      setBookmark(data?.isBookmarked);
+      setViews(data?.viewCount);
+      setCommentCnt(data?.commentCount);
+    }
+  }, [data]);
+
+  useEffect(() => {
+    if ('post' in state && state.post.isOpenFilter) {
+      dispatch(setIsOpenFilter(true));
+    }
+    scrollTo(0, 0);
+    refetch();
+  }, [postId]);
+
   return (
     <>
       {isOpenDelete ? (
@@ -459,7 +434,7 @@ const PostDetail: React.FC = () => {
                       name="report"
                       value={idx}
                       checked={checkedElement === idx}
-                      onChange={handleSelectChange}
+                      onChange={selectChangeHandler}
                     />
 
                     {checkedElement === idx ? (
@@ -467,7 +442,7 @@ const PostDetail: React.FC = () => {
                         id={option}
                         value={idx}
                         onClick={(event): void => {
-                          handleSelected(event);
+                          selectHandler(event);
                           setCheckedElement(-1);
                         }}
                       >
@@ -478,7 +453,7 @@ const PostDetail: React.FC = () => {
                         id={option}
                         value={idx}
                         onClick={(event) => {
-                          handleSelected(event);
+                          selectHandler(event);
                           setCheckedElement(idx);
                         }}
                       >
@@ -496,7 +471,7 @@ const PostDetail: React.FC = () => {
               ref={reportTextRef}
               className="report-content"
               placeholder="신고할 내용을 작성해주세요."
-              onChange={validationTest}
+              onChange={checkValidation}
             ></textarea>
             <Error>{reportErr}</Error>
             <BtnContainer>
@@ -655,7 +630,6 @@ const PostDetail: React.FC = () => {
               <RecommendedPost></RecommendedPost>
             </div>
           </RecommendedPostContainer>
-          {/* <ProfilePreview></ProfilePreview> */}
         </Container>
       )}
     </>
@@ -663,7 +637,6 @@ const PostDetail: React.FC = () => {
 };
 
 export default PostDetail;
-// 페이지 컨테이너
 const Container = styled.div<any>`
   display: grid;
   grid-template-columns: 760px 340px;
@@ -675,7 +648,6 @@ const Container = styled.div<any>`
     max-width: 720px;
   }
 `;
-// Post 컨테이너
 const PostContainer = styled.div`
   display: flex;
   flex-direction: column;
@@ -749,7 +721,6 @@ const PostContainer = styled.div`
   }
 `;
 const Bookmark = styled.button``;
-// Post 정보
 const PostInfo = styled.div`
   display: flex;
   flex-direction: column;
@@ -796,7 +767,6 @@ const RecommendedPostContainer = styled.div`
   }
 `;
 
-// 모달 컨테이너
 const ModalContainer = styled.div`
   display: flex;
   justify-content: center;
@@ -810,7 +780,6 @@ const ModalContainer = styled.div`
   z-index: 2;
 `;
 
-// 게시글, 댓글, 답글 삭제 확인창
 const DeleteModal = styled.div`
   display: flex;
   flex-direction: column;
@@ -842,7 +811,6 @@ const DeleteModal = styled.div`
   }
 `;
 
-// 신고 컨테이너
 const ReportModal = styled.div`
   display: flex;
   flex-direction: column;
@@ -961,7 +929,6 @@ const IntorductionContainer = styled.div`
   }
 `;
 
-// 버튼 컨테이너
 const BtnContainer = styled.div`
   display: flex;
   justify-content: space-around;
@@ -969,7 +936,6 @@ const BtnContainer = styled.div`
   margin-bottom: 20px;
 `;
 
-// 삭제 버튼
 const DeleteBtn = styled(BlueBtn)`
   width: 220px;
   height: 60px;
@@ -977,7 +943,6 @@ const DeleteBtn = styled(BlueBtn)`
   font-weight: 400px;
   margin: 0 12px 0 12px;
 `;
-// 신고하기 버튼
 const SendReportBtn = styled(BlueBtn)`
   width: 220px;
   height: 60px;
@@ -985,7 +950,6 @@ const SendReportBtn = styled(BlueBtn)`
   font-weight: 400px;
   margin: 0 12px 0 12px;
 `;
-// 취소 버튼
 const CancelBtn = styled(WhiteBtn)`
   width: 220px;
   height: 60px;
@@ -994,7 +958,6 @@ const CancelBtn = styled(WhiteBtn)`
   margin: 0 12px 0 12px;
 `;
 
-// 유효성 검사 에러
 const Error = styled.div`
   width: 100%;
   height: 25px;

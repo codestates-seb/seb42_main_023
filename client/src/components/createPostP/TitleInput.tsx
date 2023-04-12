@@ -9,14 +9,12 @@ const TitleInput: React.FC = () => {
   const state = useAppSelector((state) => state);
   const title = useRef<HTMLInputElement>(null);
 
-  // 제목 value 확인
-  const valueCheck = (event: React.ChangeEvent<HTMLInputElement>): void => {
+  const checkValue = (event: React.ChangeEvent<HTMLInputElement>): void => {
     dispatch(setTitle(event.target.value));
-    validationTest();
+    validateTitle();
   };
 
-  // 유효성 검사
-  const validationTest = (): void => {
+  const validateTitle = (): void => {
     const titleValue = title.current?.value;
     if (titleValue!.length === 0) {
       dispatch(setTitleErr('제목을 작성해주세요.'));
@@ -38,7 +36,7 @@ const TitleInput: React.FC = () => {
             ref={title}
             className="title-input"
             placeholder="제목을 입력하세요."
-            onChange={valueCheck}
+            onChange={checkValue}
           ></Input>
         </TitleInputContainer>
       ) : (
@@ -48,7 +46,7 @@ const TitleInput: React.FC = () => {
             ref={title}
             className="title-input"
             placeholder="제목을 입력하세요."
-            onChange={valueCheck}
+            onChange={checkValue}
           ></Input>
           <Error>{state.validation.titleErr}</Error>
         </TitleInputContainer>
@@ -77,9 +75,6 @@ const Input = styled.input`
   padding: 0 10px 0 10px;
   margin-top: 20px;
   padding-left: 15px;
-  /* ::placeholder {
-    font-style: italic;
-  } */
   :focus {
     outline: 2px solid #0069ca;
   }
