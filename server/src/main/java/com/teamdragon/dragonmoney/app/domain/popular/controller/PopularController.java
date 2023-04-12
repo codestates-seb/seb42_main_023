@@ -6,7 +6,6 @@ import com.teamdragon.dragonmoney.app.domain.posts.entity.Posts;
 import com.teamdragon.dragonmoney.app.global.exception.ValidFailException;
 import com.teamdragon.dragonmoney.app.global.exception.ValidFailExceptionCode;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -17,7 +16,6 @@ import org.springframework.web.bind.annotation.RestController;
 import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Positive;
-import java.util.List;
 
 @RequiredArgsConstructor
 @Validated
@@ -44,7 +42,7 @@ public class PopularController {
 
     // 추천 게시물 목록 조회
     @GetMapping("/posts/recommend")
-    public ResponseEntity<PostsDto.RecommendPostsListRes> findRecommendPosts() {
+    public ResponseEntity<PostsDto.RecommendPostsListRes> findRecommendPostsList() {
         PostsDto.RecommendPostsListRes response = popularService.findRecommendPosts();
         return new ResponseEntity<>(response, HttpStatus.OK);
     }

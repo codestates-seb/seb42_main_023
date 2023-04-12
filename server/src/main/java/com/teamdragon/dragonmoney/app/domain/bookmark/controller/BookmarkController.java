@@ -26,13 +26,13 @@ public class BookmarkController {
 
     // 북마크 추가
     @PostMapping("/members/{member-name}/bookmark/posts/{post-id}")
-    public ResponseEntity postBookmark(@PathVariable("member-name") String memberName,
-                                       @Valid @Positive @PathVariable("post-id") Long postsId,
-                                       @AuthenticationPrincipal Principal principal) {
+    public ResponseEntity<BookmarkDto> createBookmark(@PathVariable("member-name") String memberName,
+                                                      @Valid @Positive @PathVariable("post-id") Long postsId,
+                                                      @AuthenticationPrincipal Principal principal) {
 
         memberService.bookmarkMemberCompareLoginMember(principal.getName(), memberName);
         Member loginMember = finderService.findVerifiedMemberByName(principal.getName());
-        bookmarkService.checkBookmark(loginMember, postsId);
+        bookmarkService.duplicateCheckBookmark(loginMember, postsId);
 
         BookmarkDto response = new BookmarkDto(true);
 
@@ -41,9 +41,9 @@ public class BookmarkController {
 
     // 북마크 삭제
     @DeleteMapping("/members/{member-name}/bookmark/posts/{post-id}")
-    public ResponseEntity deleteBookmark (@PathVariable("member-name") String memberName,
-                                          @Valid @Positive @PathVariable("post-id") Long postsId,
-                                          @AuthenticationPrincipal Principal principal) {
+    public ResponseEntity<BookmarkDto> removeBookmark(@PathVariable("member-name") String memberName,
+                                                      @Valid @Positive @PathVariable("post-id") Long postsId,
+                                                      @AuthenticationPrincipal Principal principal) {
 
         memberService.bookmarkMemberCompareLoginMember(principal.getName(), memberName);
         Member loginMember = finderService.findVerifiedMemberByName(principal.getName());

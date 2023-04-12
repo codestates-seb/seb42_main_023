@@ -33,8 +33,8 @@ public class CommentController {
     // 추가
     @PostMapping("/posts/{post-id}/comments")
     public ResponseEntity<CommentDto.CreateRes> createComment(@AuthenticationPrincipal Principal principal,
-                                                         @Valid @Positive @PathVariable("post-id") Long postsId,
-                                                         @Valid @RequestBody CommentDto.CreateReq commentDto) {
+                                                              @Valid @Positive @PathVariable("post-id") Long postsId,
+                                                              @Valid @RequestBody CommentDto.CreateReq commentDto) {
         Member loginMember = memberService.findMember(principal.getName());
         Comment newComment = commentMapper.createDtoToComment(commentDto);
 
@@ -66,7 +66,7 @@ public class CommentController {
 
     // 삭제
     @DeleteMapping("/comments/{comment-id}")
-    public ResponseEntity<Void> deleteComment(@AuthenticationPrincipal Principal principal,
+    public ResponseEntity<Void> removeComment(@AuthenticationPrincipal Principal principal,
                                               @Valid @Positive @PathVariable("comment-id") Long commentId) {
         Member loginMember = memberService.findMember(principal.getName());
         commentService.removeComment(loginMember, commentId);
@@ -75,12 +75,12 @@ public class CommentController {
 
     // 수정
     @PatchMapping("/comments/{comment-id}")
-    public ResponseEntity<CommentDto.UpdateRes> updateComment(@AuthenticationPrincipal Principal principal,
-                                                          @Valid @RequestBody CommentDto.UpdateReq commentDto,
-                                                          @Valid @Positive @PathVariable("comment-id") Long commentId) {
+    public ResponseEntity<CommentDto.UpdateRes> modifyComment(@AuthenticationPrincipal Principal principal,
+                                                              @Valid @RequestBody CommentDto.UpdateReq commentDto,
+                                                              @Valid @Positive @PathVariable("comment-id") Long commentId) {
         Member loginMember = memberService.findMember(principal.getName());
         Comment comment = commentMapper.updateDtoToComment(commentDto);
-        Comment updateComment = commentService.updateComment(loginMember, commentId, comment);
+        Comment updateComment = commentService.modifyComment(loginMember, commentId, comment);
         CommentDto.UpdateRes response = new CommentDto.UpdateRes(updateComment.getId());
         return new ResponseEntity<>(response, HttpStatus.OK);
     }

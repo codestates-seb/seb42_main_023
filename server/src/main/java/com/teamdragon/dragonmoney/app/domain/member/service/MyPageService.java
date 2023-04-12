@@ -23,7 +23,7 @@ public class MyPageService {
     private static final String PAGE_ELEMENT_ORDER_BY = "latest";
 
     // 특정 회원의 글 개수
-    public MyPageDto.MyPageCount findCount(String memberName) {
+    public MyPageDto.MyPageCount findCountInfo(String memberName) {
         Long memberPostsCount = postsRepository.findMemberPostsCount(memberName);
         Long memberCommentCount = commentRepository.findMemberCommentCount(memberName);
         Long memberThumbUpPostsCount = postsRepository.findMemberThumbUpPostsCount(memberName);
@@ -49,7 +49,7 @@ public class MyPageService {
 
     // 특정 회원이 작성한 댓글 목록
     public MyPageDto.MyPageMemberCommentListRes findMemberComments(int page, String memberName) {
-        Page<Comment> commentPage = commentService.findCommentListByWriterComment(memberName, page, Comment.OrderBy.LATEST);
+        Page<Comment> commentPage = commentService.findCommentListByMember(memberName, page, Comment.OrderBy.LATEST);
         return new MyPageDto.MyPageMemberCommentListRes(commentPage, PAGE_ELEMENT_ORDER_BY);
     }
 
@@ -61,7 +61,7 @@ public class MyPageService {
 
     // 특정 회원이 좋아요를 누른 댓글 목록
     public MyPageDto.MyPageMemberCommentListRes findMemberThumbUpComments(int page, String memberName) {
-        Page<Comment> commentPage = commentService.findPostsListByThumbUpComment(memberName, page, Comment.OrderBy.LATEST);
+        Page<Comment> commentPage = commentService.findThumbUpCommentListByMember(memberName, page, Comment.OrderBy.LATEST);
         return new MyPageDto.MyPageMemberCommentListRes(commentPage, PAGE_ELEMENT_ORDER_BY);
     }
 

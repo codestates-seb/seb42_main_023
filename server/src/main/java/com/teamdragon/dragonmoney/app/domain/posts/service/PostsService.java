@@ -53,13 +53,13 @@ public class PostsService implements ThumbCountService {
         // 카테고리 조회
         Category findCategory = finderService.findCategoryById(CURRENT_CATEGORY_ID);
         // 이미지 삭제
-        imageService.removeImages(loginMember, removedImages);
+        imageService.removeImageList(loginMember, removedImages);
 
         // 업로드 이미지 조회
         List<Image> findImages = new ArrayList<>();
         List<Image> newPostsImages = newPosts.getImages();
         if (newPostsImages != null && !newPostsImages.isEmpty()) {
-            findImages = imageService.findImages(newPostsImages);
+            findImages = imageService.findImageList(newPostsImages);
         }
         // 태그 조회 및 저장
         List<PostsTag> newPostsPostsTags = newPosts.getPostsTags();
@@ -68,7 +68,7 @@ public class PostsService implements ThumbCountService {
             List<String> tagNames = newPostsPostsTags.stream()
                     .map(postsTag -> postsTag.getTag().getName())
                     .collect(Collectors.toList());
-            postsTags = getPostsTags(tagNames);
+            postsTags = getPostsTagList(tagNames);
         }
 
         Posts posts = Posts.builder()
@@ -94,7 +94,7 @@ public class PostsService implements ThumbCountService {
         postsTagRepository.deleteByPosts_Id(findPosts.getId());
         tagService.removeOrphanTag();
         // 이미지 삭제
-        imageService.removeImages(loginMember, findPosts.getImages());
+        imageService.removeImageList(loginMember, findPosts.getImages());
         // 댓글 삭제 처리
         commentService.removeCommentsByParent(findPosts.getComments());
 
@@ -113,7 +113,7 @@ public class PostsService implements ThumbCountService {
         postsTagRepository.deleteByPosts_Id(posts.getId());
         tagService.removeOrphanTag();
         // 이미지 삭제
-        imageService.removeImages(member, posts.getImages());
+        imageService.removeImageList(member, posts.getImages());
         // 댓글 삭제 처리
         commentService.removeCommentsByParent(posts.getComments());
 
@@ -121,7 +121,7 @@ public class PostsService implements ThumbCountService {
     }
 
     // 회원 탈퇴로 인한 삭제
-    public void removePostsBtDeletedMember(String memberName) {
+    public void removePostsByDeletedMember(String memberName) {
         DeleteResult deleteResult = DeleteResult.builder()
                 .deleteReason(DeleteResult.Reason.DELETED_BY_MEMBER_REMOVE)
                 .build();
@@ -140,15 +140,15 @@ public class PostsService implements ThumbCountService {
         originalPosts.isModifiedNow();
 
         // 이미지 처리
-        imageService.removeImages(loginMember, removedImages);
+        imageService.removeImageList(loginMember, removedImages);
         // 태그 처리
-        List<PostsTag> postsTags = updateTags(updatePosts, originalPosts);
+        List<PostsTag> postsTags = updateTagList(updatePosts, originalPosts);
         if (postsTags != null) {
             originalPosts.addPostsTags(postsTags);
             postsTagRepository.saveAll(postsTags);
         }
         // 추가된 이미지 : 이미지 추가
-        List<Image> newImages = imageService.findImages(updatePosts.getImages());
+        List<Image> newImages = imageService.findImageList(updatePosts.getImages());
         if (newImages != null && !newImages.isEmpty()) {
             for (Image newImage : newImages) {
                 originalPosts.addImage(newImage);
@@ -175,7 +175,7 @@ public class PostsService implements ThumbCountService {
     }
 
     // 게시글 상세 조회 : 게시글 id
-    public PostsDto.PostsDetailRes findPostsDetail(Long postsId, Long loginMemberId){
+    public PostsDto.PostsDetailRes findPostsDetails(Long postsId, Long loginMemberId){
         plusViewCount(postsId);
         if (loginMemberId == null) {
             return postsRepository.findPostsDetailById(postsId);
@@ -228,7 +228,7 @@ public class PostsService implements ThumbCountService {
     }
 
     @Override
-    public ThumbDto thumbupStateUpdate(Long postsId, boolean needInquiry, ThumbDto.ACTION action) {
+    public ThumbDto modifyThumbupState(Long postsId, boolean needInquiry, ThumbDto.ACTION action) {
         Posts findPosts = findVerifyPostsById(postsId);
         if (action == ThumbDto.ACTION.PLUS) {
             findPosts.plusThumbupCount();
@@ -243,7 +243,7 @@ public class PostsService implements ThumbCountService {
     }
 
     @Override
-    public ThumbDto thumbdownStateUpdate(Long postsId, boolean needInquiry, ThumbDto.ACTION action) {
+    public ThumbDto modifyThumbdownState(Long postsId, boolean needInquiry, ThumbDto.ACTION action) {
         Posts findPosts = findVerifyPostsById(postsId);
         if (action == ThumbDto.ACTION.PLUS) {
             findPosts.plusThumbdownCount();
@@ -258,8 +258,8 @@ public class PostsService implements ThumbCountService {
     }
 
     // PostsTag 획득
-    public List<PostsTag> getPostsTags(List<String> tagNames) {
-        List<Tag> tags = saveTags(tagNames);
+    public List<PostsTag> getPostsTagList(List<String> tagNames) {
+        List<Tag> tags = saveTagList(tagNames);
         // PostsTag 설정
         List<PostsTag> postsTags = new ArrayList<>();
         for (Tag tag : tags) {
@@ -269,7 +269,7 @@ public class PostsService implements ThumbCountService {
     }
 
     // update 로 인한 태그 삭제 및 추가 처리
-    public List<PostsTag> updateTags(Posts updatePosts, Posts originalPosts) {
+    public List<PostsTag> updateTagList(Posts updatePosts, Posts originalPosts) {
         List<String> updateTagNames = updatePosts.getTagNames();
         List<String> originalTagNames = originalPosts.getTagNames();
 
@@ -280,7 +280,7 @@ public class PostsService implements ThumbCountService {
             originalPosts.removeAllPostsTag();
             return null;
         } else if (originalTagNames.isEmpty() && !updateTagNames.isEmpty()) {
-            return getPostsTags(updateTagNames);
+            return getPostsTagList(updateTagNames);
         } else {
             List<String> newTagNames = new ArrayList<>();
             List<String> removedTagNames = new ArrayList<>();
@@ -295,7 +295,7 @@ public class PostsService implements ThumbCountService {
                 }
             }
             postsTagRepository.deleteAllByPostsIdAndTagName(originalPosts.getId(), removedTagNames);
-            return getPostsTags(newTagNames);
+            return getPostsTagList(newTagNames);
         }
     }
 
@@ -316,7 +316,7 @@ public class PostsService implements ThumbCountService {
     }
 
     // Tags 조회 및 저장
-    public List<Tag> saveTags(List<String> tagNames) {
+    public List<Tag> saveTagList(List<String> tagNames) {
         return tagService.saveListTag(tagNames);
     }
 

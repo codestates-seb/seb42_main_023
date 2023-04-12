@@ -20,6 +20,6 @@ public interface CommentRepositoryCustom {
     Page<Comment> findCommentListByMemberName(Pageable pageable, String memberName);
     Page<Comment> findThumbUpCommentListByMemberName(Pageable pageable, String memberName);
 
-    // 회원 탈퇴로 인한 댓글 삭제
+    // 댓글 조회 : 탈퇴회원 닉네임
     List<Comment> findCommentByDeletedMember(String memberName);
 }

@@ -4,12 +4,13 @@ import com.teamdragon.dragonmoney.app.domain.comment.entity.Comment;
 import com.teamdragon.dragonmoney.app.domain.comment.repository.CommentRepository;
 import com.teamdragon.dragonmoney.app.domain.image.entity.Image;
 import com.teamdragon.dragonmoney.app.domain.image.repository.ImageRepository;
+import com.teamdragon.dragonmoney.app.domain.information.house.happyhouse.service.HappyHouseScheduled;
 import com.teamdragon.dragonmoney.app.domain.information.house.happyhouse.service.HappyHouseService;
+import com.teamdragon.dragonmoney.app.domain.information.house.price.service.HousePriceScheduled;
 import com.teamdragon.dragonmoney.app.domain.member.entity.Member;
 import com.teamdragon.dragonmoney.app.domain.member.repository.MemberRepository;
 import com.teamdragon.dragonmoney.app.domain.popular.entity.BestAwards;
 import com.teamdragon.dragonmoney.app.domain.popular.repository.BestAwardsRepository;
-import com.teamdragon.dragonmoney.app.domain.popular.service.PopularService;
 import com.teamdragon.dragonmoney.app.domain.posts.entity.Posts;
 import com.teamdragon.dragonmoney.app.domain.posts.entity.PostsTag;
 import com.teamdragon.dragonmoney.app.domain.posts.repository.PostsRepository;
@@ -31,7 +32,6 @@ import java.time.DayOfWeek;
 import java.time.LocalDateTime;
 import java.time.temporal.TemporalAdjusters;
 import java.util.*;
-import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Transactional
@@ -46,7 +46,8 @@ public class StubService {
     private final ReplyRepository replyRepository;
     private final ThumbdownRepository thumbdownRepository;
     private final HousePriceService housePriceService;
-    private final HappyHouseService happyHouseService;
+    private final HappyHouseScheduled happyHouseScheduled;
+    private final HousePriceScheduled housePriceScheduled;
     private final BestAwardsRepository bestAwardsRepository;
 
     private final String MEMBER_IMAGE_URL = "https://preview.free3d.com/img/2018/03/2269226802687772611/8mk0tyu6.jpg";
@@ -59,11 +60,11 @@ public class StubService {
     private final int REPLY_NUMBER_IN_COMMENT = 20;
 
     public void makeHappyHouseData() {
-        happyHouseService.findHappyHouseByAreas();
+        happyHouseScheduled.collectHappyHouseList();
     }
 
     public void makeHousePriceData() {
-        housePriceService.collectPriceByAreas();
+        housePriceScheduled.collectHousePrices();
     }
 
     public List<Member> makeMembers(){

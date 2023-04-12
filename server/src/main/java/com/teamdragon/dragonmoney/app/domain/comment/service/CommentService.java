@@ -36,14 +36,9 @@ public class CommentService implements ThumbCountService {
 
     private static final int PAGE_ELEMENT_SIZE = 10;
 
-    // 단일 조회
-    public Comment findOne(Long commentId) {
-        return findVerifyCommentById(commentId);
-    }
-
     // 단일 조회 : Active 상태
-    public Comment findOneStateActive(Long postsId) {
-        Comment findComment = findVerifyCommentById(postsId);
+    public Comment findOneStateActive(Long commentId) {
+        Comment findComment = findVerifyCommentById(commentId);
         if (findComment.getState() != Comment.State.ACTIVE) {
             throw new BusinessLogicException(BusinessExceptionCode.THUMB_UNUSABLE);
         }
@@ -76,19 +71,18 @@ public class CommentService implements ThumbCountService {
     public void removeCommentsByParent(List<Comment> comments) {
         for (Comment comment : comments) {
             comment.changeStateToDeleted(new DeleteResult(DeleteResult.Reason.DELETED_BY_PARENT));
-            replyService.removeCommentsByParent(comment.getReplies());
+            replyService.removeReplyListByParent(comment.getReplies());
         }
         commentRepository.saveAll(comments);
     }
 
     // 신고로 인한 삭제
-    public void removeReportComment(Comment comment) {
-        Posts parentPosts = comment.getPosts();
+    public void removeCommentByReport(Comment comment) {
         DeleteResult deleteResult
                 = DeleteResult.builder().deleteReason(DeleteResult.Reason.DELETED_BY_REPORT).build();
         comment.changeStateToDeleted(deleteResult);
         // 답글 삭제
-        replyService.removeCommentsByParent(comment.getReplies());
+        replyService.removeReplyListByParent(comment.getReplies());
         commentRepository.save(comment);
     }
 
@@ -107,7 +101,7 @@ public class CommentService implements ThumbCountService {
     }
 
     // 수정
-    public Comment updateComment(Member loginMember, Long commentId, Comment updateComment) {
+    public Comment modifyComment(Member loginMember, Long commentId, Comment updateComment) {
         Comment originalComment = checkOwner(loginMember, commentId);
         originalComment.isModifiedNow();
         originalComment.updateContent(updateComment.getContent());
@@ -132,19 +126,19 @@ public class CommentService implements ThumbCountService {
     }
 
     // 마이 페이지 특정 회원이 쓴 댓글 조회
-    public Page<Comment> findCommentListByWriterComment(String memberName, int page, Comment.OrderBy orderBy) {
+    public Page<Comment> findCommentListByMember(String memberName, int page, Comment.OrderBy orderBy) {
         Pageable pageable = PageRequest.of(page - 1 , PAGE_ELEMENT_SIZE, Sort.by(orderBy.getTargetProperty()).descending());
         return commentRepository.findCommentListByMemberName(pageable, memberName);
     }
 
     // 마이 페이지 특정 회원이 좋아요 한 댓글 조회
-    public Page<Comment> findPostsListByThumbUpComment(String memberName, int page, Comment.OrderBy orderBy){
+    public Page<Comment> findThumbUpCommentListByMember(String memberName, int page, Comment.OrderBy orderBy){
         Pageable pageable = PageRequest.of(page - 1 , PAGE_ELEMENT_SIZE, Sort.by(orderBy.getTargetProperty()).descending());
         return commentRepository.findThumbUpCommentListByMemberName(pageable, memberName);
     }
 
     @Override
-    public ThumbDto thumbupStateUpdate(Long commentId, boolean needInquiry, ThumbDto.ACTION action) {
+    public ThumbDto modifyThumbupState(Long commentId, boolean needInquiry, ThumbDto.ACTION action) {
         Comment findComment = findVerifyCommentById(commentId);
         if (action == ThumbDto.ACTION.PLUS) {
             findComment.plusThumbupCount();
@@ -159,7 +153,7 @@ public class CommentService implements ThumbCountService {
     }
 
     @Override
-    public ThumbDto thumbdownStateUpdate(Long commentId, boolean needInquiry, ThumbDto.ACTION action) {
+    public ThumbDto modifyThumbdownState(Long commentId, boolean needInquiry, ThumbDto.ACTION action) {
         Comment findComment = findVerifyCommentById(commentId);
         if (action == ThumbDto.ACTION.PLUS) {
             findComment.plusThumbdownCount();

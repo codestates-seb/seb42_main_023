@@ -41,13 +41,13 @@ public class PopularService {
     public PopularService(PostsRepository postsRepository, BestAwardsRepository bestAwardsRepository) {
         this.postsRepository = postsRepository;
         this.bestAwardsRepository = bestAwardsRepository;
-        countStartedAt = setStartTime();
-        countEndedAt = setEndTime(countStartedAt);
+        setStartTime();
+        setEndTime(countStartedAt);
     }
 
     // 주간 인기 게시물 조회
     public PostsDto.WeeklyPopularRes findWeeklyPopularListDto() {
-        List<Posts> weeklyPopularList = postsRepository.findWeeklyPopularList(WEEKLY_POPULAR_MAX_SIZE, countStartedAt, countEndedAt);
+        List<Posts> weeklyPopularList = findWeeklyPopularList();
         return PostsDto.WeeklyPopularRes.builder()
                 .posts(weeklyPopularList)
                 .start(countStartedAt)
@@ -55,20 +55,12 @@ public class PopularService {
                 .build();
     }
 
-    // 명예의 전당 선정 : 매주 월요일 00시 수행
-    @Scheduled(cron = "0 0 0 * * MON")
-    public void decisionBestAwards() {
-        List<Posts> weeklyPopularList = postsRepository.findWeeklyPopularList(WEEKLY_POPULAR_MAX_SIZE, countStartedAt, countEndedAt);
-        ArrayList<BestAwards> bestAwards = new ArrayList<>();
-        for (Posts posts : weeklyPopularList) {
-            if (posts.getBestAwards() == null) {
-                bestAwards.add(new BestAwards(posts));
-            }
-        }
+    public void saveBestAwardsList(ArrayList<BestAwards> bestAwards) {
         bestAwardsRepository.saveAll(bestAwards);
+    }
 
-        countStartedAt = setStartTime();
-        countEndedAt = setEndTime(countStartedAt);
+    public List<Posts> findWeeklyPopularList() {
+        return postsRepository.findWeeklyPopularList(WEEKLY_POPULAR_MAX_SIZE, countStartedAt, countEndedAt);
     }
 
     // 명예의 전당 목록 조회
@@ -85,14 +77,15 @@ public class PopularService {
     }
 
     // 주간인기글 측정 시작시간 설정
-    private LocalDateTime setStartTime() {
+    public void setStartTime() {
         LocalDateTime currentTime = LocalDateTime.now();
         LocalDateTime tempTime = currentTime.with(TemporalAdjusters.previousOrSame(DayOfWeek.MONDAY));
-        return LocalDateTime.of(tempTime.getYear(), tempTime.getMonth(), tempTime.getDayOfMonth(), 0, 0, 0);
+        countStartedAt =
+        LocalDateTime.of(tempTime.getYear(), tempTime.getMonth(), tempTime.getDayOfMonth(), 0, 0, 0);
     }
 
     // 주간인기글 종료 시작시간 설정
-    private LocalDateTime setEndTime(LocalDateTime startTime) {
-        return startTime.plusDays(7);
+    public void setEndTime(LocalDateTime startTime) {
+        countEndedAt = startTime.plusDays(7);
     }
 }

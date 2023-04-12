@@ -48,7 +48,7 @@ public class S3Service {
     }
 
     // 여러 객체 삭제
-    public void removeFiles(List<String> storeFileNameKeys){
+    public void removeFileList(List<String> storeFileNameKeys){
         String[] keys = storeFileNameKeys.toArray(new String[storeFileNameKeys.size()]);
         try {
             // key: 삭제를 원하는 객체의 경로를 포함한 이름
@@ -56,20 +56,6 @@ public class S3Service {
                     new DeleteObjectsRequest(bucket)
                             .withKeys(keys)
             );
-        } catch (AmazonServiceException e) {
-            e.printStackTrace();
-            throw new BusinessLogicException(BusinessExceptionCode.IMAGE_REMOVE_FAIL);
-        } catch (SdkClientException e) {
-            e.printStackTrace();
-            throw new BusinessLogicException(BusinessExceptionCode.IMAGE_REMOVE_FAIL);
-        }
-    }
-
-    // 단일 객체 삭제
-    public void removeFile(String storeFileNameKey){
-        try {
-            // key: 삭제를 원하는 객체의 경로를 포함한 이름
-            amazonS3.deleteObject(new DeleteObjectRequest(bucket, storeFileNameKey));
         } catch (AmazonServiceException e) {
             e.printStackTrace();
             throw new BusinessLogicException(BusinessExceptionCode.IMAGE_REMOVE_FAIL);

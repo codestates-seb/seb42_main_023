@@ -4,6 +4,7 @@ import com.teamdragon.dragonmoney.app.domain.information.house.happyhouse.dto.Ha
 import com.teamdragon.dragonmoney.app.domain.information.house.happyhouse.entity.HappyHouse;
 import com.teamdragon.dragonmoney.app.domain.information.house.happyhouse.repository.HappyHouseRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.http.HttpHeaders;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.ParameterizedTypeReference;
@@ -25,6 +26,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+@Slf4j
 @RequiredArgsConstructor
 @Transactional
 @Service
@@ -50,43 +52,33 @@ public class HappyHouseService {
         }
     }
 
-    // 지역별 데이터 요청
-    @Scheduled(cron = "0 0 4 * * *")
-    public void findHappyHouseByAreas(){
-        HappyHouseAreaCode[] areas = HappyHouseAreaCode.values();
-        for (HappyHouseAreaCode area : areas) {
-            HappyHouseApiDto.HappyHousePackage happyHousePackage
-                    = reqHappyHouseApi(area.getCode()).get(1);
-            List<HappyHouseApiDto.NoticeElement> dsList = happyHousePackage.getDsList();
-            saveHappyHouse(dsList);
-        }
-        removeByDateTime();
-    }
-
     // 오래된 공고 데이터 삭제
-    private void removeByDateTime() {
+    public void removeByOldDateTime() {
         LocalDateTime twoMonthAgo = LocalDateTime.now().minusMonths(2);
         happyHouseRepository.deleteByNoticeEndDayBefore(twoMonthAgo);
     }
 
-    // 데이터 조회
-    private void saveHappyHouse(List<HappyHouseApiDto.NoticeElement> notices) {
+    // 행복주택 정보 저장
+    public void saveHappyHouse(List<HappyHouseApiDto.NoticeElement> notices) {
         List<HappyHouse> newHappyHouses = getHappyHouseList(notices);
         // DB 조회
         List<String> noticeIds = newHappyHouses.stream()
                 .map(HappyHouse::getNoticeId)
                 .collect(Collectors.toList());
         List<HappyHouse> findHappyHouses = happyHouseRepository.findByNoticeIdIn(noticeIds);
-
+        // 저장 또는 업데이트
         saveOrUpdate(newHappyHouses, findHappyHouses);
     }
 
-    // 데이터 수정, 추가
+    // 데이터 수정 또는 추가
     private void saveOrUpdate(List<HappyHouse> newHappyHouses, List<HappyHouse> findHappyHouses) {
         Map<String, HappyHouse> findHappyHouseMap
                 = findHappyHouses.stream().collect(Collectors.toMap(fh -> fh.getNoticeId(), fh -> fh));
         ArrayList<HappyHouse> addHappyHouse = new ArrayList<>();
         for (HappyHouse newHappyHouse : newHappyHouses) {
+            log.info("newHappyHouse 아이디 : {}" , newHappyHouse.getNoticeId());
+            log.info("newHappyHouse 제목 : {}" , newHappyHouse.getNoticeTitle());
+            log.info("newHappyHouse 공고마감일 : {}" , newHappyHouse.getNoticeEndDay());
             HappyHouse findHouse = findHappyHouseMap.get(newHappyHouse.getNoticeId());
             if (findHouse != null ) {
                 findHouse.updateData(newHappyHouse);
@@ -95,14 +87,16 @@ public class HappyHouseService {
                 addHappyHouse.add(newHappyHouse);
             }
         }
+        log.info("addHappyHouse 길이 : {}" , addHappyHouse.size());
         happyHouseRepository.saveAll(addHappyHouse);
     }
 
     // 지역 부동산 데이터 요청
-    private List<HappyHouseApiDto.HappyHousePackage> reqHappyHouseApi(int areaCode) {
+    public List<HappyHouseApiDto.HappyHousePackage> reqHappyHouseApi(int areaCode) {
 
         DefaultUriBuilderFactory factory = new DefaultUriBuilderFactory("http://apis.data.go.kr");
         factory.setEncodingMode(DefaultUriBuilderFactory.EncodingMode.NONE);
+        log.info("api 데이터 요청 : 지역코드 = {}" , areaCode);
 
         Mono<List<HappyHouseApiDto.HappyHousePackage>> objectMono = WebClient.builder()
                 .uriBuilderFactory(factory)

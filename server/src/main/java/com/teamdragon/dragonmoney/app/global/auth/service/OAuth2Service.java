@@ -108,7 +108,7 @@ public class OAuth2Service {
     }
 
     //tempAccessToken 저장
-    public Member updatedTempAccessToken(String name, String tempAccessToken) {
+    public Member updateTempAccessToken(String name, String tempAccessToken) {
         Member member = memberService.findVerifiedMemberName(name);
         member.saveTempAccessToken(tempAccessToken);
 
@@ -118,7 +118,7 @@ public class OAuth2Service {
     // Refresh Token 검증
     public void verifyJws(HttpServletRequest request) {
         try {
-            Map<String, Object> claims = refreshTokenGetMemberName(request);
+            Map<String, Object> claims = getMemberNameFromRefreshToken(request);
         } catch (SignatureException se) {
             throw new AuthLogicException(AuthExceptionCode.REFRESH_TOKEN_INVALID);
         } catch (ExpiredJwtException ee) {
@@ -129,7 +129,7 @@ public class OAuth2Service {
     }
 
     // Resresh Token 파싱
-    public Map<String, Object> refreshTokenGetMemberName(HttpServletRequest request) {
+    public Map<String, Object> getMemberNameFromRefreshToken(HttpServletRequest request) {
         String jws = request.getHeader("Refresh");
         String base64EncodedSecretKey = jwtTokenizer.encodeBase64SecretKey(jwtTokenizer.getSecretKey());
         Map<String, Object> claims = jwtTokenizer.getClaims(jws, base64EncodedSecretKey).getBody();
@@ -153,7 +153,7 @@ public class OAuth2Service {
     }
 
     // 탈퇴된 회원 복구
-    public Member changedMemberState(String tempAccessToken) {
+    public Member changeMemberStateToActive(String tempAccessToken) {
         Member member = findMemberByTempAccessToken(tempAccessToken);
         member.changedMemberState(Member.MemberState.ACTIVE);
 

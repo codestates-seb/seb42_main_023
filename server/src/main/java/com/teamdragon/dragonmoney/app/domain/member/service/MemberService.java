@@ -32,18 +32,15 @@ public class MemberService {
     private static final String OAUTH2_KIND = "google";
 
     // oAuth2 로그인 할 때 존재하는 회원인지 판별
-    public Boolean checkOAuthMemberName(String email) {
+    public Boolean checkOAuthMemberByEmail(String email) {
         Optional<Member> optionalNameDuplicateCheck
                 = memberRepository.findByNameDuplicateCheckAndEmailAndOauthkind(true, email, OAUTH2_KIND);
 
-        if (optionalNameDuplicateCheck.isPresent())
-            return true;
-
-        return false;
+        return optionalNameDuplicateCheck.isPresent();
     }
 
     // OAuth2 신규 회원 정보 저장
-    public Member saveMember(String oauthKind, String picture, String tempName, String email, List<String> authorities) {
+    public Member createMember(String oauthKind, String picture, String tempName, String email, List<String> authorities) {
         Member member = Member.builder()
                 .oauthkind(oauthKind)
                 .nameDuplicateCheck(false)
@@ -57,14 +54,14 @@ public class MemberService {
     }
 
     // 닉네임 중복 확인
-    public Boolean duplicatedName(String name) {
+    public Boolean canUseName(String name) {
         Optional<Member> memberOptional = memberRepository.findByName(name);
 
         return memberOptional.isEmpty();
     }
 
     // 회원 조회 및 이름 수정
-    public Member updateMemberName(String tempName, String name) {
+    public Member modifyMemberName(String tempName, String name) {
 
         Member memberOptional = findVerifiedMemberTempName(tempName);
         memberOptional.saveMemberName(name, true);
@@ -73,7 +70,7 @@ public class MemberService {
     }
 
     // 마이 페이지 자기소개 수정
-    public Member updateMemberIntro(String name, Member member) {
+    public Member modifyMemberIntro(String name, Member member) {
         Member updatedMember = findVerifiedMemberName(name);
         updatedMember.updatedMemberIntro(member.getIntro());
         updatedMember.isModifiedNow();
@@ -82,8 +79,8 @@ public class MemberService {
     }
 
     // 회원 탈퇴
-    public Member deleteMember(String name) {
-        postsService.removePostsBtDeletedMember(name);
+    public Member removeMember(String name) {
+        postsService.removePostsByDeletedMember(name);
         commentService.removeCommentByDeletedMember(name);
         replyService.removeReplyByDeletedMember(name);
 
@@ -116,18 +113,14 @@ public class MemberService {
     }
 
     // 탈퇴한 회원 재 가입시 존재하는 회원인지 판별
-    public Boolean checkDeletedName(String email) {
+    public Boolean isDeletedMemberByEmail(String email) {
         Optional<Member> optionalDeletedCheck
                 = memberRepository.findByEmailAndOauthkindAndState(email, OAUTH2_KIND, Member.MemberState.DELETED);
-
-        if (optionalDeletedCheck.isPresent())
-            return true;
-
-        return false;
+        return optionalDeletedCheck.isPresent();
     }
 
     // 조회한 이메일을 통해 이름 가져오기
-    public String getNameBySearchEmail(String email) {
+    public String findMemberNameByEmail(String email) {
         Optional<Member> getMember = memberRepository.findByNameDuplicateCheckAndEmailAndOauthkind(true, email, OAUTH2_KIND);
         String name = getMember.get().getName();
 
