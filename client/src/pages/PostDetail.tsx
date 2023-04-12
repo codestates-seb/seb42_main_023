@@ -22,10 +22,10 @@ import { ReactComponent as CheckedIcon } from '../assets/checked.svg';
 import { ReactComponent as NoCheckedIcon } from '../assets/noChecked.svg';
 import {
   PostStateType,
-  CommentStateType,
-  ReplyStateType,
+  // CommentStateType,
+  // ReplyStateType,
   ValidationStateType,
-} from '../types/PostDetail';
+} from '../types/Post';
 import { postsApi } from '../api/postApi';
 import { commentsApi } from '../api/commentApi';
 import { repliesApi } from '../api/replyApi';

@@ -13,19 +13,19 @@ import TimeIcon from '../../assets/common/TimeIcon';
 import CommentDropdownButton from './CommentDropdownButton';
 import Loading from '../common/Loading';
 import Reply from './Reply';
-import { CommentInputProps } from '../../types/PostDetail';
+import { CommentInputProps } from '../../types/Post';
 import {
   PostStateType,
-  CommentStateType,
-  ReplyStateType,
+  // CommentStateType,
+  // ReplyStateType,
   CommentType,
   ReplyType,
   ReportProps,
   CommentProps,
-} from '../../types/PostDetail';
+} from '../../types/Post';
 import { commentsApi } from '../../api/commentApi';
 import { repliesApi } from '../../api/replyApi';
-import { membersApi } from '../../api/memberApi';
+import { membersApi } from '../../api/memberapi';
 import { setReportType, setSelectedMember } from '../../slices/postSlice';
 import {
   setCommentId,
@@ -59,14 +59,7 @@ const Comment: React.FC<
   const isLogin = checkIsLogin();
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
-  const state = useAppSelector(
-    (
-      state: PostStateType | CommentStateType | ReplyStateType,
-    ): PostStateType | CommentStateType | ReplyStateType => {
-      return state;
-    },
-  );
-
+  const state = useAppSelector((state) => state);
   const [page, setPage] = useState<number>(1);
   const [commentData, setCommentData] = useState<Array<CommentType>>([]);
   const [editComment, setEditComment] = useState<string>('');
@@ -239,21 +232,14 @@ const Comment: React.FC<
   }, [replyQuery.data, commentQuery.data]);
 
   useEffect(() => {
-    if (
-      commentQuery.isSuccess &&
-      'reply' in state &&
-      state.reply?.isOpened === undefined
-    ) {
+    if (commentQuery.isSuccess && state.reply?.isOpened === undefined) {
       const open = Array.from(
         { length: commentQuery.data?.comments?.length },
         (el) => (el = false),
       );
       dispatch(isOpened(open));
     }
-    if (
-      commentQuery.isSuccess &&
-      (state as CommentStateType).comment.isEdit === undefined
-    ) {
+    if (commentQuery.isSuccess && state.comment.isEdit === undefined) {
       const edit = Array.from(
         { length: commentQuery.data.comments?.length },
         (el) => (el = false),
@@ -275,11 +261,10 @@ const Comment: React.FC<
             commentQuery.data?.comments?.map(
               (comment: CommentType, idx: number) => {
                 const filtered: Array<ReplyType> =
-                  'reply' in state &&
-                  state.reply.totalReplies &&
+                  state.reply.totalReplies! &&
                   (
                     _.uniqBy(
-                      'reply' in state && state.reply.totalReplies,
+                      state.reply.totalReplies,
                       'replyId',
                     ) as Array<object>
                   ).filter((reply: Partial<ReplyType>) => {
@@ -493,7 +478,7 @@ const Comment: React.FC<
                         {'comment' in state &&
                         state.comment.isEdit !== undefined &&
                         state.comment.isEdit[idx] ? (
-                          <InputWrap>
+                          <InputContainer>
                             <textarea
                               id="edit-comment"
                               className="edit-content"
@@ -505,7 +490,7 @@ const Comment: React.FC<
                               onChange={valueCheck}
                               onInput={handleResizeHeight}
                             ></textarea>
-                          </InputWrap>
+                          </InputContainer>
                         ) : (
                           <div
                             className="content"
@@ -582,9 +567,7 @@ const Comment: React.FC<
                         )}
                       </div>
                     </CommentContent>
-                    {'reply' in state &&
-                    isSuccess &&
-                    state.reply?.isOpened[idx] ? (
+                    {isSuccess && state.reply?.isOpened![idx] ? (
                       <>
                         <ReplyContainer>
                           <ReplyInput
@@ -899,7 +882,7 @@ const ReplyBtn = styled.button`
   }
 `;
 
-const InputWrap = styled.div`
+const InputContainer = styled.div`
   display: flex;
   textarea {
     box-sizing: border-box;

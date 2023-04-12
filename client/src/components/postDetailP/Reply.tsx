@@ -9,12 +9,12 @@ import DislikeIcon from '../../assets/common/DislikeIcon';
 import LikeIcon from '../../assets/common/LikeIcon';
 import {
   PostStateType,
-  ReplyStateType,
-  CommentStateType,
+  // ReplyStateType,
+  // CommentStateType,
   ReplyProps,
   ReplyType,
   ReportProps,
-} from '../../types/PostDetail';
+} from '../../types/Post';
 import { repliesApi } from '../../api/replyApi';
 import { membersApi } from '../../api/memberapi';
 import { setReportType, setSelectedMember } from '../../slices/postSlice';
@@ -369,7 +369,7 @@ const Reply: React.FC<Partial<ReplyProps & ReportProps>> = ({
         {'reply' in state &&
         replyInfo!.replyId === replyId &&
         state.reply?.isEdit[idx!] ? (
-          <InputWrap>
+          <InputContainer>
             <textarea
               id="edit-reply"
               className="edit-reply"
@@ -378,7 +378,7 @@ const Reply: React.FC<Partial<ReplyProps & ReportProps>> = ({
               onChange={valueCheck}
               onInput={handleResizeHeight}
             ></textarea>
-          </InputWrap>
+          </InputContainer>
         ) : (
           <div
             className="reply-content"
@@ -575,7 +575,7 @@ const ReplyContent = styled.div`
   }
 `;
 
-const InputWrap = styled.div`
+const InputContainer = styled.div`
   display: flex;
   textarea {
     box-sizing: border-box;
