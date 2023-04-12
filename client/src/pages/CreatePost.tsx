@@ -7,7 +7,6 @@ import { BlueBtn, WhiteBtn } from '../components/common/Btn';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useAppDispatch, useAppSelector } from '../hooks';
 import { postsApi } from '../api/postApi';
-import _ from 'lodash';
 import { deleteTag, setBody, setTagContent } from '../slices/postInputSlice';
 import { setBodyErr, setTitleErr } from '../slices/validationSlice';
 import { checkIsLogin } from '../../src/util/checkIsLogin';

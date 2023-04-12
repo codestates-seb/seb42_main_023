@@ -2,7 +2,7 @@ import React, { useRef, useState, useEffect } from 'react';
 import { useAppDispatch, useAppSelector } from '../../hooks';
 import styled from 'styled-components';
 import parse from 'html-react-parser';
-import _ from 'lodash';
+import debounce from 'lodash/debounce';
 import { useNavigate } from 'react-router-dom';
 import { getTimeSince } from '../common/timeCalculator';
 import DislikeIcon from '../../assets/common/DislikeIcon';
@@ -319,7 +319,7 @@ const Reply: React.FC<Partial<ReplyProps & ReportProps>> = ({
           {isDeleted ? null : isReported ? null : (
             <>
               <button
-                onClick={_.debounce(
+                onClick={debounce(
                   () => {
                     ReplyLiikeHandler(replyInfo!);
                   },
@@ -335,7 +335,7 @@ const Reply: React.FC<Partial<ReplyProps & ReportProps>> = ({
               </button>
               <li className="reply-likes">{replyInfo?.thumbupCount}</li>
               <button
-                onClick={_.debounce(
+                onClick={debounce(
                   () => {
                     ReplyDislikeHandler(replyInfo!);
                   },
