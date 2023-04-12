@@ -4,7 +4,7 @@ import com.teamdragon.dragonmoney.app.domain.bookmark.dto.BookmarkDto;
 import com.teamdragon.dragonmoney.app.domain.bookmark.service.BookmarkHandleService;
 import com.teamdragon.dragonmoney.app.domain.common.service.FinderService;
 import com.teamdragon.dragonmoney.app.domain.member.entity.Member;
-import com.teamdragon.dragonmoney.app.domain.member.service.MemberService;
+import com.teamdragon.dragonmoney.app.domain.member.service.MemberHandleServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -22,7 +22,7 @@ import java.security.Principal;
 public class BookmarkController {
     private final BookmarkHandleService bookmarkHandleService;
     private final FinderService finderService;
-    private final MemberService memberService;
+    private final MemberHandleServiceImpl memberService;
 
     // 북마크 추가
     @PostMapping("/members/{member-name}/bookmark/posts/{post-id}")

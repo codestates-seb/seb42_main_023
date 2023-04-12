@@ -8,12 +8,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.http.HttpHeaders;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.ParameterizedTypeReference;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.http.MediaType;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -30,7 +25,7 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 @Transactional
 @Service
-public class HappyHouseService {
+public class HappyHouseHandleServiceImpl implements HappyHouseHandleService {
 
     @Value("${api.public-data.secret}")
     private String secretKey;
@@ -40,25 +35,16 @@ public class HappyHouseService {
     private static final String RENT_HOUSE_CODE = "06";
     private static final int API_PAGE_ELEMENT_SIZE = 10;
     private static final int API_PAGE_NUM = 1;
-    private static final int PAGE_ELEMENT_SIZE = 5;
-
-    // 행복주택 목록 조회 : 요청페이지번호, 필터링기준
-    public Page<HappyHouse> findHappyHouseList(int page, HappyHouseAreaCode location, HappyHouseState state){
-        Pageable pageable = PageRequest.of(page - 1 , PAGE_ELEMENT_SIZE, Sort.by("noticeEndDay").descending());
-        if (state == HappyHouseState.ALL) {
-            return happyHouseRepository.findHappyHouseListByPageAllState(pageable, location);
-        } else {
-            return happyHouseRepository.findHappyHouseListByPage(pageable, location, state);
-        }
-    }
 
     // 오래된 공고 데이터 삭제
+    @Override
     public void removeByOldDateTime() {
         LocalDateTime twoMonthAgo = LocalDateTime.now().minusMonths(2);
         happyHouseRepository.deleteByNoticeEndDayBefore(twoMonthAgo);
     }
 
     // 행복주택 정보 저장
+    @Override
     public void saveHappyHouse(List<HappyHouseApiDto.NoticeElement> notices) {
         List<HappyHouse> newHappyHouses = getHappyHouseList(notices);
         // DB 조회
@@ -70,28 +56,8 @@ public class HappyHouseService {
         saveOrUpdate(newHappyHouses, findHappyHouses);
     }
 
-    // 데이터 수정 또는 추가
-    private void saveOrUpdate(List<HappyHouse> newHappyHouses, List<HappyHouse> findHappyHouses) {
-        Map<String, HappyHouse> findHappyHouseMap
-                = findHappyHouses.stream().collect(Collectors.toMap(fh -> fh.getNoticeId(), fh -> fh));
-        ArrayList<HappyHouse> addHappyHouse = new ArrayList<>();
-        for (HappyHouse newHappyHouse : newHappyHouses) {
-            log.info("newHappyHouse 아이디 : {}" , newHappyHouse.getNoticeId());
-            log.info("newHappyHouse 제목 : {}" , newHappyHouse.getNoticeTitle());
-            log.info("newHappyHouse 공고마감일 : {}" , newHappyHouse.getNoticeEndDay());
-            HappyHouse findHouse = findHappyHouseMap.get(newHappyHouse.getNoticeId());
-            if (findHouse != null ) {
-                findHouse.updateData(newHappyHouse);
-                addHappyHouse.add(findHouse);
-            } else {
-                addHappyHouse.add(newHappyHouse);
-            }
-        }
-        log.info("addHappyHouse 길이 : {}" , addHappyHouse.size());
-        happyHouseRepository.saveAll(addHappyHouse);
-    }
-
     // 지역 부동산 데이터 요청
+    @Override
     public List<HappyHouseApiDto.HappyHousePackage> reqHappyHouseApi(int areaCode) {
 
         DefaultUriBuilderFactory factory = new DefaultUriBuilderFactory("http://apis.data.go.kr");
@@ -114,6 +80,27 @@ public class HappyHouseService {
                 .retrieve()
                 .bodyToMono(new ParameterizedTypeReference<List<HappyHouseApiDto.HappyHousePackage>>(){});
         return objectMono.block();
+    }
+
+    // 데이터 수정 또는 추가
+    private void saveOrUpdate(List<HappyHouse> newHappyHouses, List<HappyHouse> findHappyHouses) {
+        Map<String, HappyHouse> findHappyHouseMap
+                = findHappyHouses.stream().collect(Collectors.toMap(fh -> fh.getNoticeId(), fh -> fh));
+        ArrayList<HappyHouse> addHappyHouse = new ArrayList<>();
+        for (HappyHouse newHappyHouse : newHappyHouses) {
+            log.info("newHappyHouse 아이디 : {}" , newHappyHouse.getNoticeId());
+            log.info("newHappyHouse 제목 : {}" , newHappyHouse.getNoticeTitle());
+            log.info("newHappyHouse 공고마감일 : {}" , newHappyHouse.getNoticeEndDay());
+            HappyHouse findHouse = findHappyHouseMap.get(newHappyHouse.getNoticeId());
+            if (findHouse != null ) {
+                findHouse.updateData(newHappyHouse);
+                addHappyHouse.add(findHouse);
+            } else {
+                addHappyHouse.add(newHappyHouse);
+            }
+        }
+        log.info("addHappyHouse 길이 : {}" , addHappyHouse.size());
+        happyHouseRepository.saveAll(addHappyHouse);
     }
 
     private List<HappyHouse> getHappyHouseList(List<HappyHouseApiDto.NoticeElement> notices) {

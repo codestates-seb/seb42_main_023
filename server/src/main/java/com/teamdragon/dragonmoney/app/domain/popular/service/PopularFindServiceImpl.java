@@ -1,46 +1,36 @@
 package com.teamdragon.dragonmoney.app.domain.popular.service;
 
-import com.teamdragon.dragonmoney.app.domain.popular.repository.BestAwardsRepository;
-import com.teamdragon.dragonmoney.app.domain.popular.entity.BestAwards;
+
 import com.teamdragon.dragonmoney.app.domain.posts.dto.PostsDto;
 import com.teamdragon.dragonmoney.app.domain.posts.entity.Posts;
 import com.teamdragon.dragonmoney.app.domain.posts.repository.PostsRepository;
-import lombok.Getter;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.DayOfWeek;
 import java.time.LocalDateTime;
 import java.time.temporal.TemporalAdjusters;
-import java.util.ArrayList;
 import java.util.List;
 
-@Slf4j
 @Transactional
 @Service
-public class PopularService {
+public class PopularFindServiceImpl implements PopularFindService {
 
     private final PostsRepository postsRepository;
-    private final BestAwardsRepository bestAwardsRepository;
-
-    @Getter
-    private LocalDateTime countStartedAt;
-    @Getter
-    private LocalDateTime countEndedAt;
 
     private static final int WEEKLY_POPULAR_MAX_SIZE = 3;
     private static final int RECOMMEND_POSTS_MAX_SIZE = 10;
     private static final int PAGE_ELEMENT_SIZE = 10;
 
-    public PopularService(PostsRepository postsRepository, BestAwardsRepository bestAwardsRepository) {
+    private LocalDateTime countStartedAt;
+    private LocalDateTime countEndedAt;
+
+    public PopularFindServiceImpl(PostsRepository postsRepository) {
         this.postsRepository = postsRepository;
-        this.bestAwardsRepository = bestAwardsRepository;
         setStartTime();
         setEndTime(countStartedAt);
     }
@@ -53,10 +43,6 @@ public class PopularService {
                 .start(countStartedAt)
                 .end(countEndedAt)
                 .build();
-    }
-
-    public void saveBestAwardsList(ArrayList<BestAwards> bestAwards) {
-        bestAwardsRepository.saveAll(bestAwards);
     }
 
     public List<Posts> findWeeklyPopularList() {
@@ -81,11 +67,16 @@ public class PopularService {
         LocalDateTime currentTime = LocalDateTime.now();
         LocalDateTime tempTime = currentTime.with(TemporalAdjusters.previousOrSame(DayOfWeek.MONDAY));
         countStartedAt =
-        LocalDateTime.of(tempTime.getYear(), tempTime.getMonth(), tempTime.getDayOfMonth(), 0, 0, 0);
+                LocalDateTime.of(tempTime.getYear(), tempTime.getMonth(), tempTime.getDayOfMonth(), 0, 0, 0);
     }
 
     // 주간인기글 종료 시작시간 설정
     public void setEndTime(LocalDateTime startTime) {
         countEndedAt = startTime.plusDays(7);
     }
+
+    public LocalDateTime getCountStartedAt() {
+        return this.countStartedAt;
+    }
+
 }

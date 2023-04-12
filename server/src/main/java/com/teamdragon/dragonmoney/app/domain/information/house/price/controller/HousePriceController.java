@@ -2,7 +2,7 @@ package com.teamdragon.dragonmoney.app.domain.information.house.price.controller
 
 import com.teamdragon.dragonmoney.app.domain.information.house.price.dto.HousePriceDto;
 import com.teamdragon.dragonmoney.app.domain.information.house.price.entity.HousePrice;
-import com.teamdragon.dragonmoney.app.domain.information.house.price.service.HousePriceService;
+import com.teamdragon.dragonmoney.app.domain.information.house.price.service.HousePriceFindService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -17,12 +17,12 @@ import java.util.List;
 @RestController
 public class HousePriceController {
 
-    private final HousePriceService housePriceService;
+    private final HousePriceFindService housePriceFindService;
 
     // 부동산 정보 조회
     @GetMapping("/rent-price/house/seoul")
     public ResponseEntity<HousePriceDto.AllHousePriceRes> findHousePriceList() {
-        List<HousePrice> allHousePrice = housePriceService.findAllHousePrice();
+        List<HousePrice> allHousePrice = housePriceFindService.findAllHousePrice();
         HousePriceDto.AllHousePriceRes response = new HousePriceDto.AllHousePriceRes(allHousePrice);
         return new ResponseEntity<>(response, HttpStatus.OK);
     }

@@ -2,7 +2,7 @@ package com.teamdragon.dragonmoney.app.domain.image.service;
 
 import com.teamdragon.dragonmoney.app.domain.image.entity.Image;
 import com.teamdragon.dragonmoney.app.domain.image.repository.ImageRepository;
-import com.teamdragon.dragonmoney.app.domain.image.service.platform.S3Service;
+import com.teamdragon.dragonmoney.app.domain.image.service.platform.CloudService;
 import com.teamdragon.dragonmoney.app.domain.member.entity.Member;
 import com.teamdragon.dragonmoney.app.global.exception.BusinessExceptionCode;
 import com.teamdragon.dragonmoney.app.global.exception.BusinessLogicException;
@@ -28,7 +28,7 @@ public class ImageHandleServiceImpl implements ImageHandleService{
     // 허용 이미지 확장자
     private static final String[] PERMISSION_FILE_EXT_ARR = {"GIF", "JPEG", "JPG", "PNG"};
 
-    private final S3Service s3Service;
+    private final CloudService cloudService;
     private final ImageRepository imageRepository;
 
     // 이미지 업로드
@@ -80,12 +80,12 @@ public class ImageHandleServiceImpl implements ImageHandleService{
         List<String> deleteFileNames = removeImages.stream()
                 .map(Image::getFileName)
                 .collect(Collectors.toList());
-        s3Service.removeFileList(deleteFileNames);
+        cloudService.removeFileList(deleteFileNames);
     }
 
     // 이미지 업로드 : 클라우드
     private String uploadImageToCloud(MultipartFile multipartFile, String ext, String storeFileName)  {
-        String url = s3Service.uploadFile(multipartFile, ext, storeFileName);
+        String url = cloudService.uploadFile(multipartFile, ext, storeFileName);
         return url;
     }
 

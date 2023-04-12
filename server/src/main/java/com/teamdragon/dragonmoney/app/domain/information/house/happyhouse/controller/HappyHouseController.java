@@ -3,7 +3,7 @@ package com.teamdragon.dragonmoney.app.domain.information.house.happyhouse.contr
 import com.teamdragon.dragonmoney.app.domain.information.house.happyhouse.dto.HappyHouseDto;
 import com.teamdragon.dragonmoney.app.domain.information.house.happyhouse.entity.HappyHouse;
 import com.teamdragon.dragonmoney.app.domain.information.house.happyhouse.service.HappyHouseAreaCode;
-import com.teamdragon.dragonmoney.app.domain.information.house.happyhouse.service.HappyHouseService;
+import com.teamdragon.dragonmoney.app.domain.information.house.happyhouse.service.HappyHouseFindService;
 import com.teamdragon.dragonmoney.app.domain.information.house.happyhouse.service.HappyHouseState;
 import com.teamdragon.dragonmoney.app.global.exception.ValidFailException;
 import com.teamdragon.dragonmoney.app.global.exception.ValidFailExceptionCode;
@@ -25,7 +25,7 @@ import javax.validation.constraints.Positive;
 @RestController
 public class HappyHouseController {
 
-    private final HappyHouseService happyHouseService;
+    private final HappyHouseFindService happyHouseFindService;
 
     // 목록 조회
     @GetMapping("/recruit/happy-house")
@@ -34,7 +34,7 @@ public class HappyHouseController {
                                                                               @Valid @NotBlank @RequestParam String state) {
         HappyHouseAreaCode locationEnum = checkLocation(location);
         HappyHouseState stateEnum = checkState(state);
-        Page<HappyHouse> happyHouseList = happyHouseService.findHappyHouseList(page, locationEnum, stateEnum);
+        Page<HappyHouse> happyHouseList = happyHouseFindService.findHappyHouseList(page, locationEnum, stateEnum);
         HappyHouseDto.HappyHouseListRes response =
                 new HappyHouseDto.HappyHouseListRes(happyHouseList, locationEnum.getName(), stateEnum.getStateName());
         return new ResponseEntity<>(response, HttpStatus.OK);

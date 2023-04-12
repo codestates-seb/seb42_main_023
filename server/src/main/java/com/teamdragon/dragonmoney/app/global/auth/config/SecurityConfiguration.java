@@ -1,6 +1,6 @@
 package com.teamdragon.dragonmoney.app.global.auth.config;
 
-import com.teamdragon.dragonmoney.app.domain.member.service.MemberService;
+import com.teamdragon.dragonmoney.app.domain.member.service.MemberHandleServiceImpl;
 import com.teamdragon.dragonmoney.app.global.auth.filter.JwtVerificationFilter;
 import com.teamdragon.dragonmoney.app.global.auth.handler.MemberAccessDeniedHandler;
 import com.teamdragon.dragonmoney.app.global.auth.handler.MemberAuthenticationEntryPoint;
@@ -30,7 +30,7 @@ import static org.springframework.security.config.Customizer.withDefaults;
 public class SecurityConfiguration {
     private final JwtTokenizer jwtTokenizer;
     private final CustomAuthorityUtils authorityUtils;
-    private final MemberService memberService;
+    private final MemberHandleServiceImpl memberService;
     private final OAuth2Service oAuth2Service;
 
     @Bean

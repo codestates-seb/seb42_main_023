@@ -1,13 +1,5 @@
 package com.teamdragon.dragonmoney.app.domain.report.service;
 
-import com.teamdragon.dragonmoney.app.domain.comment.entity.Comment;
-import com.teamdragon.dragonmoney.app.domain.comment.service.CommentService;
-import com.teamdragon.dragonmoney.app.domain.common.service.FinderService;
-import com.teamdragon.dragonmoney.app.domain.member.entity.Member;
-import com.teamdragon.dragonmoney.app.domain.posts.entity.Posts;
-import com.teamdragon.dragonmoney.app.domain.posts.service.PostsService;
-import com.teamdragon.dragonmoney.app.domain.reply.entity.Reply;
-import com.teamdragon.dragonmoney.app.domain.reply.service.ReplyService;
 import com.teamdragon.dragonmoney.app.domain.report.dto.ReportDto;
 import com.teamdragon.dragonmoney.app.domain.report.entity.Report;
 import com.teamdragon.dragonmoney.app.domain.report.repository.ReportRepository;
@@ -21,18 +13,16 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDateTime;
 import java.util.Optional;
+
 
 @RequiredArgsConstructor
 @Transactional
 @Service
-public class ReportService {
+public class ReportFindServiceImpl implements ReportFindService {
+
     private final ReportRepository reportRepository;
-    private final FinderService finderService;
-    private final PostsService postsService;
-    private final CommentService commentService;
-    private final ReplyService replyService;
+
     private static final int PAGE_ELEMENT_SIZE = 14;
     private static final String POST_ENG = "post";
     private static final String COMMENT_ENG = "comment";
@@ -43,36 +33,8 @@ public class ReportService {
     private static final String All_ENG = "all";
     private static final String SORT_PROPERTY = "handledAt";
 
-    // 신고 요청
-    public Report saveReport(ReportDto.ReportPostReq newReport) {
-        Member reporter = finderService.findVerifiedMemberByName(newReport.getReporterName());
-        Posts targetPosts = null;
-        Comment targetComment = null;
-        Reply targetReply = null;
-
-        if (newReport.getPostId() != null) {
-            targetPosts = finderService.findVerifyPostsById(newReport.getPostId());
-        } else if (newReport.getCommentId() != null) {
-            targetComment = finderService.findVerifyCommentById(newReport.getCommentId());
-        } else {
-            targetReply = finderService.findVerifyReplyById(newReport.getReplyId());
-        }
-        Report report = Report.builder()
-                .reportReason(newReport.getReportReason())
-                .description(newReport.getDescription())
-                .targetType(newReport.getTargetType())
-                .reporter(reporter)
-                .targetPosts(targetPosts)
-                .targetComment(targetComment)
-                .targetReply(targetReply)
-                .handleState(Report.State.STANDBY)
-                .reportedAt(LocalDateTime.now())
-                .build();
-
-        return reportRepository.save(report);
-    }
-
     // 신고한 글 세부 내용 조회
+    @Override
     public ReportDto.ReportDetailRes findReport(Long reportId) {
         Report report = findVerifiedReport(reportId);
         String targetType = renameTargetType(report.getTargetType());
@@ -92,6 +54,7 @@ public class ReportService {
     }
 
     // 미처리 신고 목록 조회
+    @Override
     public ReportDto.ReportListRes findListStandByReport(int page, String orderBy) {
 
         if (orderBy.equals(POST_ENG) || orderBy.equals(COMMENT_ENG) || orderBy.equals(REPLY_ENG) || orderBy.equals(All_ENG)){
@@ -105,6 +68,7 @@ public class ReportService {
     }
 
     // 처리된 신고 목록 조회
+    @Override
     public ReportDto.ReportListRes findListDeletedReport(int page, String orderBy) {
 
         if (orderBy.equals(POST_ENG) || orderBy.equals(COMMENT_ENG) || orderBy.equals(REPLY_ENG) || orderBy.equals(All_ENG)){
@@ -117,46 +81,13 @@ public class ReportService {
         }
     }
 
-    // 신고 대상 삭제
-    public Long removeReport(Long reportId) {
-        Report report = findVerifiedReport(reportId);
-        report.deleteReport(Report.State.DELETED);
-
-        if (report.getTargetPosts() != null) {
-            Posts targetPosts = finderService.findVerifyPostsById(report.getTargetPosts().getId());
-            postsService.removeRepostedPosts(targetPosts.getWriter(), targetPosts);
-        } else if (report.getTargetComment() != null) {
-            Comment targetComment = finderService.findVerifyCommentById(report.getTargetComment().getId());
-            commentService.removeCommentByReport(targetComment);
-        } else {
-            Reply targetReply = finderService.findVerifyReplyById(report.getTargetReply().getId());
-            replyService.removeReplyByReport(targetReply);
-        }
-
-        reportRepository.save(report);
-
-        return reportId;
-    }
-
     // 신고된 대상 찾기
-    private Report findVerifiedReport(Long reportId) {
+    @Override
+    public Report findVerifiedReport(Long reportId) {
         Optional<Report> optionalReport = reportRepository.findById(reportId);
 
         return optionalReport
                 .orElseThrow( () -> new BusinessLogicException(BusinessExceptionCode.REPORT_NOT_FOUND));
-    }
-
-    // targetType 한글로 변환
-    private String renameTargetType(String targetType) {
-        if(targetType.equals(POST_ENG)) {
-            return targetType.replace(POST_ENG, POST_KOR);
-        } else if (targetType.equals(COMMENT_ENG)) {
-            return targetType.replace(COMMENT_ENG, COMMENT_KOR);
-
-        } else if (targetType.equals(REPLY_ENG)) {
-            return targetType.replace(REPLY_ENG, REPLY_KOR);
-        }
-        return null;
     }
 
     // 신고된 글을 쓴 작성자 조회
@@ -195,6 +126,19 @@ public class ReportService {
 
         } else if (targetType.equals(REPLY_KOR)) {
             return report.getTargetReply().getContent();
+        }
+        return null;
+    }
+
+    // targetType 한글로 변환
+    private String renameTargetType(String targetType) {
+        if(targetType.equals(POST_ENG)) {
+            return targetType.replace(POST_ENG, POST_KOR);
+        } else if (targetType.equals(COMMENT_ENG)) {
+            return targetType.replace(COMMENT_ENG, COMMENT_KOR);
+
+        } else if (targetType.equals(REPLY_ENG)) {
+            return targetType.replace(REPLY_ENG, REPLY_KOR);
         }
         return null;
     }

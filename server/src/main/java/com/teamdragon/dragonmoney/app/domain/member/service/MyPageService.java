@@ -2,11 +2,11 @@ package com.teamdragon.dragonmoney.app.domain.member.service;
 
 import com.teamdragon.dragonmoney.app.domain.comment.entity.Comment;
 import com.teamdragon.dragonmoney.app.domain.comment.repository.CommentRepository;
-import com.teamdragon.dragonmoney.app.domain.comment.service.CommentService;
+import com.teamdragon.dragonmoney.app.domain.comment.service.CommentFindService;
 import com.teamdragon.dragonmoney.app.domain.member.dto.MyPageDto;
 import com.teamdragon.dragonmoney.app.domain.posts.entity.Posts;
 import com.teamdragon.dragonmoney.app.domain.posts.repository.PostsRepository;
-import com.teamdragon.dragonmoney.app.domain.posts.service.PostsService;
+import com.teamdragon.dragonmoney.app.domain.posts.service.PostsFindService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
@@ -16,10 +16,10 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional
 @Service
 public class MyPageService {
-    private final PostsService postsService;
+    private final PostsFindService postsService;
     private final PostsRepository postsRepository;
     private final CommentRepository commentRepository;
-    private final CommentService commentService;
+    private final CommentFindService commentService;
     private static final String PAGE_ELEMENT_ORDER_BY = "latest";
 
     // 특정 회원의 글 개수

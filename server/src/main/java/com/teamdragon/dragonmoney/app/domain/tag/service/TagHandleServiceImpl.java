@@ -13,11 +13,13 @@ import java.util.Optional;
 @Transactional
 @RequiredArgsConstructor
 @Service
-public class TagService {
+public class TagHandleServiceImpl implements TagHandleService {
 
+    private final TagFindService tagFindService;
     private final TagRepository tagRepository;
 
     // 태그 목록 저장
+    @Override
     public List<Tag> saveListTag(List<String> tagNames) {
         List<Tag> tags = new ArrayList<>();
         for (String tagName : tagNames) {
@@ -27,9 +29,16 @@ public class TagService {
         return tags;
     }
 
+    // 태그 삭제 : 참조되는곳이 없는 태그 삭제
+    @Override
+    public boolean removeOrphanTag() {
+        tagRepository.deleteOrphanTag();
+        return true;
+    }
+
     // 태그 저장
     private Tag saveTag(String tagName){
-        Optional<Tag> findTag = findTag(tagName);
+        Optional<Tag> findTag = tagFindService.findTag(tagName);
         if (findTag.isPresent()) {
             return findTag.get();
         }
@@ -37,16 +46,5 @@ public class TagService {
                 .name(tagName)
                 .build();
         return tagRepository.save(tag);
-    }
-
-    // 태그 삭제 : 참조되는곳이 없는 태그 삭제
-    public boolean removeOrphanTag() {
-        tagRepository.deleteOrphanTag();
-        return true;
-    }
-
-    // 태그 조회
-    private Optional<Tag> findTag(String tagName) {
-        return tagRepository.findByName(tagName);
     }
 }

@@ -1,6 +1,6 @@
 package com.teamdragon.dragonmoney.app.global.auth.handler;
 
-import com.teamdragon.dragonmoney.app.domain.member.service.MemberService;
+import com.teamdragon.dragonmoney.app.domain.member.service.MemberHandleServiceImpl;
 import com.teamdragon.dragonmoney.app.global.auth.jwt.JwtTokenizer;
 import com.teamdragon.dragonmoney.app.global.auth.service.OAuth2Service;
 import com.teamdragon.dragonmoney.app.global.auth.utils.CustomAuthorityUtils;
@@ -24,12 +24,12 @@ import java.util.*;
 public class OAuth2MemberHandler extends SimpleUrlAuthenticationSuccessHandler {
     private final JwtTokenizer jwtTokenizer;
     private final CustomAuthorityUtils authorityUtils;
-    private final MemberService memberService;
+    private final MemberHandleServiceImpl memberService;
     private final OAuth2Service oAuth2Service;
 
     public OAuth2MemberHandler(JwtTokenizer jwtTokenizer,
                                CustomAuthorityUtils authorityUtils,
-                               MemberService memberService,
+                               MemberHandleServiceImpl memberService,
                                OAuth2Service oAuth2Service) {
         this.jwtTokenizer = jwtTokenizer;
         this.authorityUtils = authorityUtils;

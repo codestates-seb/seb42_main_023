@@ -4,7 +4,8 @@ import com.teamdragon.dragonmoney.app.domain.bookmark.entity.Bookmark;
 import com.teamdragon.dragonmoney.app.domain.bookmark.repository.BookmarkRepository;
 import com.teamdragon.dragonmoney.app.domain.member.entity.Member;
 import com.teamdragon.dragonmoney.app.domain.posts.entity.Posts;
-import com.teamdragon.dragonmoney.app.domain.posts.service.PostsService;
+import com.teamdragon.dragonmoney.app.domain.posts.service.PostsFindService;
+import com.teamdragon.dragonmoney.app.domain.posts.service.PostsHandleService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -16,7 +17,8 @@ import java.util.Optional;
 @Service
 public class BookmarkHandleServiceImpl implements BookmarkHandleService {
 
-    private final PostsService postsService;
+    private final PostsFindService postsFindService;
+    private final PostsHandleService postsHandleService;
     private final BookmarkFindService bookmarkFindService;
     private final BookmarkRepository bookmarkRepository;
 
@@ -33,7 +35,7 @@ public class BookmarkHandleServiceImpl implements BookmarkHandleService {
     // 북마크 저장
     @Override
     public Bookmark createBookmark(Member loginMember, Long postsId) {
-        Posts posts = postsService.findOne(postsId);
+        Posts posts = postsFindService.findOne(postsId);
         posts.plusBookmarkCount();
 
         Bookmark bookmark = Bookmark.builder()
@@ -49,7 +51,7 @@ public class BookmarkHandleServiceImpl implements BookmarkHandleService {
     public void removeBookmark(Member loginMember, Long postsId) {
         Bookmark bookmark = bookmarkFindService.findBookmark(loginMember, postsId);
         Posts posts = bookmark.getPosts();
-        postsService.minusBookmarkCount(posts);
+        postsHandleService.minusBookmarkCount(posts);
 
         bookmarkRepository.delete(bookmark);
     }

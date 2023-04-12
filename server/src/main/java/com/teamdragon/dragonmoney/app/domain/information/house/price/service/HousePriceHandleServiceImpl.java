@@ -12,7 +12,6 @@ import org.apache.http.HttpHeaders;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.MediaType;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -21,13 +20,12 @@ import reactor.core.publisher.Mono;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 
 @RequiredArgsConstructor
 @Slf4j
 @Transactional
 @Service
-public class HousePriceService {
+public class HousePriceHandleServiceImpl implements HousePriceHandleService{
 
     @Value("${api.seoul.key}")
     private String apiKey;
@@ -45,17 +43,9 @@ public class HousePriceService {
     private static final String RENT_KIND_JEONSE = "전세";
     private static final String RENT_KIND_MONTHLY = "월세";
 
-    // 저장된 지역별부동산정보 조회
-    public List<HousePrice> findAllHousePrice() {
-        return housePriceRepository.findAll();
-    }
-
+    // 저장 또는 업데이트
     public HousePrice saveOrUpdateHousePrice(HousePrice findHousePrice) {
         return housePriceRepository.save(findHousePrice);
-    }
-
-    public Optional<HousePrice> findByLocation(AreaCode area) {
-        return housePriceRepository.findByLocation(area.getName());
     }
 
     // 2. 집 종류별 데이터 요청

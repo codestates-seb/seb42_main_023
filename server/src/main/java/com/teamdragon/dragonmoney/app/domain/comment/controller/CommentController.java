@@ -6,7 +6,7 @@ import com.teamdragon.dragonmoney.app.domain.comment.mapper.CommentMapper;
 import com.teamdragon.dragonmoney.app.domain.comment.service.CommentFindService;
 import com.teamdragon.dragonmoney.app.domain.comment.service.CommentHandleService;
 import com.teamdragon.dragonmoney.app.domain.member.entity.Member;
-import com.teamdragon.dragonmoney.app.domain.member.service.MemberService;
+import com.teamdragon.dragonmoney.app.domain.member.service.MemberFindService;
 import com.teamdragon.dragonmoney.app.global.exception.ValidFailException;
 import com.teamdragon.dragonmoney.app.global.exception.ValidFailExceptionCode;
 import lombok.RequiredArgsConstructor;
@@ -30,7 +30,7 @@ public class CommentController {
     private final CommentHandleService commentHandleService;
     private final CommentFindService commentFindService;
     private final CommentMapper commentMapper;
-    private final MemberService memberService;
+    private final MemberFindService memberService;
 
     // 추가
     @PostMapping("/posts/{post-id}/comments")

@@ -15,21 +15,22 @@ import java.util.List;
 @Service
 public class PopularScheduled {
 
-    private final PopularService popularService;
+    private final PopularFindService popularFindService;
+    private final PopularHandleService popularHandleService;
 
     // 명예의 전당 선정 : 매주 월요일 00시 수행
     @Scheduled(cron = "0 0 0 * * MON")
     public void decisionBestAwards() {
-        List<Posts> weeklyPopularList = popularService.findWeeklyPopularList();
+        List<Posts> weeklyPopularList = popularFindService.findWeeklyPopularList();
         ArrayList<BestAwards> bestAwards = new ArrayList<>();
         for (Posts posts : weeklyPopularList) {
             if (posts.getBestAwards() == null) {
                 bestAwards.add(new BestAwards(posts));
             }
         }
-        popularService.saveBestAwardsList(bestAwards);
+        popularHandleService.saveBestAwardsList(bestAwards);
 
-        popularService.setStartTime();
-        popularService.setEndTime(popularService.getCountStartedAt());
+        popularFindService.setStartTime();
+        popularFindService.setEndTime(popularFindService.getCountStartedAt());
     }
 }

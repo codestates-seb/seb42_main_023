@@ -1,24 +1,10 @@
 package com.teamdragon.dragonmoney.app.domain.thumb.service;
 
-import com.teamdragon.dragonmoney.app.domain.comment.entity.Comment;
-import com.teamdragon.dragonmoney.app.domain.comment.service.CommentService;
-import com.teamdragon.dragonmoney.app.domain.member.entity.Member;
-import com.teamdragon.dragonmoney.app.domain.posts.entity.Posts;
-import com.teamdragon.dragonmoney.app.domain.posts.service.PostsService;
-import com.teamdragon.dragonmoney.app.domain.reply.entity.Reply;
-import com.teamdragon.dragonmoney.app.domain.reply.service.ReplyService;
-import com.teamdragon.dragonmoney.app.domain.thumb.ThumbDto;
-import com.teamdragon.dragonmoney.app.domain.thumb.entity.Thumbdown;
 import com.teamdragon.dragonmoney.app.domain.thumb.respository.ThumbdownRepository;
-import com.teamdragon.dragonmoney.app.domain.thumb.entity.Thumbup;
 import com.teamdragon.dragonmoney.app.domain.thumb.respository.ThumbupRepository;
-import com.teamdragon.dragonmoney.app.global.exception.BusinessExceptionCode;
-import com.teamdragon.dragonmoney.app.global.exception.BusinessLogicException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.Optional;
 
 @RequiredArgsConstructor
 @Transactional

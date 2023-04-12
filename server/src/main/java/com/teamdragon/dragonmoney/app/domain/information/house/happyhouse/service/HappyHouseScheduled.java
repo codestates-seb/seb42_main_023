@@ -13,7 +13,7 @@ import java.util.List;
 @Service
 public class HappyHouseScheduled {
 
-    private final HappyHouseService happyHouseService;
+    private final HappyHouseHandleService happyHouseHandleService;
 
     // 지역별 데이터 요청
     @Scheduled(cron = "0 0 4 * * *")
@@ -21,10 +21,10 @@ public class HappyHouseScheduled {
         HappyHouseAreaCode[] areas = HappyHouseAreaCode.values();
         for (HappyHouseAreaCode area : areas) {
             HappyHouseApiDto.HappyHousePackage happyHousePackage
-                    = happyHouseService.reqHappyHouseApi(area.getCode()).get(1);
+                    = happyHouseHandleService.reqHappyHouseApi(area.getCode()).get(1);
             List<HappyHouseApiDto.NoticeElement> dsList = happyHousePackage.getDsList();
-            happyHouseService.saveHappyHouse(dsList);
+            happyHouseHandleService.saveHappyHouse(dsList);
         }
-        happyHouseService.removeByOldDateTime();
+        happyHouseHandleService.removeByOldDateTime();
     }
 }

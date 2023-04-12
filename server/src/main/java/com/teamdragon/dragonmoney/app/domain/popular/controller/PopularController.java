@@ -1,6 +1,6 @@
 package com.teamdragon.dragonmoney.app.domain.popular.controller;
 
-import com.teamdragon.dragonmoney.app.domain.popular.service.PopularService;
+import com.teamdragon.dragonmoney.app.domain.popular.service.PopularFindService;
 import com.teamdragon.dragonmoney.app.domain.posts.dto.PostsDto;
 import com.teamdragon.dragonmoney.app.domain.posts.entity.Posts;
 import com.teamdragon.dragonmoney.app.global.exception.ValidFailException;
@@ -22,12 +22,12 @@ import javax.validation.constraints.Positive;
 @RestController
 public class PopularController {
 
-    private final PopularService popularService;
+    private final PopularFindService popularFindService;
 
     // 주간 인기 게시물 조회
     @GetMapping("/posts/weekly-popular")
     public ResponseEntity<PostsDto.WeeklyPopularRes> findWeeklyPopularList() {
-        PostsDto.WeeklyPopularRes response = popularService.findWeeklyPopularListDto();
+        PostsDto.WeeklyPopularRes response = popularFindService.findWeeklyPopularListDto();
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
@@ -36,14 +36,14 @@ public class PopularController {
     public ResponseEntity<PostsDto.BestAwardsRes> findBestAwardsList(@Valid @Positive @RequestParam int page,
                                                                      @Valid @NotBlank @RequestParam String orderby) {
         Posts.OrderBy orderBy = checkOrderBy(orderby);
-        PostsDto.BestAwardsRes response = popularService.findBestAwardsList(page, orderBy);
+        PostsDto.BestAwardsRes response = popularFindService.findBestAwardsList(page, orderBy);
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
     // 추천 게시물 목록 조회
     @GetMapping("/posts/recommend")
     public ResponseEntity<PostsDto.RecommendPostsListRes> findRecommendPostsList() {
-        PostsDto.RecommendPostsListRes response = popularService.findRecommendPosts();
+        PostsDto.RecommendPostsListRes response = popularFindService.findRecommendPosts();
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 

@@ -3,7 +3,7 @@ package com.teamdragon.dragonmoney.app.global.auth.service;
 import com.teamdragon.dragonmoney.app.domain.common.service.FinderService;
 import com.teamdragon.dragonmoney.app.domain.member.entity.Member;
 import com.teamdragon.dragonmoney.app.domain.member.repository.MemberRepository;
-import com.teamdragon.dragonmoney.app.domain.member.service.MemberService;
+import com.teamdragon.dragonmoney.app.domain.member.service.MemberFindService;
 import com.teamdragon.dragonmoney.app.global.auth.dto.LoginResponseDto;
 import com.teamdragon.dragonmoney.app.global.auth.jwt.JwtTokenizer;
 import com.teamdragon.dragonmoney.app.global.auth.refresh.entity.RefreshToken;
@@ -28,7 +28,7 @@ public class OAuth2Service {
     private final JwtTokenizer jwtTokenizer;
     private final RefreshTokenRepository refreshTokenRepository;
     private final MemberRepository memberRepository;
-    private final MemberService memberService;
+    private final MemberFindService memberFindService;
     private final FinderService finderService;
 
     // Temp Access Token 발급
@@ -109,7 +109,7 @@ public class OAuth2Service {
 
     //tempAccessToken 저장
     public Member updateTempAccessToken(String name, String tempAccessToken) {
-        Member member = memberService.findVerifiedMemberName(name);
+        Member member = memberFindService.findVerifiedMemberName(name);
         member.saveTempAccessToken(tempAccessToken);
 
         return memberRepository.save(member);
@@ -170,7 +170,7 @@ public class OAuth2Service {
 
     // 회원 이름으로 refreshToken 조회
     public String findRefreshTokenByMemberName(String memberName) {
-        Member member = memberService.findMember(memberName);
+        Member member = memberFindService.findMember(memberName);
         String refreshToken = member.getRefreshToken().getRefreshTokenValue();
 
         return refreshToken;

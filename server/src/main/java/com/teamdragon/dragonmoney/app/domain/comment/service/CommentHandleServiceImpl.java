@@ -6,7 +6,7 @@ import com.teamdragon.dragonmoney.app.domain.common.service.FinderService;
 import com.teamdragon.dragonmoney.app.domain.delete.entity.DeleteResult;
 import com.teamdragon.dragonmoney.app.domain.member.entity.Member;
 import com.teamdragon.dragonmoney.app.domain.posts.entity.Posts;
-import com.teamdragon.dragonmoney.app.domain.reply.service.ReplyService;
+import com.teamdragon.dragonmoney.app.domain.reply.service.ReplyHandleServiceImpl;
 import com.teamdragon.dragonmoney.app.domain.thumb.ThumbCountService;
 import com.teamdragon.dragonmoney.app.domain.thumb.ThumbDto;
 import com.teamdragon.dragonmoney.app.global.exception.AuthExceptionCode;
@@ -25,7 +25,7 @@ public class CommentHandleServiceImpl implements CommentHandleService,ThumbCount
     private final CommentRepository commentRepository;
     private final CommentFindService commentFindService;
     private final FinderService finderService;
-    private final ReplyService replyService;
+    private final ReplyHandleServiceImpl replyService;
 
     // 추가
     @Override

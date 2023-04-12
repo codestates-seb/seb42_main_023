@@ -5,7 +5,8 @@ import com.teamdragon.dragonmoney.app.domain.member.dto.MemberDto;
 import com.teamdragon.dragonmoney.app.domain.member.dto.MyPageDto;
 import com.teamdragon.dragonmoney.app.domain.member.entity.Member;
 import com.teamdragon.dragonmoney.app.domain.member.mapper.MemberMapper;
-import com.teamdragon.dragonmoney.app.domain.member.service.MemberService;
+import com.teamdragon.dragonmoney.app.domain.member.service.MemberFindService;
+import com.teamdragon.dragonmoney.app.domain.member.service.MemberHandleServiceImpl;
 import com.teamdragon.dragonmoney.app.domain.member.service.MyPageService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -23,7 +24,8 @@ import java.security.Principal;
 @RequestMapping("/members")
 @RestController
 public class MemberController {
-    private final MemberService memberService;
+    private final MemberFindService memberFindService;
+    private final MemberHandleServiceImpl memberHandleService;
     private final MemberMapper memberMapper;
     private final MyPageService myPageService;
     private final FinderService finderService;
@@ -31,10 +33,10 @@ public class MemberController {
     // 닉네임 중복 확인
     @PostMapping("/duplicated-name")
     public ResponseEntity<MemberDto.DuplicatedRes> modifyMemberName(@Valid @RequestBody MemberDto.DuplicatedReq post) {
-        Boolean checkDuplicatedName = memberService.canUseName(post.getName());
+        Boolean checkDuplicatedName = memberHandleService.canUseName(post.getName());
 
         if(checkDuplicatedName == true) {
-            memberService.modifyMemberName(post.getTempName(), post.getName());
+            memberHandleService.modifyMemberName(post.getTempName(), post.getName());
         }
 
         MemberDto.DuplicatedRes response = new MemberDto.DuplicatedRes(checkDuplicatedName);
@@ -48,10 +50,10 @@ public class MemberController {
                                        @Valid @RequestBody MemberDto.PatchReq patch,
                                        @AuthenticationPrincipal Principal principal) {
         finderService.findVerifiedMemberByName(name);
-        memberService.checkLoginMember(principal.getName(), name);
+        memberHandleService.checkLoginMember(principal.getName(), name);
 
         Member member = memberMapper.pathDtoToMember(patch);
-        Member updatedMember = memberService.modifyMemberIntro(name, member);
+        Member updatedMember = memberHandleService.modifyMemberIntro(name, member);
         MemberDto.IntroResponse response = memberMapper.introResponseDtoToMember(updatedMember);
 
         return ResponseEntity.status(HttpStatus.OK).body(response);
@@ -60,7 +62,7 @@ public class MemberController {
     // 특정 회원 정보 가져오기
     @GetMapping("/{member-name}")
     public ResponseEntity<MyPageDto.MyPageRes> findMemberDetails(@PathVariable("member-name") String memberName) {
-        Member getMember = memberService.findMember(memberName);
+        Member getMember = memberFindService.findMember(memberName);
 
         MyPageDto.MyPageMemberInfo myPageResponse = memberMapper.myPageResponseDtoToMember(getMember);
         MyPageDto.MyPageCount postsPage = myPageService.findCountInfo(memberName);
@@ -119,9 +121,9 @@ public class MemberController {
     public ResponseEntity<Void> removeMember(@PathVariable("member-name") String name,
                                              @AuthenticationPrincipal Principal principal) {
         finderService.findVerifiedMemberByName(name);
-        memberService.checkLoginMember(principal.getName(), name);
+        memberHandleService.checkLoginMember(principal.getName(), name);
 
-        memberService.removeMember(principal.getName());
+        memberHandleService.removeMember(principal.getName());
         return ResponseEntity.status(HttpStatus.OK).build();
     }
 }

@@ -1,9 +1,8 @@
 package com.teamdragon.dragonmoney.app.domain.reply.service;
 
 import com.teamdragon.dragonmoney.app.domain.comment.entity.Comment;
-import com.teamdragon.dragonmoney.app.domain.common.service.FinderService;
+import com.teamdragon.dragonmoney.app.domain.comment.service.CommentFindService;
 import com.teamdragon.dragonmoney.app.domain.member.entity.Member;
-import com.teamdragon.dragonmoney.app.domain.reply.dto.ReplyDto;
 import com.teamdragon.dragonmoney.app.domain.reply.entity.Reply;
 import com.teamdragon.dragonmoney.app.domain.reply.repository.ReplyRepository;
 import com.teamdragon.dragonmoney.app.domain.thumb.ThumbDto;
@@ -11,41 +10,25 @@ import com.teamdragon.dragonmoney.app.domain.thumb.ThumbCountService;
 import com.teamdragon.dragonmoney.app.domain.delete.entity.DeleteResult;
 import com.teamdragon.dragonmoney.app.global.exception.AuthExceptionCode;
 import com.teamdragon.dragonmoney.app.global.exception.AuthLogicException;
-import com.teamdragon.dragonmoney.app.global.exception.BusinessExceptionCode;
-import com.teamdragon.dragonmoney.app.global.exception.BusinessLogicException;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Optional;
 
 @RequiredArgsConstructor
 @Transactional
 @Service
-public class ReplyService implements ThumbCountService {
+public class ReplyHandleServiceImpl implements ReplyHandleService, ThumbCountService {
 
+    private final ReplyFindService replyFindService;
+    private final CommentFindService commentFindService;
     private final ReplyRepository replyRepository;
-    private final FinderService finderService;
-
-    private static final int PAGE_ELEMENT_SIZE = 10;
-
-    // 단일 조회 : Active 상태
-    public Reply findOneStateActive(Long postsId) {
-        Reply findReply = findVerifyReplyById(postsId);
-        if (findReply.getState() != Reply.State.ACTIVE) {
-            throw new BusinessLogicException(BusinessExceptionCode.THUMB_UNUSABLE);
-        }
-        return findReply;
-    }
 
     // 추가
+    @Override
     public Reply createReply(Long commentId, Member loginMember, Reply newReply) {
-        Comment findComment = finderService.findVerifyCommentById(commentId);
+        Comment findComment = commentFindService.findVerifyCommentById(commentId);
         findComment.plusReplyCount();
         Reply reply = Reply.builder()
                 .content(newReply.getContent())
@@ -56,6 +39,7 @@ public class ReplyService implements ThumbCountService {
     }
 
     // 삭제
+    @Override
     public Long removeReply(Member loginMember, Long replyId) {
         Reply findReply = checkOwner(loginMember, replyId);
         DeleteResult deleteResult
@@ -66,6 +50,7 @@ public class ReplyService implements ThumbCountService {
     }
 
     // 여러 답글 삭제 : 부모 삭제로 인한 삭제
+    @Override
     public void removeReplyListByParent(List<Reply> replies) {
         for (Reply reply : replies) {
             reply.changeStateToDeleted(new DeleteResult(DeleteResult.Reason.DELETED_BY_PARENT));
@@ -74,6 +59,7 @@ public class ReplyService implements ThumbCountService {
     }
 
     // 신고에 의한 삭제
+    @Override
     public void removeReplyByReport(Reply reply) {
         DeleteResult deleteResult
                 = DeleteResult.builder().deleteReason(DeleteResult.Reason.DELETED_BY_REPORT).build();
@@ -82,6 +68,7 @@ public class ReplyService implements ThumbCountService {
     }
 
     // 회원 탈퇴로 인한 답글 삭제
+    @Override
     public void removeReplyByDeletedMember(String memberName) {
         DeleteResult deleteResult = DeleteResult.builder()
                 .deleteReason(DeleteResult.Reason.DELETED_BY_MEMBER_REMOVE)
@@ -96,6 +83,7 @@ public class ReplyService implements ThumbCountService {
     }
 
     // 수정
+    @Override
     public Reply updateReply(Member loginMember, Long replyId, Reply updateReply) {
         Reply originalReply = checkOwner(loginMember, replyId);
         originalReply.isModifiedNow();
@@ -103,19 +91,9 @@ public class ReplyService implements ThumbCountService {
         return replyRepository.save(originalReply);
     }
 
-    // 목록 조회
-    public Page<ReplyDto.ReplyListElement> findReplyList(int page, Long commentId, Reply.OrderBy orderBy, Long loginMemberId) {
-        Pageable pageable = PageRequest.of(page - 1 , PAGE_ELEMENT_SIZE, Sort.by(orderBy.getTargetProperty()).descending());
-        if (loginMemberId == null ) {
-            return replyRepository.findReplyListByPage(pageable, commentId);
-        } else {
-            return replyRepository.findReplyListByPageAndMemberId(pageable, commentId, loginMemberId);
-        }
-    }
-
     @Override
     public ThumbDto modifyThumbupState(Long replyId, boolean needInquiry, ThumbDto.ACTION action) {
-        Reply findReply = findVerifyReplyById(replyId);
+        Reply findReply = replyFindService.findVerifyReplyById(replyId);
         if (action == ThumbDto.ACTION.PLUS) {
             findReply.plusThumbupCount();
         } else if ( action == ThumbDto.ACTION.MINUS) {
@@ -130,7 +108,7 @@ public class ReplyService implements ThumbCountService {
 
     @Override
     public ThumbDto modifyThumbdownState(Long replyId, boolean needInquiry, ThumbDto.ACTION action) {
-        Reply findReply = findVerifyReplyById(replyId);
+        Reply findReply = replyFindService.findVerifyReplyById(replyId);
         if (action == ThumbDto.ACTION.PLUS) {
             findReply.plusThumbdownCount();
         } else if ( action == ThumbDto.ACTION.MINUS) {
@@ -143,18 +121,9 @@ public class ReplyService implements ThumbCountService {
         return null;
     }
 
-    // 유효한 Reply 조회
-    private Reply findVerifyReplyById(Long replyId) {
-        Optional<Reply> findReply = replyRepository.findById(replyId);
-        if (findReply.isEmpty()) {
-            throw new BusinessLogicException(BusinessExceptionCode.REPLY_NOT_FOUND);
-        }
-        return findReply.get();
-    }
-
     // 작성자 확인
     private Reply checkOwner(Member loginMember, Long replyId) {
-        Reply findReply = findVerifyReplyById(replyId);
+        Reply findReply = replyFindService.findVerifyReplyById(replyId);
         if (!findReply.getWriter().getId().equals(loginMember.getId())) {
             throw new AuthLogicException(AuthExceptionCode.AUTHORIZED_FAIL);
         }
