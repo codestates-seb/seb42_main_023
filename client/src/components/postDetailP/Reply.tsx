@@ -9,7 +9,7 @@ import DislikeIcon from '../../assets/common/DislikeIcon';
 import LikeIcon from '../../assets/common/LikeIcon';
 import { ReplyProps, ReplyType, ReportProps } from '../../types/Post';
 import { repliesApi } from '../../api/replyApi';
-import { membersApi } from '../../api/memberApi';
+import { membersApi } from '../../api/memberapi';
 import { setReportType, setSelectedMember } from '../../slices/postSlice';
 import { setCommentId } from '../../slices/commentSlice';
 import { isEdit, setIsEdit, setReplyId } from '../../slices/replySlice';

@@ -22,7 +22,7 @@ import {
 } from '../../types/Post';
 import { commentsApi } from '../../api/commentApi';
 import { repliesApi } from '../../api/replyApi';
-import { membersApi } from '../../api/memberApi';
+import { membersApi } from '../../api/memberapi';
 import { setReportType, setSelectedMember } from '../../slices/postSlice';
 import {
   setCommentId,

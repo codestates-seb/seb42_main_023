@@ -5,7 +5,7 @@ import DropdownButton from './DropdownButton';
 import ProfileEdit from './ProfileEdit';
 import { useAppDispatch, useAppSelector } from '../../hooks';
 import { setEditWidth } from '../../slices/mypageSlice';
-import { membersApi, useUpdateMemberMutation } from '../../api/memberApi';
+import { membersApi, useUpdateMemberMutation } from '../../api/memberapi';
 
 function Profile() {
   const dispatch = useAppDispatch();
