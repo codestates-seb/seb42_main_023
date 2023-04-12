@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import { useAppSelector } from '../../hooks';
 import { PostListWrap } from './MyPostList';
-import { membersCommentsListApi } from '../../api/memberapi';
+import { membersCommentsListApi } from '../../api/membersApi';
 import Pagination from '../common/Pagination';
 import Nolist from './Nolist';
 import CommentItem from './CommentItem';

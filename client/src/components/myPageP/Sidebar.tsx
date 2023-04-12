@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import { useAppDispatch, useAppSelector } from '../../hooks';
 import { setFilter } from '../../slices/mypageSlice';
 import { SidebarBtn } from '../common/Btn';
-import { membersApi } from '../../api/memberapi';
+import { membersApi } from '../../api/membersApi';
 
 function Sidebar() {
   const dispatch = useAppDispatch();
