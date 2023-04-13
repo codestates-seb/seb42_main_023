@@ -16,10 +16,8 @@ import WeeklyPopularPost from '../components/mainP/WeeklyPopularPost';
 
 const Main = () => {
   const dispatch = useAppDispatch();
-
   const [pageOffset, setPageOffset] = useState(0);
   const [currentPage, setCurrentPage] = useState(1);
-
   const { postCategory, orderby } = useAppSelector(({ main }) => main);
   const { searchQuery } = useAppSelector(({ header }) => header);
   const postListquery = postListApi.useGetPostListQuery({
@@ -29,7 +27,6 @@ const Main = () => {
     search: searchQuery,
   });
   const { data, isSuccess, refetch } = postListquery;
-
   const weeklyPopularquery = weeklyPopularApi.useGetWeekPostListQuery({
     endpoint: 'weekly-popular',
   });
@@ -39,9 +36,8 @@ const Main = () => {
     refetch();
   }, []);
 
-  if (!isSuccess) {
-    return <Loading />;
-  }
+  if (!isSuccess) return <Loading />;
+
   return (
     <>
       <Banner>
@@ -93,15 +89,13 @@ const Main = () => {
       </FilterWrap>
       <List>
         {weeklyPopularquery?.data?.posts.map(
-          (post: PostListItem, index: number) => {
-            return (
-              <WeeklyPopularPost post={post} index={index} key={post.postId} />
-            );
-          },
+          (post: PostListItem, index: number) => (
+            <WeeklyPopularPost post={post} index={index} key={post.postId} />
+          ),
         )}
-        {data?.posts.map((post: PostListItem) => {
-          return <PostItem post={post} key={post.postId} />;
-        })}
+        {data?.posts.map((post: PostListItem) => (
+          <PostItem post={post} key={post.postId} />
+        ))}
       </List>
       {isSuccess && data.posts.length !== 0 && (
         <Pagenation

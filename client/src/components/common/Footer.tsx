@@ -11,6 +11,7 @@ function Footer() {
           href="https://github.com/codestates-seb/seb42_main_023"
           target="_blank"
           rel="noreferrer"
+          aria-label="Link to Github page"
         >
           <AiFillGithub size={24} />
         </a>
@@ -18,6 +19,7 @@ function Footer() {
           href="https://www.youtube.com/watch?v=WSenS382Kbs"
           target="_blank"
           rel="noreferrer"
+          aria-label="Link to our tech presentation on Youtube page"
         >
           <AiFillYoutube size={24} />
         </a>
@@ -25,6 +27,7 @@ function Footer() {
           href="https://www.notion.so/codestates/9d636b91667a46d3bc704f32a65c2ef7"
           target="_blank"
           rel="noreferrer"
+          aria-label="Link to our Notion page"
         >
           <RxNotionLogo size={24} />
         </a>

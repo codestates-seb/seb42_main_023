@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { useNavigate, useLocation } from 'react-router-dom';
-import { useAppSelector } from '../../hooks';
+import { useAppSelector, useAppDispatch } from '../../hooks';
+import { setMemberName } from '../../slices/headerSlice';
 import LoginBtn from './LoginBtn';
 import SearchBar from './SearchBar';
 import SearchBtn from './SearchToggle';
@@ -13,6 +14,7 @@ import Cookies from 'js-cookie';
 
 function HeaderDefault() {
   const navigate = useNavigate();
+  const dispatch = useAppDispatch();
   const { pathname } = useLocation();
   const header = useAppSelector(({ header }) => header);
   const auth = Cookies.get('Authorization');
@@ -21,9 +23,11 @@ function HeaderDefault() {
 
   useEffect(() => {
     if (auth !== undefined) {
-      const Img = localStorage.getItem('picture');
-      if (Img) {
-        setMemberImg(Img);
+      const img = localStorage.getItem('picture');
+      const name = localStorage.getItem('name');
+      if (img && name) {
+        setMemberImg(img);
+        dispatch(setMemberName(name));
       }
     }
   }, []);
@@ -47,7 +51,10 @@ function HeaderDefault() {
             <Adminwrap>
               <PostBtn />
               <MediumProfileImg memberImg={memberImg} />
-              <button onClick={() => navigate('reports/standby')}>
+              <button
+                onClick={() => navigate('reports/standby')}
+                id="managing-page"
+              >
                 <MdManageAccounts size={30} />
               </button>
             </Adminwrap>

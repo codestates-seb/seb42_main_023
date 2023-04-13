@@ -96,65 +96,36 @@ const SearchBar: React.FC = () => {
 
   return (
     <>
-      {valid.tagErr === '' ? (
-        <TagInputContainer>
-          <InputContainer>
-            <Input
-              className="tag-input"
-              placeholder="관심있는 내용을 검색해보세요."
-              onChange={valueCheck}
-              onKeyDown={searchEnterHandler}
-              value={header.input}
-            ></Input>
-            <Icon onClick={searchClickHandler}>
-              <AiOutlineSearch size={26} />
-            </Icon>
-            {header.tag.length === 0 && <Span>#주식 #경제 #연봉</Span>}
-            <TagConatiner>
-              {header.tag.map((tag, idx) => {
-                return (
-                  <TagItemWidthDelete key={idx}>
-                    <span>{tag}</span>
-                    <button onClick={() => dispatch(deleteSarchTag(tag))}>
-                      <MdCancel size="13" />
-                    </button>
-                  </TagItemWidthDelete>
-                );
-              })}
-            </TagConatiner>
-          </InputContainer>
-          <SearchBtn />
-        </TagInputContainer>
-      ) : (
-        <TagInputContainer>
-          <InputContainer>
-            <Input
-              className="tag-input"
-              placeholder="관심있는 내용을 검색해보세요."
-              onChange={valueCheck}
-              onKeyDown={searchEnterHandler}
-              value={header.input}
-            ></Input>
-            <Icon>
-              <AiOutlineSearch size={26} />
-            </Icon>
-            <Error>{valid.tagErr}</Error>
-            <TagConatiner>
-              {header.tag.map((tag, idx) => {
-                return (
-                  <TagItemWidthDelete key={idx}>
-                    <span>{tag}</span>
-                    <button onClick={() => dispatch(deleteSarchTag(tag))}>
-                      <MdCancel size="13" color="#ccc" />
-                    </button>
-                  </TagItemWidthDelete>
-                );
-              })}
-            </TagConatiner>
-          </InputContainer>
-          <SearchBtn />
-        </TagInputContainer>
-      )}
+      <TagInputContainer>
+        <InputContainer>
+          <Input
+            className="tag-input"
+            placeholder="관심있는 내용을 검색해보세요."
+            onChange={valueCheck}
+            onKeyDown={searchEnterHandler}
+            value={header.input}
+          />
+          <Icon onClick={searchClickHandler}>
+            <AiOutlineSearch size={26} />
+          </Icon>
+          {valid.tagErr !== '' && <Error>{valid.tagErr}</Error>}
+          {header.tag.length === 0 && <Span>#주식 #경제 #연봉</Span>}
+          <TagConatiner>
+            {header.tag.map((tag, idx) => (
+              <TagItemWidthDelete key={idx}>
+                <span>{tag}</span>
+                <button onClick={() => dispatch(deleteSarchTag(tag))}>
+                  <MdCancel
+                    size="13"
+                    color={valid.tagErr !== '' ? '#ccc' : undefined}
+                  />
+                </button>
+              </TagItemWidthDelete>
+            ))}
+          </TagConatiner>
+        </InputContainer>
+        <SearchBtn />
+      </TagInputContainer>
     </>
   );
 };
