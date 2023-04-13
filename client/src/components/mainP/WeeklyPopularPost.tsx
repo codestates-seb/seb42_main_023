@@ -6,7 +6,7 @@ import Thumnail from '../common/Thumbnail';
 import { BsTrophy } from 'react-icons/bs';
 import { Link } from 'react-router-dom';
 import styled from 'styled-components';
-import { getTimeSince } from '../common/timeCalculator';
+import { getTimeSince } from '../../util/timeCalculator';
 import { Itemside, Info, Tag } from './PostItem';
 import { PostListItem } from '../../types/PostList';
 import { FaRegThumbsUp } from 'react-icons/fa';

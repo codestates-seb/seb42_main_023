@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { useParams } from 'react-router';
 import { useAppDispatch, useAppSelector } from '../../hooks';
-import { getTimeSince } from '../common/timeCalculator';
+import { getTimeSince } from '../../util/timeCalculator';
 import { useNavigate } from 'react-router';
 import styled from 'styled-components';
 import _ from 'lodash';
@@ -22,7 +22,7 @@ import {
 } from '../../types/Post';
 import { commentsApi } from '../../api/commentApi';
 import { repliesApi } from '../../api/replyApi';
-import { membersApi } from '../../api/memberApi';
+import { membersApi } from '../../api/membersApi';
 import { setReportType, setSelectedMember } from '../../slices/postSlice';
 import {
   setCommentId,

@@ -6,7 +6,7 @@ import Thumnail from '../common/Thumbnail';
 import CommentIcon from '../../assets/common/CommentIcon';
 import { TagItem } from '../common/Tag';
 import { Link } from 'react-router-dom';
-import { getTimeSince } from '../common/timeCalculator';
+import { getTimeSince } from '../../util/timeCalculator';
 import { PostListItem } from '../../types/PostList';
 import { FaRegThumbsUp } from 'react-icons/fa';
 
