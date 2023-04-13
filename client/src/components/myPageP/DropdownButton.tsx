@@ -47,7 +47,7 @@ const DropdownButton = () => {
 
   return (
     <Dropdown ref={dropdownRef}>
-      <Btn onClick={openFilterHandler}>
+      <Btn onClick={openFilterHandler} aria-label="memberMenu">
         <FiMoreHorizontal />
       </Btn>
       {dropOpen && (

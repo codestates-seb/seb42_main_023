@@ -17,9 +17,9 @@ const MediumProfileImg = ({ memberImg }: { memberImg: string }) => {
     }
   };
   return (
-    <Btn onClick={clickmemberHandler}>
+    <Btn onClick={clickmemberHandler} aria-label="mypage">
       {memberImg ? (
-        <Item src={memberImg} />
+        <Item src={memberImg} alt="memberImg" />
       ) : (
         <NoItem>
           <NoimgSVG />

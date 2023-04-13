@@ -26,7 +26,11 @@ function Search() {
   return (
     <>
       {search ? (
-        <button onClick={cancleSearchHandler}>
+        <button
+          onClick={cancleSearchHandler}
+          id="search-close"
+          aria-label="searchClose"
+        >
           <GrClose />
         </button>
       ) : (

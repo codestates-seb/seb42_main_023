@@ -4,7 +4,7 @@ import { IoIosArrowForward } from 'react-icons/io';
 
 function NextPageIcon({ handler }: { handler: () => void }) {
   return (
-    <Btn onClick={handler}>
+    <Btn onClick={handler} aria-label="pageFaward">
       <IoIosArrowForward color="#94969b" />
     </Btn>
   );
