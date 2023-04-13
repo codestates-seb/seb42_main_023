@@ -1,5 +1,6 @@
 package com.teamdragon.dragonmoney.app.domain.posts.service;
 
+import com.teamdragon.dragonmoney.app.domain.member.dto.MyPageDto;
 import com.teamdragon.dragonmoney.app.domain.posts.dto.PostsDto;
 import com.teamdragon.dragonmoney.app.domain.posts.entity.Posts;
 import com.teamdragon.dragonmoney.app.domain.posts.repository.PostsRepository;
@@ -22,6 +23,7 @@ public class PostsFindServiceImpl implements PostsFindService {
 
     private final PostsRepository postsRepository;
     private static final int PAGE_ELEMENT_SIZE = 10;
+    private static final String PAGE_ELEMENT_ORDER_BY = "latest";
 
     // Posts 엔티티 조회
     @Override
@@ -71,25 +73,31 @@ public class PostsFindServiceImpl implements PostsFindService {
         return new PostsDto.PostsListRes(postsList, orderBy.getOrderBy());
     }
 
-    // 게시글 목록 조회 : 작성자 닉네임
+    // 게시글 목록 조회 : 회원이 작성한 글 (마이 페이지)
     @Override
-    public Page<Posts> findPostsListByWriterPost(String memberName, int page, Posts.OrderBy orderBy){
-        Pageable pageable = PageRequest.of(page - 1 , PAGE_ELEMENT_SIZE, Sort.by(orderBy.getTargetProperty()).descending());
-        return postsRepository.findPostsListByMemberName(memberName, pageable);
+    public MyPageDto.MyPageMemberPostsListRes findPostsListByWriterPosts(int page, String memberName) {
+        Pageable pageable = PageRequest.of(page - 1 , PAGE_ELEMENT_SIZE, Sort.by(Posts.OrderBy.LATEST.getTargetProperty()).descending());
+        Page<Posts> postsPage = postsRepository.findPostsListByMemberName(memberName, pageable);
+
+        return new MyPageDto.MyPageMemberPostsListRes(postsPage, PAGE_ELEMENT_ORDER_BY);
     }
 
     // 게시물 목록 조회 : 회원이 좋아요 한 글 (마이 페이지)
     @Override
-    public Page<Posts> findPostsListByThumbUpPost(String memberName, int page, Posts.OrderBy orderBy){
-        Pageable pageable = PageRequest.of(page - 1 , PAGE_ELEMENT_SIZE, Sort.by(orderBy.getTargetProperty()).descending());
-        return postsRepository.findThumbUpPostsListByMemberName(memberName, pageable);
+    public MyPageDto.MyPageMemberPostsListRes findPostsListByThumbUpPosts(int page, String memberName) {
+        Pageable pageable = PageRequest.of(page - 1 , PAGE_ELEMENT_SIZE, Sort.by(Posts.OrderBy.LATEST.getTargetProperty()).descending());
+        Page<Posts> postsPage = postsRepository.findThumbUpPostsListByMemberName(memberName, pageable);
+
+        return new MyPageDto.MyPageMemberPostsListRes(postsPage, PAGE_ELEMENT_ORDER_BY);
     }
 
     // 게시물 목록 조회 : 회원이 북마크 한 글 (마이 페이지)
     @Override
-    public Page<Posts> findPostsListByBookmarkPost(String memberName, int page, Posts.OrderBy orderBy){
-        Pageable pageable = PageRequest.of(page - 1 , PAGE_ELEMENT_SIZE, Sort.by(orderBy.getTargetProperty()).descending());
-        return postsRepository.findBookmarkPostsListByMemberName(memberName, pageable);
+    public MyPageDto.MyPageMemberPostsListRes findPostsListByBookmarkPosts(int page, String memberName) {
+        Pageable pageable = PageRequest.of(page - 1 , PAGE_ELEMENT_SIZE, Sort.by(Posts.OrderBy.LATEST.getTargetProperty()).descending());
+        Page<Posts> postsPage = postsRepository.findBookmarkPostsListByMemberName(memberName, pageable);
+
+        return new MyPageDto.MyPageMemberPostsListRes(postsPage, PAGE_ELEMENT_ORDER_BY);
     }
 
     // 유효한 Posts 조회

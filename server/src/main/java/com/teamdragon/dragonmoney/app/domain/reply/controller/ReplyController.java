@@ -37,7 +37,7 @@ public class ReplyController {
     public ResponseEntity<ReplyDto.CreateRes> createReply(@AuthenticationPrincipal Principal principal,
                                                           @Valid @Positive @PathVariable("comment-id") Long commentId,
                                                           @Valid @RequestBody ReplyDto.CreateReq replyDto) {
-        Member loginMember = memberFindService.findMember(principal.getName());
+        Member loginMember = memberFindService.findVerifiedMemberName(principal.getName());
         Reply newReply = replyMapper.createDtoToReply(replyDto);
 
         Reply saveReply = replyHandleService.createReply(commentId, loginMember, newReply);
@@ -54,7 +54,7 @@ public class ReplyController {
                                                                      @Valid @NotBlank @RequestParam String orderby) {
         Long loginMemberId = null;
         if (principal != null) {
-            Member loginMember = memberFindService.findMember(principal.getName());
+            Member loginMember = memberFindService.findVerifiedMemberName(principal.getName());
             loginMemberId = loginMember.getId();
         }
 
@@ -70,7 +70,7 @@ public class ReplyController {
     @DeleteMapping("/replies/{reply-id}")
     public ResponseEntity<Void> removeReply(@AuthenticationPrincipal Principal principal,
                                             @Valid @Positive @PathVariable("reply-id") Long replyId) {
-        Member loginMember = memberFindService.findMember(principal.getName());
+        Member loginMember = memberFindService.findVerifiedMemberName(principal.getName());
         replyHandleService.removeReply(loginMember, replyId);
 
         return new ResponseEntity<>(HttpStatus.OK);
@@ -81,7 +81,7 @@ public class ReplyController {
     public ResponseEntity<ReplyDto.UpdateRes> modifyReply(@AuthenticationPrincipal Principal principal,
                                                           @Valid @RequestBody ReplyDto.UpdateReq replyDto,
                                                           @Valid @Positive @PathVariable("reply-id") Long replyId) {
-        Member loginMember = memberFindService.findMember(principal.getName());
+        Member loginMember = memberFindService.findVerifiedMemberName(principal.getName());
         Reply reply = replyMapper.updateDtoToReply(replyDto);
         Reply updateReply = replyHandleService.updateReply(loginMember, replyId, reply);
         ReplyDto.UpdateRes response = new ReplyDto.UpdateRes(updateReply.getId());

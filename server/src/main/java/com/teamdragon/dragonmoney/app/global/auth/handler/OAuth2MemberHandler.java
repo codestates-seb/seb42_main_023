@@ -1,8 +1,7 @@
 package com.teamdragon.dragonmoney.app.global.auth.handler;
 
-import com.teamdragon.dragonmoney.app.domain.member.service.MemberHandleServiceImpl;
-import com.teamdragon.dragonmoney.app.global.auth.jwt.JwtTokenizer;
-import com.teamdragon.dragonmoney.app.global.auth.service.OAuth2Service;
+import com.teamdragon.dragonmoney.app.domain.member.service.MemberHandleService;
+import com.teamdragon.dragonmoney.app.global.auth.service.OAuth2HandleService;
 import com.teamdragon.dragonmoney.app.global.auth.utils.CustomAuthorityUtils;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.oauth2.core.user.OAuth2User;
@@ -22,19 +21,17 @@ import java.util.*;
 
 @Component
 public class OAuth2MemberHandler extends SimpleUrlAuthenticationSuccessHandler {
-    private final JwtTokenizer jwtTokenizer;
-    private final CustomAuthorityUtils authorityUtils;
-    private final MemberHandleServiceImpl memberService;
-    private final OAuth2Service oAuth2Service;
 
-    public OAuth2MemberHandler(JwtTokenizer jwtTokenizer,
-                               CustomAuthorityUtils authorityUtils,
-                               MemberHandleServiceImpl memberService,
-                               OAuth2Service oAuth2Service) {
-        this.jwtTokenizer = jwtTokenizer;
+    private final CustomAuthorityUtils authorityUtils;
+    private final MemberHandleService memberHandleService;
+    private final OAuth2HandleService oAuth2HandleService;
+
+    public OAuth2MemberHandler(CustomAuthorityUtils authorityUtils,
+                               MemberHandleService memberHandleService,
+                               OAuth2HandleService oAuth2HandleService) {
         this.authorityUtils = authorityUtils;
-        this.memberService = memberService;
-        this.oAuth2Service = oAuth2Service;
+        this.memberHandleService = memberHandleService;
+        this.oAuth2HandleService = oAuth2HandleService;
     }
 
     @Override
@@ -46,27 +43,27 @@ public class OAuth2MemberHandler extends SimpleUrlAuthenticationSuccessHandler {
         List<String> authorities = authorityUtils.createRoles(email);
 
         // 탈퇴 후 복구할 회원
-        if(memberService.isDeletedMemberByEmail(email)) {
-            String name = memberService.findMemberNameByEmail(email);
-            String tempAccessToken = oAuth2Service.delegateTempAccessToken(name);
+        if(memberHandleService.isDeletedMemberByEmail(email)) {
+            String name = memberHandleService.findMemberNameByEmail(email);
+            String tempAccessToken = oAuth2HandleService.delegateTempAccessToken(name);
 
-            oAuth2Service.updateTempAccessToken(name, tempAccessToken);
+            oAuth2HandleService.updateTempAccessToken(name, tempAccessToken);
 
             redirectForComeBackMember(request, response, tempAccessToken, authorities);
         }
         // 이미 있는 회원
-        else if(memberService.checkOAuthMemberByEmail(email)) {
-            String name = memberService.findMemberNameByEmail(email);
-            String tempAccessToken = oAuth2Service.delegateTempAccessToken(name);
+        else if(memberHandleService.checkOAuthMemberByEmail(email)) {
+            String name = memberHandleService.findMemberNameByEmail(email);
+            String tempAccessToken = oAuth2HandleService.delegateTempAccessToken(name);
 
-            oAuth2Service.updateTempAccessToken(name, tempAccessToken);
+            oAuth2HandleService.updateTempAccessToken(name, tempAccessToken);
 
             redirectForTempAccessToken(request, response, tempAccessToken, authorities);
         }
         // 신규 회원
        else {
             String tempName = UUID.randomUUID().toString();
-            memberService.createMember("google", picture, tempName, email, authorities);
+            memberHandleService.createMember("google", picture, tempName, email, authorities);
 
             redirectNameCheckPage(request, response, tempName);
         }

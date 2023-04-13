@@ -5,8 +5,8 @@ import com.teamdragon.dragonmoney.app.domain.comment.service.CommentHandleServic
 import com.teamdragon.dragonmoney.app.domain.member.entity.Member;
 import com.teamdragon.dragonmoney.app.domain.member.repository.MemberRepository;
 import com.teamdragon.dragonmoney.app.domain.delete.entity.DeleteResult;
-import com.teamdragon.dragonmoney.app.domain.posts.service.PostsHandleServiceImpl;
-import com.teamdragon.dragonmoney.app.domain.reply.service.ReplyHandleServiceImpl;
+import com.teamdragon.dragonmoney.app.domain.posts.service.PostsHandleService;
+import com.teamdragon.dragonmoney.app.domain.reply.service.ReplyHandleService;
 import com.teamdragon.dragonmoney.app.domain.thumb.service.ThumbService;
 import com.teamdragon.dragonmoney.app.global.exception.AuthExceptionCode;
 import com.teamdragon.dragonmoney.app.global.exception.AuthLogicException;
@@ -27,15 +27,16 @@ public class MemberHandleServiceImpl implements MemberHandleService {
     private final MemberFindService memberFindService;
     private final MemberRepository memberRepository;
 
-    private final PostsHandleServiceImpl postsService;
+    private final PostsHandleService postsService;
     private final CommentHandleService commentHandleService;
-    private final ReplyHandleServiceImpl replyService;
+    private final ReplyHandleService replyService;
     private final ThumbService thumbService;
     private final BookmarkHandleService bookmarkHandleService;
 
     private static final String OAUTH2_KIND = "google";
 
     // oAuth2 로그인 할 때 존재하는 회원인지 판별
+    @Override
     public Boolean checkOAuthMemberByEmail(String email) {
         Optional<Member> optionalNameDuplicateCheck
                 = memberRepository.findByNameDuplicateCheckAndEmailAndOauthkind(true, email, OAUTH2_KIND);
@@ -44,6 +45,7 @@ public class MemberHandleServiceImpl implements MemberHandleService {
     }
 
     // OAuth2 신규 회원 정보 저장
+    @Override
     public Member createMember(String oauthKind, String picture, String tempName, String email, List<String> authorities) {
         Member member = Member.builder()
                 .oauthkind(oauthKind)
@@ -58,6 +60,7 @@ public class MemberHandleServiceImpl implements MemberHandleService {
     }
 
     // 닉네임 중복 확인
+    @Override
     public Boolean canUseName(String name) {
         Optional<Member> memberOptional = memberRepository.findByName(name);
 
@@ -65,6 +68,7 @@ public class MemberHandleServiceImpl implements MemberHandleService {
     }
 
     // 회원 조회 및 이름 수정
+    @Override
     public Member modifyMemberName(String tempName, String name) {
 
         Member memberOptional = memberFindService.findVerifiedMemberTempName(tempName);
@@ -74,6 +78,7 @@ public class MemberHandleServiceImpl implements MemberHandleService {
     }
 
     // 마이 페이지 자기소개 수정
+    @Override
     public Member modifyMemberIntro(String name, Member member) {
         Member updatedMember = memberFindService.findVerifiedMemberName(name);
         updatedMember.updatedMemberIntro(member.getIntro());
@@ -83,12 +88,13 @@ public class MemberHandleServiceImpl implements MemberHandleService {
     }
 
     // 회원 탈퇴
+    @Override
     public Member removeMember(String name) {
         postsService.removePostsByDeletedMember(name);
         commentHandleService.removeCommentByDeletedMember(name);
         replyService.removeReplyByDeletedMember(name);
 
-        Long memberId = memberFindService.findMember(name).getId();
+        Long memberId = memberFindService.findVerifiedMemberName(name).getId();
         thumbService.removeAllThumbByMemberId(memberId);
         bookmarkHandleService.removeAllBookmarkByMemberId(memberId);
 
@@ -103,6 +109,7 @@ public class MemberHandleServiceImpl implements MemberHandleService {
     }
 
     // 탈퇴한 회원 재 가입시 존재하는 회원인지 판별
+    @Override
     public Boolean isDeletedMemberByEmail(String email) {
         Optional<Member> optionalDeletedCheck
                 = memberRepository.findByEmailAndOauthkindAndState(email, OAUTH2_KIND, Member.MemberState.DELETED);
@@ -110,6 +117,7 @@ public class MemberHandleServiceImpl implements MemberHandleService {
     }
 
     // 조회한 이메일을 통해 이름 가져오기
+    @Override
     public String findMemberNameByEmail(String email) {
         Optional<Member> getMember = memberRepository.findByNameDuplicateCheckAndEmailAndOauthkind(true, email, OAUTH2_KIND);
         String name = getMember.get().getName();
@@ -118,6 +126,7 @@ public class MemberHandleServiceImpl implements MemberHandleService {
     }
 
     // 작성자 확인
+    @Override
     public void checkLoginMember(String loginMember, String uriMember) {
         if(!loginMember.equals(uriMember)) {
             throw new AuthLogicException(AuthExceptionCode.USER_UNAUTHORIZED);
@@ -125,6 +134,7 @@ public class MemberHandleServiceImpl implements MemberHandleService {
     }
 
     // 북마크의 uri 멤버와 로그인 멤버 비교
+    @Override
     public void bookmarkMemberCompareLoginMember(String loginMember, String uriMember) {
         if(!loginMember.equals(uriMember)) {
             throw new BusinessLogicException(BusinessExceptionCode.BAD_REQUEST);

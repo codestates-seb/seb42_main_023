@@ -1,8 +1,8 @@
 package com.teamdragon.dragonmoney.app.domain.posts.service;
 
+import com.teamdragon.dragonmoney.app.domain.member.dto.MyPageDto;
 import com.teamdragon.dragonmoney.app.domain.posts.dto.PostsDto;
 import com.teamdragon.dragonmoney.app.domain.posts.entity.Posts;
-import org.springframework.data.domain.Page;
 
 public interface PostsFindService {
 
@@ -20,14 +20,14 @@ public interface PostsFindService {
     // 게시글 목록 조회 : 검색기능 : 태그목록 + 제목
     PostsDto.PostsListRes findPostsListByTagsAndTitle(String keyword, String[] tagNames, int page, Posts.OrderBy orderBy);
 
-    // 게시글 목록 조회 : 작성자 닉네임
-    Page<Posts> findPostsListByWriterPost(String memberName, int page, Posts.OrderBy orderBy);
+    // 게시글 목록 조회 : 작성자 닉네임 (마이 페이지)
+    MyPageDto.MyPageMemberPostsListRes findPostsListByWriterPosts(int page, String memberName);
 
     // 게시물 목록 조회 : 회원이 좋아요 한 글 (마이 페이지)
-    Page<Posts> findPostsListByThumbUpPost(String memberName, int page, Posts.OrderBy orderBy);
+    MyPageDto.MyPageMemberPostsListRes findPostsListByThumbUpPosts(int page, String memberName);
 
     // 게시물 목록 조회 : 회원이 북마크 한 글 (마이 페이지)
-    Page<Posts> findPostsListByBookmarkPost(String memberName, int page, Posts.OrderBy orderBy);
+    MyPageDto.MyPageMemberPostsListRes findPostsListByBookmarkPosts(int page, String memberName);
 
     // 유효한 Posts 조회
     Posts findVerifyPostsById(Long postsId) ;
