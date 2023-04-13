@@ -5,7 +5,6 @@ import parse from 'html-react-parser';
 import { useParams, useNavigate } from 'react-router';
 import { useAppDispatch, useAppSelector } from '../hooks';
 import { getTimeSince } from '../components/common/timeCalculator';
-import debounce from 'lodash/debounce';
 import Comment from '../components/postDetailP/Comment';
 import CommentInput from '../components/postDetailP/CommentInput';
 import RecommendedPost from '../components/postDetailP/RecommendedPost';
@@ -24,7 +23,7 @@ import { ReactComponent as NoCheckedIcon } from '../assets/noChecked.svg';
 import { postsApi } from '../api/postApi';
 import { commentsApi } from '../api/commentApi';
 import { repliesApi } from '../api/replyApi';
-import { membersApi } from '../api/memberApi';
+import { membersApi } from '../api/membersApi';
 import { reportApi } from '../api/reportApi';
 import {
   setIsOpenFilter,
