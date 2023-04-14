@@ -28,36 +28,29 @@ const SearchBar: React.FC = () => {
   const valid = useAppSelector(({ validation }) => validation);
   const navigation = useNavigate();
 
-  //검색 인풋창 데이터 입력
   const valueCheck = (event: React.ChangeEvent<HTMLInputElement>): void => {
     dispatch(setInput(event.target.value));
   };
 
-  //유효성 검사 로직
   const validation = () => {
     const tag: Array<string> = header.tag;
     const input = header.input;
-    // 태그 글자수 제한
     if (input.length > 10) {
       dispatch(setTagErr('태그는 10자 이내로 입력해주세요.'));
       return;
     }
-    // 태그 중복 입력 방지
     if (tag.includes(input)) {
       dispatch(setTagErr(''));
       return;
     }
-    // 공백 방지
     if (input === '' && tag.length === 0) {
       dispatch(setTagErr(''));
       return;
     }
-    // 띄어쓰기 방지
     if (input.includes(' ')) {
       dispatch(setTagErr('태그에 띄어쓰기를 포함할 수 없습니다.'));
       return;
     }
-    // 태그 개수 제한
     if (tag.length >= 5) {
       dispatch(setTagErr('태그는 5개까지만 입력 가능합니다.'));
       return;
@@ -68,29 +61,23 @@ const SearchBar: React.FC = () => {
     }
   };
 
-  //검색 방식 분기
   const searchHandler = () => {
     const tag: Array<string> = header.tag;
     const input = header.input;
-    //tag와 input 둘다 비었을 때
     if (tag.length === 0 && input === '') {
       return;
     }
-    //태그 추가하기
     if (input[0] === '#') {
       validation();
     } else {
       dispatch(setPostCategory('/search'));
-      //tag x keyword o
       if (tag.length === 0 && input.length !== 0) {
         dispatch(setSearchQuery(`&keyword=${input}&tags=`));
       }
-      //tag o keyword x
       if (tag.length !== 0 && input.length === 0) {
         const tagstring = tag.join();
         dispatch(setSearchQuery(`&keyword=&tags=${tagstring}`));
       }
-      //tag o keyword o
       if (tag.length !== 0 && input.length !== 0) {
         const tagstring = tag.join();
         dispatch(setSearchQuery(`&keyword=${input}&tags=${tagstring}`));
@@ -98,78 +85,47 @@ const SearchBar: React.FC = () => {
       navigation('/search');
     }
   };
-  //엔터로 검색
   const searchEnterHandler = (event: KeyboardEvent<HTMLInputElement>): void => {
     if (event.key === 'Enter' && event.nativeEvent.isComposing === false) {
       searchHandler();
     }
   };
-  //클릭으로 검색
   const searchClickHandler = (): void => {
     searchHandler();
   };
 
   return (
     <>
-      {valid.tagErr === '' ? (
-        <TagInputContainer>
-          <InputWraper>
-            <Input
-              className="tag-input"
-              placeholder="관심있는 내용을 검색해보세요."
-              onChange={valueCheck}
-              onKeyDown={searchEnterHandler}
-              value={header.input}
-            ></Input>
-            <Icon onClick={searchClickHandler}>
-              <AiOutlineSearch size={26} />
-            </Icon>
-            {header.tag.length === 0 && <Span>#주식 #경제 #연봉</Span>}
-            <TagConatiner>
-              {header.tag.map((tag, idx) => {
-                return (
-                  <TagItemWidthDelete key={idx}>
-                    <span>{tag}</span>
-                    <button onClick={() => dispatch(deleteSarchTag(tag))}>
-                      <MdCancel size="13" />
-                    </button>
-                  </TagItemWidthDelete>
-                );
-              })}
-            </TagConatiner>
-          </InputWraper>
-          <SearchBtn />
-        </TagInputContainer>
-      ) : (
-        <TagInputContainer>
-          <InputWraper>
-            <Input
-              className="tag-input"
-              placeholder="관심있는 내용을 검색해보세요."
-              onChange={valueCheck}
-              onKeyDown={searchEnterHandler}
-              value={header.input}
-            ></Input>
-            <Icon>
-              <AiOutlineSearch size={26} />
-            </Icon>
-            <Error>{valid.tagErr}</Error>
-            <TagConatiner>
-              {header.tag.map((tag, idx) => {
-                return (
-                  <TagItemWidthDelete key={idx}>
-                    <span>{tag}</span>
-                    <button onClick={() => dispatch(deleteSarchTag(tag))}>
-                      <MdCancel size="13" color="#ccc" />
-                    </button>
-                  </TagItemWidthDelete>
-                );
-              })}
-            </TagConatiner>
-          </InputWraper>
-          <SearchBtn />
-        </TagInputContainer>
-      )}
+      <TagInputContainer>
+        <InputContainer>
+          <Input
+            className="tag-input"
+            placeholder="관심있는 내용을 검색해보세요."
+            onChange={valueCheck}
+            onKeyDown={searchEnterHandler}
+            value={header.input}
+          />
+          <Icon onClick={searchClickHandler}>
+            <AiOutlineSearch size={26} />
+          </Icon>
+          {valid.tagErr !== '' && <Error>{valid.tagErr}</Error>}
+          {header.tag.length === 0 && <Span>#주식 #경제 #연봉</Span>}
+          <TagConatiner>
+            {header.tag.map((tag, idx) => (
+              <TagItemWidthDelete key={idx}>
+                <span>{tag}</span>
+                <button onClick={() => dispatch(deleteSarchTag(tag))}>
+                  <MdCancel
+                    size="13"
+                    color={valid.tagErr !== '' ? '#ccc' : undefined}
+                  />
+                </button>
+              </TagItemWidthDelete>
+            ))}
+          </TagConatiner>
+        </InputContainer>
+        <SearchBtn />
+      </TagInputContainer>
     </>
   );
 };
@@ -182,7 +138,7 @@ const TagInputContainer = styled.div`
   height: 53px;
 `;
 
-const InputWraper = styled.div`
+const InputContainer = styled.div`
   position: relative;
 `;
 const Input = styled.input`

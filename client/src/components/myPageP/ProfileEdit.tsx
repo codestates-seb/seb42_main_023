@@ -4,14 +4,9 @@ import styled from 'styled-components';
 interface ProfileEditProps {
   content: string;
   setContent: React.Dispatch<React.SetStateAction<string>>;
-  submitHandler: () => void;
 }
 
-const ProfileEdit: React.FC<ProfileEditProps> = ({
-  content,
-  setContent,
-  submitHandler,
-}) => {
+const ProfileEdit: React.FC<ProfileEditProps> = ({ content, setContent }) => {
   const inputRef = useRef<HTMLTextAreaElement>(null);
 
   useEffect(() => {

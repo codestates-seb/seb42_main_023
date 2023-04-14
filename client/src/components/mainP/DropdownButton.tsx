@@ -55,10 +55,10 @@ const DropdownButton = () => {
 
   return (
     <Dropdown ref={dropdownRef}>
-      <Button onClick={openFilterHandler}>
+      <Btn onClick={openFilterHandler}>
         {filter}
         <BsFillCaretDownFill />
-      </Button>
+      </Btn>
       {filterOpen && (
         <List>
           {options.map((option) => (
@@ -75,9 +75,11 @@ const DropdownButton = () => {
 export const Dropdown = styled.div`
   position: relative;
   display: inline-block;
+  z-index: 5;
+  width: max-content;
 `;
 
-export const Button = styled.button`
+export const Btn = styled.button`
   border: none;
   cursor: pointer;
   width: 78px;

@@ -1,27 +1,30 @@
 import React from 'react';
 import styled from 'styled-components';
 import { useNavigate } from 'react-router-dom';
-import { membersApi } from '../../api/memberApi';
-import { useAppSelector, useAppDispatch } from '../../hooks';
+import { useAppDispatch } from '../../hooks';
 import { setMemberName } from '../../slices/headerSlice';
-import Cookies from 'js-cookie';
+import { NoimgSVG } from '../../assets/common/NoimgSVG';
 
-const MediumProfileImg = () => {
+const MediumProfileImg = ({ memberImg }: { memberImg: string }) => {
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
-  const { memberImg } = useAppSelector(({ header }) => header);
   const loginUser = localStorage.getItem('name');
-  const auth = Cookies.get('Authorization');
 
   const clickmemberHandler = () => {
-    if (auth !== undefined && loginUser) {
+    if (loginUser) {
       dispatch(setMemberName(loginUser));
       navigate('/mypage');
     }
   };
   return (
-    <Btn onClick={clickmemberHandler}>
-      <Item src={memberImg} />
+    <Btn onClick={clickmemberHandler} aria-label="mypage">
+      {memberImg ? (
+        <Item src={memberImg} alt="memberImg" />
+      ) : (
+        <NoItem>
+          <NoimgSVG />
+        </NoItem>
+      )}
     </Btn>
   );
 };
@@ -47,4 +50,16 @@ const Btn = styled.button`
   height: 34px;
   background-color: #fff;
   overflow: hidden;
+`;
+const NoItem = styled.div`
+  width: 34px;
+  height: 34px;
+  background-color: #e3e8f0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  svg {
+    width: 24px;
+    height: 24px;
+  }
 `;

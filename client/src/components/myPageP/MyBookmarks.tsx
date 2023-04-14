@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { useAppSelector } from '../../hooks';
-import { membersPostListApi } from '../../api/memberApi';
+import { membersPostListApi } from '../../api/membersApi';
 import Pagination from '../common/Pagination';
 import { PostListItem } from '../../types/PostList';
 import { PostListWrap } from './MyPostList';
