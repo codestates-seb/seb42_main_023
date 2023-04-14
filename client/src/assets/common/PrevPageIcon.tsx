@@ -3,7 +3,7 @@ import { IoIosArrowBack } from 'react-icons/io';
 import styled from 'styled-components';
 function PrevPageIcon({ handler }: { handler: () => void }) {
   return (
-    <Btn onClick={handler}>
+    <Btn onClick={handler} aria-label="pageBack">
       <IoIosArrowBack color="#94969b" />
     </Btn>
   );

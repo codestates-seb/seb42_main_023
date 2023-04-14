@@ -9,44 +9,51 @@ function HeaderNav() {
   const { pathname } = useLocation();
   return (
     <nav>
-      <Main onClick={() => navigate('/')}>
+      <Main onClick={() => navigate('/')} aria-label="logo">
         <LogoSVG />
       </Main>
       {'/' === pathname ? (
-        <NavBtnClicked>커뮤니티</NavBtnClicked>
+        <NavBtnClicked id="communityOn">커뮤니티</NavBtnClicked>
       ) : (
         <NavBtn
           onClick={() => {
             navigate('/');
             window.scrollTo(0, 0);
           }}
+          id="community"
         >
           커뮤니티
         </NavBtn>
       )}
       {'/seoulrent' === pathname ? (
-        <NavBtnClicked>서울전월세평균</NavBtnClicked>
+        <NavBtnClicked id="seoulrentOn">서울전월세평균</NavBtnClicked>
       ) : (
         <NavBtn
           onClick={() => {
             navigate('/seoulrent');
             window.scrollTo(0, 0);
           }}
+          id="seoulrent"
         >
           서울전월세평균
         </NavBtn>
       )}
       {'/recommendedloan' === pathname ? (
-        <NavBtnClicked>공공대출추천</NavBtnClicked>
+        <NavBtnClicked id="recommendedloanOn">공공대출추천</NavBtnClicked>
       ) : (
-        <NavBtn onClick={() => navigate('/recommendedloan')}>
+        <NavBtn
+          onClick={() => navigate('/recommendedloan')}
+          id="recommendedloan"
+        >
           공공대출추천
         </NavBtn>
       )}
       {'/happyhouse' === pathname ? (
-        <NavBtnClicked>공공주택공고</NavBtnClicked>
+        <NavBtnClicked id="happyhouseOn">공공주택공고</NavBtnClicked>
       ) : (
-        <NavBtn onClick={() => navigate('/happyhouse')}>공공주택공고</NavBtn>
+        <NavBtn onClick={() => navigate('/happyhouse')} id="happyhouse">
+          공공주택공고
+        </NavBtn>
       )}
     </nav>
   );

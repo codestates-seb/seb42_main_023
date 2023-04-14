@@ -89,7 +89,7 @@ const ProfileWrap = styled.div`
   article {
     flex-direction: column;
     justify-content: center;
-    margin-top: 30px;
+    margin-top: 12px;
     h1 {
       font-weight: 600;
       font-size: 20px;
