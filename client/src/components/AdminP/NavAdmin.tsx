@@ -23,7 +23,7 @@ const NavAdmin: React.FC = () => {
   }, []);
 
   return (
-    <NavContainer>
+    <Container>
       <div>
         <span>
           <RxDotFilled /> 게시판 관리
@@ -66,16 +66,14 @@ const NavAdmin: React.FC = () => {
           <li>운영자 등록</li>
         </ul>
       </div>
-    </NavContainer>
+    </Container>
   );
 };
 
 export default NavAdmin;
 
-// nav 컨테이너
-const NavContainer = styled.nav`
+const Container = styled.nav`
   width: 140px;
-  /* height: 100vh; */
   min-height: 600px;
   display: flex;
   flex-direction: column;
