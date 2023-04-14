@@ -21,6 +21,7 @@ import java.time.LocalDateTime;
 @Transactional
 @Service
 public class ReportHandleServiceImpl implements ReportHandleService {
+
     private final ReportFindService reportFindService;
     private final ReportRepository reportRepository;
 
@@ -29,11 +30,11 @@ public class ReportHandleServiceImpl implements ReportHandleService {
     private final CommentHandleService commentHandleService;
     private final ReplyHandleService replyHandleService;
 
-
     // 신고 요청
     @Override
-    public Report saveReport(ReportDto.ReportPostReq newReport) {
+    public Report saveReport(ReportDto.ReportPostReq newReport, ReportTargetType reportTargetType) {
         Member reporter = finderService.findVerifiedMemberByName(newReport.getReporterName());
+        String targetType = renameTargetType(reportTargetType);
         Posts targetPosts = null;
         Comment targetComment = null;
         Reply targetReply = null;
@@ -48,7 +49,7 @@ public class ReportHandleServiceImpl implements ReportHandleService {
         Report report = Report.builder()
                 .reportReason(newReport.getReportReason())
                 .description(newReport.getDescription())
-                .targetType(newReport.getTargetType())
+                .targetType(targetType)
                 .reporter(reporter)
                 .targetPosts(targetPosts)
                 .targetComment(targetComment)
@@ -80,5 +81,18 @@ public class ReportHandleServiceImpl implements ReportHandleService {
         reportRepository.save(report);
 
         return reportId;
+    }
+
+    // targetType 한글로 변환
+    private String renameTargetType(ReportTargetType targetType) {
+        switch (targetType) {
+            case POSTS:
+                return ReportTargetType.POSTS.getKor();
+            case COMMENT:
+                return ReportTargetType.COMMENT.getKor();
+            case REPLY:
+                return ReportTargetType.REPLY.getKor();
+        }
+        return null;
     }
 }

@@ -1,8 +1,8 @@
 package com.teamdragon.dragonmoney.app.domain.report.dto;
 
 import com.teamdragon.dragonmoney.app.domain.report.entity.Report;
+import com.teamdragon.dragonmoney.app.domain.report.service.ReportTargetType;
 import com.teamdragon.dragonmoney.app.global.pagenation.PageInfo;
-import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -73,12 +73,12 @@ public class ReportDto {
         private Long postId;
 
         @Builder
-        public ReportDetailRes(Report report, String targetType,
+        public ReportDetailRes(Report report, ReportTargetType targetType,
                                String content, String writer, Long postId) {
             this.reportId = report.getId();
             this.reportedAt = report.getReportedAt();
             this.reportCategory = report.getReportReason();
-            this.targetType = targetType;
+            this.targetType = targetType.getKor();
             this.content = content;
             this.writer = writer;
             this.reporter = report.getReporter().getName();

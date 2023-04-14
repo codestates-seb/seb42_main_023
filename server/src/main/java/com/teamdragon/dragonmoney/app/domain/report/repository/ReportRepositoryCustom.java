@@ -5,9 +5,12 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
 public interface ReportRepositoryCustom {
+
     String findReportPostsWriter(Long reportId);
+
     String findReportCommentWriter(Long reportId);
+
     String findReportReplyWriter(Long reportId);
-    Page<Report> findStandbyReportListByHandledState(String orderby, Report.State handledState, Pageable pageable);
-    Page<Report> findDeletedReportListByHandledState(String orderby, Report.State handledState, Pageable pageable);
+
+    Page<Report> findReportListByHandledState(String orderBy, Report.State handledState, Pageable pageable);
 }

@@ -7,11 +7,7 @@ public interface ReportFindService {
 
     ReportDto.ReportDetailRes findReport(Long reportId);
 
-    ReportDto.ReportListRes findListStandByReport(int page, String orderBy);
-
-    // 처리된 신고 목록 조회
-    ReportDto.ReportListRes findListDeletedReport(int page, String orderBy);
+    ReportDto.ReportListRes findReportList(int page, ReportOrderBy reportOrderBy, Report.State handleState);
 
     Report findVerifiedReport(Long reportId);
-
 }
