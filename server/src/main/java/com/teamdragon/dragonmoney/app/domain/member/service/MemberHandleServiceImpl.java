@@ -7,7 +7,7 @@ import com.teamdragon.dragonmoney.app.domain.member.repository.MemberRepository;
 import com.teamdragon.dragonmoney.app.domain.delete.entity.DeleteResult;
 import com.teamdragon.dragonmoney.app.domain.posts.service.PostsHandleService;
 import com.teamdragon.dragonmoney.app.domain.reply.service.ReplyHandleService;
-import com.teamdragon.dragonmoney.app.domain.thumb.service.ThumbService;
+import com.teamdragon.dragonmoney.app.domain.thumb.service.ThumbHandleService;
 import com.teamdragon.dragonmoney.app.global.exception.AuthExceptionCode;
 import com.teamdragon.dragonmoney.app.global.exception.AuthLogicException;
 import com.teamdragon.dragonmoney.app.global.exception.BusinessExceptionCode;
@@ -30,7 +30,7 @@ public class MemberHandleServiceImpl implements MemberHandleService {
     private final PostsHandleService postsService;
     private final CommentHandleService commentHandleService;
     private final ReplyHandleService replyService;
-    private final ThumbService thumbService;
+    private final ThumbHandleService thumbHandleService;
     private final BookmarkHandleService bookmarkHandleService;
 
     private static final String OAUTH2_KIND = "google";
@@ -95,7 +95,7 @@ public class MemberHandleServiceImpl implements MemberHandleService {
         replyService.removeReplyByDeletedMember(name);
 
         Long memberId = memberFindService.findVerifiedMemberName(name).getId();
-        thumbService.removeAllThumbByMemberId(memberId);
+        thumbHandleService.removeAllThumbByMemberId(memberId);
         bookmarkHandleService.removeAllBookmarkByMemberId(memberId);
 
         Member deletedMember = memberFindService.findVerifiedMemberName(name);

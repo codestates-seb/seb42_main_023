@@ -7,8 +7,7 @@ import com.teamdragon.dragonmoney.app.domain.member.entity.Member;
 import com.teamdragon.dragonmoney.app.domain.popular.entity.BestAwards;
 import com.teamdragon.dragonmoney.app.domain.thumb.ThumbDto;
 import com.teamdragon.dragonmoney.app.domain.thumb.ThumbCountable;
-import com.teamdragon.dragonmoney.app.domain.thumb.entity.Thumbdown;
-import com.teamdragon.dragonmoney.app.domain.thumb.entity.Thumbup;
+import com.teamdragon.dragonmoney.app.domain.thumb.entity.Thumb;
 import com.teamdragon.dragonmoney.app.global.audit.BaseTimeEntity;
 import com.teamdragon.dragonmoney.app.domain.delete.entity.DeleteResult;
 import lombok.*;
@@ -78,10 +77,7 @@ public class Posts extends BaseTimeEntity implements ThumbCountable {
     private List<PostsTag> postsTags = new ArrayList<>();
 
     @OneToMany(mappedBy = "parentPosts")
-    private List<Thumbup> thumbups = new ArrayList<>();
-
-    @OneToMany(mappedBy = "parentPosts")
-    private List<Thumbdown> thumbdowns = new ArrayList<>();
+    private List<Thumb> thumbs = new ArrayList<>();
 
     // 게시글 상태
     public enum State {

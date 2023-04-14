@@ -1,6 +1,7 @@
 package com.teamdragon.dragonmoney.app.domain.posts.service;
 
 import com.teamdragon.dragonmoney.app.domain.category.entity.Category;
+import com.teamdragon.dragonmoney.app.domain.comment.entity.Comment;
 import com.teamdragon.dragonmoney.app.domain.comment.service.CommentHandleService;
 import com.teamdragon.dragonmoney.app.domain.common.service.FinderService;
 import com.teamdragon.dragonmoney.app.domain.image.entity.Image;
@@ -14,9 +15,12 @@ import com.teamdragon.dragonmoney.app.domain.posts.repository.PostsTagRepository
 import com.teamdragon.dragonmoney.app.domain.tag.entity.Tag;
 import com.teamdragon.dragonmoney.app.domain.tag.service.TagFindService;
 import com.teamdragon.dragonmoney.app.domain.tag.service.TagHandleService;
+import com.teamdragon.dragonmoney.app.domain.thumb.ThumbCountable;
 import com.teamdragon.dragonmoney.app.domain.thumb.ThumbDto;
 import com.teamdragon.dragonmoney.app.domain.thumb.ThumbCountService;
 import com.teamdragon.dragonmoney.app.domain.delete.entity.DeleteResult;
+import com.teamdragon.dragonmoney.app.domain.thumb.entity.Thumb;
+import com.teamdragon.dragonmoney.app.domain.thumb.service.ThumbCountAction;
 import com.teamdragon.dragonmoney.app.global.exception.AuthExceptionCode;
 import com.teamdragon.dragonmoney.app.global.exception.AuthLogicException;
 import lombok.RequiredArgsConstructor;
@@ -38,7 +42,6 @@ public class PostsHandleServiceImpl implements PostsHandleService, ThumbCountSer
     private final FinderService finderService;
     private final CommentHandleService commentHandleService;
     private final TagHandleService tagHandleService;
-    private final TagFindService tagFindService;
     private final ImageFindService imageFindService;
     private final ImageHandleService imageHandleService;
 
@@ -168,36 +171,6 @@ public class PostsHandleServiceImpl implements PostsHandleService, ThumbCountSer
         return postsRepository.save(originalPosts);
     }
 
-    @Override
-    public ThumbDto modifyThumbupState(Long postsId, boolean needInquiry, ThumbDto.ACTION action) {
-        Posts findPosts = postsFindService.findVerifyPostsById(postsId);
-        if (action == ThumbDto.ACTION.PLUS) {
-            findPosts.plusThumbupCount();
-        } else if ( action == ThumbDto.ACTION.MINUS) {
-            findPosts.minusThumbupCount();
-        }
-        Posts updatePosts = postsRepository.save(findPosts);
-        if (needInquiry) {
-            return updatePosts.getThumbCount();
-        }
-        return null;
-    }
-
-    @Override
-    public ThumbDto modifyThumbdownState(Long postsId, boolean needInquiry, ThumbDto.ACTION action) {
-        Posts findPosts = postsFindService.findVerifyPostsById(postsId);
-        if (action == ThumbDto.ACTION.PLUS) {
-            findPosts.plusThumbdownCount();
-        } else if ( action == ThumbDto.ACTION.MINUS) {
-            findPosts.minusThumbdownCount();
-        }
-        Posts updatePosts = postsRepository.save(findPosts);
-        if (needInquiry) {
-            return updatePosts.getThumbCount();
-        }
-        return null;
-    }
-
     // PostsTag 획득
     @Override
     public List<PostsTag> getPostsTagList(List<String> tagNames) {
@@ -256,5 +229,48 @@ public class PostsHandleServiceImpl implements PostsHandleService, ThumbCountSer
     @Override
     public List<Tag> saveTagList(List<String> tagNames) {
         return tagHandleService.saveListTag(tagNames);
+    }
+
+    // 좋아요 상태 수정
+    @Override
+    public ThumbDto modifyThumbState(Long postsId, boolean needInquiry, Thumb.Type thumbType, ThumbCountAction action) {
+        Posts findPosts = postsFindService.findVerifyPostsById(postsId);
+        if (thumbType == Thumb.Type.UP) {
+            return modifyThumbupState(findPosts, needInquiry, action);
+        } else {
+            return modifyThumbdownState(findPosts, needInquiry, action);
+        }
+    }
+
+    // 좋아요 상태 수정 : 좋아요
+    @Override
+    public ThumbDto modifyThumbupState(ThumbCountable thumbablePosts, boolean needInquiry, ThumbCountAction action) {
+        Posts posts = (Posts) thumbablePosts;
+        if (action == ThumbCountAction.PLUS) {
+            posts.plusThumbupCount();
+        } else if ( action == ThumbCountAction.MINUS) {
+            posts.minusThumbupCount();
+        }
+        Posts updatePosts = postsRepository.save(posts);
+        if (needInquiry) {
+            return updatePosts.getThumbCount();
+        }
+        return null;
+    }
+
+    // 좋아요 상태 수정 : 싫어요
+    @Override
+    public ThumbDto modifyThumbdownState(ThumbCountable thumbablePosts, boolean needInquiry, ThumbCountAction action) {
+        Posts posts = (Posts) thumbablePosts;
+        if (action == ThumbCountAction.PLUS) {
+            posts.plusThumbdownCount();
+        } else if ( action == ThumbCountAction.MINUS) {
+            posts.minusThumbdownCount();
+        }
+        Posts updatePosts = postsRepository.save(posts);
+        if (needInquiry) {
+            return updatePosts.getThumbCount();
+        }
+        return null;
     }
 }
