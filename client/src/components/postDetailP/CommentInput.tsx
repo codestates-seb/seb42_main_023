@@ -67,7 +67,7 @@ const CommentInput: React.FC<CommentInputProps> = ({
   return (
     <CommentInputContainer>
       <h1>댓글 {commentCnt}개 </h1>{' '}
-      <InputWrap>
+      <InputContainer>
         <textarea
           id="comment"
           placeholder="댓글을 남겨 주세요"
@@ -75,7 +75,7 @@ const CommentInput: React.FC<CommentInputProps> = ({
           onChange={valueCheck}
           onInput={resizeHeightHandler}
         ></textarea>
-      </InputWrap>
+      </InputContainer>
       <ButtonContainer>
         <CancelCommentBtn onClick={cancelHandler}>취소</CancelCommentBtn>
         {!commentRef.current?.value ? (
@@ -119,9 +119,12 @@ const CommentInputContainer = styled.div`
     font-size: 25px;
     font-weight: 400;
   }
+  @media (max-width: 1100px) {
+    width: 96vw;
+  }
 `;
 
-const InputWrap = styled.div`
+const InputContainer = styled.div`
   display: flex;
   textarea {
     box-sizing: border-box;
@@ -140,6 +143,11 @@ const InputWrap = styled.div`
       font-size: 14px;
     }
   }
+  @media (max-width: 1100px) {
+    textarea {
+      width: 99vw;
+    }
+  }
 `;
 const ButtonContainer = styled.div`
   display: flex;
@@ -155,6 +163,11 @@ const ButtonContainer = styled.div`
       background-color: var(--hover-point-blue-color);
     }
   }
+  @media (max-width: 1100px) {
+    width: 95vw;
+    margin: 15px 0 0 0;
+    justify-content: flex-end;
+  }
 `;
 
 const CancelCommentBtn = styled.button`
@@ -166,7 +179,6 @@ const CancelCommentBtn = styled.button`
   border-radius: 10px;
   background-color: var(--background-color);
   cursor: pointer;
-
   :hover {
     color: var(--background-color);
     background-color: var(--hover-font-gray-color);

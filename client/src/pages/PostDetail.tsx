@@ -4,7 +4,8 @@ import throttle from 'lodash/throttle';
 import parse from 'html-react-parser';
 import { useParams, useNavigate } from 'react-router';
 import { useAppDispatch, useAppSelector } from '../hooks';
-import { getTimeSince } from '../components/common/timeCalculator';
+import { getTimeSince } from '../../src/util/timeCalculator';
+import debounce from 'lodash/debounce';
 import Comment from '../components/postDetailP/Comment';
 import CommentInput from '../components/postDetailP/CommentInput';
 import RecommendedPost from '../components/postDetailP/RecommendedPost';
@@ -476,7 +477,10 @@ const PostDetail: React.FC = () => {
         <Loading />
       ) : (
         <Container onClick={handleClickOutside}>
-          <PostContainer onClick={outClickIntroHandler}>
+          <PostContainer
+            className="post-contatiner"
+            onClick={outClickIntroHandler}
+          >
             <div className="post-title">
               <h1>{data?.title}</h1>
               {isEdit ? <p>(수정됨)</p> : null}
@@ -620,15 +624,23 @@ const Container = styled.div<any>`
   width: 100%;
   height: 100%;
   overflow: scroll;
+
+  svg {
+    min-width: 20px;
+    width: 20px;
+  }
   img {
     max-width: 720px;
+  }
+  @media (max-width: 1100px) {
+    grid-template-columns: none;
   }
 `;
 const PostContainer = styled.div`
   display: flex;
   flex-direction: column;
   width: 1100px;
-  height: 100%;
+  width: auto;
 
   .post-title {
     display: flex;
@@ -695,6 +707,30 @@ const PostContainer = styled.div`
     transform: translateY(7px);
     cursor: pointer;
   }
+  @media (max-width: 1100px) {
+    width: 100vw;
+    padding: 0 15px 0 15px;
+
+    .post-info {
+      width: 100%;
+    }
+    .nickname {
+      min-width: 100px;
+      width: max-content;
+    }
+    .created-time {
+      min-width: 50px;
+      width: max-content;
+    }
+    .views {
+      min-width: 40px;
+      width: max-content;
+    }
+    .comments {
+      min-width: 40px;
+      margin: 1px auto 0 5px;
+    }
+  }
 `;
 const Bookmark = styled.button``;
 const PostInfo = styled.div`
@@ -704,6 +740,12 @@ const PostInfo = styled.div`
   justify-content: center;
   width: 100%;
   height: 30px;
+
+  @media (max-width: 1100px) {
+     {
+      width: 100%;
+    }
+  }
 `;
 const PostContent = styled.div`
   display: flex;
@@ -723,23 +765,42 @@ const PostContent = styled.div`
     margin: 0 15px;
     color: var(--error-red-color);
   }
+
+  @media (max-width: 1100px) {
+     {
+      width: 100%;
+    }
+  }
 `;
 
-// 추천글 컨테이너
 const RecommendedPostContainer = styled.div`
+  width: 290px;
   display: flex;
   justify-content: center;
-  width: 100%;
   height: 100%;
 
   .recommended-post {
     display: flex;
     justify-content: center;
     padding: 10px;
-    width: 290px;
+    width: 100%;
     height: 480px;
     background-color: white;
     border: 1px solid #d4d4d4;
+  }
+  @media (max-width: 1100px) {
+    width: 100vw;
+    display: flex;
+    justify-content: center;
+    height: 100%;
+    margin-top: 50px;
+    align-items: center;
+    .recommended-post {
+      width: 97vw;
+      height: 480px;
+      background-color: white;
+      border: 1px solid #d4d4d4;
+    }
   }
 `;
 

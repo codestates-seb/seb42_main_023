@@ -272,7 +272,7 @@ const Comment: React.FC<
                 return (
                   <>
                     <CommentInfo key={comment?.commentId}>
-                      <ul className="content-info">
+                      <ul className="comment-info">
                         <li
                           className="image"
                           data-membername={comment?.memberName}
@@ -653,7 +653,7 @@ const CommentContainer = styled.div`
     font-size: 24px;
     font-weight: 400;
   }
-  .content-info {
+  .comment-info {
     width: 720px;
     height: 80px;
     display: flex;
@@ -676,12 +676,12 @@ const CommentContainer = styled.div`
   }
   .nickname {
     width: 130px;
-    font-size: 17px;
+    font-size: 16px;
     margin: 2px 15px 0 5px;
   }
   .created-time {
     width: 75px;
-    font-size: 16px;
+    font-size: 13px;
     margin: 3px 15px 0 5px;
     color: #94969b;
   }
@@ -694,13 +694,13 @@ const CommentContainer = styled.div`
   .comment-delete {
     width: 40px;
     font-size: 16px;
-    margin: 3px 15px 0 5px;
+    margin: 3px auto 0 5px;
     cursor: pointer;
   }
   .comment-report {
     width: 40px;
     font-size: 16px;
-    margin: 3px 148px 0 5px;
+    margin: 3px auto 0 5px;
     color: #ca0000;
     cursor: pointer;
   }
@@ -749,7 +749,41 @@ const CommentContainer = styled.div`
     cursor: pointer;
   }
   .edit-confirm {
+    min-width: 50px;
     font-size: 12px;
+    font-weight: bold;
+  }
+  @media (max-width: 1100px) {
+    width: 100vw;
+    padding: 0 15px 0 15px;
+    .comment-info {
+      width: 100%;
+    }
+    .content {
+      width: 90vw;
+    }
+    .nickname {
+      min-width: 100px;
+      width: max-content;
+    }
+    .created-time {
+      min-width: 50px;
+      width: max-content;
+    }
+    .comment-update {
+      min-width: 40px;
+      width: max-content;
+    }
+    .comment-delete {
+      min-width: 40px;
+      width: 1000px;
+      margin: 3px 15px 0 5px;
+    }
+    .comment-report {
+      min-width: 40px;
+      width: 1000px;
+      margin: 3px 0 0 5px;
+    }
   }
 `;
 
@@ -811,6 +845,11 @@ const CommentInfo = styled.div`
   width: 100%;
   height: 30px;
   margin-top: 10px;
+  @media (max-width: 1100px) {
+     {
+      width: 94vw;
+    }
+  }
 `;
 
 const CommentContent = styled.div`
@@ -839,6 +878,11 @@ const CommentContent = styled.div`
   }
   .noReply {
     font-weight: bold;
+  }
+  @media (max-width: 1100px) {
+     {
+      width: 94vw;
+    }
   }
 `;
 
@@ -891,6 +935,11 @@ const InputContainer = styled.div`
     }
     ::placeholder {
       font-size: 14px;
+    }
+  }
+  @media (max-width: 1100px) {
+    .edit-content {
+      width: 94vw;
     }
   }
 `;
