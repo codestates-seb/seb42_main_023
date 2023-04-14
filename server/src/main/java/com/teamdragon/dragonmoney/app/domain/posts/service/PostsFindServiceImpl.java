@@ -100,6 +100,24 @@ public class PostsFindServiceImpl implements PostsFindService {
         return new MyPageDto.MyPageMemberPostsListRes(postsPage, PAGE_ELEMENT_ORDER_BY);
     }
 
+    // 게시물 개수 조회 : 회원이 작성한 글 (마이 페이지)
+    @Override
+    public Long findPostsCountByWriter(String memberName) {
+        return postsRepository.findMemberPostsCount(memberName);
+    }
+
+    // 게시물 개수 조회 : 회원이 좋아요 한 글 (마이 페이지)
+    @Override
+    public Long findThumbUpPostsCountByMember(String memberName) {
+        return postsRepository.findMemberThumbUpPostsCount(memberName);
+    }
+
+    // 게시물 개수 조회 : 회원이 북마크 한 글 (마이 페이지)
+    @Override
+    public Long findBookmarkPostsCountByMember(String memberName) {
+        return postsRepository.findMemberBookmarkPostsCount(memberName);
+    }
+
     // 유효한 Posts 조회
     @Override
     public Posts findVerifyPostsById(Long postsId) {

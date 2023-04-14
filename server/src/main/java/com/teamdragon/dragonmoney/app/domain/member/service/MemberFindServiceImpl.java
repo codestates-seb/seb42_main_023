@@ -1,10 +1,10 @@
 package com.teamdragon.dragonmoney.app.domain.member.service;
 
-import com.teamdragon.dragonmoney.app.domain.comment.repository.CommentRepository;
+import com.teamdragon.dragonmoney.app.domain.comment.service.CommentFindService;
 import com.teamdragon.dragonmoney.app.domain.member.dto.MyPageDto;
 import com.teamdragon.dragonmoney.app.domain.member.entity.Member;
 import com.teamdragon.dragonmoney.app.domain.member.repository.MemberRepository;
-import com.teamdragon.dragonmoney.app.domain.posts.repository.PostsRepository;
+import com.teamdragon.dragonmoney.app.domain.posts.service.PostsFindService;
 import com.teamdragon.dragonmoney.app.global.exception.BusinessExceptionCode;
 import com.teamdragon.dragonmoney.app.global.exception.BusinessLogicException;
 import lombok.RequiredArgsConstructor;
@@ -19,8 +19,8 @@ import java.util.Optional;
 public class MemberFindServiceImpl implements MemberFindService {
 
     private final MemberRepository memberRepository;
-    private final PostsRepository postsRepository;
-    private final CommentRepository commentRepository;
+    private final PostsFindService postsFindService;
+    private final CommentFindService commentFindService;
 
     // 임시 닉네임으로 회원 조회
     @Override
@@ -45,11 +45,11 @@ public class MemberFindServiceImpl implements MemberFindService {
     public MyPageDto.MyPageCount findCountInfo(String memberName) {
 
         return MyPageDto.MyPageCount.builder()
-                .postcount(postsRepository.findMemberPostsCount(memberName))
-                .commentCount(commentRepository.findMemberCommentCount(memberName))
-                .thumbupPostCount(postsRepository.findMemberThumbUpPostsCount(memberName))
-                .thumbupCommentCount(commentRepository.findMemberThumbUpCommentCount(memberName))
-                .bookmarkCount(postsRepository.findMemberBookmarkPostsCount(memberName))
+                .postcount(postsFindService.findPostsCountByWriter(memberName))
+                .commentCount(commentFindService.findCommentCountByWriter(memberName))
+                .thumbupPostCount(postsFindService.findThumbUpPostsCountByMember(memberName))
+                .thumbupCommentCount(commentFindService.findThumbUpCommentCountByMember(memberName))
+                .bookmarkCount(postsFindService.findBookmarkPostsCountByMember(memberName))
                 .build();
     }
 }

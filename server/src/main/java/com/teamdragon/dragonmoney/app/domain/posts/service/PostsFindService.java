@@ -29,6 +29,15 @@ public interface PostsFindService {
     // 게시물 목록 조회 : 회원이 북마크 한 글 (마이 페이지)
     MyPageDto.MyPageMemberPostsListRes findPostsListByBookmarkPosts(int page, String memberName);
 
+    // 게시물 개수 조회 : 회원이 작성한 글 (마이 페이지)
+    Long findPostsCountByWriter(String memberName);
+
+    // 게시물 개수 조회 : 회원이 좋아요 한 글 (마이 페이지)
+    Long findThumbUpPostsCountByMember(String memberName);
+
+    // 게시물 개수 조회 : 회원이 북마크 한 글 (마이 페이지)
+    Long findBookmarkPostsCountByMember(String memberName);
+
     // 유효한 Posts 조회
     Posts findVerifyPostsById(Long postsId) ;
 }

@@ -71,6 +71,18 @@ public class CommentFindServiceImpl implements CommentFindService {
         return new MyPageDto.MyPageMemberCommentListRes(commentPage, PAGE_ELEMENT_ORDER_BY);
     }
 
+    // 개수 조회 : 회원이 작성한 댓글 (마이 페이지)
+    @Override
+    public Long findCommentCountByWriter(String memberName) {
+        return commentRepository.findMemberCommentCount(memberName);
+    }
+
+    // 개수 조회 : 회원이 좋아요 한 댓글 (마이 페이지)
+    @Override
+    public Long findThumbUpCommentCountByMember(String memberName) {
+        return commentRepository.findMemberThumbUpCommentCount(memberName);
+    }
+
     // 유효한 Comment 조회
     @Override
     public Comment findVerifyCommentById(Long commentId) {

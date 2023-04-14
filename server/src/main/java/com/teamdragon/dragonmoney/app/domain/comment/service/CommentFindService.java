@@ -19,6 +19,12 @@ public interface CommentFindService {
     // 목록 조회 : 회원이 좋아요 한 댓글 (마이 페이지)
     MyPageDto.MyPageMemberCommentListRes findThumbUpCommentListByMember(int page, String memberName);
 
+    // 개수 조회 : 회원이 작성한 댓글 개수 (마이 페이지)
+    Long findCommentCountByWriter(String memberName);
+
+    // 개수 조회 : 회원이 좋아요 한 댓글 개수 (마이 페이지)
+    Long findThumbUpCommentCountByMember(String memberName);
+
     // 유효한 Comment 조회
     Comment findVerifyCommentById(Long commentId);
 }
