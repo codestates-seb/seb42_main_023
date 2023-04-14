@@ -5,6 +5,7 @@ import { WhiteBtn } from '../components/common/Btn';
 import { useGetHappyHouseQuery } from '../api/happyHouseApi';
 import Pagination from '../components/common/Pagination';
 
+// TODO: table 반응형으로 만들기
 interface House {
   houseId: number;
   inquiryDate: string;
