@@ -32,7 +32,7 @@ const Pagination = ({
       setPageOffset(pageOffset + 5);
     }
   };
-  const pageButtonHandler = (e: React.MouseEvent<HTMLButtonElement>) => {
+  const pageBtnHandler = (e: React.MouseEvent<HTMLButtonElement>) => {
     if (e.target instanceof HTMLButtonElement) {
       setCurrentPage(parseInt(e.target.value));
       window.scrollTo(0, 0);
@@ -50,7 +50,7 @@ const Pagination = ({
               <Link
                 current={number === pageInfo.page}
                 value={number}
-                onClick={pageButtonHandler}
+                onClick={pageBtnHandler}
               >
                 {number}
               </Link>

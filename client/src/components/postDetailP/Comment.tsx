@@ -1,15 +1,11 @@
-// 패키지 등
 import React, { useEffect, useRef, useState } from 'react';
 import { useParams } from 'react-router';
 import { useAppDispatch, useAppSelector } from '../../hooks';
-import { timeSince } from '../mainP/Timecalculator';
+import { getTimeSince } from '../../util/timeCalculator';
 import { useNavigate } from 'react-router';
 import styled from 'styled-components';
 import _ from 'lodash';
 import parse from 'html-react-parser';
-import Cookies from 'js-cookie';
-
-// 컴포넌트
 import ReplyInput from './ReplyInput';
 import DislikeIcon from '../../assets/common/DislikeIcon';
 import LikeIcon from '../../assets/common/LikeIcon';
@@ -17,22 +13,16 @@ import TimeIcon from '../../assets/common/TimeIcon';
 import CommentDropdownButton from './CommentDropdownButton';
 import Loading from '../common/Loading';
 import Reply from './Reply';
-// 타입
-import { CommentInputProps } from '../../types/PostDetail';
+import { CommentInputProps } from '../../types/Post';
 import {
-  PostStateType,
-  CommentStateType,
-  ReplyStateType,
   CommentType,
   ReplyType,
   ReportProps,
   CommentProps,
-} from '../../types/PostDetail';
-// API
+} from '../../types/Post';
 import { commentsApi } from '../../api/commentApi';
 import { repliesApi } from '../../api/replyApi';
-import { membersApi } from '../../api/memberapi';
-// Slices
+import { membersApi } from '../../api/membersApi';
 import { setReportType, setSelectedMember } from '../../slices/postSlice';
 import {
   setCommentId,
@@ -46,6 +36,7 @@ import {
   setTotalReplies,
 } from '../../slices/replySlice';
 import { setMemberName } from '../../slices/headerSlice';
+import { checkIsLogin } from '../../util/checkIsLogin';
 
 const Comment: React.FC<
   Partial<CommentInputProps & ReportProps & CommentProps>
@@ -62,16 +53,10 @@ const Comment: React.FC<
   isCommentOpenIntro,
   isReplyOpenIntro,
 }: Partial<CommentInputProps & ReportProps & CommentProps>) => {
+  const isLogin = checkIsLogin();
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
-  const state = useAppSelector(
-    (
-      state: PostStateType | CommentStateType | ReplyStateType,
-    ): PostStateType | CommentStateType | ReplyStateType => {
-      return state;
-    },
-  );
-
+  const state = useAppSelector((state) => state);
   const [page, setPage] = useState<number>(1);
   const [commentData, setCommentData] = useState<Array<CommentType>>([]);
   const [editComment, setEditComment] = useState<string>('');
@@ -87,13 +72,6 @@ const Comment: React.FC<
   ) as HTMLTextAreaElement;
   const commentEditTextareaRef = useRef<HTMLTextAreaElement>(contentTextarea);
 
-  // 로그인 확인
-  const auth = Cookies.get('Authorization');
-  const role = localStorage.getItem('role');
-  const name = localStorage.getItem('name');
-  const isLogin = auth && role && name;
-
-  // Textarea 값 확인
   const valueCheck = (event: React.ChangeEvent<HTMLTextAreaElement>): void => {
     const data = event.target.value.replaceAll(/\n/g, '<br>');
     setEditComment(data);
@@ -108,25 +86,20 @@ const Comment: React.FC<
     }
   };
 
-  // textarea 높이 조절
   const handleResizeHeight = () => {
     commentEditTextareaRef!.current.style!.height = 'auto';
     commentEditTextareaRef!.current.style!.height =
       commentEditTextareaRef.current?.scrollHeight + 'px';
   };
   const orderby = 'comment' in state && state.comment.orderby;
-  // 댓글 조회
   const commentQuery = commentsApi.useGetCommentQuery({
     postId,
     page,
     orderby,
   });
   const { isLoading, refetch } = commentQuery;
-  // 댓글 업데이트
   const commentMutation = commentsApi.useUpdateCommentMutation();
   const [updateMutation] = commentMutation;
-
-  // 답글 조회
   const [replyPage, setReplyPage] = useState<number>(1);
   const replyQuery = repliesApi.useGetReplyQuery(
     { commentId, replyPage },
@@ -135,118 +108,76 @@ const Comment: React.FC<
     },
   );
   const { isSuccess } = replyQuery;
-
-  //  멤버 정보 조회
   const memberQuery = membersApi.useGetMemberQuery(
     { name: selectedMember },
     { skip: !selectedMember },
   );
-
-  // 댓글 좋아요 추가, 삭제
   const addThumbUpMutation = commentsApi.useAddCommentThumbUpMutation();
   const [addThumbUp] = addThumbUpMutation;
-  const removeThumbUpMutation = commentsApi.useRemoveCommentThumbUpMutation();
-  const [removeThumbUp] = removeThumbUpMutation;
-
-  // 댓글 싫어요  추가, 삭제
+  const removeThumbUpMutation = commentsApi.useDeleteCommentThumbUpMutation();
+  const [deleteThumbUp] = removeThumbUpMutation;
   const addThumbDownMutation = commentsApi.useAddCommentThumbDownMutation();
   const [addThumbDown] = addThumbDownMutation;
   const removeThumbDownMutation =
-    commentsApi.useRemoveCommentThumbDownMutation();
-  const [removeThumbDown] = removeThumbDownMutation;
+    commentsApi.useDeleteCommentThumbDownMutation();
+  const [deleteThumbDown] = removeThumbDownMutation;
 
-  // 답글 Open 여부 확인을 위한 배열 생성
-  if (
-    commentQuery.isSuccess &&
-    'reply' in state &&
-    state.reply?.isOpened === undefined
-  ) {
-    const open = Array.from(
-      { length: commentQuery.data?.comments?.length },
-      (el) => (el = false),
-    );
-    dispatch(isOpened(open));
-  }
-
-  // 댓글 Edit 여부 확인을 위한 배열 생성
-  if (
-    commentQuery.isSuccess &&
-    (state as CommentStateType).comment.isEdit === undefined
-  ) {
-    const edit = Array.from(
-      { length: commentQuery.data.comments?.length },
-      (el) => (el = false),
-    );
-    dispatch(isEdit(edit as Array<boolean>));
-  }
-  // 댓글 좋아요 클릭 함수
   const commentLiikeHandler = (comment: CommentType): void => {
-    if (!isLogin) navigate('/login');
-    const commentId = comment.commentId;
-    // 좋아요만 있는 경우
-    if (comment?.isThumbup && !comment?.isThumbdown) {
-      removeThumbUp({ commentId });
+    if (!isLogin) {
+      navigate('/login');
       return;
     }
-    // 싫어요만 있는 경우
+    const commentId = comment.commentId;
+    if (comment?.isThumbup && !comment?.isThumbdown) {
+      deleteThumbUp({ commentId });
+      return;
+    }
     if (!comment?.isThumbup && comment?.isThumbdown) {
       const commentId = comment.commentId;
 
-      removeThumbDown({ commentId });
+      deleteThumbDown({ commentId });
       setTimeout(() => {
         addThumbUp({ commentId });
       }, 500);
 
       return;
     }
-    // 둘 다 없는 경우
     if (!comment?.isThumbdown && !comment?.isThumbdown) {
       addThumbUp({ commentId });
       return;
     }
   };
-
-  // 댓글 싫어요 클릭 함수
   const commentDislikeHandler = (comment: CommentType): void => {
     if (!isLogin) navigate('/login');
     const commentId = comment.commentId;
-    // 좋아요만 있는 경우
     if (comment.isThumbup && !comment?.isThumbdown) {
-      // 좋아요 제거, 싫어요 추가      removeThumbUp({ commentId });
       setTimeout(() => {
         addThumbDown({ commentId });
       }, 500);
 
       return;
     }
-    // 싫어요만 있는 경우
     if (!comment?.isThumbup && comment?.isThumbdown) {
-      // 싫어요 제거
-      removeThumbDown({ commentId });
+      deleteThumbDown({ commentId });
       return;
     }
 
-    // 둘 다 없는 경우
     if (!comment?.isThumbup && !comment?.isThumbdown) {
-      // 싫어요 추가
       addThumbDown({ commentId });
       return;
     }
   };
 
-  // 삭제 확인 모달창
   const confirmDeleteHandler = (): void => {
     setIsOpenDelete?.(!isOpenDelete!);
   };
 
-  // 삭제 타입 확인
   const deleteTypeChecker = (event: React.MouseEvent<HTMLElement>): void => {
     if (event.target instanceof HTMLElement) {
       setDeleteType?.(event.target.id);
     }
   };
 
-  // 신고 카테고리 확인
   const reportTypeChecker = (event: React.MouseEvent<HTMLElement>): void => {
     if (event.target instanceof HTMLElement) {
       dispatch(setCommentId(Number(event.target.dataset.commentid)));
@@ -254,7 +185,6 @@ const Comment: React.FC<
     }
   };
 
-  // 소개 페이지 오픈
   const IntroHandler = (event: React.MouseEvent<HTMLElement>) => {
     event.stopPropagation();
     if (
@@ -274,13 +204,6 @@ const Comment: React.FC<
     }
   };
 
-  useEffect(() => {
-    // 답글 데이터가 변경될 때마다 총 답글 데이터 반영
-    dispatch(setTotalReplies(replyQuery.data?.replies || []));
-    setCommentData(commentQuery.data?.comments);
-  }, [replyQuery.data, commentQuery.data]);
-
-  // 댓글, 답글 페이지 이동
   const minusCommentPage = () => {
     if (page >= 2) {
       setPage((prev) => (prev = prev - 1));
@@ -299,6 +222,29 @@ const Comment: React.FC<
   const plusReplyPage = () => {
     setReplyPage((prev) => prev + 1);
   };
+
+  useEffect(() => {
+    dispatch(setTotalReplies(replyQuery.data?.replies || []));
+    setCommentData(commentQuery.data?.comments);
+  }, [replyQuery.data, commentQuery.data]);
+
+  useEffect(() => {
+    if (commentQuery.isSuccess && state.reply?.isOpened === undefined) {
+      const open = Array.from(
+        { length: commentQuery.data?.comments?.length },
+        (el) => (el = false),
+      );
+      dispatch(isOpened(open));
+    }
+    if (commentQuery.isSuccess && state.comment.isEdit === undefined) {
+      const edit = Array.from(
+        { length: commentQuery.data.comments?.length },
+        (el) => (el = false),
+      );
+      dispatch(isEdit(edit as Array<boolean>));
+    }
+  }, []);
+
   return (
     <>
       {isLoading ? (
@@ -312,23 +258,22 @@ const Comment: React.FC<
             commentQuery.data?.comments?.map(
               (comment: CommentType, idx: number) => {
                 const filtered: Array<ReplyType> =
-                  'reply' in state &&
-                  state.reply.totalReplies &&
+                  state.reply.totalReplies! &&
                   (
                     _.uniqBy(
-                      'reply' in state && state.reply.totalReplies,
+                      state.reply.totalReplies,
                       'replyId',
                     ) as Array<object>
                   ).filter((reply: Partial<ReplyType>) => {
                     return reply.commentId === comment.commentId;
                   });
                 // 시간 계산
-                const time = timeSince(comment.createdAt);
+                const time = getTimeSince(comment.createdAt);
 
-                // 답글 수정 여부
                 const commentIsEdit =
                   comment.modifiedAt !== comment.createdAt ? true : false;
-
+                const isDeleted = comment?.content === '삭제된 댓글입니다.';
+                const isReported = comment?.content === '신고된 댓글입니다.';
                 return (
                   <>
                     <CommentInfo key={comment?.commentId}>
@@ -406,7 +351,7 @@ const Comment: React.FC<
                             onClick={(): void => {
                               if (
                                 !commentEditTextareaRef.current?.value &&
-                                comment?.content !== '삭제된 댓글입니다.'
+                                !isDeleted
                               ) {
                                 dispatch(setIsEdit(idx));
 
@@ -437,16 +382,13 @@ const Comment: React.FC<
                             onClick={(
                               event: React.MouseEvent<HTMLLIElement>,
                             ): void => {
-                              if (comment?.content !== '삭제된 댓글입니다.') {
+                              if (!isDeleted) {
                                 dispatch(setIsEdit(idx));
                                 initData(event);
                               }
                             }}
                           >
-                            {comment?.content === '삭제된 댓글입니다.' ||
-                            comment?.content === '신고된 댓글입니다.'
-                              ? null
-                              : '수정'}
+                            {isDeleted || isReported ? null : '수정'}
                           </li>
                         )}
                         {loginUserName === comment?.memberName ? (
@@ -467,10 +409,7 @@ const Comment: React.FC<
                               confirmDeleteHandler();
                             }}
                           >
-                            {comment.content === '삭제된 댓글입니다.' ||
-                            comment.content === '신고된 댓글입니다.'
-                              ? null
-                              : '삭제'}
+                            {isDeleted || isReported ? null : '삭제'}
                           </li>
                         ) : null}
 
@@ -495,15 +434,9 @@ const Comment: React.FC<
                             reportTypeChecker(event);
                           }}
                         >
-                          {comment.content === '삭제된 댓글입니다.'
-                            ? null
-                            : comment.content === '신고된 댓글입니다.'
-                            ? null
-                            : '신고'}
+                          {isDeleted ? null : isReported ? null : '신고'}
                         </li>
-                        {comment.content ===
-                        '삭제된 댓글입니다.' ? null : comment.content ===
-                          '신고된 댓글입니다.' ? null : (
+                        {isDeleted ? null : isReported ? null : (
                           <>
                             <button
                               onClick={_.debounce(
@@ -542,43 +475,35 @@ const Comment: React.FC<
                         {'comment' in state &&
                         state.comment.isEdit !== undefined &&
                         state.comment.isEdit[idx] ? (
-                          // 댓글 수정 시 생기는 textarea
-                          <InputWrap>
+                          <InputContainer>
                             <textarea
                               id="edit-comment"
                               className="edit-content"
                               ref={commentEditTextareaRef}
                               value={selectedComment}
                               style={{
-                                display:
-                                  comment.content === '삭제된 댓글입니다.'
-                                    ? 'none'
-                                    : 'flex',
+                                display: isDeleted ? 'none' : 'flex',
                               }}
-                              // value={comment.content}
                               onChange={valueCheck}
                               onInput={handleResizeHeight}
                             ></textarea>
-                          </InputWrap>
+                          </InputContainer>
                         ) : (
                           <div
                             className="content"
                             style={{
-                              color:
-                                comment?.content === '삭제된 댓글입니다.'
-                                  ? '#94969b'
-                                  : comment?.content === '신고된 댓글입니다.'
-                                  ? '#94969b'
-                                  : ' #000000',
+                              color: isDeleted
+                                ? '#94969b'
+                                : isReported
+                                ? '#94969b'
+                                : ' #000000',
                             }}
                           >
                             {parse(String(comment?.content))}
                             <div className="edit-confirm">
-                              {commentIsEdit &&
-                              comment?.content === '삭제된 댓글입니다.'
+                              {commentIsEdit && isDeleted
                                 ? null
-                                : commentIsEdit &&
-                                  comment?.content === '신고된 댓글입니다.'
+                                : commentIsEdit && isReported
                                 ? null
                                 : commentIsEdit
                                 ? '(수정됨)'
@@ -592,7 +517,6 @@ const Comment: React.FC<
                             onClick={(): void => {
                               dispatch(setCommentId(comment.commentId));
                               setReplyPage(1);
-                              // 답글 눌릴 경우 그 이외 답글들 다 가리기
                               if (
                                 'comment' in state &&
                                 state.comment?.commentId !== comment?.commentId
@@ -619,7 +543,6 @@ const Comment: React.FC<
                             className="noReply"
                             onClick={(): void => {
                               dispatch(setCommentId(comment.commentId));
-                              // 답글 눌릴 경우 그 이외 답글들 다 가리기
                               if (
                                 'comment' in state &&
                                 state.comment?.commentId !== comment?.commentId
@@ -641,9 +564,7 @@ const Comment: React.FC<
                         )}
                       </div>
                     </CommentContent>
-                    {'reply' in state &&
-                    isSuccess &&
-                    state.reply?.isOpened[idx] ? (
+                    {isSuccess && state.reply?.isOpened![idx] ? (
                       <>
                         <ReplyContainer>
                           <ReplyInput
@@ -958,7 +879,7 @@ const ReplyBtn = styled.button`
   }
 `;
 
-const InputWrap = styled.div`
+const InputContainer = styled.div`
   display: flex;
   textarea {
     box-sizing: border-box;

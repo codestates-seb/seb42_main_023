@@ -1,16 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import { useAppSelector } from '../../hooks';
-import { FaRegThumbsDown } from 'react-icons/fa';
-import { FaRegThumbsUp } from 'react-icons/fa';
-import TimeIcon from '../../assets/common/TimeIcon';
 import { PostListWrap } from './MyPostList';
-import { membersCommentsListApi } from '../../api/memberapi';
-import { timeSince } from '../mainP/Timecalculator';
+import { membersCommentsListApi } from '../../api/membersApi';
 import Pagination from '../common/Pagination';
-import { CommentType } from '../../types/PostList';
-import { Link } from 'react-router-dom';
 import Nolist from './Nolist';
+import CommentItem from './CommentItem';
+import { CommentListItem } from '../../types/PostList';
 
 const MyCommentList = () => {
   const [pageOffset, setPageOffset] = useState(0);
@@ -35,41 +31,9 @@ const MyCommentList = () => {
       )}
       <List>
         {isSuccess &&
-          data.comments.map((item: CommentType) => {
-            return (
-              <li key={item.commentId}>
-                <Link
-                  to={
-                    item.comment !== '신고된 댓글입니다.'
-                      ? `/posts/${item.postId}`
-                      : `#`
-                  }
-                  className={
-                    item.comment !== '신고된 댓글입니다.' ? '' : 'disabled-link'
-                  }
-                >
-                  {item.comment === '신고된 댓글입니다.' ? (
-                    <div style={{ color: '#94969b' }}>{item.comment}</div>
-                  ) : (
-                    <div>{item.comment}</div>
-                  )}
-                  <CommentInfo>
-                    <span>
-                      <TimeIcon />
-                      {timeSince(item.createdAt)}
-                    </span>
-                    <span>
-                      <FaRegThumbsUp size={13} />
-                      {item.thumbupCount}
-                    </span>
-                    <span>
-                      <FaRegThumbsDown size={13} />
-                      {item.thumbdownCount}
-                    </span>
-                  </CommentInfo>
-                </Link>
-              </li>
-            );
+          data.comments.length !== 0 &&
+          data.comments.map((item: CommentListItem) => {
+            return <CommentItem item={item} key={item.commentId} />;
           })}
       </List>
       {isSuccess && data.comments.length !== 0 && (
@@ -104,18 +68,6 @@ const List = styled.ul`
       :hover {
         background-color: var(--background-color);
       }
-    }
-  }
-`;
-const CommentInfo = styled.div`
-  color: var(--sub-font-color);
-
-  span {
-    font-size: 12px;
-    margin-right: 10px;
-    svg {
-      transform: translateY(2px);
-      margin-right: 2px;
     }
   }
 `;

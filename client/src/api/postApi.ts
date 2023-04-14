@@ -1,13 +1,11 @@
 import { apiSlice } from './apiSlice';
 
-// const addImgEp = process.env.REACT_APP_SERVER_ADDRESS + '/images';
 const deleteImgEP = process.env.REACT_APP_SERVER_ADDRESS + '/images/drop';
-// 추천 게시물글 API
+
 export const recommendedPostsApi = apiSlice
   .enhanceEndpoints({ addTagTypes: ['RecomendedPosts'] })
   .injectEndpoints({
     endpoints: (builder) => ({
-      // 추천 게시물 조회
       getRomendedPosts: builder.query({
         query: ({ recommend }) => `posts/${recommend}`,
         providesTags: ['RecomendedPosts'],
@@ -19,13 +17,12 @@ export const postsApi = apiSlice
   .enhanceEndpoints({ addTagTypes: ['Post'] })
   .injectEndpoints({
     endpoints: (builder) => ({
-      // 게시글 조회
       getPost: builder.query({
         query: ({ postId }) => `posts/${postId}`,
         providesTags: ['Post'],
       }),
-      // 게시글 추가
-      setPost: builder.mutation({
+
+      addPost: builder.mutation({
         query: ({ saveImages, title, content, tagNames }) => {
           return {
             url: `posts`,
@@ -35,7 +32,7 @@ export const postsApi = apiSlice
         },
         invalidatesTags: ['Post'],
       }),
-      // 게시글 수정
+
       updatePost: builder.mutation({
         query: ({ postId, saveImages, title, content, tagNames }) => {
           return {
@@ -45,7 +42,7 @@ export const postsApi = apiSlice
           };
         },
       }),
-      // 게시글 삭제
+
       deletePost: builder.mutation({
         query: ({ postId }) => {
           return {
@@ -54,17 +51,7 @@ export const postsApi = apiSlice
           };
         },
       }),
-      // 이미지 추가
-      // addImages: builder.mutation({
-      //   query: ({ postId }) => {
-      //     return {
-      //       url: `posts/${postId}`,
-      //       method: 'POST',
-      //     };
-      //   },
-      // }),
 
-      // 이미지 삭제
       deleteImages: builder.mutation({
         query: ({ deletedImg }) => {
           return {
@@ -75,7 +62,6 @@ export const postsApi = apiSlice
         },
       }),
 
-      //게시글 좋아요 추가
       addPostThumbUp: builder.mutation({
         query: ({ postId }) => {
           return {
@@ -84,8 +70,8 @@ export const postsApi = apiSlice
           };
         },
       }),
-      //게시글 좋아요 제거
-      removePostThumbUp: builder.mutation({
+
+      deletePostThumbUp: builder.mutation({
         query: ({ postId }) => {
           return {
             url: `posts/${postId}/thumbup`,
@@ -93,7 +79,7 @@ export const postsApi = apiSlice
           };
         },
       }),
-      // 게시글 싫어요 추가
+
       addPostThumbDown: builder.mutation({
         query: ({ postId }) => {
           return {
@@ -102,8 +88,8 @@ export const postsApi = apiSlice
           };
         },
       }),
-      // 게시글 싫어요 제거
-      removePostThumbDown: builder.mutation({
+
+      deletePostThumbDown: builder.mutation({
         query: ({ postId }) => {
           return {
             url: `posts/${postId}/thumbdown`,
@@ -111,7 +97,7 @@ export const postsApi = apiSlice
           };
         },
       }),
-      // 북마크 추가
+
       addBookmark: builder.mutation({
         query: ({ loginUserName, postId }) => {
           return {
@@ -121,7 +107,6 @@ export const postsApi = apiSlice
         },
       }),
 
-      // 북마크 제거
       removeBookmark: builder.mutation({
         query: ({ loginUserName, postId }) => {
           return {

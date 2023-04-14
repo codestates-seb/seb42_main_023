@@ -1,41 +1,43 @@
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
-import PostList from '../components/mainP/PostList';
 import DropdownButton from '../components/mainP/DropdownButton';
 import { AiOutlineTrophy } from 'react-icons/ai';
 import { NavBtn } from '../components/common/Btn';
 import { useAppDispatch, useAppSelector } from '../hooks';
 import { postListApi } from '../api/postListapi';
-import { setPostSetting } from '../slices/mainSlice';
+import { weeklyPopularApi } from '../api/postListapi';
+import { setPostCategory } from '../slices/mainSlice';
 import Pagenation from '../components/common/Pagination';
 import { RiMoneyDollarCircleLine } from 'react-icons/ri';
 import Loading from '../components/common/Loading';
+import PostItem from '../components/mainP/PostItem';
+import { PostListItem } from '../types/PostList';
+import WeeklyPopularPost from '../components/mainP/WeeklyPopularPost';
 
 const Main = () => {
   const dispatch = useAppDispatch();
-
-  //페이지네이션
   const [pageOffset, setPageOffset] = useState(0);
   const [currentPage, setCurrentPage] = useState(1);
-
-  const { postSetting, orderby } = useAppSelector(({ main }) => main);
+  const { postCategory, orderby } = useAppSelector(({ main }) => main);
   const { searchQuery } = useAppSelector(({ header }) => header);
   const postListquery = postListApi.useGetPostListQuery({
-    postSetting: postSetting,
+    postSetting: postCategory,
     page: currentPage,
     orderby: orderby,
     search: searchQuery,
   });
   const { data, isSuccess, refetch } = postListquery;
+  const weeklyPopularquery = weeklyPopularApi.useGetWeekPostListQuery({
+    endpoint: 'weekly-popular',
+  });
 
   useEffect(() => {
     window.scrollTo(0, 0);
     refetch();
   }, []);
 
-  if (!isSuccess) {
-    return <Loading />;
-  }
+  if (!isSuccess) return <Loading />;
+
   return (
     <>
       <Banner>
@@ -50,20 +52,20 @@ const Main = () => {
       </Banner>
       <FilterWrap>
         <div>
-          {postSetting === '' ? (
+          {postCategory === '' ? (
             <ClickComuntyBtn>커뮤니티</ClickComuntyBtn>
           ) : (
             <ComuntyBtn
               onClick={() => {
                 setCurrentPage(1);
                 setPageOffset(0);
-                dispatch(setPostSetting(''));
+                dispatch(setPostCategory(''));
               }}
             >
               커뮤니티
             </ComuntyBtn>
           )}
-          {postSetting === '/best-awards' ? (
+          {postCategory === '/best-awards' ? (
             <ClickComuntyBtn>
               <AiOutlineTrophy size={20} />
               명예의전당
@@ -73,7 +75,7 @@ const Main = () => {
               onClick={() => {
                 setCurrentPage(1);
                 setPageOffset(0);
-                dispatch(setPostSetting('/best-awards'));
+                dispatch(setPostCategory('/best-awards'));
               }}
             >
               <AiOutlineTrophy size={20} />
@@ -85,7 +87,16 @@ const Main = () => {
           <DropdownButton />
         </div>
       </FilterWrap>
-      {isSuccess && <PostList posts={data.posts} currentPage={currentPage} />}
+      <List>
+        {weeklyPopularquery?.data?.posts.map(
+          (post: PostListItem, index: number) => (
+            <WeeklyPopularPost post={post} index={index} key={post.postId} />
+          ),
+        )}
+        {data?.posts.map((post: PostListItem) => (
+          <PostItem post={post} key={post.postId} />
+        ))}
+      </List>
       {isSuccess && data.posts.length !== 0 && (
         <Pagenation
           pageInfo={data.pageInfo}
@@ -99,6 +110,11 @@ const Main = () => {
 };
 
 export default Main;
+
+export const List = styled.ul`
+  margin-top: -4px;
+  border-top: 1px solid var(--border-color);
+`;
 
 const ComuntyBtn = styled(NavBtn)`
   font-size: 16px;

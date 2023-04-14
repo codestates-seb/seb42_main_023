@@ -1,12 +1,9 @@
-// 패키지 등
 import React, { useRef } from 'react';
-import styled from 'styled-components';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useAppDispatch, useAppSelector } from '../../hooks';
-// 컴포넌트(아이콘)
 import { FiMoreHorizontal } from 'react-icons/fi';
-// slices
 import { setIsOpenFilter, setReportType } from '../../slices/postSlice';
+import { Dropdown, Btn, List, ListItem } from '../mainP/DropdownButton';
 
 interface Props {
   memberName: string;
@@ -37,7 +34,6 @@ const PostDropdownButton = ({
   const loginUserName = window.localStorage.getItem('name');
   const option = memberName === loginUserName ? writerOptions : viewerOptions;
 
-  // 삭제 확인 모달창
   const confirmDeleteHandler = (): void => {
     setIsOpenDelete(!isOpenDelete);
   };
@@ -48,13 +44,11 @@ const PostDropdownButton = ({
     }
   };
 
-  // 신고 모달창 오픈
   const reportHandler = (): void => {
     setIsOpenReport?.(!isOpenReport!);
   };
 
-  // Select option에 따른 로직
-  const handleSelect = (option: '신고하기' | '수정하기' | '삭제하기') => {
+  const selectHandler = (option: '신고하기' | '수정하기' | '삭제하기') => {
     if (option === '신고하기') {
       dispatch(setReportType('post'));
       reportHandler();
@@ -65,7 +59,7 @@ const PostDropdownButton = ({
     if (option === '삭제하기') confirmDeleteHandler();
   };
 
-  const handleToggle = () => {
+  const toggleHandler = () => {
     if (!state.post.isOpenFilter) {
       dispatch(setIsOpenFilter(state.post?.isOpenFilter));
     }
@@ -73,9 +67,9 @@ const PostDropdownButton = ({
 
   return (
     <Dropdown ref={dropdownRef}>
-      <Button onClick={handleToggle}>
+      <Btn onClick={toggleHandler}>
         <FiMoreHorizontal />
-      </Button>
+      </Btn>
       {state.post.isOpenFilter && (
         <List>
           {option.map((option) => (
@@ -83,7 +77,7 @@ const PostDropdownButton = ({
               id="게시글"
               key={option}
               onClick={(event: React.MouseEvent<HTMLElement>) => {
-                handleSelect(option);
+                selectHandler(option);
                 dispatch(setIsOpenFilter(false));
                 typeChecker(event);
               }}
@@ -96,51 +90,5 @@ const PostDropdownButton = ({
     </Dropdown>
   );
 };
-
-const Dropdown = styled.div`
-  position: relative;
-  display: inline-block;
-`;
-
-const Button = styled.button`
-  border: none;
-  width: 20px;
-  height: 40px;
-  position: absolute;
-  left: 45px;
-  bottom: -20px;
-  background-color: #fff;
-  svg {
-    margin-left: 2px;
-  }
-`;
-
-const List = styled.ul`
-  position: absolute;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  width: 80px;
-  top: 10px;
-  left: 15px;
-  z-index: 1;
-  list-style: none;
-  padding: 0;
-  margin: 0;
-  background-color: #f2f2f2;
-  border: 1px solid #ddd;
-  box-shadow: 4px 4px 8px rgba(0, 0, 0, 0.15);
-`;
-
-const ListItem = styled.li`
-  padding: 10px;
-  font-size: 16px;
-  cursor: pointer;
-  box-sizing: border-box;
-  &:hover {
-    background-color: #e6e6e6;
-  }
-`;
 
 export default PostDropdownButton;

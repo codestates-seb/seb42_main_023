@@ -1,47 +1,36 @@
-// 패키지 등
 import React, { useRef } from 'react';
 import styled from 'styled-components';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useAppDispatch, useAppSelector } from '../../hooks';
-import Cookies from 'js-cookie';
-// API
 import { commentsApi } from '../../api/commentApi';
-// 타입
-import { CommentInputProps } from '../../types/PostDetail';
-// Slices
+import { CommentInputProps } from '../../types/Post';
 import { addCommentEdit, setComment } from '../../slices/commentSlice';
 import { isOpened } from '../../slices/replySlice';
+import { checkIsLogin } from '../../util/checkIsLogin';
 
 const CommentInput: React.FC<CommentInputProps> = ({
   setCommentCnt,
   commentCnt,
 }: CommentInputProps) => {
+  const isLogin = checkIsLogin();
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
-  const state = useAppSelector((state) => {
-    return state;
-  });
+  const state = useAppSelector((state) => state);
   const commentRef = useRef<HTMLTextAreaElement>(null);
   const params = useParams();
   const postId = params.postId;
   const page = state.comment && state.comment.page;
   const commentQuery = commentsApi.useGetCommentQuery({ postId, page });
-
-  // 로그인 확인
-  const auth = Cookies.get('Authorization');
-  const role = localStorage.getItem('role');
-  const name = localStorage.getItem('name');
-  const isLogin = auth && role && name;
-
-  // 댓글 추가 mutation
   const commetMutation = commentsApi.useSetCommentMutation();
   const [addComments] = commetMutation;
   const textarea = document.getElementById('comment') as HTMLTextAreaElement;
   const text = textarea?.value.replaceAll(/\n/g, '<br>');
 
-  // 댓글 추가
   const addCommentHandler = () => {
-    if (!isLogin) navigate('/login');
+    if (!isLogin) {
+      navigate('/login');
+      return;
+    }
     const open = Array.from(
       {
         length: commentQuery.data?.comments?.length,
@@ -62,18 +51,14 @@ const CommentInput: React.FC<CommentInputProps> = ({
         commentRef!.current!.style.height = '58px';
       });
   };
-
-  // textarea 높이 조절
-  const handleResizeHeight = () => {
+  const resizeHeightHandler = () => {
     commentRef!.current!.style.height = 'auto';
     commentRef!.current!.style.height = commentRef.current?.scrollHeight + 'px';
   };
 
-  // Textarea 값 확인
   const valueCheck = (event: React.ChangeEvent<HTMLTextAreaElement>): void => {
     dispatch(setComment(event.target.value));
   };
-  // 댓글 입력 취소
   const cancelHandler = () => {
     commentRef.current!.value = '';
     commentRef!.current!.style.height = '58px';
@@ -88,7 +73,7 @@ const CommentInput: React.FC<CommentInputProps> = ({
           placeholder="댓글을 남겨 주세요"
           ref={commentRef}
           onChange={valueCheck}
-          onInput={handleResizeHeight}
+          onInput={resizeHeightHandler}
         ></textarea>
       </InputWrap>
       <ButtonContainer>

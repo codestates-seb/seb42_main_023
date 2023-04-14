@@ -1,4 +1,3 @@
-// 패키지 등
 import React, { useEffect, useMemo, useRef } from 'react';
 import ReactQuill from 'react-quill';
 import axios from 'axios';
@@ -6,7 +5,6 @@ import styled from 'styled-components';
 import { useAppDispatch, useAppSelector } from '../../hooks';
 import Cookies from 'js-cookie';
 import 'react-quill/dist/quill.snow.css';
-// slices
 import { setBody } from '../../slices/postInputSlice';
 import { setBodyErr } from '../../slices/validationSlice';
 import {
@@ -20,7 +18,7 @@ interface ImgObj {
   imageName: string;
 }
 
-const url = process.env.REACT_APP_SERVER_ADDRESS + '/images';
+const uploadImgEp = process.env.REACT_APP_SERVER_ADDRESS + '/images';
 const BodyInput: React.FC = () => {
   const dispatch = useAppDispatch();
   const state = useAppSelector((state) => state);
@@ -29,22 +27,18 @@ const BodyInput: React.FC = () => {
   const addedImg = state.post?.addedImg;
   const accsessToken = Cookies.get('Authorization');
 
-  //  문자열을 HTML currentImg 변환
   const stringToHTML = function (str: string): HTMLElement {
     const dom = document.createElement('div');
     dom.innerHTML = str;
     return dom;
   };
 
-  // 본문 value 확인
-  function valueCheck(): void {
+  function checkValue(): void {
     dispatch(setBody(quillRef?.current?.value as string));
-    validationTest();
+    validateBody();
   }
 
-  // 본문 이미지 확인
-  function imageCheck(): void {
-    // 이미지 처리
+  function checkImage(): void {
     const pattern =
       /((?<=<img..........................................................)(.*?)(?=.>))/gi;
     const currentImg = bodyValue.match(pattern)!;
@@ -55,8 +49,7 @@ const BodyInput: React.FC = () => {
     dispatch(setRemovedImg(removedImg));
   }
 
-  // 유효성 검사
-  const validationTest = (): void => {
+  const validateBody = (): void => {
     const html = stringToHTML(bodyValue);
     const realValue = html.textContent;
 
@@ -73,12 +66,10 @@ const BodyInput: React.FC = () => {
     }
   };
 
-  // 본문 내용이 바뀔 때 마다 이미지 체크
   useEffect(() => {
-    imageCheck();
+    checkImage();
   }, [bodyValue]);
 
-  // 에디터 이미지
   const imageHandler = (): void => {
     const input = document.createElement('input');
     input.setAttribute('type', 'file');
@@ -90,7 +81,7 @@ const BodyInput: React.FC = () => {
       formData.append('image', file);
 
       try {
-        const result = await axios.post(url, formData, {
+        const result = await axios.post(uploadImgEp, formData, {
           headers: {
             'Content-Type': 'multipart/form-data',
             Authorization: accsessToken,
@@ -174,7 +165,7 @@ const BodyInput: React.FC = () => {
               theme="snow"
               placeholder="게시글 내용을 입력하세요.(2MB 이하의 이미지만  추가 가능합니다.)"
               value={state.postInput.body}
-              onChange={valueCheck}
+              onChange={checkValue}
               modules={modules}
               formats={formats}
             />
@@ -193,7 +184,7 @@ const BodyInput: React.FC = () => {
               theme="snow"
               placeholder="게시글 내용을 입력하세요.(2MB 이하의 이미지만  추가 가능합니다.)"
               value={state.postInput.body}
-              onChange={valueCheck}
+              onChange={checkValue}
               modules={modules}
               formats={formats}
             />

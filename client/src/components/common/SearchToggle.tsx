@@ -2,7 +2,7 @@ import React from 'react';
 import { useAppDispatch, useAppSelector } from '../../hooks';
 import { setSearch } from '../../slices/headerSlice';
 import { SearchBtn } from './Btn';
-import { setPostSetting } from '../../slices/mainSlice';
+import { setPostCategory } from '../../slices/mainSlice';
 import {
   setInput,
   setSearchQuery,
@@ -19,14 +19,18 @@ function Search() {
     dispatch(setInput(''));
     dispatch(deleteAllSarchTag());
     dispatch(setSearchQuery(''));
-    dispatch(setPostSetting(''));
+    dispatch(setPostCategory(''));
     dispatch(setSearch(!search));
     navigation('/');
   };
   return (
     <>
       {search ? (
-        <button onClick={cancleSearchHandler}>
+        <button
+          onClick={cancleSearchHandler}
+          id="search-close"
+          aria-label="searchClose"
+        >
           <GrClose />
         </button>
       ) : (

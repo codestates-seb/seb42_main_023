@@ -14,7 +14,7 @@ const Thumbnail = ({ content }: Props) => {
           <NoimgSVG />
         </None>
       ) : (
-        <Item src={content} />
+        <Item src={content} alt="thumbnail" />
       )}
     </>
   );

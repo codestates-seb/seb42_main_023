@@ -1,4 +1,3 @@
-// 패키지 등
 import React, { useEffect, useMemo, useRef } from 'react';
 import ReactQuill from 'react-quill';
 import axios from 'axios';
@@ -8,9 +7,7 @@ import Cookies from 'js-cookie';
 import { useAppDispatch, useAppSelector } from '../../hooks';
 import { useParams } from 'react-router-dom';
 import 'react-quill/dist/quill.snow.css';
-// API
 import { postsApi } from '../../api/postApi';
-// slices
 import { setBody, setIsEdit } from '../../slices/postInputSlice';
 import { setBodyErr } from '../../slices/validationSlice';
 import {
@@ -43,22 +40,18 @@ const BodyInput: React.FC = () => {
 
   const img: Array<any> = _.cloneDeep(totalImg!);
 
-  //  문자열을 HTML 요소로 변환
   const stringToHTML = function (str: string): HTMLElement {
     const dom = document.createElement('div');
     dom.innerHTML = str;
     return dom;
   };
 
-  // 본문 value 확인
-  function valueCheck(): void {
+  function checkValue(): void {
     dispatch(setBody(quillRef?.current?.value as string));
-    validationTest();
+    validateBody();
   }
 
-  // 본문 이미지 확인
-  function imageCheck(): void {
-    // 이미지 처리
+  function checkImage(): void {
     const pattern =
       /((?<=<img..........................................................)(.*?)(?=.>))/gi;
     const currentImg = bodyValue.match(pattern)!;
@@ -70,8 +63,7 @@ const BodyInput: React.FC = () => {
     dispatch(setRemovedImg(_.uniqBy(removedImg!, 'imageId')));
   }
 
-  // 유효성 검사
-  const validationTest = (): void => {
+  const validateBody = (): void => {
     const bodyValue = state.postInput.body;
     const html = stringToHTML(bodyValue);
     const realValue = html.textContent;
@@ -89,7 +81,6 @@ const BodyInput: React.FC = () => {
     }
   };
 
-  //  본문 내용이 바뀔 때 마다 이미지 체크
   useEffect(() => {
     (remainImg as Array<object>)?.map((el: object) => {
       dispatch(setTotalmg(el));
@@ -99,10 +90,9 @@ const BodyInput: React.FC = () => {
     }
     if ((removedImg! as Array<object>)?.length !== 0) {
     }
-    if (bodyValue) imageCheck();
+    if (bodyValue) checkImage();
   }, [bodyValue]);
 
-  // 에디터 이미지 핸들러
   const imageHandler = (): void => {
     const input = document.createElement('input');
     input.setAttribute('type', 'file');
@@ -199,7 +189,7 @@ const BodyInput: React.FC = () => {
               placeholder="게시글 내용을 입력하세요.(2MB 이하의 이미지만  추가 가능합니다.)"
               value={state?.postInput.body}
               onChange={() => {
-                valueCheck();
+                checkValue();
                 dispatch(setIsEdit(true));
               }}
               modules={modules}
@@ -221,7 +211,7 @@ const BodyInput: React.FC = () => {
               placeholder="게시글 내용을 입력하세요.(2MB 이하의 이미지만  추가 가능합니다.)"
               value={state?.postInput.body}
               onChange={() => {
-                valueCheck();
+                checkValue();
                 dispatch(setIsEdit(true));
               }}
               modules={modules}

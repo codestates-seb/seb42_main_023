@@ -13,6 +13,7 @@ function PostBtn() {
           navigate('/posts/create');
           location.reload();
         }}
+        id="post"
       >
         글쓰기
       </Btn>
