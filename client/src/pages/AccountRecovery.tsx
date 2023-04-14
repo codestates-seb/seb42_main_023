@@ -8,26 +8,22 @@ import { LogoSVG } from '../assets/common/LogoSVG';
 const AccountRecovery: React.FC = () => {
   const [postTempTokenRecovery] = usePostTempTokenRecoveryMutation();
 
-  // '계정 복구' 버튼을 눌렀을 때 실행되는 함수
   const recoverAccountHandler = () => {
     const url = new URL(window.location.href);
     const tempAccessToken = url.searchParams.get('tempAccessToken');
-    console.log('tempAccessToken', tempAccessToken);
 
     postTempTokenRecovery({ tempAccessToken })
       .unwrap()
-      .then((payload: any) => {
-        // 유저 정보를 로컬스토리지에 저장
-        const { name, picture, role } = payload;
+      .then((response: any) => {
+        const { name, picture, role } = response;
 
         localStorage.setItem('name', name);
         localStorage.setItem('picture', picture);
         localStorage.setItem('role', role);
 
-        // 로그인에 성공한 유저를 메인페이지로 리다이렉트
         window.location.href = '/';
       })
-      .catch((err) => console.log('err in recovery', err));
+      .catch((err: Error) => console.log('err in recovery', err));
   };
   return (
     <MainContainer>
