@@ -48,7 +48,7 @@ const store = configureStore({
       .concat(recommendedPostsApi.middleware)
       .concat(nicknameApi.middleware)
       .concat(tempTokenApi.middleware)
-      .concat(apiSlice.middleware), // TODO: 이거빼고 위에 concat은 다 지워도됌.
+      .concat(apiSlice.middleware),
   // .concat(logger),
 });
 
