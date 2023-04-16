@@ -1,5 +1,6 @@
 import React, { useEffect } from 'react';
 import styled from 'styled-components';
+import { useLocation } from 'react-router-dom';
 import Profile from '../components/myPageP/Profile';
 import MyPostList from '../components/myPageP/MyPostList';
 import MyLikePostList from '../components/myPageP/MyLikePostList';
@@ -10,22 +11,18 @@ import Sidebar from '../components/myPageP/Sidebar';
 import { useAppSelector } from '../hooks';
 import DeleteModal from '../components/myPageP/DeleteModal';
 import { membersApi } from '../api/membersApi';
-
 function MyPage() {
+  const { search } = useLocation();
+  const memberName = search.slice(6);
   const { filter, deleteAccountOpen } = useAppSelector(({ mypage }) => mypage);
-  const { memberName } = useAppSelector(({ header }) => header);
-  const membersQuery = membersApi.useGetMemberQuery(
-    {
-      name: memberName,
-    },
-    {
-      skip: !memberName,
-    },
-  );
+  const membersQuery = membersApi.useGetMemberQuery({
+    name: memberName,
+  });
   const { data, isSuccess, refetch } = membersQuery;
+
   useEffect(() => {
     window.scrollTo(0, 0);
-    // refetch();
+    refetch();
   }, []);
   return (
     <MyPageWrap>
@@ -38,11 +35,21 @@ function MyPage() {
       {isSuccess && <Profile member={data.member} />}
       <Content>
         {isSuccess && <Sidebar membersCount={data.membersCount} />}
-        {filter === '작성한 글' && <MyPostList />}
-        {filter === '작성한 댓글' && <MyCommentList />}
-        {filter === '좋아요한 글' && <MyLikePostList />}
-        {filter === '좋아요한 댓글' && <MylikeCommentList />}
-        {filter === '북마크' && <MyBookmarks />}
+        {isSuccess && filter === '작성한 글' && (
+          <MyPostList memberName={data.member.memberName} />
+        )}
+        {isSuccess && filter === '작성한 댓글' && (
+          <MyCommentList memberName={data.member.memberName} />
+        )}
+        {isSuccess && filter === '좋아요한 글' && (
+          <MyLikePostList memberName={data.member.memberName} />
+        )}
+        {isSuccess && filter === '좋아요한 댓글' && (
+          <MylikeCommentList memberName={data.member.memberName} />
+        )}
+        {isSuccess && filter === '북마크' && (
+          <MyBookmarks memberName={data.member.memberName} />
+        )}
       </Content>
     </MyPageWrap>
   );

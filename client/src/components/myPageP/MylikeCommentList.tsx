@@ -8,22 +8,19 @@ import { CommentListItem } from '../../types/PostList';
 import Nolist from './Nolist';
 import CommentItem from './CommentItem';
 
-const MylikeCommentList = () => {
+const MylikeCommentList = ({ memberName }: { memberName: string }) => {
   const [pageOffset, setPageOffset] = useState(0);
   const [currentPage, setCurrentPage] = useState(1);
 
-  const { memberName } = useAppSelector(({ header }) => header);
   const membersCommentsListquery =
     membersCommentsListApi.useGetLikeCommentsListQuery({
       name: memberName,
       page: currentPage,
     });
   const { data, isSuccess, refetch } = membersCommentsListquery;
-
-  // useEffect(() => {
-  //   refetch();
-  // }, []);
-
+  useEffect(() => {
+    refetch();
+  }, []);
   return (
     <PostListWrap>
       <List>

@@ -8,11 +8,10 @@ import Nolist from './Nolist';
 import CommentItem from './CommentItem';
 import { CommentListItem } from '../../types/PostList';
 
-const MyCommentList = () => {
+const MyCommentList = ({ memberName }: { memberName: string }) => {
   const [pageOffset, setPageOffset] = useState(0);
   const [currentPage, setCurrentPage] = useState(1);
 
-  const { memberName } = useAppSelector(({ header }) => header);
   const membersCommentsListquery =
     membersCommentsListApi.useGetCommentsListQuery({
       name: memberName,
@@ -20,9 +19,9 @@ const MyCommentList = () => {
     });
   const { data, isSuccess, refetch } = membersCommentsListquery;
 
-  // useEffect(() => {
-  //   refetch();
-  // }, []);
+  useEffect(() => {
+    refetch();
+  }, []);
 
   return (
     <PostListWrap>

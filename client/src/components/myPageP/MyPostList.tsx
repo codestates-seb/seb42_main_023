@@ -1,16 +1,15 @@
 import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
-import { useAppSelector } from '../../hooks';
+import { useLocation } from 'react-router-dom';
 import { membersPostListApi } from '../../api/membersApi';
 import Pagination from '../common/Pagination';
 import { PostListItem } from '../../types/PostList';
 import Nolist from './Nolist';
 import PostItem from '../mainP/PostItem';
 
-function MyPostList() {
+function MyPostList({ memberName }: { memberName: string }) {
   const [pageOffset, setPageOffset] = useState(0);
   const [currentPage, setCurrentPage] = useState(1);
-  const { memberName } = useAppSelector(({ header }) => header);
 
   const membersPostListquery = membersPostListApi.useGetMemberPostListQuery({
     name: memberName,
@@ -18,9 +17,9 @@ function MyPostList() {
   });
   const { data, isSuccess, refetch } = membersPostListquery;
 
-  // useEffect(() => {
-  //   refetch();
-  // }, []);
+  useEffect(() => {
+    refetch();
+  }, []);
 
   return (
     <PostListWrap>

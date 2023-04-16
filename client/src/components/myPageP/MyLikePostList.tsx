@@ -8,10 +8,9 @@ import { PostListWrap } from './MyPostList';
 import Nolist from './Nolist';
 import PostItem from '../mainP/PostItem';
 
-function MyLikePostList() {
+function MyLikePostList({ memberName }: { memberName: string }) {
   const [pageOffset, setPageOffset] = useState(0);
   const [currentPage, setCurrentPage] = useState(1);
-  const { memberName } = useAppSelector(({ header }) => header);
 
   const membersLikePostListquery =
     membersPostListApi.useGetMemberLikePostListQuery({
@@ -20,15 +19,15 @@ function MyLikePostList() {
     });
   const { data, isSuccess, refetch } = membersLikePostListquery;
 
-  // useEffect(() => {
-  //   refetch();
-  // }, []);
+  useEffect(() => {
+    refetch();
+  }, []);
 
   return (
     <PostListWrap>
       <List>
         {isSuccess && data.posts.length === 0 && (
-          <Nolist name={'작성한 글이'} />
+          <Nolist name={'좋아요한 글이'} />
         )}
         {data?.posts.map((post: PostListItem) => {
           return <PostItem post={post} key={post.postId} />;
