@@ -138,9 +138,7 @@ const TagInputContainer = styled.div`
   height: 53px;
 `;
 
-const InputContainer = styled.div`
-  position: relative;
-`;
+const InputContainer = styled.div``;
 const Input = styled.input`
   border: 1px solid #d4d4d4;
   padding: 10px 20px;
@@ -152,6 +150,9 @@ const Input = styled.input`
     outline: none;
     border: none;
     box-shadow: 0 0 3px var(--hover-point-blue-color);
+  }
+  @media (max-width: 1100px) {
+    width: 100%;
   }
 `;
 
@@ -169,11 +170,19 @@ const TagConatiner = styled.div`
 const Icon = styled.button`
   background-color: #fff;
   position: absolute;
-  left: 460px;
   cursor: pointer;
+  right: 140px;
+  @media (max-width: 1100px) {
+    position: absolute;
+    right: 40px;
+    top: 5px;
+  }
 `;
 const Span = styled.span`
   color: #5c5c5c;
   font-size: 14px;
   margin-left: 14px;
+  @media (max-width: 1100px) {
+    margin-top: 10px;
+  }
 `;

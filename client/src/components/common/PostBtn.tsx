@@ -24,6 +24,7 @@ function PostBtn() {
 export default PostBtn;
 const Btn = styled.button`
   padding: 4px 14px;
+  width: 80px;
   box-sizing: border-box;
   border: 1px solid var(--border-color);
   background-color: #fff;

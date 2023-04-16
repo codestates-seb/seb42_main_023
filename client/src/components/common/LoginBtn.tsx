@@ -22,6 +22,7 @@ export default LoginBtn;
 const Btn = styled.button`
   padding: 4px 14px;
   font-size: 14px;
+  width: 80px;
   background-color: #fff;
   box-sizing: border-box;
   border: 1px solid #d9d9d9;

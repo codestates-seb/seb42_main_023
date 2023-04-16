@@ -30,7 +30,6 @@ const Tag = ({ content }: Props) => {
 
 export default Tag;
 
-//삭제 버튼이 없는 태그
 export const TagItem = styled.button`
   position: relative;
   display: inline-flex;
@@ -48,7 +47,6 @@ export const TagItem = styled.button`
   }
 `;
 
-//삭제 버튼이 있는 태그
 export const TagItemWidthDelete = styled(TagItem)`
   button {
     position: absolute;
@@ -63,5 +61,8 @@ export const TagItemWidthDelete = styled(TagItem)`
         color: #72839d;
       }
     }
+  }
+  @media (max-width: 1100px) {
+    margin-top: 10px;
   }
 `;

@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
-import { useLocation } from 'react-router-dom';
 import { membersPostListApi } from '../../api/membersApi';
 import Pagination from '../common/Pagination';
 import { PostListItem } from '../../types/PostList';

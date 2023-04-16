@@ -1,17 +1,13 @@
 import React from 'react';
 import styled from 'styled-components';
 import { useNavigate, useLocation } from 'react-router-dom';
-import { LogoSVG } from '../../assets/common/LogoSVG';
 import { NavBtn, NavBtnClicked } from '../common/Btn';
 
-function HeaderNav() {
+function HeaderNav({ menuOpen }: { menuOpen: boolean }) {
   const navigate = useNavigate();
   const { pathname } = useLocation();
   return (
-    <nav>
-      <Main onClick={() => navigate('/')} aria-label="logo">
-        <LogoSVG />
-      </Main>
+    <NavList menuOpen={menuOpen}>
       {'/' === pathname ? (
         <NavBtnClicked id="communityOn">커뮤니티</NavBtnClicked>
       ) : (
@@ -55,11 +51,34 @@ function HeaderNav() {
           공공주택공고
         </NavBtn>
       )}
-    </nav>
+    </NavList>
   );
 }
 export default HeaderNav;
-const Main = styled.button`
+interface Nav {
+  menuOpen: boolean;
+}
+
+const NavList = styled.nav<Nav>`
+  width: 780px;
+  margin-left: 80px;
+  justify-content: space-between;
   background-color: #fff;
-  cursor: pointer;
+  button {
+    margin-right: 30px;
+  }
+  @media (max-width: 1100px) {
+    margin: 0;
+    margin-top: 42px;
+    width: 100%;
+    display: ${({ menuOpen }) => (menuOpen ? 'flex' : 'none')};
+    flex-direction: column;
+    padding: 20px 0;
+    border-bottom: 1px solid var(--border-color);
+    box-shadow: 4px 4px 8px rgba(0, 0, 0, 0.15);
+    button {
+      margin-right: 0;
+      font-size: 20px;
+    }
+  }
 `;
