@@ -6,13 +6,11 @@ const transformResponse = (response: any, meta: any, arg: any) => {
   // response header를 access한다.
   const headers = meta?.response?.headers;
 
-  // access token을 쿠키에 저장한다.
   const accessToken = headers?.get('Authorization');
   if (accessToken) {
     Cookies.set('Authorization', accessToken);
   }
 
-  // refresh token을 쿠키에 저장한다.
   const refreshToken = headers?.get('Refresh');
   if (refreshToken) {
     Cookies.set('Refresh', refreshToken);
@@ -21,7 +19,6 @@ const transformResponse = (response: any, meta: any, arg: any) => {
   return response;
 };
 
-// tempToken post
 export const tempTokenApi = createApi({
   reducerPath: 'tempTokenApi',
   baseQuery: fetchBaseQuery({ baseUrl: process.env.REACT_APP_SERVER_ADDRESS }),

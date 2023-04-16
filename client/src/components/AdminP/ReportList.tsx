@@ -22,7 +22,6 @@ const ReportList: React.FC<Props> = ({
   setCurrentPage,
   setOrderby,
 }) => {
-  // tools
   const dispatch = useAppDispatch();
   const [isReviewOpen, setIsReviewOpen] = useState(false);
   const [deleteReport] = useDeleteReportMutation();
@@ -40,14 +39,11 @@ const ReportList: React.FC<Props> = ({
   };
 
   const deleteReportHanlder = (reportId: number): void => {
-    deleteReport(reportId)
-      .unwrap()
-      .then((res) => console.log('res in delete report:', res))
-      .then((err) => console.log('err in delete report:', err));
+    deleteReport(reportId);
   };
 
   return (
-    <ReportMain>
+    <Container>
       <SearchReport>
         <h1>미처리 신고글</h1>
         <TargetFilter>
@@ -128,14 +124,14 @@ const ReportList: React.FC<Props> = ({
           setCurrentPage={setCurrentPage}
         />
       )}
-    </ReportMain>
+    </Container>
   );
 };
 
 export default ReportList;
 
 // Nav를 제외한 영역 컨테이너
-const ReportMain = styled.div`
+const Container = styled.div`
   padding: 0px 35px;
   width: calc(100% - 140px);
   > table {
@@ -143,7 +139,7 @@ const ReportMain = styled.div`
   }
 `;
 
-// 신고대상 필터링 컨테이너
+// 신고대상 필터링
 const SearchReport = styled.div`
   margin-bottom: 20px;
   > h1 {
@@ -184,15 +180,6 @@ const Table = styled.table`
   }
 
   > tbody {
-    // 접수된 신고가 없을때
-    /* > div {
-      display: flex;
-      > p {
-        margin-left: 3px;
-      }
-    } */
-
-    // 접수된 신고가 있을때
     > tr {
       text-align: center;
       height: 35px;

@@ -58,7 +58,7 @@ export const MainContainer = styled.div`
     border-radius: 20px;
     width: 100%;
     height: 600px;
-    padding: 50px;
+    padding: 50px 80px;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -66,8 +66,9 @@ export const MainContainer = styled.div`
 `;
 
 export const SurveyBox = styled.div`
-  width: 80%;
+  width: 100%;
   height: 95%;
+  padding: 30px;
   background-color: #fff;
   box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px;
   border-radius: 20px;
