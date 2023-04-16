@@ -33,6 +33,9 @@ export const SearchBtn = styled.button`
     transition: 0.3s;
     background-color: var(--hover-point-blue-color);
   }
+  @media (max-width: 1100px) {
+    transform: translateY(4px);
+  }
 `;
 export const ClickSearchBtn = styled(SearchBtn)`
   background-color: #fff;

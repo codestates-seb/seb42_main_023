@@ -55,13 +55,13 @@ function HeaderDefault() {
               <MediumProfileImg memberImg={memberImg} />
               <button
                 onClick={() => navigate('reports/standby')}
-                id="managing-page"
+                aria-label="managingPage"
               >
                 <MdManageAccounts size={30} />
               </button>
             </Adminwrap>
           )}
-          <MenuBtn onClick={() => setMenuOpen(!menuOpen)}>
+          <MenuBtn onClick={() => setMenuOpen(!menuOpen)} aria-label="menu">
             <AiOutlineMenu size={30} />
           </MenuBtn>
         </Btns>
@@ -90,9 +90,8 @@ const NavHead = styled.header`
   @media (max-width: 1100px) {
     height: 55px;
     div {
-      align-items: center;
+      align-items: flex-start;
       :first-child {
-        flex-direction: column;
         width: 100%;
       }
     }
@@ -147,6 +146,7 @@ const MenuBtn = styled.button`
   display: none;
   @media (max-width: 1100px) {
     display: block;
+    transform: translateY(2px);
   }
 `;
 const Adminwrap = styled.div`

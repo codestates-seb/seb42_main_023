@@ -35,4 +35,7 @@ const Btn = styled.button`
     transition: 0.3s;
     color: var(--hover-font-gray-color);
   }
+  @media (max-width: 1100px) {
+    transform: translateY(4px);
+  }
 `;

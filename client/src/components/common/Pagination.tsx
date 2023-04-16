@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import styled from 'styled-components';
 import NextPageIcon from '../../assets/common/NextPageIcon';
 import PrevPageIcon from '../../assets/common/PrevPageIcon';
@@ -41,8 +41,8 @@ const Pagination = ({
 
   return (
     <PaginationContainer>
+      <PrevPageIcon handler={prevPageHandler} />
       <ul>
-        <PrevPageIcon handler={prevPageHandler} />
         {Array.from({ length: pageInfo.totalPages }, (v, i) => i + 1)
           .filter((el) => el > 0 + pageOffset && el <= 5 + pageOffset)
           .map((number) => (
@@ -56,8 +56,8 @@ const Pagination = ({
               </Link>
             </li>
           ))}
-        <NextPageIcon handler={nextPageHandler} />
       </ul>
+      <NextPageIcon handler={nextPageHandler} />
     </PaginationContainer>
   );
 };
