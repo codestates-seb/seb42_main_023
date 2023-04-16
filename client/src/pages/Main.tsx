@@ -88,11 +88,12 @@ const Main = () => {
         </div>
       </FilterWrap>
       <List>
-        {weeklyPopularquery?.data?.posts.map(
-          (post: PostListItem, index: number) => (
-            <WeeklyPopularPost post={post} index={index} key={post.postId} />
-          ),
-        )}
+        {currentPage === 1 &&
+          weeklyPopularquery?.data?.posts.map(
+            (post: PostListItem, index: number) => (
+              <WeeklyPopularPost post={post} index={index} key={post.postId} />
+            ),
+          )}
         {data?.posts.map((post: PostListItem) => (
           <PostItem post={post} key={post.postId} />
         ))}

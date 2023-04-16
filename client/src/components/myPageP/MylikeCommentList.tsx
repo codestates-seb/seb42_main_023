@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
-import { useAppSelector } from '../../hooks';
 import { membersCommentsListApi } from '../../api/membersApi';
 import { PostListWrap } from './MyPostList';
 import Pagination from '../common/Pagination';
@@ -8,22 +7,19 @@ import { CommentListItem } from '../../types/PostList';
 import Nolist from './Nolist';
 import CommentItem from './CommentItem';
 
-const MylikeCommentList = () => {
+const MylikeCommentList = ({ memberName }: { memberName: string }) => {
   const [pageOffset, setPageOffset] = useState(0);
   const [currentPage, setCurrentPage] = useState(1);
 
-  const { memberName } = useAppSelector(({ header }) => header);
   const membersCommentsListquery =
     membersCommentsListApi.useGetLikeCommentsListQuery({
       name: memberName,
       page: currentPage,
     });
   const { data, isSuccess, refetch } = membersCommentsListquery;
-
   useEffect(() => {
     refetch();
   }, []);
-
   return (
     <PostListWrap>
       <List>

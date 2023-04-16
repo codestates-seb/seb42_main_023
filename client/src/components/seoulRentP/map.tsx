@@ -1,5 +1,4 @@
 import { Map } from 'react-img-mapper/dist/types';
-import styled from 'styled-components';
 
 export interface RentData {
   collectionSize: number;

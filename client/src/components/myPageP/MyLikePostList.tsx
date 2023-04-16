@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
-import { useAppSelector } from '../../hooks';
 import { membersPostListApi } from '../../api/membersApi';
 import Pagination from '../common/Pagination';
 import { PostListItem } from '../../types/PostList';
@@ -8,10 +7,9 @@ import { PostListWrap } from './MyPostList';
 import Nolist from './Nolist';
 import PostItem from '../mainP/PostItem';
 
-function MyLikePostList() {
+function MyLikePostList({ memberName }: { memberName: string }) {
   const [pageOffset, setPageOffset] = useState(0);
   const [currentPage, setCurrentPage] = useState(1);
-  const { memberName } = useAppSelector(({ header }) => header);
 
   const membersLikePostListquery =
     membersPostListApi.useGetMemberLikePostListQuery({
@@ -28,7 +26,7 @@ function MyLikePostList() {
     <PostListWrap>
       <List>
         {isSuccess && data.posts.length === 0 && (
-          <Nolist name={'작성한 글이'} />
+          <Nolist name={'좋아요한 글이'} />
         )}
         {data?.posts.map((post: PostListItem) => {
           return <PostItem post={post} key={post.postId} />;

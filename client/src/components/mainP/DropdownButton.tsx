@@ -3,7 +3,6 @@ import styled from 'styled-components';
 import { BsFillCaretDownFill } from 'react-icons/bs';
 import { useAppDispatch } from '../../hooks';
 import { setOrderby } from '../../slices/mainSlice';
-import { setCurrentPage } from '../../slices/mainSlice';
 
 const DropdownButton = () => {
   const dispatch = useAppDispatch();
@@ -20,15 +19,12 @@ const DropdownButton = () => {
     setFilter(option);
     setFilterOpen(false);
     if (option === '최신순') {
-      dispatch(setCurrentPage(1));
       dispatch(setOrderby('latest'));
     }
     if (option === '좋아요순') {
-      dispatch(setCurrentPage(1));
       dispatch(setOrderby('thumbup'));
     }
     if (option === '조회순') {
-      dispatch(setCurrentPage(1));
       dispatch(setOrderby('view-count'));
     }
   };

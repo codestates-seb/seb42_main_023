@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
-import { useAppSelector } from '../../hooks';
 import { PostListWrap } from './MyPostList';
 import { membersCommentsListApi } from '../../api/membersApi';
 import Pagination from '../common/Pagination';
@@ -8,11 +7,10 @@ import Nolist from './Nolist';
 import CommentItem from './CommentItem';
 import { CommentListItem } from '../../types/PostList';
 
-const MyCommentList = () => {
+const MyCommentList = ({ memberName }: { memberName: string }) => {
   const [pageOffset, setPageOffset] = useState(0);
   const [currentPage, setCurrentPage] = useState(1);
 
-  const { memberName } = useAppSelector(({ header }) => header);
   const membersCommentsListquery =
     membersCommentsListApi.useGetCommentsListQuery({
       name: memberName,

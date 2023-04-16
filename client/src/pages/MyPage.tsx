@@ -1,5 +1,6 @@
 import React, { useEffect } from 'react';
 import styled from 'styled-components';
+import { useLocation } from 'react-router-dom';
 import Profile from '../components/myPageP/Profile';
 import MyPostList from '../components/myPageP/MyPostList';
 import MyLikePostList from '../components/myPageP/MyLikePostList';
@@ -9,11 +10,19 @@ import MylikeCommentList from '../components/myPageP/MylikeCommentList';
 import Sidebar from '../components/myPageP/Sidebar';
 import { useAppSelector } from '../hooks';
 import DeleteModal from '../components/myPageP/DeleteModal';
-
+import { membersApi } from '../api/membersApi';
 function MyPage() {
+  const { search } = useLocation();
+  const memberName = search.slice(6);
   const { filter, deleteAccountOpen } = useAppSelector(({ mypage }) => mypage);
+  const membersQuery = membersApi.useGetMemberQuery({
+    name: memberName,
+  });
+  const { data, isSuccess, refetch } = membersQuery;
+
   useEffect(() => {
     window.scrollTo(0, 0);
+    refetch();
   }, []);
   return (
     <MyPageWrap>
@@ -23,14 +32,24 @@ function MyPage() {
         </ModalWrap>
       )}
 
-      <Profile />
+      {isSuccess && <Profile member={data.member} />}
       <Content>
-        <Sidebar />
-        {filter === '작성한 글' && <MyPostList />}
-        {filter === '작성한 댓글' && <MyCommentList />}
-        {filter === '좋아요한 글' && <MyLikePostList />}
-        {filter === '좋아요한 댓글' && <MylikeCommentList />}
-        {filter === '북마크' && <MyBookmarks />}
+        {isSuccess && <Sidebar membersCount={data.membersCount} />}
+        {isSuccess && filter === '작성한 글' && (
+          <MyPostList memberName={data.member.memberName} />
+        )}
+        {isSuccess && filter === '작성한 댓글' && (
+          <MyCommentList memberName={data.member.memberName} />
+        )}
+        {isSuccess && filter === '좋아요한 글' && (
+          <MyLikePostList memberName={data.member.memberName} />
+        )}
+        {isSuccess && filter === '좋아요한 댓글' && (
+          <MylikeCommentList memberName={data.member.memberName} />
+        )}
+        {isSuccess && filter === '북마크' && (
+          <MyBookmarks memberName={data.member.memberName} />
+        )}
       </Content>
     </MyPageWrap>
   );

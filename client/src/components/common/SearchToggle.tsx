@@ -1,4 +1,5 @@
 import React from 'react';
+import styled from 'styled-components';
 import { useAppDispatch, useAppSelector } from '../../hooks';
 import { setSearch } from '../../slices/headerSlice';
 import { SearchBtn } from './Btn';
@@ -26,13 +27,13 @@ function Search() {
   return (
     <>
       {search ? (
-        <button
+        <CloseBtn
           onClick={cancleSearchHandler}
           id="search-close"
           aria-label="searchClose"
         >
           <GrClose />
-        </button>
+        </CloseBtn>
       ) : (
         <SearchBtn
           onClick={() => {
@@ -47,3 +48,10 @@ function Search() {
 }
 
 export default Search;
+const CloseBtn = styled.button`
+  @media (max-width: 1100px) {
+    position: absolute;
+    top: 14px;
+    right: 17px;
+  }
+`;

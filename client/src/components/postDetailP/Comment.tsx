@@ -35,7 +35,6 @@ import {
   setIsOpened,
   setTotalReplies,
 } from '../../slices/replySlice';
-import { setMemberName } from '../../slices/headerSlice';
 import { checkIsLogin } from '../../util/checkIsLogin';
 
 const Comment: React.FC<
@@ -318,8 +317,9 @@ const Comment: React.FC<
                               <button
                                 className="intro-moreInfo"
                                 onClick={() => {
-                                  dispatch(setMemberName(comment?.memberName));
-                                  navigate('/mypage');
+                                  navigate(
+                                    `/mypage?name=${comment?.memberName}`,
+                                  );
                                 }}
                               >
                                 더보기
