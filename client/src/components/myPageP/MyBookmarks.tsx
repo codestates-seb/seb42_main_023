@@ -20,9 +20,9 @@ function MyBookmarks() {
     });
   const { data, isSuccess, refetch } = membersBookmarkListquery;
 
-  useEffect(() => {
-    refetch();
-  }, []);
+  // useEffect(() => {
+  //   refetch();
+  // }, []);
 
   return (
     <PostListWrap>

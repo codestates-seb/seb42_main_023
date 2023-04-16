@@ -18,9 +18,9 @@ function MyPostList() {
   });
   const { data, isSuccess, refetch } = membersPostListquery;
 
-  useEffect(() => {
-    refetch();
-  }, []);
+  // useEffect(() => {
+  //   refetch();
+  // }, []);
 
   return (
     <PostListWrap>

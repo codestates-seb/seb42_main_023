@@ -20,9 +20,9 @@ function MyLikePostList() {
     });
   const { data, isSuccess, refetch } = membersLikePostListquery;
 
-  useEffect(() => {
-    refetch();
-  }, []);
+  // useEffect(() => {
+  //   refetch();
+  // }, []);
 
   return (
     <PostListWrap>

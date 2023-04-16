@@ -20,9 +20,9 @@ const MylikeCommentList = () => {
     });
   const { data, isSuccess, refetch } = membersCommentsListquery;
 
-  useEffect(() => {
-    refetch();
-  }, []);
+  // useEffect(() => {
+  //   refetch();
+  // }, []);
 
   return (
     <PostListWrap>

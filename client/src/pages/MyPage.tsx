@@ -9,11 +9,23 @@ import MylikeCommentList from '../components/myPageP/MylikeCommentList';
 import Sidebar from '../components/myPageP/Sidebar';
 import { useAppSelector } from '../hooks';
 import DeleteModal from '../components/myPageP/DeleteModal';
+import { membersApi } from '../api/membersApi';
 
 function MyPage() {
   const { filter, deleteAccountOpen } = useAppSelector(({ mypage }) => mypage);
+  const { memberName } = useAppSelector(({ header }) => header);
+  const membersQuery = membersApi.useGetMemberQuery(
+    {
+      name: memberName,
+    },
+    {
+      skip: !memberName,
+    },
+  );
+  const { data, isSuccess, refetch } = membersQuery;
   useEffect(() => {
     window.scrollTo(0, 0);
+    // refetch();
   }, []);
   return (
     <MyPageWrap>
@@ -23,9 +35,9 @@ function MyPage() {
         </ModalWrap>
       )}
 
-      <Profile />
+      {isSuccess && <Profile member={data.member} />}
       <Content>
-        <Sidebar />
+        {isSuccess && <Sidebar membersCount={data.membersCount} />}
         {filter === '작성한 글' && <MyPostList />}
         {filter === '작성한 댓글' && <MyCommentList />}
         {filter === '좋아요한 글' && <MyLikePostList />}

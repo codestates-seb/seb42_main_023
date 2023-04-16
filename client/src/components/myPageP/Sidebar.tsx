@@ -3,16 +3,17 @@ import styled from 'styled-components';
 import { useAppDispatch, useAppSelector } from '../../hooks';
 import { setFilter } from '../../slices/mypageSlice';
 import { SidebarBtn } from '../common/Btn';
-import { membersApi } from '../../api/membersApi';
 
-function Sidebar() {
+interface MemberCount {
+  postCount: number;
+  commentCount: number;
+  thumbupPostCount: number;
+  thumbupCommentCount: number;
+  bookmarkCount: number;
+}
+function Sidebar({ membersCount }: { membersCount: MemberCount }) {
   const dispatch = useAppDispatch();
   const { filter } = useAppSelector(({ mypage }) => mypage);
-  const { memberName } = useAppSelector(({ header }) => header);
-  const membersQuery = membersApi.useGetMemberQuery({
-    name: memberName,
-  });
-  const { data, isSuccess } = membersQuery;
 
   useEffect(() => {
     return () => {
@@ -27,35 +28,35 @@ function Sidebar() {
         onClick={() => dispatch(setFilter('작성한 글'))}
       >
         <span>작성한 글</span>
-        {isSuccess && <div>{data.membersCount.postCount}</div>}
+        <div>{membersCount.postCount}</div>
       </FilterBtn>
       <FilterBtn
         current={filter === '작성한 댓글'}
         onClick={() => dispatch(setFilter('작성한 댓글'))}
       >
         <span>작성한 댓글</span>
-        {isSuccess && <div>{data.membersCount.commentCount}</div>}
+        <div>{membersCount.commentCount}</div>
       </FilterBtn>
       <FilterBtn
         current={filter === '좋아요한 글'}
         onClick={() => dispatch(setFilter('좋아요한 글'))}
       >
         <span>좋아요한 글</span>
-        {isSuccess && <div>{data.membersCount.thumbupPostCount}</div>}
+        <div>{membersCount.thumbupPostCount}</div>
       </FilterBtn>
       <FilterBtn
         current={filter === '좋아요한 댓글'}
         onClick={() => dispatch(setFilter('좋아요한 댓글'))}
       >
         <span>좋아요한 댓글</span>
-        {isSuccess && <div>{data.membersCount.thumbupCommentCount}</div>}
+        <div>{membersCount.thumbupCommentCount}</div>
       </FilterBtn>
       <FilterBtn
         current={filter === '북마크'}
         onClick={() => dispatch(setFilter('북마크'))}
       >
         <span>북마크</span>
-        {isSuccess && <div>{data.membersCount.bookmarkCount}</div>}
+        <div>{membersCount.bookmarkCount}</div>
       </FilterBtn>
     </Nav>
   );
