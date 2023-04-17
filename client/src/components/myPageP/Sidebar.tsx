@@ -71,10 +71,19 @@ const Nav = styled.nav`
   margin-top: -1px;
   border: 1px solid var(--border-color);
   display: inline;
+  @media (max-width: 1100px) {
+    display: flex;
+    padding: 0;
+    border: none;
+    height: auto;
+  }
 `;
 const FilterBtn = styled(SidebarBtn)<{ current: boolean }>`
   background-color: ${({ current }) => (current ? '#f5f4f4' : '####')};
   span {
     color: ${({ current }) => (current ? '#0069CA' : '#94969b')};
+  }
+  @media (max-width: 1100px) {
+    margin-left: -1px;
   }
 `;

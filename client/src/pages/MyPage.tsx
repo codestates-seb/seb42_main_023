@@ -65,6 +65,9 @@ const Content = styled.div`
   flex-basis: 900px;
   width: 100%;
   height: 1040px;
+  @media (max-width: 1100px) {
+    display: block;
+  }
 `;
 const ModalWrap = styled.div`
   width: 100vw;
