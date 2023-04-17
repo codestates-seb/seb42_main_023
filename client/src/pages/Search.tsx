@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import styled from 'styled-components';
 import PostItem from '../components/mainP/PostItem';
 import DropdownButton from '../components/mainP/DropdownButton';
-import { useAppSelector } from '../hooks';
 import { postListApi } from '../api/postListapi';
 import Pagenation from '../components/common/Pagination';
 import { PostListItem } from '../types/PostList';
@@ -13,11 +12,11 @@ import { useLocation } from 'react-router-dom';
 const Search = () => {
   const [pageOffset, setPageOffset] = useState(0);
   const [currentPage, setCurrentPage] = useState(1);
+  const [orderby, setOrderby] = useState('latest');
   const { search } = useLocation();
   const searchQuery = `&${search.slice(1)}`;
-  const { postCategory, orderby } = useAppSelector(({ main }) => main);
   const postListquery = postListApi.useGetPostListQuery({
-    postSetting: postCategory,
+    postSetting: '/search',
     page: currentPage,
     orderby: orderby,
     search: searchQuery,
@@ -28,7 +27,7 @@ const Search = () => {
     <>
       <FilterWrap>
         <h1>검색결과 {data?.posts.length}개</h1>
-        <DropdownButton />
+        <DropdownButton setOrderby={setOrderby} />
       </FilterWrap>
       {data?.posts.length === 0 && <Nolist name={'검색결과가'} />}
       {data?.posts.length !== 0 && (

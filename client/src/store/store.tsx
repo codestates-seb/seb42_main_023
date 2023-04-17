@@ -6,7 +6,6 @@ import logger from 'redux-logger';
 import postInputSlice from '../slices/postInputSlice';
 import validationSlice from '../slices/validationSlice';
 import headerSlice from '../slices/headerSlice';
-import mainSlice from '../slices/mainSlice';
 import mypageSlice from '../slices/mypageSlice';
 import surveySlice from '../slices/surveySlice';
 import { postsApi, recommendedPostsApi } from '../api/postApi';
@@ -26,7 +25,6 @@ const store = configureStore({
     reply: replySlice.reducer,
     validation: validationSlice.reducer,
     header: headerSlice.reducer,
-    main: mainSlice.reducer,
     mypage: mypageSlice.reducer,
     survey: surveySlice.reducer,
     report: reportSlice.reducer,
