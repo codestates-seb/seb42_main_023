@@ -4,6 +4,7 @@ import com.teamdragon.dragonmoney.app.domain.comment.entity.Comment;
 import com.teamdragon.dragonmoney.app.domain.member.entity.Member;
 import com.teamdragon.dragonmoney.app.domain.posts.entity.Posts;
 import com.teamdragon.dragonmoney.app.domain.reply.entity.Reply;
+import com.teamdragon.dragonmoney.app.domain.report.service.ReportTargetType;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -26,7 +27,8 @@ public class Report {
     private String description;
 
     @Column(length = 10)
-    private String targetType;
+    @Enumerated(value = EnumType.STRING)
+    private ReportTargetType targetType;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "TARGET_COMMENT_ID")
@@ -67,7 +69,7 @@ public class Report {
     }
 
     @Builder
-    public Report(String reportReason, String description, String targetType,
+    public Report(String reportReason, String description, ReportTargetType targetType,
                   Comment targetComment, Reply targetReply, Posts targetPosts, Member reporter,
                   LocalDateTime reportedAt, State handleState, LocalDateTime handledAt) {
         this.reportReason = reportReason;
