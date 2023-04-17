@@ -67,7 +67,7 @@ public class OAuth2HandleServiceImpl implements OAuth2HandleService {
     // AccessToken 재발급
     @Override
     public String delegateAccessTokenAgain(String memberName) {
-        Member member = memberFindService.findVerifiedMemberName(memberName);
+        Member member = memberFindService.findVerifyMemberByName(memberName);
         List<String> roles = member.getRoles();
 
         Map<String, Object> claims = new HashMap<>();
@@ -110,7 +110,7 @@ public class OAuth2HandleServiceImpl implements OAuth2HandleService {
     //tempAccessToken 저장
     @Override
     public Member updateTempAccessToken(String name, String tempAccessToken) {
-        Member member = memberFindService.findVerifiedMemberName(name);
+        Member member = memberFindService.findVerifyMemberByName(name);
         member.saveTempAccessToken(tempAccessToken);
 
         return memberRepository.save(member);

@@ -24,7 +24,7 @@ public class MemberFindServiceImpl implements MemberFindService {
 
     // 임시 닉네임으로 회원 조회
     @Override
-    public Member findVerifiedMemberTempName(String tempName) {
+    public Member findVerifyMemberByTempName(String tempName) {
         Optional<Member> optionalMember = memberRepository.findByTempName(tempName);
 
         return optionalMember
@@ -33,7 +33,7 @@ public class MemberFindServiceImpl implements MemberFindService {
 
     // 닉네임으로 회원 조회
     @Override
-    public Member findVerifiedMemberName(String name) {
+    public Member findVerifyMemberByName(String name) {
         Optional<Member> optionalAnswer = memberRepository.findByName(name);
 
         return optionalAnswer

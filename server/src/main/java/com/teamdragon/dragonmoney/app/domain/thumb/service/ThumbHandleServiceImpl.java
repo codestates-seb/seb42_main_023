@@ -136,6 +136,6 @@ public class ThumbHandleServiceImpl implements ThumbHandleService {
 
     // 회원 조회
     private Member getLoginMember(String loginMemberName) {
-        return memberFindService.findVerifiedMemberName(loginMemberName);
+        return memberFindService.findVerifyMemberByName(loginMemberName);
     }
 }

@@ -1,9 +1,8 @@
 package com.teamdragon.dragonmoney.app.domain.posts.service;
 
 import com.teamdragon.dragonmoney.app.domain.category.entity.Category;
-import com.teamdragon.dragonmoney.app.domain.comment.entity.Comment;
+import com.teamdragon.dragonmoney.app.domain.category.service.CategoryFindService;
 import com.teamdragon.dragonmoney.app.domain.comment.service.CommentHandleService;
-import com.teamdragon.dragonmoney.app.domain.common.service.FinderService;
 import com.teamdragon.dragonmoney.app.domain.image.entity.Image;
 import com.teamdragon.dragonmoney.app.domain.image.service.ImageFindService;
 import com.teamdragon.dragonmoney.app.domain.image.service.ImageHandleService;
@@ -13,7 +12,6 @@ import com.teamdragon.dragonmoney.app.domain.posts.entity.PostsTag;
 import com.teamdragon.dragonmoney.app.domain.posts.repository.PostsRepository;
 import com.teamdragon.dragonmoney.app.domain.posts.repository.PostsTagRepository;
 import com.teamdragon.dragonmoney.app.domain.tag.entity.Tag;
-import com.teamdragon.dragonmoney.app.domain.tag.service.TagFindService;
 import com.teamdragon.dragonmoney.app.domain.tag.service.TagHandleService;
 import com.teamdragon.dragonmoney.app.domain.thumb.ThumbCountable;
 import com.teamdragon.dragonmoney.app.domain.thumb.ThumbDto;
@@ -39,7 +37,7 @@ public class PostsHandleServiceImpl implements PostsHandleService, ThumbCountSer
     private final PostsFindService postsFindService;
     private final PostsRepository postsRepository;
     private final PostsTagRepository postsTagRepository;
-    private final FinderService finderService;
+    private final CategoryFindService categoryFindService;
     private final CommentHandleService commentHandleService;
     private final TagHandleService tagHandleService;
     private final ImageFindService imageFindService;
@@ -51,7 +49,7 @@ public class PostsHandleServiceImpl implements PostsHandleService, ThumbCountSer
     @Override
     public Posts savePosts(Member loginMember, Posts newPosts, List<Image> removedImages){
         // 카테고리 조회
-        Category findCategory = finderService.findCategoryById(CURRENT_CATEGORY_ID);
+        Category findCategory = categoryFindService.findCategoryById(CURRENT_CATEGORY_ID);
         // 이미지 삭제
         imageHandleService.removeImageList(loginMember, removedImages);
 

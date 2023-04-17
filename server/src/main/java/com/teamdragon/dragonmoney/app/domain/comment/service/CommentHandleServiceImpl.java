@@ -2,10 +2,10 @@ package com.teamdragon.dragonmoney.app.domain.comment.service;
 
 import com.teamdragon.dragonmoney.app.domain.comment.entity.Comment;
 import com.teamdragon.dragonmoney.app.domain.comment.repository.CommentRepository;
-import com.teamdragon.dragonmoney.app.domain.common.service.FinderService;
 import com.teamdragon.dragonmoney.app.domain.delete.entity.DeleteResult;
 import com.teamdragon.dragonmoney.app.domain.member.entity.Member;
 import com.teamdragon.dragonmoney.app.domain.posts.entity.Posts;
+import com.teamdragon.dragonmoney.app.domain.posts.service.PostsFindService;
 import com.teamdragon.dragonmoney.app.domain.reply.service.ReplyHandleServiceImpl;
 import com.teamdragon.dragonmoney.app.domain.thumb.ThumbCountService;
 import com.teamdragon.dragonmoney.app.domain.thumb.ThumbCountable;
@@ -27,13 +27,13 @@ public class CommentHandleServiceImpl implements CommentHandleService,ThumbCount
 
     private final CommentRepository commentRepository;
     private final CommentFindService commentFindService;
-    private final FinderService finderService;
+    private final PostsFindService postsFindService;
     private final ReplyHandleServiceImpl replyService;
 
     // 추가
     @Override
     public Comment createComment(Long postsId, Member loginMember, Comment newComment) {
-        Posts parentPosts = finderService.findVerifyPostsById(postsId);
+        Posts parentPosts = postsFindService.findVerifyPostsById(postsId);
         parentPosts.plusCommentCount();
         Comment comment = Comment.builder()
                 .content(newComment.getContent())

@@ -1,6 +1,5 @@
 package com.teamdragon.dragonmoney.app.domain.member.controller;
 
-import com.teamdragon.dragonmoney.app.domain.common.service.FinderService;
 import com.teamdragon.dragonmoney.app.domain.member.dto.MemberDto;
 import com.teamdragon.dragonmoney.app.domain.member.dto.MyPageDto;
 import com.teamdragon.dragonmoney.app.domain.member.entity.Member;
@@ -25,7 +24,6 @@ public class MemberController {
     private final MemberFindService memberFindService;
     private final MemberHandleServiceImpl memberHandleService;
     private final MemberMapper memberMapper;
-    private final FinderService finderService;
 
     // 닉네임 중복 확인
     @PostMapping("/duplicated-name")
@@ -46,7 +44,7 @@ public class MemberController {
     public ResponseEntity<MemberDto.IntroResponse> modifyMember(@PathVariable("member-name") String name,
                                        @Valid @RequestBody MemberDto.PatchReq patch,
                                        @AuthenticationPrincipal Principal principal) {
-        finderService.findVerifiedMemberByName(name);
+        memberFindService.findVerifyMemberByName(name);
         memberHandleService.checkLoginMember(principal.getName(), name);
 
         Member member = memberMapper.pathDtoToMember(patch);
@@ -59,7 +57,7 @@ public class MemberController {
     // 특정 회원 정보 가져오기
     @GetMapping("/{member-name}")
     public ResponseEntity<MyPageDto.MyPageRes> findMemberDetails(@PathVariable("member-name") String memberName) {
-        Member getMember = memberFindService.findVerifiedMemberName(memberName);
+        Member getMember = memberFindService.findVerifyMemberByName(memberName);
 
         MyPageDto.MyPageMemberInfo myPageResponse = memberMapper.myPageResponseDtoToMember(getMember);
         MyPageDto.MyPageCount postsPage = memberFindService.findCountInfo(memberName);
@@ -72,7 +70,7 @@ public class MemberController {
     @DeleteMapping("/{member-name}")
     public ResponseEntity<Void> removeMember(@PathVariable("member-name") String name,
                                              @AuthenticationPrincipal Principal principal) {
-        finderService.findVerifiedMemberByName(name);
+        memberFindService.findVerifyMemberByName(name);
         memberHandleService.checkLoginMember(principal.getName(), name);
 
         memberHandleService.removeMember(principal.getName());

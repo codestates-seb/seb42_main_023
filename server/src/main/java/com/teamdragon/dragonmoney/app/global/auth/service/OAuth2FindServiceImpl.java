@@ -49,7 +49,7 @@ public class OAuth2FindServiceImpl implements OAuth2FindService{
     // 회원 이름으로 refreshToken 조회
     @Override
     public String findRefreshTokenByMemberName(String memberName) {
-        Member member = memberFindService.findVerifiedMemberName(memberName);
+        Member member = memberFindService.findVerifyMemberByName(memberName);
         String refreshToken = member.getRefreshToken().getRefreshTokenValue();
 
         return refreshToken;

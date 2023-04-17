@@ -41,7 +41,7 @@ public class PostsController {
     @PostMapping("/posts")
     public ResponseEntity<PostsDto.CreateRes> createPosts(@AuthenticationPrincipal Principal principal,
                                                           @Valid @RequestBody PostsDto.CreateReq postsDto) {
-        Member loginMember = memberFindService.findVerifiedMemberName(principal.getName());
+        Member loginMember = memberFindService.findVerifyMemberByName(principal.getName());
         // 이미지 처리
         PostsDto.CreatePostsImagesReq saveImages = postsDto.getSaveImages();
         List<Image> removedImages = null;
@@ -61,7 +61,7 @@ public class PostsController {
     @DeleteMapping("/posts/{post-id}")
     public ResponseEntity<Void> removePosts(@AuthenticationPrincipal Principal principal,
                                             @Valid @Positive @PathVariable("post-id") Long postsId) {
-        Member loginMember = memberFindService.findVerifiedMemberName(principal.getName());
+        Member loginMember = memberFindService.findVerifyMemberByName(principal.getName());
         postsHandleService.removePosts(loginMember, postsId);
         return new ResponseEntity<>(HttpStatus.OK);
     }
@@ -71,7 +71,7 @@ public class PostsController {
     public ResponseEntity<PostsDto.UpdateRes> modifyPosts(@AuthenticationPrincipal Principal principal,
                                                           @Valid @RequestBody PostsDto.UpdateReq updateReqDto,
                                                           @Valid @Positive @PathVariable("post-id") Long postsId) {
-        Member loginMember = memberFindService.findVerifiedMemberName(principal.getName());
+        Member loginMember = memberFindService.findVerifyMemberByName(principal.getName());
         // 이미지 처리
         PostsDto.UpdatePostsImagesReq saveImages = updateReqDto.getSaveImages();
         List<Image> removedImages = null;
@@ -92,7 +92,7 @@ public class PostsController {
                                                                     @Valid @Positive @PathVariable("post-id") Long postsId) {
         Long loginMemberId = null;
         if (principal != null) {
-            Member loginMember = memberFindService.findVerifiedMemberName(principal.getName());
+            Member loginMember = memberFindService.findVerifyMemberByName(principal.getName());
             loginMemberId = loginMember.getId();
         }
         PostsDto.PostsDetailRes postsDetail = postsFindService.findPostsDetails(postsId, loginMemberId);
@@ -112,7 +112,7 @@ public class PostsController {
     @GetMapping("/members/{member-name}/posts")
     public ResponseEntity<MyPageDto.MyPageMemberPostsListRes> findPostsListByMember(@PathVariable("member-name") String memberName,
                                                                                     @Valid @Positive @RequestParam int page) {
-        memberFindService.findVerifiedMemberName(memberName);
+        memberFindService.findVerifyMemberByName(memberName);
         MyPageDto.MyPageMemberPostsListRes response = postsFindService.findPostsListByWriterPosts(page, memberName);
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
@@ -121,7 +121,7 @@ public class PostsController {
     @GetMapping("/members/{member-name}/thumbup/posts")
     public ResponseEntity<MyPageDto.MyPageMemberPostsListRes> findThumbUpPostsListByMember(@PathVariable("member-name") String memberName,
                                                                                            @Valid @Positive @RequestParam int page) {
-        memberFindService.findVerifiedMemberName(memberName);
+        memberFindService.findVerifyMemberByName(memberName);
         MyPageDto.MyPageMemberPostsListRes response = postsFindService.findPostsListByThumbUpPosts(page, memberName);
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
@@ -130,7 +130,7 @@ public class PostsController {
     @GetMapping("/members/{member-name}/bookmark")
     public ResponseEntity<MyPageDto.MyPageMemberPostsListRes> findBookmarkListByMember(@PathVariable("member-name") String memberName,
                                                                                        @Valid @Positive @RequestParam int page) {
-        memberFindService.findVerifiedMemberName(memberName);
+        memberFindService.findVerifyMemberByName(memberName);
         MyPageDto.MyPageMemberPostsListRes response = postsFindService.findPostsListByBookmarkPosts(page, memberName);
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }

@@ -71,7 +71,7 @@ public class MemberHandleServiceImpl implements MemberHandleService {
     @Override
     public Member modifyMemberName(String tempName, String name) {
 
-        Member memberOptional = memberFindService.findVerifiedMemberTempName(tempName);
+        Member memberOptional = memberFindService.findVerifyMemberByTempName(tempName);
         memberOptional.saveMemberName(name, true);
 
         return memberRepository.save(memberOptional);
@@ -80,7 +80,7 @@ public class MemberHandleServiceImpl implements MemberHandleService {
     // 마이 페이지 자기소개 수정
     @Override
     public Member modifyMemberIntro(String name, Member member) {
-        Member updatedMember = memberFindService.findVerifiedMemberName(name);
+        Member updatedMember = memberFindService.findVerifyMemberByName(name);
         updatedMember.updatedMemberIntro(member.getIntro());
         updatedMember.isModifiedNow();
 
@@ -94,11 +94,11 @@ public class MemberHandleServiceImpl implements MemberHandleService {
         commentHandleService.removeCommentByDeletedMember(name);
         replyService.removeReplyByDeletedMember(name);
 
-        Long memberId = memberFindService.findVerifiedMemberName(name).getId();
+        Long memberId = memberFindService.findVerifyMemberByName(name).getId();
         thumbHandleService.removeAllThumbByMemberId(memberId);
         bookmarkHandleService.removeAllBookmarkByMemberId(memberId);
 
-        Member deletedMember = memberFindService.findVerifiedMemberName(name);
+        Member deletedMember = memberFindService.findVerifyMemberByName(name);
 
         DeleteResult deleteResult = DeleteResult.builder()
                 .deleteReason(DeleteResult.Reason.SELF_DELETED)

@@ -38,7 +38,7 @@ public class CommentController {
     public ResponseEntity<CommentDto.CreateRes> createComment(@AuthenticationPrincipal Principal principal,
                                                               @Valid @Positive @PathVariable("post-id") Long postsId,
                                                               @Valid @RequestBody CommentDto.CreateReq commentDto) {
-        Member loginMember = memberFindService.findVerifiedMemberName(principal.getName());
+        Member loginMember = memberFindService.findVerifyMemberByName(principal.getName());
         Comment newComment = commentMapper.createDtoToComment(commentDto);
 
         Comment saveComment = commentHandleService.createComment(postsId, loginMember, newComment);
@@ -55,7 +55,7 @@ public class CommentController {
                                                                      @Valid @NotBlank @RequestParam String orderby) {
         Long loginMemberId = null;
         if (principal != null) {
-            Member loginMember = memberFindService.findVerifiedMemberName(principal.getName());
+            Member loginMember = memberFindService.findVerifyMemberByName(principal.getName());
             loginMemberId = loginMember.getId();
         }
 
@@ -71,7 +71,7 @@ public class CommentController {
     @GetMapping("/members/{member-name}/comments")
     public ResponseEntity<MyPageDto.MyPageMemberCommentListRes> findCommentListByMember(@PathVariable("member-name") String memberName,
                                                                                         @Valid @Positive @RequestParam int page) {
-        memberFindService.findVerifiedMemberName(memberName);
+        memberFindService.findVerifyMemberByName(memberName);
         MyPageDto.MyPageMemberCommentListRes response = commentFindService.findCommentListByMember(page, memberName);
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
@@ -80,7 +80,7 @@ public class CommentController {
     @GetMapping("/members/{member-name}/thumbup/comments")
     public ResponseEntity<MyPageDto.MyPageMemberCommentListRes> findThumbUpCommentListByMember(@PathVariable("member-name") String memberName,
                                                                                                @Valid @Positive @RequestParam int page) {
-        memberFindService.findVerifiedMemberName(memberName);
+        memberFindService.findVerifyMemberByName(memberName);
         MyPageDto.MyPageMemberCommentListRes response = commentFindService.findThumbUpCommentListByMember(page, memberName);
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
@@ -89,7 +89,7 @@ public class CommentController {
     @DeleteMapping("/comments/{comment-id}")
     public ResponseEntity<Void> removeComment(@AuthenticationPrincipal Principal principal,
                                               @Valid @Positive @PathVariable("comment-id") Long commentId) {
-        Member loginMember = memberFindService.findVerifiedMemberName(principal.getName());
+        Member loginMember = memberFindService.findVerifyMemberByName(principal.getName());
         commentHandleService.removeComment(loginMember, commentId);
         return new ResponseEntity<>(HttpStatus.OK);
     }
@@ -99,7 +99,7 @@ public class CommentController {
     public ResponseEntity<CommentDto.UpdateRes> modifyComment(@AuthenticationPrincipal Principal principal,
                                                               @Valid @RequestBody CommentDto.UpdateReq commentDto,
                                                               @Valid @Positive @PathVariable("comment-id") Long commentId) {
-        Member loginMember = memberFindService.findVerifiedMemberName(principal.getName());
+        Member loginMember = memberFindService.findVerifyMemberByName(principal.getName());
         Comment comment = commentMapper.updateDtoToComment(commentDto);
         Comment updateComment = commentHandleService.modifyComment(loginMember, commentId, comment);
         CommentDto.UpdateRes response = new CommentDto.UpdateRes(updateComment.getId());
