@@ -5,8 +5,6 @@ import com.teamdragon.dragonmoney.app.domain.report.entity.Report;
 import com.teamdragon.dragonmoney.app.domain.report.repository.ReportRepository;
 import com.teamdragon.dragonmoney.app.global.exception.BusinessExceptionCode;
 import com.teamdragon.dragonmoney.app.global.exception.BusinessLogicException;
-import com.teamdragon.dragonmoney.app.global.exception.ValidFailException;
-import com.teamdragon.dragonmoney.app.global.exception.ValidFailExceptionCode;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -30,20 +28,15 @@ public class ReportFindServiceImpl implements ReportFindService {
     @Override
     public ReportDto.ReportDetailRes findReport(Long reportId) {
         Report report = findVerifiedReport(reportId);
-        ReportTargetType targetType = checkTargetType(report.getTargetType());
-        String content = findContent(report, targetType);
-        String writer = findReportByContentWriter(reportId, targetType);
-        Long postId = findPostsIdByReport(report, targetType);
+        ReportTargetType targetType = report.getTargetType();
 
-        ReportDto.ReportDetailRes reportDetailRes = ReportDto.ReportDetailRes.builder()
+        return ReportDto.ReportDetailRes.builder()
                 .report(report)
                 .targetType(targetType)
-                .content(content)
-                .writer(writer)
-                .postId(postId)
+                .content(findContent(report, targetType))
+                .writer(findReportByContentWriter(reportId, targetType))
+                .postId(findPostsIdByReport(report, targetType))
                 .build();
-
-        return reportDetailRes;
     }
 
     // 신고 목록 조회
@@ -101,15 +94,5 @@ public class ReportFindServiceImpl implements ReportFindService {
                 return report.getTargetReply().getComment().getPosts().getId();
         }
         return null;
-    }
-
-    // targetType enum 으로 타입 변환
-    private ReportTargetType checkTargetType(String targetType) {
-        for (ReportTargetType reportTargetType : ReportTargetType.values()) {
-            if (reportTargetType.getKor().equals(targetType)) {
-                return reportTargetType;
-            }
-        }
-        throw new ValidFailException(ValidFailExceptionCode.TARGET_TYPE_BY_NOT_VALID);
     }
 }

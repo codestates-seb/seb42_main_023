@@ -85,7 +85,7 @@ public class ReportController {
     // targetType 유효성 검사
     private ReportTargetType checkTargetType(String targetType) {
         for (ReportTargetType reportTargetType : ReportTargetType.values()) {
-            if (reportTargetType.getKor().equals(targetType)) {
+            if (reportTargetType.getEng().equals(targetType)) {
                 return reportTargetType;
             }
         }
