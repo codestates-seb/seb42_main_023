@@ -89,8 +89,8 @@
 
 ## 🔖 DB Diagram
 
-[https://dbdiagram.io/d/6405a3e8296d97641d85ab35](https://dbdiagram.io/d/6405a3e8296d97641d85ab35)
-![ERD](https://user-images.githubusercontent.com/113220012/228779394-cfdbf7b3-c620-44d4-8407-2d524380aa02.png)
+[https://dbdiagram.io/d/6405a3e8296d97641d85ab35](https://dbdiagram.io/d/643ca7666b31947051b0a19e)
+![ERD](https://file.notion.so/f/s/42554436-cb49-446e-975d-d7b1e58015fb/Untitled.png?id=a81c52d4-4807-4749-81b3-8554a3a01a26&table=block&spaceId=82d63a72-8254-4cde-bf1e-b2597b7c099c&expirationTimestamp=1681784389242&signature=X4BWYWCLkpETFvFmG-ce9oHAxAVIjP36acjoizOCqpE&downloadName=Untitled.png)
 
 
 <br/>
