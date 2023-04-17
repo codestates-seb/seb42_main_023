@@ -1,9 +1,9 @@
 package com.teamdragon.dragonmoney.app.domain.thumb.controller;
 
-import com.teamdragon.dragonmoney.app.domain.common.service.FinderService;
-import com.teamdragon.dragonmoney.app.domain.member.entity.Member;
 import com.teamdragon.dragonmoney.app.domain.thumb.ThumbDto;
-import com.teamdragon.dragonmoney.app.domain.thumb.service.ThumbService;
+import com.teamdragon.dragonmoney.app.domain.thumb.entity.Thumb;
+import com.teamdragon.dragonmoney.app.domain.thumb.service.ThumbHandleService;
+import com.teamdragon.dragonmoney.app.domain.thumb.service.ThumbTargetType;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -21,15 +21,13 @@ import java.security.Principal;
 @RestController
 public class ThumbController {
 
-    private final FinderService finderService;
-    private final ThumbService thumbService;
+    private final ThumbHandleService thumbHandleService;
 
     // 좋아요 추가 : 게시글
     @PostMapping("/posts/{post-id}/thumbup")
     public ResponseEntity<ThumbDto> createThumbupToPosts(@AuthenticationPrincipal Principal principal,
                                                          @PathVariable("post-id") Long postsId) {
-        Member loginMember = finderService.findVerifiedMemberByName(principal.getName());
-        ThumbDto response = thumbService.saveThumbup(ThumbDto.Target.POSTS, loginMember, postsId);
+        ThumbDto response = thumbHandleService.saveThumb(ThumbTargetType.POSTS, principal.getName(), postsId, Thumb.Type.UP);
         return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
 
@@ -37,8 +35,7 @@ public class ThumbController {
     @PostMapping("/comments/{comment-id}/thumbup")
     public ResponseEntity<ThumbDto> createThumbupToComment(@AuthenticationPrincipal Principal principal,
                                                            @PathVariable("comment-id") Long commentId) {
-        Member loginMember = finderService.findVerifiedMemberByName(principal.getName());
-        ThumbDto response = thumbService.saveThumbup(ThumbDto.Target.COMMENT, loginMember, commentId);
+        ThumbDto response = thumbHandleService.saveThumb(ThumbTargetType.COMMENT, principal.getName(), commentId, Thumb.Type.UP);
         return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
 
@@ -46,8 +43,7 @@ public class ThumbController {
     @PostMapping("/replies/{reply-id}/thumbup")
     public ResponseEntity<ThumbDto> createThumbupToReply(@AuthenticationPrincipal Principal principal,
                                                          @PathVariable("reply-id") Long replyId) {
-        Member loginMember = finderService.findVerifiedMemberByName(principal.getName());
-        ThumbDto response = thumbService.saveThumbup(ThumbDto.Target.REPLY, loginMember, replyId);
+        ThumbDto response = thumbHandleService.saveThumb(ThumbTargetType.REPLY, principal.getName(), replyId, Thumb.Type.UP);
         return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
 
@@ -55,8 +51,7 @@ public class ThumbController {
     @DeleteMapping("/posts/{post-id}/thumbup")
     public ResponseEntity<ThumbDto> removeThumbupToPosts(@AuthenticationPrincipal Principal principal,
                                                          @PathVariable("post-id") Long postsId) {
-        Member loginMember = finderService.findVerifiedMemberByName(principal.getName());
-        ThumbDto response = thumbService.removeThumbup(ThumbDto.Target.POSTS, loginMember, postsId);
+        ThumbDto response = thumbHandleService.removeThumb(ThumbTargetType.POSTS, principal.getName(), postsId, Thumb.Type.UP);
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
@@ -64,8 +59,7 @@ public class ThumbController {
     @DeleteMapping("/comments/{comment-id}/thumbup")
     public ResponseEntity<ThumbDto> removeThumbupToComment(@AuthenticationPrincipal Principal principal,
                                                            @PathVariable("comment-id") Long commentId) {
-        Member loginMember = finderService.findVerifiedMemberByName(principal.getName());
-        ThumbDto response = thumbService.removeThumbup(ThumbDto.Target.COMMENT, loginMember, commentId);
+        ThumbDto response = thumbHandleService.removeThumb(ThumbTargetType.COMMENT, principal.getName(), commentId, Thumb.Type.UP);
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
@@ -73,8 +67,7 @@ public class ThumbController {
     @DeleteMapping("/replies/{reply-id}/thumbup")
     public ResponseEntity<ThumbDto> removeThumbupToReply(@AuthenticationPrincipal Principal principal,
                                                          @PathVariable("reply-id") Long replyId) {
-        Member loginMember = finderService.findVerifiedMemberByName(principal.getName());
-        ThumbDto response = thumbService.removeThumbup(ThumbDto.Target.REPLY, loginMember, replyId);
+        ThumbDto response = thumbHandleService.removeThumb(ThumbTargetType.REPLY, principal.getName(), replyId, Thumb.Type.UP);
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
@@ -83,8 +76,7 @@ public class ThumbController {
     @PostMapping("/posts/{post-id}/thumbdown")
     public ResponseEntity<ThumbDto> createThumbdownToPosts(@AuthenticationPrincipal Principal principal,
                                                            @PathVariable("post-id") Long postsId) {
-        Member loginMember = finderService.findVerifiedMemberByName(principal.getName());
-        ThumbDto response = thumbService.saveThumbdown(ThumbDto.Target.POSTS, loginMember, postsId);
+        ThumbDto response = thumbHandleService.saveThumb(ThumbTargetType.POSTS, principal.getName(), postsId, Thumb.Type.DOWN);
         return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
 
@@ -92,8 +84,7 @@ public class ThumbController {
     @PostMapping("/comments/{comment-id}/thumbdown")
     public ResponseEntity<ThumbDto> createThumbdownToComment(@AuthenticationPrincipal Principal principal,
                                                              @PathVariable("comment-id") Long commentId) {
-        Member loginMember = finderService.findVerifiedMemberByName(principal.getName());
-        ThumbDto response = thumbService.saveThumbdown(ThumbDto.Target.COMMENT, loginMember, commentId);
+        ThumbDto response = thumbHandleService.saveThumb(ThumbTargetType.COMMENT, principal.getName(), commentId, Thumb.Type.DOWN);
         return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
 
@@ -101,8 +92,7 @@ public class ThumbController {
     @PostMapping("/replies/{reply-id}/thumbdown")
     public ResponseEntity<ThumbDto> createThumbdownToReply(@AuthenticationPrincipal Principal principal,
                                                            @PathVariable("reply-id") Long replyId) {
-        Member loginMember = finderService.findVerifiedMemberByName(principal.getName());
-        ThumbDto response = thumbService.saveThumbdown(ThumbDto.Target.REPLY, loginMember, replyId);
+        ThumbDto response = thumbHandleService.saveThumb(ThumbTargetType.REPLY, principal.getName(), replyId, Thumb.Type.DOWN);
         return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
 
@@ -110,8 +100,7 @@ public class ThumbController {
     @DeleteMapping("/posts/{post-id}/thumbdown")
     public ResponseEntity<ThumbDto> removeThumbdownToPosts(@AuthenticationPrincipal Principal principal,
                                                            @PathVariable("post-id") Long postsId) {
-        Member loginMember = finderService.findVerifiedMemberByName(principal.getName());
-        ThumbDto response = thumbService.removeThumbdown(ThumbDto.Target.POSTS, loginMember, postsId);
+        ThumbDto response = thumbHandleService.removeThumb(ThumbTargetType.POSTS, principal.getName(), postsId, Thumb.Type.DOWN);
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
@@ -119,8 +108,7 @@ public class ThumbController {
     @DeleteMapping("/comments/{comment-id}/thumbdown")
     public ResponseEntity<ThumbDto> removeThumbdownToComment(@AuthenticationPrincipal Principal principal,
                                                              @PathVariable("comment-id") Long commentId) {
-        Member loginMember = finderService.findVerifiedMemberByName(principal.getName());
-        ThumbDto response = thumbService.removeThumbdown(ThumbDto.Target.COMMENT, loginMember, commentId);
+        ThumbDto response = thumbHandleService.removeThumb(ThumbTargetType.COMMENT, principal.getName(), commentId, Thumb.Type.DOWN);
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
@@ -128,8 +116,7 @@ public class ThumbController {
     @DeleteMapping("/replies/{reply-id}/thumbdown")
     public ResponseEntity<ThumbDto> removeThumbdownToReply(@AuthenticationPrincipal Principal principal,
                                                            @PathVariable("reply-id") Long replyId) {
-        Member loginMember = finderService.findVerifiedMemberByName(principal.getName());
-        ThumbDto response = thumbService.removeThumbdown(ThumbDto.Target.REPLY, loginMember, replyId);
+        ThumbDto response = thumbHandleService.removeThumb(ThumbTargetType.REPLY, principal.getName(), replyId, Thumb.Type.DOWN);
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 }

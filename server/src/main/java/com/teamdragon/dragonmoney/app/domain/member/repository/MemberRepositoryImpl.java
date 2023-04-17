@@ -7,13 +7,14 @@ import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.teamdragon.dragonmoney.app.domain.comment.entity.Comment;
 import com.teamdragon.dragonmoney.app.domain.member.dto.MyPageDto;
 import com.teamdragon.dragonmoney.app.domain.posts.entity.Posts;
+import com.teamdragon.dragonmoney.app.domain.thumb.entity.Thumb;
 import lombok.RequiredArgsConstructor;
 
 import static com.teamdragon.dragonmoney.app.domain.bookmark.entity.QBookmark.bookmark;
 import static com.teamdragon.dragonmoney.app.domain.comment.entity.QComment.comment;
 import static com.teamdragon.dragonmoney.app.domain.member.entity.QMember.member;
 import static com.teamdragon.dragonmoney.app.domain.posts.entity.QPosts.posts;
-import static com.teamdragon.dragonmoney.app.domain.thumb.entity.QThumbup.thumbup;
+import static com.teamdragon.dragonmoney.app.domain.thumb.entity.QThumb.*;
 
 @RequiredArgsConstructor
 public class MemberRepositoryImpl implements MemberRepositoryCustom {
@@ -32,18 +33,20 @@ public class MemberRepositoryImpl implements MemberRepositoryCustom {
                                 .from(comment)
                                 .where(comment.state.notIn(Comment.State.DELETED),
                                         comment.writer.name.eq(memberName)), "commentCount"),
-                        ExpressionUtils.as(JPAExpressions.select(thumbup.count())
-                                .from(thumbup)
-                                .join(thumbup.parentPosts, posts)
+                        ExpressionUtils.as(JPAExpressions.select(thumb.count())
+                                .from(thumb)
+                                .join(thumb.parentPosts, posts)
                                 .where(posts.state.notIn(Posts.State.DELETED),
-                                        thumbup.member.name.eq(memberName),
-                                        thumbup.parentPosts.id.isNotNull()), "thumbupPostCount"),
-                        ExpressionUtils.as(JPAExpressions.select(thumbup.count())
-                                .from(thumbup)
-                                .join(thumbup.parentComment, comment)
+                                        thumb.member.name.eq(memberName),
+                                        thumb.thumbType.eq(Thumb.Type.UP),
+                                        thumb.parentPosts.id.isNotNull()), "thumbupPostCount"),
+                        ExpressionUtils.as(JPAExpressions.select(thumb.count())
+                                .from(thumb)
+                                .join(thumb.parentComment, comment)
                                 .where(comment.state.notIn(Comment.State.DELETED),
-                                        thumbup.member.name.eq(memberName),
-                                        thumbup.parentComment.id.isNotNull()), "thumbupCommentCount"),
+                                        thumb.member.name.eq(memberName),
+                                        thumb.thumbType.eq(Thumb.Type.UP),
+                                        thumb.parentComment.id.isNotNull()), "thumbupCommentCount"),
                         ExpressionUtils.as(JPAExpressions.select(posts.count())
                                 .from(bookmark)
                                 .join(bookmark.posts, posts)

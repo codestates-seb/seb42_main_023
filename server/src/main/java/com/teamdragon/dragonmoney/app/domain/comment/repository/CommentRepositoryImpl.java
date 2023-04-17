@@ -9,6 +9,7 @@ import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.teamdragon.dragonmoney.app.domain.comment.dto.CommentDto;
 import com.teamdragon.dragonmoney.app.domain.comment.entity.Comment;
+import com.teamdragon.dragonmoney.app.domain.thumb.entity.Thumb;
 import com.teamdragon.dragonmoney.app.global.pagenation.QueryDslUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -20,8 +21,7 @@ import java.util.List;
 import static com.teamdragon.dragonmoney.app.domain.comment.entity.QComment.*;
 import static com.teamdragon.dragonmoney.app.domain.member.entity.QMember.*;
 import static com.teamdragon.dragonmoney.app.domain.posts.entity.QPosts.*;
-import static com.teamdragon.dragonmoney.app.domain.thumb.entity.QThumbdown.thumbdown;
-import static com.teamdragon.dragonmoney.app.domain.thumb.entity.QThumbup.thumbup;
+import static com.teamdragon.dragonmoney.app.domain.thumb.entity.QThumb.*;
 
 @RequiredArgsConstructor
 public class CommentRepositoryImpl implements CommentRepositoryCustom {
@@ -68,16 +68,18 @@ public class CommentRepositoryImpl implements CommentRepositoryCustom {
                         comment.writer.name.as("memberName"),
                         comment.writer.profileImage.as("memberImage"),
                         comment.state.as("commentState"),
-                        ExpressionUtils.as(JPAExpressions.select(thumbup.id.max())
-                                .from(thumbup)
-                                .where(thumbup.parentComment.id.eq(comment.id),
-                                        thumbup.member.id.eq(loginMemberId),
-                                        thumbup.parentComment.state.eq(Comment.State.ACTIVE)), "isThumbup"),
-                        ExpressionUtils.as(JPAExpressions.select(thumbdown.id.max())
-                                .from(thumbdown)
-                                .where(thumbdown.parentComment.id.eq(comment.id),
-                                        thumbdown.member.id.eq(loginMemberId),
-                                        thumbdown.parentComment.state.eq(Comment.State.ACTIVE)), "isThumbdown")
+                        ExpressionUtils.as(JPAExpressions.select(thumb.id.max())
+                                .from(thumb)
+                                .where(thumb.parentComment.id.eq(comment.id),
+                                        thumb.member.id.eq(loginMemberId),
+                                        thumb.thumbType.eq(Thumb.Type.UP),
+                                        thumb.parentComment.state.eq(Comment.State.ACTIVE)), "isThumbup"),
+                        ExpressionUtils.as(JPAExpressions.select(thumb.id.max())
+                                .from(thumb)
+                                .where(thumb.parentComment.id.eq(comment.id),
+                                        thumb.member.id.eq(loginMemberId),
+                                        thumb.thumbType.eq(Thumb.Type.DOWN),
+                                        thumb.parentComment.state.eq(Comment.State.ACTIVE)), "isThumbdown")
                         )
                 )
                 .distinct()
@@ -128,10 +130,10 @@ public class CommentRepositoryImpl implements CommentRepositoryCustom {
 
         List<Comment> content = queryFactory
                 .select(comment).distinct()
-                .from(thumbup)
-                .leftJoin(thumbup.parentComment, comment)
-                .leftJoin(thumbup.member, member)
-                .where(comment.state.notIn(Comment.State.DELETED), thumbup.member.name.eq(memberName))
+                .from(thumb)
+                .leftJoin(thumb.parentComment, comment)
+                .leftJoin(thumb.member, member)
+                .where(comment.state.notIn(Comment.State.DELETED), thumb.member.name.eq(memberName), thumb.thumbType.eq(Thumb.Type.UP))
                 .orderBy(orders)
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
@@ -170,10 +172,11 @@ public class CommentRepositoryImpl implements CommentRepositoryCustom {
     @Override
     public Long findMemberThumbUpCommentCount(String memberName) {
         Long memberPostsCount = queryFactory
-                .select(thumbup.count())
-                .from(thumbup)
-                .join(thumbup.parentComment, comment)
-                .where(comment.state.notIn(Comment.State.DELETED), thumbup.member.name.eq(memberName), thumbup.parentComment.id.isNotNull())
+                .select(thumb.count())
+                .from(thumb)
+                .join(thumb.parentComment, comment)
+                .where(comment.state.notIn(Comment.State.DELETED), thumb.member.name.eq(memberName),
+                        thumb.parentComment.id.isNotNull(), thumb.thumbType.eq(Thumb.Type.UP))
                 .fetchOne();
         return memberPostsCount;
     }

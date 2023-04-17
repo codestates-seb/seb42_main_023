@@ -7,9 +7,9 @@ import com.querydsl.core.types.Projections;
 import com.querydsl.jpa.JPAExpressions;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
-import com.teamdragon.dragonmoney.app.domain.comment.entity.Comment;
 import com.teamdragon.dragonmoney.app.domain.reply.dto.ReplyDto;
 import com.teamdragon.dragonmoney.app.domain.reply.entity.Reply;
+import com.teamdragon.dragonmoney.app.domain.thumb.entity.Thumb;
 import com.teamdragon.dragonmoney.app.global.pagenation.QueryDslUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -21,8 +21,7 @@ import java.util.List;
 import static com.teamdragon.dragonmoney.app.domain.comment.entity.QComment.comment;
 import static com.teamdragon.dragonmoney.app.domain.member.entity.QMember.member;
 import static com.teamdragon.dragonmoney.app.domain.reply.entity.QReply.reply;
-import static com.teamdragon.dragonmoney.app.domain.thumb.entity.QThumbdown.thumbdown;
-import static com.teamdragon.dragonmoney.app.domain.thumb.entity.QThumbup.thumbup;
+import static com.teamdragon.dragonmoney.app.domain.thumb.entity.QThumb.*;
 
 @RequiredArgsConstructor
 public class ReplyRepositoryImpl implements ReplyRepositoryCustom{
@@ -71,16 +70,18 @@ public class ReplyRepositoryImpl implements ReplyRepositoryCustom{
                         reply.writer.name.as("memberName"),
                         reply.writer.profileImage.as("memberImage"),
                         reply.state.as("replyState"),
-                        ExpressionUtils.as(JPAExpressions.select(thumbup.id.max())
-                                .from(thumbup)
-                                .where(thumbup.parentReply.id.eq(reply.id),
-                                        thumbup.member.id.eq(loginMemberId),
-                                        thumbup.parentReply.state.eq(Reply.State.ACTIVE)),"isThumbup"),
-                        ExpressionUtils.as(JPAExpressions.select(thumbdown.id.max())
-                                .from(thumbdown)
-                                .where(thumbdown.parentReply.id.eq(reply.id),
-                                        thumbdown.member.id.eq(loginMemberId),
-                                        thumbdown.parentReply.state.eq(Reply.State.ACTIVE)),"isThumbdown"))
+                        ExpressionUtils.as(JPAExpressions.select(thumb.id.max())
+                                .from(thumb)
+                                .where(thumb.parentReply.id.eq(reply.id),
+                                        thumb.member.id.eq(loginMemberId),
+                                        thumb.thumbType.eq(Thumb.Type.UP),
+                                        thumb.parentReply.state.eq(Reply.State.ACTIVE)),"isThumbup"),
+                        ExpressionUtils.as(JPAExpressions.select(thumb.id.max())
+                                .from(thumb)
+                                .where(thumb.parentReply.id.eq(reply.id),
+                                        thumb.member.id.eq(loginMemberId),
+                                        thumb.thumbType.eq(Thumb.Type.DOWN),
+                                        thumb.parentReply.state.eq(Reply.State.ACTIVE)),"isThumbdown"))
                 )
                 .distinct()
                 .from(reply)

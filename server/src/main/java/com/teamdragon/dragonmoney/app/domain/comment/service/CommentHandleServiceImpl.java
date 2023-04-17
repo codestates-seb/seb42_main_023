@@ -8,7 +8,10 @@ import com.teamdragon.dragonmoney.app.domain.member.entity.Member;
 import com.teamdragon.dragonmoney.app.domain.posts.entity.Posts;
 import com.teamdragon.dragonmoney.app.domain.reply.service.ReplyHandleServiceImpl;
 import com.teamdragon.dragonmoney.app.domain.thumb.ThumbCountService;
+import com.teamdragon.dragonmoney.app.domain.thumb.ThumbCountable;
 import com.teamdragon.dragonmoney.app.domain.thumb.ThumbDto;
+import com.teamdragon.dragonmoney.app.domain.thumb.entity.Thumb;
+import com.teamdragon.dragonmoney.app.domain.thumb.service.ThumbCountAction;
 import com.teamdragon.dragonmoney.app.global.exception.AuthExceptionCode;
 import com.teamdragon.dragonmoney.app.global.exception.AuthLogicException;
 import lombok.RequiredArgsConstructor;
@@ -96,30 +99,42 @@ public class CommentHandleServiceImpl implements CommentHandleService,ThumbCount
         return commentRepository.save(originalComment);
     }
 
+    // 좋아요 상태 수정
     @Override
-    public ThumbDto modifyThumbupState(Long commentId, boolean needInquiry, ThumbDto.ACTION action) {
+    public ThumbDto modifyThumbState(Long commentId, boolean needInquiry, Thumb.Type thumbType, ThumbCountAction action) {
         Comment findComment = commentFindService.findVerifyCommentById(commentId);
-        if (action == ThumbDto.ACTION.PLUS) {
-            findComment.plusThumbupCount();
-        } else if ( action == ThumbDto.ACTION.MINUS) {
-            findComment.minusThumbupCount();
+        if (thumbType == Thumb.Type.UP) {
+            return modifyThumbupState(findComment, needInquiry, action);
+        } else {
+            return modifyThumbdownState(findComment, needInquiry, action);
         }
-        Comment updateComment = commentRepository.save(findComment);
+    }
+
+    // 좋아요 상태 수정 : 좋아요
+    @Override
+    public ThumbDto modifyThumbupState(ThumbCountable thumbableComment, boolean needInquiry, ThumbCountAction action) {
+        Comment comment = (Comment) thumbableComment;
+        if (action == ThumbCountAction.PLUS) {
+            comment.plusThumbupCount();
+        } else if ( action == ThumbCountAction.MINUS) {
+            comment.minusThumbupCount();
+        }
+        Comment updateComment = commentRepository.save(comment);
         if (needInquiry) {
             return updateComment.getThumbCount();
         }
         return null;
     }
 
-    @Override
-    public ThumbDto modifyThumbdownState(Long commentId, boolean needInquiry, ThumbDto.ACTION action) {
-        Comment findComment = commentFindService.findVerifyCommentById(commentId);
-        if (action == ThumbDto.ACTION.PLUS) {
-            findComment.plusThumbdownCount();
-        } else if ( action == ThumbDto.ACTION.MINUS) {
-            findComment.minusThumbdownCount();
+    // 좋아요 상태 수정 : 싫어요
+    public ThumbDto modifyThumbdownState(ThumbCountable thumbableComment, boolean needInquiry, ThumbCountAction action) {
+        Comment comment = (Comment) thumbableComment;
+        if (action == ThumbCountAction.PLUS) {
+            comment.plusThumbdownCount();
+        } else if ( action == ThumbCountAction.MINUS) {
+            comment.minusThumbdownCount();
         }
-        Comment updateComment = commentRepository.save(findComment);
+        Comment updateComment = commentRepository.save(comment);
         if (needInquiry) {
             return updateComment.getThumbCount();
         }
