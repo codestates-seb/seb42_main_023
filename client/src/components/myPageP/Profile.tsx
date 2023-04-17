@@ -69,8 +69,8 @@ function Profile({ member }: { member: Member }) {
           <Intro ref={divRef}> {member.intro}</Intro>
         )}
         {blank && <Error>소개글이 비어있습니다.</Error>}
+        {member.memberName === loginuser && <DropdownButton />}
       </article>
-      {member.memberName === loginuser && <DropdownButton />}
     </ProfileWrap>
   );
 }

@@ -1,4 +1,5 @@
 import React, { useRef } from 'react';
+import styled from 'styled-components';
 import { Dropdown, Btn, List, ListItem } from '../mainP/DropdownButton';
 import { useAppDispatch, useAppSelector } from '../../hooks';
 import { setFilterOpen, setDeleteAccountOpen } from '../../slices/mypageSlice';
@@ -46,7 +47,7 @@ const DropdownButton = () => {
   }, []);
 
   return (
-    <Dropdown ref={dropdownRef}>
+    <DropDownContainer ref={dropdownRef}>
       <Btn onClick={openFilterHandler} aria-label="memberMenu">
         <FiMoreHorizontal />
       </Btn>
@@ -59,8 +60,14 @@ const DropdownButton = () => {
           ))}
         </List>
       )}
-    </Dropdown>
+    </DropDownContainer>
   );
 };
 
 export default DropdownButton;
+
+const DropDownContainer = styled(Dropdown)`
+  position: absolute;
+  right: 0;
+  top: 10px;
+`;
