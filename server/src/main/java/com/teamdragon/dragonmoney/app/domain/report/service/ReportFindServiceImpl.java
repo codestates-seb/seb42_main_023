@@ -5,6 +5,8 @@ import com.teamdragon.dragonmoney.app.domain.report.entity.Report;
 import com.teamdragon.dragonmoney.app.domain.report.repository.ReportRepository;
 import com.teamdragon.dragonmoney.app.global.exception.BusinessExceptionCode;
 import com.teamdragon.dragonmoney.app.global.exception.BusinessLogicException;
+import com.teamdragon.dragonmoney.app.global.exception.ValidFailException;
+import com.teamdragon.dragonmoney.app.global.exception.ValidFailExceptionCode;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -15,29 +17,20 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
 
-
 @RequiredArgsConstructor
 @Transactional
 @Service
 public class ReportFindServiceImpl implements ReportFindService {
 
     private final ReportRepository reportRepository;
-
     private static final int PAGE_ELEMENT_SIZE = 14;
-    private static final String POST_ENG = "post";
-    private static final String COMMENT_ENG = "comment";
-    private static final String REPLY_ENG = "reply";
-    private static final String POST_KOR = "게시글";
-    private static final String COMMENT_KOR = "댓글";
-    private static final String REPLY_KOR = "답글";
-    private static final String All_ENG = "all";
     private static final String SORT_PROPERTY = "handledAt";
 
     // 신고한 글 세부 내용 조회
     @Override
     public ReportDto.ReportDetailRes findReport(Long reportId) {
         Report report = findVerifiedReport(reportId);
-        String targetType = renameTargetType(report.getTargetType());
+        ReportTargetType targetType = checkTargetType(report.getTargetType());
         String content = findContent(report, targetType);
         String writer = findReportByContentWriter(reportId, targetType);
         Long postId = findPostsIdByReport(report, targetType);
@@ -53,32 +46,13 @@ public class ReportFindServiceImpl implements ReportFindService {
         return reportDetailRes;
     }
 
-    // 미처리 신고 목록 조회
+    // 신고 목록 조회
     @Override
-    public ReportDto.ReportListRes findListStandByReport(int page, String orderBy) {
+    public ReportDto.ReportListRes findReportList(int page, ReportOrderBy reportOrderBy, Report.State handleState) {
+        Pageable pageable = PageRequest.of(page - 1, PAGE_ELEMENT_SIZE, Sort.by(SORT_PROPERTY).descending());
+        Page<Report> reportPage = reportRepository.findReportListByHandledState(reportOrderBy.getOrderBy(), handleState, pageable);
 
-        if (orderBy.equals(POST_ENG) || orderBy.equals(COMMENT_ENG) || orderBy.equals(REPLY_ENG) || orderBy.equals(All_ENG)){
-            Pageable pageable = PageRequest.of(page - 1, PAGE_ELEMENT_SIZE, Sort.by(SORT_PROPERTY).descending());
-            Page<Report> reportPage = reportRepository.findStandbyReportListByHandledState(orderBy, Report.State.STANDBY, pageable);
-
-            return new ReportDto.ReportListRes(reportPage, orderBy);
-        } else {
-            throw new BusinessLogicException(BusinessExceptionCode.BAD_REQUEST);
-        }
-    }
-
-    // 처리된 신고 목록 조회
-    @Override
-    public ReportDto.ReportListRes findListDeletedReport(int page, String orderBy) {
-
-        if (orderBy.equals(POST_ENG) || orderBy.equals(COMMENT_ENG) || orderBy.equals(REPLY_ENG) || orderBy.equals(All_ENG)){
-            Pageable pageable = PageRequest.of(page - 1, PAGE_ELEMENT_SIZE, Sort.by(SORT_PROPERTY).descending());
-            Page<Report> reportPage = reportRepository.findDeletedReportListByHandledState(orderBy, Report.State.DELETED, pageable);
-
-            return new ReportDto.ReportListRes(reportPage, orderBy);
-        } else {
-            throw new BusinessLogicException(BusinessExceptionCode.BAD_REQUEST);
-        }
+        return new ReportDto.ReportListRes(reportPage, reportOrderBy.getOrderBy());
     }
 
     // 신고된 대상 찾기
@@ -90,56 +64,52 @@ public class ReportFindServiceImpl implements ReportFindService {
                 .orElseThrow( () -> new BusinessLogicException(BusinessExceptionCode.REPORT_NOT_FOUND));
     }
 
+    // 신고된 글 세부 내용 조회
+    private String findContent(Report report, ReportTargetType targetType) {
+        switch (targetType) {
+            case POSTS:
+                return report.getTargetPosts().getTitle();
+            case COMMENT:
+                return report.getTargetComment().getContent();
+            case REPLY:
+                return report.getTargetReply().getContent();
+        }
+        return null;
+    }
+
     // 신고된 글을 쓴 작성자 조회
-    private String findReportByContentWriter(Long reportId, String targetType) {
-        if(targetType.equals(POST_KOR)) {
-            return reportRepository.findReportPostsWriter(reportId);
-
-        } else if (targetType.equals(COMMENT_KOR)) {
-            return reportRepository.findReportCommentWriter(reportId);
-
-        } else if (targetType.equals(REPLY_KOR)) {
-            return reportRepository.findReportReplyWriter(reportId);
+    private String findReportByContentWriter(Long reportId, ReportTargetType targetType) {
+        switch (targetType) {
+            case POSTS:
+                return reportRepository.findReportPostsWriter(reportId);
+            case COMMENT:
+                return reportRepository.findReportCommentWriter(reportId);
+            case REPLY:
+                return reportRepository.findReportReplyWriter(reportId);
         }
         return null;
     }
 
     // 신고된 글 조회
-    private Long findPostsIdByReport(Report report, String targetType) {
-        if(targetType.equals(POST_KOR)) {
-            return report.getTargetPosts().getId();
-        } else if (targetType.equals(COMMENT_KOR)) {
-            return report.getTargetComment().getPosts().getId();
-        } else if (targetType.equals(REPLY_KOR)) {
-            return report.getTargetReply().getComment().getPosts().getId();
+    private Long findPostsIdByReport(Report report, ReportTargetType targetType) {
+        switch (targetType) {
+            case POSTS:
+                return report.getTargetPosts().getId();
+            case COMMENT:
+                return report.getTargetComment().getPosts().getId();
+            case REPLY:
+                return report.getTargetReply().getComment().getPosts().getId();
         }
         return null;
     }
 
-    // 신고된 글 세부 내용 조회
-    private String findContent(Report report, String targetType) {
-        if(targetType.equals(POST_KOR)) {
-            return report.getTargetPosts().getTitle();
-
-        } else if (targetType.equals(COMMENT_KOR)) {
-            return report.getTargetComment().getContent();
-
-        } else if (targetType.equals(REPLY_KOR)) {
-            return report.getTargetReply().getContent();
+    // targetType enum 으로 타입 변환
+    private ReportTargetType checkTargetType(String targetType) {
+        for (ReportTargetType reportTargetType : ReportTargetType.values()) {
+            if (reportTargetType.getKor().equals(targetType)) {
+                return reportTargetType;
+            }
         }
-        return null;
-    }
-
-    // targetType 한글로 변환
-    private String renameTargetType(String targetType) {
-        if(targetType.equals(POST_ENG)) {
-            return targetType.replace(POST_ENG, POST_KOR);
-        } else if (targetType.equals(COMMENT_ENG)) {
-            return targetType.replace(COMMENT_ENG, COMMENT_KOR);
-
-        } else if (targetType.equals(REPLY_ENG)) {
-            return targetType.replace(REPLY_ENG, REPLY_KOR);
-        }
-        return null;
+        throw new ValidFailException(ValidFailExceptionCode.TARGET_TYPE_BY_NOT_VALID);
     }
 }

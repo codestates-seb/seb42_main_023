@@ -66,21 +66,6 @@ public class Report {
         }
     }
 
-    // 신고 정렬 기준
-    public enum OrderBy {
-        ALL("all"),
-        POST("post"),
-        COMMENT("comment"),
-        REPLY("reply"),;
-
-        @Getter
-        private final String orderBy;
-
-        OrderBy(String orderBy) {
-            this.orderBy = orderBy;
-        }
-    }
-
     @Builder
     public Report(String reportReason, String description, String targetType,
                   Comment targetComment, Reply targetReply, Posts targetPosts, Member reporter,

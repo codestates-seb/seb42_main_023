@@ -25,9 +25,9 @@ import static com.teamdragon.dragonmoney.app.domain.report.entity.QReport.report
 
 @RequiredArgsConstructor
 public class ReportRepositoryImpl implements ReportRepositoryCustom{
+
     private final JPAQueryFactory queryFactory;
 
-    // 신고된 글 작성자
     @Override
     public String findReportPostsWriter(Long reportId) {
         return queryFactory
@@ -62,9 +62,9 @@ public class ReportRepositoryImpl implements ReportRepositoryCustom{
                 .fetchOne();
     }
 
-    // 신고된 게시글 목록 조회
+    // 신고글 목록 조회
     @Override
-    public Page<Report> findStandbyReportListByHandledState(String orderby, Report.State handledState, Pageable pageable) {
+    public Page<Report> findReportListByHandledState(String orderby, Report.State handledState, Pageable pageable) {
         OrderSpecifier[] orders = getAllOrderSpecifiers(pageable, report);
 
         // 게시글 정렬
@@ -74,7 +74,7 @@ public class ReportRepositoryImpl implements ReportRepositoryCustom{
                 .distinct()
                 .join(report.targetPosts, posts)
                 .where(report.handleState.eq(handledState), report.targetPosts.isNotNull())
-                .where(posts.state.eq(Posts.State.ACTIVE))
+                .where(postByHandledState(handledState))
                 .orderBy(orders)
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
@@ -93,7 +93,7 @@ public class ReportRepositoryImpl implements ReportRepositoryCustom{
                     .distinct()
                     .join(report.targetComment, comment)
                     .where(report.handleState.eq(handledState), report.targetComment.isNotNull())
-                    .where(comment.state.eq(Comment.State.ACTIVE))
+                    .where(commentByHandledState(handledState))
                     .orderBy(orders)
                     .offset(pageable.getOffset())
                     .limit(pageable.getPageSize())
@@ -112,7 +112,7 @@ public class ReportRepositoryImpl implements ReportRepositoryCustom{
                     .distinct()
                     .join(report.targetReply, reply)
                     .where(report.handleState.eq(handledState), report.targetReply.isNotNull())
-                    .where(reply.state.eq(Reply.State.ACTIVE))
+                    .where(replyByHandledState(handledState))
                     .orderBy(orders)
                     .offset(pageable.getOffset())
                     .limit(pageable.getPageSize())
@@ -125,7 +125,7 @@ public class ReportRepositoryImpl implements ReportRepositoryCustom{
             return PageableExecutionUtils.getPage(content, pageable, countQuery::fetchOne);
         }
         // 모두 가져오기
-        else if (orderby.equals("all")) {
+        else if (orderby.equals("all") && handledState.equals(Report.State.STANDBY)) {
             List<Report> content = queryFactory
                     .selectFrom(report)
                     .distinct()
@@ -145,92 +145,7 @@ public class ReportRepositoryImpl implements ReportRepositoryCustom{
                     .from(report)
                     .where(report.handleState.eq(handledState));
             return PageableExecutionUtils.getPage(content, pageable, countQuery::fetchOne);
-        }
-        return null;
-    }
-
-    private BooleanExpression activePost() {
-        if (report.targetPosts.state.equals(Posts.State.ACTIVE)) {
-            return report.targetPosts.state.eq(Posts.State.ACTIVE);
-        }
-        return null;
-    }
-
-    private BooleanExpression activeComment() {
-        if (report.targetComment.state.equals(Comment.State.ACTIVE)) {
-            return report.targetComment.state.eq(Comment.State.ACTIVE);
-        }
-        return null;
-    }
-
-    private BooleanExpression activeReply() {
-        if (report.targetReply.state.equals(Reply.State.ACTIVE)) {
-            return report.targetReply.state.eq(Reply.State.ACTIVE);
-        }
-        return null;
-    }
-
-    // 처리된 게시글 목록 조회
-    @Override
-    public Page<Report> findDeletedReportListByHandledState(String orderby, Report.State handledState, Pageable pageable) {
-        OrderSpecifier[] orders = getAllOrderSpecifiers(pageable, report);
-
-        // 게시글 정렬
-        if(orderby.equals("post")) {
-            List<Report> content = queryFactory
-                    .selectFrom(report)
-                    .distinct()
-                    .join(report.targetPosts, posts)
-                    .where(report.handleState.eq(handledState), report.targetPosts.isNotNull())
-                    .orderBy(orders)
-                    .offset(pageable.getOffset())
-                    .limit(pageable.getPageSize())
-                    .fetch();
-            JPAQuery<Long> countQuery = queryFactory
-                    .select(report.count())
-                    .from(report)
-                    .where(report.handleState.eq(handledState))
-                    .where(report.targetPosts.isNotNull());
-            return PageableExecutionUtils.getPage(content, pageable, countQuery::fetchOne);
-        }
-        // 댓글 정렬
-        else if (orderby.equals("comment")) {
-            List<Report> content = queryFactory
-                    .selectFrom(report)
-                    .distinct()
-                    .join(report.targetComment, comment)
-                    .where(report.handleState.eq(handledState), report.targetComment.isNotNull())
-                    .orderBy(orders)
-                    .offset(pageable.getOffset())
-                    .limit(pageable.getPageSize())
-                    .fetch();
-            JPAQuery<Long> countQuery = queryFactory
-                    .select(report.count())
-                    .from(report)
-                    .where(report.handleState.eq(handledState))
-                    .where(report.targetComment.isNotNull());
-            return PageableExecutionUtils.getPage(content, pageable, countQuery::fetchOne);
-        }
-        // 답글 정렬
-        else if (orderby.equals("reply")) {
-            List<Report> content = queryFactory
-                    .selectFrom(report)
-                    .distinct()
-                    .join(report.targetReply, reply)
-                    .where(report.handleState.eq(handledState), report.targetReply.isNotNull())
-                    .orderBy(orders)
-                    .offset(pageable.getOffset())
-                    .limit(pageable.getPageSize())
-                    .fetch();
-            JPAQuery<Long> countQuery = queryFactory
-                    .select(report.count())
-                    .from(report)
-                    .where(report.handleState.eq(handledState))
-                    .where(report.targetReply.isNotNull());
-            return PageableExecutionUtils.getPage(content, pageable, countQuery::fetchOne);
-        }
-        // 모두 가져오기
-        else if (orderby.equals("all")) {
+        } else if (orderby.equals("all") && handledState.equals(Report.State.DELETED)) {
             List<Report> content = queryFactory
                     .selectFrom(report)
                     .distinct()
@@ -245,7 +160,27 @@ public class ReportRepositoryImpl implements ReportRepositoryCustom{
                     .where(report.handleState.eq(handledState));
             return PageableExecutionUtils.getPage(content, pageable, countQuery::fetchOne);
         }
+        return null;
+    }
 
+    private BooleanExpression postByHandledState(Report.State handledState) {
+        if (handledState.equals(Report.State.STANDBY)) {
+            return posts.state.eq(Posts.State.ACTIVE);
+        }
+        return null;
+    }
+
+    private BooleanExpression commentByHandledState(Report.State handledState) {
+        if (handledState.equals(Report.State.STANDBY)) {
+            return comment.state.eq(Comment.State.ACTIVE);
+        }
+        return null;
+    }
+
+    private BooleanExpression replyByHandledState(Report.State handledState) {
+        if (handledState.equals(Report.State.STANDBY)) {
+            return reply.state.eq(Reply.State.ACTIVE);
+        }
         return null;
     }
 

@@ -5,8 +5,7 @@ import com.teamdragon.dragonmoney.app.domain.report.entity.Report;
 
 public interface ReportHandleService {
 
-    Report saveReport(ReportDto.ReportPostReq newReport);
+    Report saveReport(ReportDto.ReportPostReq newReport, ReportTargetType reportTargetType);
 
-    // 신고 대상 삭제
     Long removeReport(Long reportId);
 }
