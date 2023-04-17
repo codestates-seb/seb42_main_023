@@ -12,7 +12,6 @@ import { TagItemWidthDelete } from '../common/Tag';
 import { MdCancel } from 'react-icons/md';
 import SearchBtn from './SearchToggle';
 import { setPostCategory } from '../../slices/mainSlice';
-import { setSearchQuery } from '../../slices/headerSlice';
 import { useNavigate } from 'react-router-dom';
 
 interface Input {
@@ -72,17 +71,16 @@ const SearchBar: React.FC = () => {
     } else {
       dispatch(setPostCategory('/search'));
       if (tag.length === 0 && input.length !== 0) {
-        dispatch(setSearchQuery(`&keyword=${input}&tags=`));
+        navigation(`/search?keyword=${input}&tags=`);
       }
       if (tag.length !== 0 && input.length === 0) {
         const tagstring = tag.join();
-        dispatch(setSearchQuery(`&keyword=&tags=${tagstring}`));
+        navigation(`/search?keyword=&tags=${tagstring}`);
       }
       if (tag.length !== 0 && input.length !== 0) {
         const tagstring = tag.join();
-        dispatch(setSearchQuery(`&keyword=${input}&tags=${tagstring}`));
+        navigation(`/search?keyword=${input}&tags=${tagstring}`);
       }
-      navigation('/search');
     }
   };
   const searchEnterHandler = (event: KeyboardEvent<HTMLInputElement>): void => {
@@ -171,10 +169,11 @@ const Icon = styled.button`
   background-color: #fff;
   position: absolute;
   cursor: pointer;
-  right: 140px;
+  left: 463px;
   @media (max-width: 1100px) {
     position: absolute;
     right: 40px;
+    left: auto;
     top: 5px;
   }
 `;

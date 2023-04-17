@@ -30,7 +30,7 @@ const Tag = ({ content }: Props) => {
 
 export default Tag;
 
-export const TagItem = styled.button`
+export const TagItem = styled.span`
   position: relative;
   display: inline-flex;
   background-color: #fff;

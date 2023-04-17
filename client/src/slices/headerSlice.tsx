@@ -16,7 +16,6 @@ const headerSlice = createSlice({
     input: '',
     tag: [],
     memberImg: '',
-    searchQuery: '',
   },
   reducers: {
     setSearch: (state, action: Header): void => {
@@ -36,9 +35,6 @@ const headerSlice = createSlice({
     deleteAllSarchTag: (state): void => {
       (state.tag as Array<string>) = [];
     },
-    setSearchQuery: (state, action: Tag): void => {
-      state.searchQuery = action.payload;
-    },
   },
 });
 
@@ -49,5 +45,4 @@ export const {
   setSearchTag,
   deleteSarchTag,
   deleteAllSarchTag,
-  setSearchQuery,
 } = headerSlice.actions;

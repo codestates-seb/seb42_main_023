@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { useNavigate, useLocation } from 'react-router-dom';
-import { useAppSelector } from '../../hooks';
+import { useAppSelector, useAppDispatch } from '../../hooks';
 import LoginBtn from './LoginBtn';
 import SearchBar from './SearchBar';
 import SearchBtn from './SearchToggle';
@@ -12,16 +12,25 @@ import { MdManageAccounts } from 'react-icons/md';
 import Cookies from 'js-cookie';
 import { LogoSVG } from '../../assets/common/LogoSVG';
 import { AiOutlineMenu } from 'react-icons/ai';
+import { setSearch } from '../../slices/headerSlice';
 
 function HeaderDefault() {
   const navigate = useNavigate();
+  const dispatch = useAppDispatch();
   const { pathname } = useLocation();
   const header = useAppSelector(({ header }) => header);
   const auth = Cookies.get('Authorization');
   const adim = localStorage.getItem('role');
   const [memberImg, setMemberImg] = useState('');
   const [menuOpen, setMenuOpen] = useState(false);
-
+  useEffect(() => {
+    if (pathname === '/search') {
+      dispatch(setSearch(true));
+    }
+    if (pathname !== '/search') {
+      dispatch(setSearch(false));
+    }
+  }, [pathname]);
   useEffect(() => {
     if (auth !== undefined) {
       const img = localStorage.getItem('picture');
