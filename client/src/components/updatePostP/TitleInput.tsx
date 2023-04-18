@@ -70,6 +70,7 @@ const TitleInputContainer = styled.div`
   height: 100%;
   margin-top: 50px;
   margin-bottom: 20px;
+  min-width: 640px;
   h1 {
     font-size: 24px;
     font-weight: 400;
@@ -83,11 +84,15 @@ const Input = styled.input`
   padding: 0 10px 0 10px;
   margin-top: 20px;
   padding-left: 15px;
+  min-width: 640px;
   ::placeholder {
     font-style: italic;
   }
   :focus {
     outline: 2px solid #0069ca;
+  }
+  @media (max-width: 1100px) {
+    width: 90vw;
   }
 `;
 

@@ -114,13 +114,7 @@ const BodyInput: React.FC = () => {
         container: [
           [{ header: '1' }, { header: '2' }, { font: [] }],
           [{ size: [] }],
-          ['bold', 'italic', 'underline', 'strike', 'blockquote'],
-          [
-            { list: 'ordered' },
-            { list: 'bullet' },
-            { indent: '-1' },
-            { indent: '+1' },
-          ],
+          ['bold', 'italic', 'underline', 'strike'],
           ['link', 'image'],
           ['clean'],
         ],
@@ -142,10 +136,7 @@ const BodyInput: React.FC = () => {
     'italic',
     'underline',
     'strike',
-    'blockquote',
-    'list',
-    'bullet',
-    'indent',
+
     'link',
     'image',
   ];
@@ -200,14 +191,23 @@ export default BodyInput;
 const EditorContainer = styled.div`
   width: 100%;
   height: 100%;
+  min-width: 640px;
 `;
 
 const Editor = styled.div`
   width: 100%;
   height: 40vh;
   margin-bottom: 60px;
+  min-width: 640px;
   .quill-edit {
     height: 100%;
+  }
+  @media (max-width: 1100px) {
+    width: 100%;
+    .quill-edit {
+      width: 90vw;
+      min-width: 640px;
+    }
   }
 `;
 
