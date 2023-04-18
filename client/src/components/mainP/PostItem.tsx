@@ -63,13 +63,12 @@ export default PostItem;
 
 export const Item = styled.li`
   a {
-    height: 100px;
     border-bottom: 1px solid var(--border-color);
     box-sizing: border-box;
     display: flex;
     justify-content: center;
     align-items: center;
-    padding: 0 20px;
+    padding: 20px 20px;
     h1 {
       font-size: 20px;
       margin-bottom: 4px;
@@ -89,6 +88,9 @@ export const Itemside = styled.div`
   > div {
     display: flex;
   }
+  @media (max-width: 640px) {
+    display: block;
+  }
 `;
 export const Info = styled.div`
   span {
@@ -100,6 +102,13 @@ export const Info = styled.div`
     align-items: center;
     svg {
       margin-right: 2px;
+    }
+  }
+  @media (max-width: 640px) {
+    span {
+      margin: 0;
+      margin-right: 12px;
+      margin-top: 6px;
     }
   }
 `;

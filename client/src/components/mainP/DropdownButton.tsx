@@ -89,6 +89,9 @@ export const Btn = styled.button`
   :hover {
     color: var(--hover-font-gray-color);
   }
+  @media (max-width: 1100px) {
+    width: 100px;
+  }
 `;
 
 export const List = styled.ul`

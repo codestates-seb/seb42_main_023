@@ -1,9 +1,10 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import styled from 'styled-components';
 import DropdownButton from '../components/mainP/DropdownButton';
 import { AiOutlineTrophy } from 'react-icons/ai';
 import { NavBtn } from '../components/common/Btn';
-import { useAppDispatch } from '../hooks';
+import lottie from 'lottie-web';
+import Animation from '../components/mainP/mainAnimation.json';
 import { postListApi } from '../api/postListapi';
 import { weeklyPopularApi } from '../api/postListapi';
 import Pagenation from '../components/common/Pagination';
@@ -14,11 +15,11 @@ import { PostListItem } from '../types/PostList';
 import WeeklyPopularPost from '../components/mainP/WeeklyPopularPost';
 
 const Main = () => {
-  const dispatch = useAppDispatch();
   const [pageOffset, setPageOffset] = useState(0);
   const [currentPage, setCurrentPage] = useState(1);
   const [orderby, setOrderby] = useState('latest');
   const [postCategory, setPostCategory] = useState('');
+  const container = useRef<HTMLDivElement>(null);
   const postListquery = postListApi.useGetPostListQuery({
     postSetting: postCategory,
     page: currentPage,
@@ -35,10 +36,25 @@ const Main = () => {
     refetch();
   }, []);
 
+  useEffect(() => {
+    if (container.current) {
+      lottie.loadAnimation({
+        container: container.current,
+        renderer: 'svg',
+        loop: true,
+        autoplay: true,
+        animationData: Animation,
+        rendererSettings: {
+          preserveAspectRatio: 'xMidYMid slice',
+        },
+      });
+    }
+  }, []);
+
   if (!isSuccess) return <Loading />;
 
   return (
-    <>
+    <MainContainer>
       <Banner>
         <h1>
           <RiMoneyDollarCircleLine color="#fff" size={28} />
@@ -48,7 +64,16 @@ const Main = () => {
           용돈 받을 때부터 드릴때까지! 재테크, 내집마련, 주식투자, 모든
           금융고민을 또래 사회초년생과 함께 나눠보세요.
         </p>
+        <AnimationContainer ref={container}></AnimationContainer>
       </Banner>
+      <WeeklyPopularHeader>주간인기글</WeeklyPopularHeader>
+      <WeeklyPopularContainer>
+        {weeklyPopularquery?.data?.posts.map(
+          (post: PostListItem, index: number) => (
+            <WeeklyPopularPost post={post} key={post.postId} />
+          ),
+        )}
+      </WeeklyPopularContainer>
       <FilterWrap>
         <div>
           {postCategory === '' ? (
@@ -87,12 +112,6 @@ const Main = () => {
         </div>
       </FilterWrap>
       <List>
-        {currentPage === 1 &&
-          weeklyPopularquery?.data?.posts.map(
-            (post: PostListItem, index: number) => (
-              <WeeklyPopularPost post={post} index={index} key={post.postId} />
-            ),
-          )}
         {data?.posts.map((post: PostListItem) => (
           <PostItem post={post} key={post.postId} />
         ))}
@@ -105,15 +124,48 @@ const Main = () => {
           setCurrentPage={setCurrentPage}
         />
       )}
-    </>
+    </MainContainer>
   );
 };
 
 export default Main;
 
+const MainContainer = styled.div`
+  position: relative;
+`;
+const AnimationContainer = styled.div`
+  width: 100px;
+  height: 100px;
+  position: absolute;
+  right: 0;
+  top: 50px;
+`;
+
 export const List = styled.ul`
   margin-top: -4px;
   border-top: 1px solid var(--border-color);
+`;
+
+const WeeklyPopularHeader = styled.h1`
+  margin-bottom: 10px;
+  @media (max-width: 1100px) {
+    margin: 0 10px;
+    margin-bottom: 10px;
+  }
+`;
+
+const WeeklyPopularContainer = styled.ul`
+  margin-bottom: 80px;
+  display: flex;
+  justify-content: space-between;
+  @media (max-width: 1100px) {
+    margin: 0 10px;
+    margin-bottom: 50px;
+  }
+  @media (max-width: 640px) {
+    width: auto;
+    display: block;
+  }
 `;
 
 const ComuntyBtn = styled(NavBtn)`
@@ -134,13 +186,12 @@ const FilterWrap = styled.div`
   justify-content: space-between;
 `;
 const Banner = styled.div`
-  width: 100%;
+  width: auto;
   background: linear-gradient(90deg, #0069ca 0%, #0d1275 100%);
-  height: 120px;
   margin-bottom: 40px;
   padding: 30px;
   border-radius: 10px;
-
+  box-sizing: border-box;
   h1 {
     color: #fff;
     font-size: 24px;
@@ -155,5 +206,9 @@ const Banner = styled.div`
     color: #fff;
     font-weight: 200;
     margin-top: 8px;
+  }
+  @media (max-width: 1100px) {
+    margin: 0 10px;
+    margin-bottom: 40px;
   }
 `;
