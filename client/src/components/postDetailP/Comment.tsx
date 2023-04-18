@@ -392,8 +392,8 @@ const Comment: React.FC<
                             style={{
                               margin:
                                 loginUserName === comment?.memberName
-                                  ? '3px 165px 0 5px'
-                                  : '3px 195px 0 5px',
+                                  ? '3px auto 0 5px'
+                                  : '3px auto 0 5px',
                             }}
                             id="댓글"
                             onClick={(
@@ -420,8 +420,8 @@ const Comment: React.FC<
 
                             margin:
                               loginUserName === comment?.memberName
-                                ? '3px 148px 0 5px'
-                                : '3px 258px 0 5px',
+                                ? '3px auto 0 5px'
+                                : '3px auto 0 5px',
                           }}
                           onClick={(event): void => {
                             if (!isLogin) navigate('/login');
@@ -694,13 +694,13 @@ const CommentContainer = styled.div`
   .comment-delete {
     width: 40px;
     font-size: 16px;
-    margin: 3px auto 0 5px;
+    margin: 3px 30px 0 5px;
     cursor: pointer;
   }
   .comment-report {
     width: 40px;
     font-size: 16px;
-    margin: 3px auto 0 5px;
+    margin: 3px 30px 0 5px;
     color: #ca0000;
     cursor: pointer;
   }
@@ -766,6 +766,9 @@ const CommentContainer = styled.div`
       min-width: 100px;
       width: max-content;
     }
+    .image {
+      min-width: 25px;
+    }
     .created-time {
       min-width: 50px;
       width: max-content;
@@ -776,12 +779,12 @@ const CommentContainer = styled.div`
     }
     .comment-delete {
       min-width: 40px;
-      width: 1000px;
+      width: 100%;
       margin: 3px 15px 0 5px;
     }
     .comment-report {
       min-width: 40px;
-      width: 1000px;
+      width: 100%;
       margin: 3px 0 0 5px;
     }
   }

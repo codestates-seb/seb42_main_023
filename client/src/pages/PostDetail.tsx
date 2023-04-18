@@ -632,6 +632,11 @@ const Container = styled.div<any>`
   }
   @media (max-width: 1100px) {
     grid-template-columns: none;
+    min-width: 640px;
+  }
+
+  img {
+    max-width: 100%;
   }
 `;
 const PostContainer = styled.div`
@@ -829,7 +834,6 @@ const DeleteModal = styled.div`
   border: solid 1px #d4d4d4;
   border-radius: 5px;
   color: #5c5c5c;
-
   padding: 0 15px 0 15px;
 
   .delete {

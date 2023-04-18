@@ -101,6 +101,10 @@ export default TagInput;
 const TagInputContainer = styled.div`
   width: 100%;
   height: 40px;
+  @media (max-width: 1100px) {
+    width: 90vw;
+    min-width: 640px;
+  }
 `;
 
 const Input = styled.input`
@@ -108,11 +112,16 @@ const Input = styled.input`
   height: 50px;
   border: 1px solid #d4d4d4;
   padding: 0 10px 0 10px;
+  padding-left: 15px;
+  min-width: 640px;
   ::placeholder {
     font-style: italic;
   }
   :focus {
     outline: 2px solid #0069ca;
+  }
+  @media (max-width: 1100px) {
+    width: 90vw;
   }
 `;
 
