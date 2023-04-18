@@ -281,8 +281,8 @@ const Reply: React.FC<Partial<ReplyProps & ReportProps>> = ({
               style={{
                 margin:
                   loginUserName === replyInfo?.memberName
-                    ? '3px 119px 0 5px'
-                    : '3px 195px 0 5px',
+                    ? '3px auto 0 5px'
+                    : '3px auto 0 5px',
               }}
               onClick={(event: React.MouseEvent<HTMLElement>) => {
                 dispatch(setReplyId(replyInfo?.replyId));
@@ -303,8 +303,8 @@ const Reply: React.FC<Partial<ReplyProps & ReportProps>> = ({
                 loginUserName === replyInfo?.memberName ? 'none' : 'block',
               margin:
                 loginUserName === replyInfo?.memberName
-                  ? '3px 148px 0 5px'
-                  : '3px 228px 0 5px',
+                  ? '3px auto 0 5px'
+                  : '3px auto 0 5px',
             }}
             onClick={(event): void => {
               if (!isLogin) navigate('/login');
