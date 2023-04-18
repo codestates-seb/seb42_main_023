@@ -1,21 +1,18 @@
-import React from 'react';
+import React, { FC, Dispatch, SetStateAction } from 'react';
 import styled from 'styled-components';
 import { WhiteBtn, BlueBtn } from '../common/Btn';
-import { useAppDispatch, useAppSelector } from '../../hooks';
+import { useAppSelector } from '../../hooks';
 import { useGetReportReviewQuery } from '../../api/reportApi';
 
 interface Props {
-  setIsReviewOpen: React.Dispatch<React.SetStateAction<boolean>>;
+  setIsReviewOpen: Dispatch<SetStateAction<boolean>>;
 }
 
-const ReportReview: React.FC<Props> = ({ setIsReviewOpen }) => {
-  // tools
+const ReportReview: FC<Props> = ({ setIsReviewOpen }) => {
   const { selectedReport } = useAppSelector(({ report }) => report);
   const { data, isSuccess } = useGetReportReviewQuery(selectedReport);
 
-  // '자세히 보기' 버튼을 누르면 해당 페이지로 이동한다.
-  // TODO: 배포 후 프론트주소로 바꾸기
-  const seeDetailHandler = () => {
+  const seeDetailHandler = (): void => {
     window.open(
       `http://hp5234-dragonmoney-front.s3-website.ap-northeast-2.amazonaws.com/posts/${data.postId}`,
     );

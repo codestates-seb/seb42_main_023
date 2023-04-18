@@ -3,30 +3,27 @@ import styled from 'styled-components';
 import LargeProfileImg from '../common/LargeProfileImg';
 import DropdownButton from './DropdownButton';
 import ProfileEdit from './ProfileEdit';
-import { useAppDispatch, useAppSelector } from '../../hooks';
+import { useAppDispatch } from '../../hooks';
 import { setEditWidth } from '../../slices/mypageSlice';
-import { membersApi, useUpdateMemberMutation } from '../../api/membersApi';
+import { useUpdateMemberMutation } from '../../api/membersApi';
 
-function Profile() {
+interface Member {
+  memberImage: string;
+  memberName: string;
+  intro: string;
+}
+
+function Profile({ member }: { member: Member }) {
   const dispatch = useAppDispatch();
   const [EditOpen, setEditOpen] = useState(false);
   const [content, setContent] = useState('');
   const [blank, setBlank] = useState('');
-  const { memberName } = useAppSelector(({ header }) => header);
   const divRef = useRef<HTMLDivElement>(null);
-  const membersQuery = membersApi.useGetMemberQuery({
-    name: memberName,
-  });
-  const { data, isSuccess, refetch } = membersQuery;
   const loginuser = localStorage.getItem('name');
 
-  useEffect(() => {
-    refetch();
-  }, []);
-
   const EditOpenHandler = () => {
-    if (data.member.intro) {
-      setContent(data.member.intro);
+    if (member.intro) {
+      setContent(member.intro);
     }
     setEditOpen(!EditOpen);
     if (divRef.current !== null) {
@@ -50,32 +47,30 @@ function Profile() {
 
   return (
     <ProfileWrap>
-      {isSuccess && <LargeProfileImg url={data.member.memberImage} />}
+      <LargeProfileImg url={member.memberImage} />
       <article>
-        {isSuccess && (
-          <h1>
-            {data.member.memberName}
-            {data.member.memberName === loginuser &&
-              (EditOpen ? (
-                <>
-                  <Finish onClick={submitHandler}>확인</Finish>
-                </>
-              ) : (
-                <button onClick={EditOpenHandler}>소개수정</button>
-              ))}
-          </h1>
-        )}
+        <h1>
+          {member.memberName}
+          {member.memberName === loginuser &&
+            (EditOpen ? (
+              <>
+                <Finish onClick={submitHandler}>확인</Finish>
+              </>
+            ) : (
+              <button onClick={EditOpenHandler}>소개수정</button>
+            ))}
+        </h1>
         {EditOpen ? (
           <>
             <ProfileEdit content={content} setContent={setContent} />
             <Leng>{content.length}/500</Leng>
           </>
         ) : (
-          <Intro ref={divRef}>{isSuccess && data.member.intro}</Intro>
+          <Intro ref={divRef}> {member.intro}</Intro>
         )}
         {blank && <Error>소개글이 비어있습니다.</Error>}
+        {member.memberName === loginuser && <DropdownButton />}
       </article>
-      {isSuccess && data.member.memberName === loginuser && <DropdownButton />}
     </ProfileWrap>
   );
 }

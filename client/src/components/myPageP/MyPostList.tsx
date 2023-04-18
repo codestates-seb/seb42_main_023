@@ -1,16 +1,14 @@
 import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
-import { useAppSelector } from '../../hooks';
 import { membersPostListApi } from '../../api/membersApi';
 import Pagination from '../common/Pagination';
 import { PostListItem } from '../../types/PostList';
 import Nolist from './Nolist';
 import PostItem from '../mainP/PostItem';
 
-function MyPostList() {
+function MyPostList({ memberName }: { memberName: string }) {
   const [pageOffset, setPageOffset] = useState(0);
   const [currentPage, setCurrentPage] = useState(1);
-  const { memberName } = useAppSelector(({ header }) => header);
 
   const membersPostListquery = membersPostListApi.useGetMemberPostListQuery({
     name: memberName,
@@ -54,4 +52,7 @@ export const PostListWrap = styled.div`
   display: flex;
   flex-direction: column;
   width: 1000px;
+  @media (max-width: 1100px) {
+    width: 100%;
+  }
 `;

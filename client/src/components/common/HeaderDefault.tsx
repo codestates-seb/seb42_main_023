@@ -2,7 +2,6 @@ import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useAppSelector, useAppDispatch } from '../../hooks';
-import { setMemberName } from '../../slices/headerSlice';
 import LoginBtn from './LoginBtn';
 import SearchBar from './SearchBar';
 import SearchBtn from './SearchToggle';
@@ -11,6 +10,9 @@ import MediumProfileImg from './MediumProfileImg';
 import HeaderNav from './HeaderNav';
 import { MdManageAccounts } from 'react-icons/md';
 import Cookies from 'js-cookie';
+import { LogoSVG } from '../../assets/common/LogoSVG';
+import { AiOutlineMenu } from 'react-icons/ai';
+import { setSearch } from '../../slices/headerSlice';
 
 function HeaderDefault() {
   const navigate = useNavigate();
@@ -20,14 +22,20 @@ function HeaderDefault() {
   const auth = Cookies.get('Authorization');
   const adim = localStorage.getItem('role');
   const [memberImg, setMemberImg] = useState('');
-
+  const [menuOpen, setMenuOpen] = useState(false);
+  useEffect(() => {
+    if (pathname === '/search') {
+      dispatch(setSearch(true));
+    }
+    if (pathname !== '/search') {
+      dispatch(setSearch(false));
+    }
+  }, [pathname]);
   useEffect(() => {
     if (auth !== undefined) {
       const img = localStorage.getItem('picture');
-      const name = localStorage.getItem('name');
-      if (img && name) {
+      if (img) {
         setMemberImg(img);
-        dispatch(setMemberName(name));
       }
     }
   }, []);
@@ -38,7 +46,10 @@ function HeaderDefault() {
   ) : (
     <NavHead>
       <div>
-        <HeaderNav />
+        <Main onClick={() => navigate('/')} aria-label="logo">
+          <LogoSVG />
+        </Main>
+        <HeaderNav menuOpen={menuOpen} />
         <Btns>
           {(pathname === '/' || pathname === '/search') && <SearchBtn />}
           {auth === undefined && <LoginBtn />}
@@ -53,12 +64,15 @@ function HeaderDefault() {
               <MediumProfileImg memberImg={memberImg} />
               <button
                 onClick={() => navigate('reports/standby')}
-                id="managing-page"
+                aria-label="managingPage"
               >
                 <MdManageAccounts size={30} />
               </button>
             </Adminwrap>
           )}
+          <MenuBtn onClick={() => setMenuOpen(!menuOpen)} aria-label="menu">
+            <AiOutlineMenu size={30} />
+          </MenuBtn>
         </Btns>
       </div>
     </NavHead>
@@ -81,12 +95,14 @@ const NavHead = styled.header`
       justify-content: space-between;
     }
   }
-  nav {
-    width: 780px;
-    display: flex;
-    justify-content: space-between;
-    button {
-      margin-right: 30px;
+
+  @media (max-width: 1100px) {
+    height: 55px;
+    div {
+      align-items: flex-start;
+      :first-child {
+        width: 100%;
+      }
     }
   }
 `;
@@ -101,6 +117,19 @@ const SearchHead = styled.header`
     :first-child {
       display: flex;
       justify-content: space-between;
+      position: relative;
+    }
+  }
+  @media (max-width: 1100px) {
+    padding: 10px 10px;
+    div {
+      :first-child {
+        flex-direction: column;
+        margin-top: 4px;
+        width: 100%;
+        margin-bottom: 28px;
+        align-items: flex-start;
+      }
     }
   }
 `;
@@ -117,9 +146,28 @@ const Btns = styled.div`
       }
     }
   }
+  @media (max-width: 1100px) {
+    position: absolute;
+    right: 10px;
+  }
+`;
+const MenuBtn = styled.button`
+  display: none;
+  @media (max-width: 1100px) {
+    display: block;
+    transform: translateY(2px);
+  }
 `;
 const Adminwrap = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
+`;
+const Main = styled.button`
+  background-color: #fff;
+  cursor: pointer;
+  @media (max-width: 1100px) {
+    position: absolute;
+    left: 10px;
+  }
 `;

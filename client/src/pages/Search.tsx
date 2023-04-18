@@ -8,13 +8,14 @@ import Pagenation from '../components/common/Pagination';
 import { PostListItem } from '../types/PostList';
 import { List } from '../pages/Main';
 import Nolist from '../components/myPageP/Nolist';
+import { useLocation } from 'react-router-dom';
 
 const Search = () => {
   const [pageOffset, setPageOffset] = useState(0);
   const [currentPage, setCurrentPage] = useState(1);
-
+  const { search } = useLocation();
+  const searchQuery = `&${search.slice(1)}`;
   const { postCategory, orderby } = useAppSelector(({ main }) => main);
-  const { searchQuery } = useAppSelector(({ header }) => header);
   const postListquery = postListApi.useGetPostListQuery({
     postSetting: postCategory,
     page: currentPage,

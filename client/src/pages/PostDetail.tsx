@@ -32,7 +32,6 @@ import {
   setSelectedMember,
 } from '../slices/postSlice';
 import { setReportErr } from '../slices/validationSlice';
-import { setMemberName } from '../slices/headerSlice';
 import { checkIsLogin } from '../../src/util/checkIsLogin';
 
 const PostDetail: React.FC = () => {
@@ -516,8 +515,7 @@ const PostDetail: React.FC = () => {
                       <button
                         className="intro-moreInfo"
                         onClick={() => {
-                          dispatch(setMemberName(data?.memberName));
-                          navigate('/mypage');
+                          navigate(`/mypage?name=${data?.memberName}`);
                         }}
                       >
                         더보기

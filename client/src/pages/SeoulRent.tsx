@@ -1,21 +1,16 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState } from 'react';
 import styled from 'styled-components';
 import { MainContainer } from './RecommendLoan';
 import Seoulmap from '../assets/mapbg.svg';
 import { AREAS_MAP, Seoulrent } from '../../src/components/seoulRentP/map';
 import ImageMapper from 'react-img-mapper';
-import { CustomArea, AreaEvent } from 'react-img-mapper/dist/types';
+import { CustomArea } from 'react-img-mapper/dist/types';
 import { seoulrentApi } from '../api/seoulrentApi';
 import { AiFillHome } from 'react-icons/ai';
 import { AiOutlineEnvironment } from 'react-icons/ai';
 import Loading from '../components/common/Loading';
 
-interface StyleProps {
-  left: number;
-  top: number;
-}
 function SeoulRent() {
-  const tooltipRef = useRef<HTMLDivElement>(null);
   const seoulrentquery = seoulrentApi.useGetSeoulRentListQuery({
     query: '',
   });
@@ -32,7 +27,7 @@ function SeoulRent() {
     return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
   }
 
-  const moveOnArea = (area: CustomArea, evt: AreaEvent) => {
+  const moveOnArea = (area: CustomArea) => {
     setClickedArea(area.id as string);
     const dataItem = data?.locationList.find(
       (el: Seoulrent) => el.location === area.id,
@@ -64,7 +59,7 @@ function SeoulRent() {
         map={AREAS_MAP}
         width={730}
         height={530}
-        onMouseUp={(area, _, evt) => moveOnArea(area, evt)}
+        onMouseUp={(area) => moveOnArea(area)}
         stayHighlighted={true}
       />
       {openTooltip ? (
@@ -100,7 +95,6 @@ function SeoulRent() {
           position: 'absolute',
           left: '396px',
           top: '498px',
-          zIndex: 2,
         }}
       >
         영등포구

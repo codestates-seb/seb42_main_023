@@ -1,19 +1,15 @@
 import React from 'react';
 import styled from 'styled-components';
 import { useNavigate } from 'react-router-dom';
-import { useAppDispatch } from '../../hooks';
-import { setMemberName } from '../../slices/headerSlice';
 import { NoimgSVG } from '../../assets/common/NoimgSVG';
 
 const MediumProfileImg = ({ memberImg }: { memberImg: string }) => {
   const navigate = useNavigate();
-  const dispatch = useAppDispatch();
   const loginUser = localStorage.getItem('name');
 
   const clickmemberHandler = () => {
     if (loginUser) {
-      dispatch(setMemberName(loginUser));
-      navigate('/mypage');
+      navigate(`/mypage?name=${loginUser}`);
     }
   };
   return (

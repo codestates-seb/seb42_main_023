@@ -13,7 +13,6 @@ import { membersApi } from '../../api/membersApi';
 import { setReportType, setSelectedMember } from '../../slices/postSlice';
 import { setCommentId } from '../../slices/commentSlice';
 import { isEdit, setIsEdit, setReplyId } from '../../slices/replySlice';
-import { setMemberName } from '../../slices/headerSlice';
 import { checkIsLogin } from '../../util/checkIsLogin';
 
 const Reply: React.FC<Partial<ReplyProps & ReportProps>> = ({
@@ -220,8 +219,7 @@ const Reply: React.FC<Partial<ReplyProps & ReportProps>> = ({
                 <button
                   className="intro-moreInfo"
                   onClick={() => {
-                    dispatch(setMemberName(replyInfo!.memberName));
-                    navigate('/mypage');
+                    navigate(`/mypage?name=${replyInfo!.memberName}`);
                   }}
                 >
                   더보기

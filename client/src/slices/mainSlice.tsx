@@ -28,12 +28,8 @@ const mainSlice = createSlice({
     setOrderby: (state, action: Orderby): void => {
       state.orderby = action.payload;
     },
-    setCurrentPage: (state, action: Page): void => {
-      state.currentPage = action.payload;
-    },
   },
 });
 
 export default mainSlice;
-export const { setPostCategory, setOrderby, setCurrentPage } =
-  mainSlice.actions;
+export const { setPostCategory, setOrderby } = mainSlice.actions;

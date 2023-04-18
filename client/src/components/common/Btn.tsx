@@ -25,6 +25,7 @@ export const SearchBtn = styled.button`
   padding: 4px 20px;
   box-sizing: border-box;
   border: 1px solid #d9d9d9;
+  width: 80px;
   background-color: var(--point-blue-color);
   font-size: 14px;
   color: #fff;
@@ -32,11 +33,15 @@ export const SearchBtn = styled.button`
     transition: 0.3s;
     background-color: var(--hover-point-blue-color);
   }
+  @media (max-width: 1100px) {
+    transform: translateY(4px);
+  }
 `;
 export const ClickSearchBtn = styled(SearchBtn)`
   background-color: #fff;
   color: #000;
   font-size: 14px;
+  width: 80px;
   :hover {
     background-color: var(--hover-button-color);
     color: var(--hover-font-gray-color);
@@ -54,6 +59,9 @@ export const NavBtnClicked = styled(NavBtn)`
   border-bottom: 1px solid var(--point-blue-color);
   font-size: 14px;
   color: var(--point-blue-color);
+  @media (max-width: 1100px) {
+    border-bottom: none;
+  }
 `;
 export const SidebarBtn = styled.button`
   width: 100%;

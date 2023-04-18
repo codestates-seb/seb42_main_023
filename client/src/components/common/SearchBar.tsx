@@ -12,7 +12,6 @@ import { TagItemWidthDelete } from '../common/Tag';
 import { MdCancel } from 'react-icons/md';
 import SearchBtn from './SearchToggle';
 import { setPostCategory } from '../../slices/mainSlice';
-import { setSearchQuery } from '../../slices/headerSlice';
 import { useNavigate } from 'react-router-dom';
 
 interface Input {
@@ -72,17 +71,16 @@ const SearchBar: React.FC = () => {
     } else {
       dispatch(setPostCategory('/search'));
       if (tag.length === 0 && input.length !== 0) {
-        dispatch(setSearchQuery(`&keyword=${input}&tags=`));
+        navigation(`/search?keyword=${input}&tags=`);
       }
       if (tag.length !== 0 && input.length === 0) {
         const tagstring = tag.join();
-        dispatch(setSearchQuery(`&keyword=&tags=${tagstring}`));
+        navigation(`/search?keyword=&tags=${tagstring}`);
       }
       if (tag.length !== 0 && input.length !== 0) {
         const tagstring = tag.join();
-        dispatch(setSearchQuery(`&keyword=${input}&tags=${tagstring}`));
+        navigation(`/search?keyword=${input}&tags=${tagstring}`);
       }
-      navigation('/search');
     }
   };
   const searchEnterHandler = (event: KeyboardEvent<HTMLInputElement>): void => {
@@ -138,9 +136,7 @@ const TagInputContainer = styled.div`
   height: 53px;
 `;
 
-const InputContainer = styled.div`
-  position: relative;
-`;
+const InputContainer = styled.div``;
 const Input = styled.input`
   border: 1px solid #d4d4d4;
   padding: 10px 20px;
@@ -152,6 +148,9 @@ const Input = styled.input`
     outline: none;
     border: none;
     box-shadow: 0 0 3px var(--hover-point-blue-color);
+  }
+  @media (max-width: 1100px) {
+    width: 100%;
   }
 `;
 
@@ -169,11 +168,20 @@ const TagConatiner = styled.div`
 const Icon = styled.button`
   background-color: #fff;
   position: absolute;
-  left: 460px;
   cursor: pointer;
+  left: 463px;
+  @media (max-width: 1100px) {
+    position: absolute;
+    right: 40px;
+    left: auto;
+    top: 5px;
+  }
 `;
 const Span = styled.span`
   color: #5c5c5c;
   font-size: 14px;
   margin-left: 14px;
+  @media (max-width: 1100px) {
+    margin-top: 10px;
+  }
 `;

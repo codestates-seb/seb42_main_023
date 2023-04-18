@@ -22,6 +22,7 @@ export default LoginBtn;
 const Btn = styled.button`
   padding: 4px 14px;
   font-size: 14px;
+  width: 80px;
   background-color: #fff;
   box-sizing: border-box;
   border: 1px solid #d9d9d9;
@@ -31,5 +32,8 @@ const Btn = styled.button`
     background-color: #f9f6f6;
     transition: 0.3s;
     color: #5c5c5c;
+  }
+  @media (max-width: 1100px) {
+    transform: translateY(4px);
   }
 `;
