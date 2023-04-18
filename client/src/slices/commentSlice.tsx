@@ -35,12 +35,12 @@ const commentSlice = createSlice({
       (state.isEdit as unknown) = action.payload;
     },
     setIsEdit: (state, action: PayloadAction<number>): void => {
-      (state.isEdit! as Array<boolean>)[action.payload!] = !(
+      (state.isEdit! as Array<boolean>)[action.payload] = !(
         state.isEdit! as Array<boolean>
-      )[action.payload!];
+      )[action.payload];
     },
     addCommentEdit: (state, action: PayloadAction<boolean>): void => {
-      (state.isEdit! as Array<boolean>).push(action.payload);
+      (state.isEdit! as Array<boolean>)!.push(action.payload!);
     },
     setCommentPage: (state, action: PayloadAction<number>): void => {
       (state.page as unknown) = action.payload;

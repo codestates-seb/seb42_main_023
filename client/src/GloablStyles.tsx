@@ -66,9 +66,13 @@ const GlobalStyles = createGlobalStyle`
     margin:0 auto;  
     padding-top: 120px;
 
+    
+
     @media screen and (max-width: 1100px) {
     min-width: 100%;
     }   
+
+    
   }
 
     footer {

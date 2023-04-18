@@ -7,7 +7,7 @@ import { BlueBtn, WhiteBtn } from '../components/common/Btn';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useAppDispatch, useAppSelector } from '../hooks';
 import { postsApi } from '../api/postApi';
-import _ from 'lodash';
+import differenceBy from 'lodash/differenceBy';
 import {
   deleteTag,
   setBody,
@@ -40,7 +40,7 @@ const UpdatePost: React.FC = () => {
   const tagNames = tag.map((tagName) => {
     return { tagName };
   });
-  const remain = _.differenceBy(remainImg!, removedImg!, 'imageId');
+  const remain = differenceBy(remainImg!, removedImg!, 'imageId');
   const reqBody = {
     postId: postId,
     saveImages: {
