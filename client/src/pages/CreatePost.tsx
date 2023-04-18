@@ -7,7 +7,6 @@ import { BlueBtn, WhiteBtn } from '../components/common/Btn';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useAppDispatch, useAppSelector } from '../hooks';
 import { postsApi } from '../api/postApi';
-import _ from 'lodash';
 import { deleteTag, setBody, setTagContent } from '../slices/postInputSlice';
 import { setBodyErr, setTitleErr } from '../slices/validationSlice';
 import { checkIsLogin } from '../../src/util/checkIsLogin';
@@ -139,9 +138,11 @@ const Container = styled.div`
   flex-direction: column;
   align-items: center;
   width: 1000px;
-  min-width: 1000px;
-  height: 100%;
+  min-width: 640px;
   margin: auto;
+  @media (max-width: 1100px) {
+    width: 90vw;
+  }
 `;
 
 const BtnContainer = styled.div`
@@ -149,10 +150,13 @@ const BtnContainer = styled.div`
   justify-content: flex-end;
   gap: 15px;
   width: 1000px;
-  min-width: 1000px;
+  min-width: 640px;
   height: 40px;
   margin-top: 70px;
   margin-bottom: 30px;
+  @media (max-width: 1100px) {
+    width: 90vw;
+  }
 `;
 
 const PostBtn = styled(BlueBtn)`

@@ -2,7 +2,7 @@ import React, { useRef, useState, useEffect } from 'react';
 import { useAppDispatch, useAppSelector } from '../../hooks';
 import styled from 'styled-components';
 import parse from 'html-react-parser';
-import _ from 'lodash';
+import debounce from 'lodash/debounce';
 import { useNavigate } from 'react-router-dom';
 import { getTimeSince } from '../../util/timeCalculator';
 import DislikeIcon from '../../assets/common/DislikeIcon';
@@ -281,8 +281,8 @@ const Reply: React.FC<Partial<ReplyProps & ReportProps>> = ({
               style={{
                 margin:
                   loginUserName === replyInfo?.memberName
-                    ? '3px 119px 0 5px'
-                    : '3px 195px 0 5px',
+                    ? '3px auto 0 5px'
+                    : '3px auto 0 5px',
               }}
               onClick={(event: React.MouseEvent<HTMLElement>) => {
                 dispatch(setReplyId(replyInfo?.replyId));
@@ -303,8 +303,8 @@ const Reply: React.FC<Partial<ReplyProps & ReportProps>> = ({
                 loginUserName === replyInfo?.memberName ? 'none' : 'block',
               margin:
                 loginUserName === replyInfo?.memberName
-                  ? '3px 148px 0 5px'
-                  : '3px 228px 0 5px',
+                  ? '3px auto 0 5px'
+                  : '3px auto 0 5px',
             }}
             onClick={(event): void => {
               if (!isLogin) navigate('/login');
@@ -317,7 +317,7 @@ const Reply: React.FC<Partial<ReplyProps & ReportProps>> = ({
           {isDeleted ? null : isReported ? null : (
             <>
               <button
-                onClick={_.debounce(
+                onClick={debounce(
                   () => {
                     ReplyLiikeHandler(replyInfo!);
                   },
@@ -333,7 +333,7 @@ const Reply: React.FC<Partial<ReplyProps & ReportProps>> = ({
               </button>
               <li className="reply-likes">{replyInfo?.thumbupCount}</li>
               <button
-                onClick={_.debounce(
+                onClick={debounce(
                   () => {
                     ReplyDislikeHandler(replyInfo!);
                   },
@@ -394,9 +394,10 @@ const ReplyContainer = styled.div`
   flex-direction: column;
   width: 670px;
   height: auto;
-  margin: 5px 0 0 50px;
+  margin: 15px 0 0 3vw;
   padding: 15px 0 0 0;
   border-bottom: 1px solid #d4d4d4;
+
   h1 {
     font-size: 24px;
     font-weight: 400;
@@ -406,7 +407,6 @@ const ReplyContainer = styled.div`
     height: 80px;
     display: flex;
     align-items: center;
-
     font-size: 12px;
     padding: 30px 0 30px 0;
     position: relative;
@@ -414,12 +414,13 @@ const ReplyContainer = styled.div`
   .reply-content {
     display: flex;
     align-items: flex-end;
-    width: 600px;
+    width: 625px;
     height: auto;
     display: flex;
     justify-content: flex-start;
     word-break: break-all;
     font-size: 17px;
+    margin-left: 10px;
   }
   .nickname {
     width: 130px;
@@ -429,7 +430,7 @@ const ReplyContainer = styled.div`
   }
   .reply-created-time {
     width: 75px;
-    font-size: 16px;
+    font-size: 13px;
     margin: 3px 15px 0 5px;
     color: #94969b;
   }
@@ -442,13 +443,13 @@ const ReplyContainer = styled.div`
   .reply-delete {
     width: 40px;
     font-size: 16px;
-    margin: 3px 15px 0 5px;
+    margin: 3px auto 0 5px;
     cursor: pointer;
   }
   .reply-report {
     width: 40px;
     font-size: 16px;
-    margin: 3px 110px 0 5px;
+    margin: 3px auto 0 5px;
     color: #ca0000;
     cursor: pointer;
   }
@@ -473,7 +474,47 @@ const ReplyContainer = styled.div`
     cursor: pointer;
   }
   .edit-confirm {
+    min-width: 50px;
     font-size: 12px;
+    font-weight: bold;
+  }
+  @media (max-width: 1100px) {
+    width: 89vw;
+
+    .reply-info {
+      width: 86.5vw;
+      height: 80px;
+      display: flex;
+      align-items: center;
+      font-size: 12px;
+      padding: 30px 0 30px 0;
+      position: relative;
+    }
+    .reply-content {
+      width: 85vw;
+    }
+    .nickname {
+      min-width: 100px;
+      width: max-content;
+    }
+    .reply-created-time {
+      min-width: 50px;
+      width: max-content;
+    }
+    .reply-update {
+      min-width: 40px;
+      width: max-content;
+    }
+    .reply-delete {
+      min-width: 40px;
+      width: 1000px;
+      margin: 3px 15px 0 5px;
+    }
+    .reply-report {
+      min-width: 40px;
+      width: 1000px;
+      margin: 3px 0 0 5px;
+    }
   }
 `;
 
@@ -535,19 +576,24 @@ const ReplyInfo = styled.div`
   height: auto;
   width: 100%;
   height: 30px;
+  @media (max-width: 1100px) {
+     {
+      width: 85vw;
+    }
+  }
 `;
 
 const ReplyContent = styled.div`
   display: flex;
   flex-direction: column;
   padding: 15px 0 0 0;
-  margin: 0px 0 20px 15px;
+  margin: 0px 0 20px 0;
   width: 660px;
   height: auto;
   font-size: 17px;
 
   .edit-reply {
-    width: 655px;
+    width: 635px;
     font-size: 17px;
     height: 50px;
     border-bottom: 1px solid #d4d4d4;
@@ -556,10 +602,17 @@ const ReplyContent = styled.div`
       color: #0275e1;
     }
   }
+  @media (max-width: 1100px) {
+    width: 100vw;
+    .edit-reply {
+      width: 90.5vw;
+    }
+  }
 `;
 
 const InputContainer = styled.div`
   display: flex;
+
   textarea {
     box-sizing: border-box;
     width: 650px;
@@ -576,6 +629,11 @@ const InputContainer = styled.div`
     }
     ::placeholder {
       font-size: 14px;
+    }
+    @media (max-width: 1100px) {
+      textarea {
+        width: 85vw;
+      }
     }
   }
 `;

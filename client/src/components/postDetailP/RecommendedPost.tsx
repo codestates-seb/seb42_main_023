@@ -47,10 +47,9 @@ const RecommendedPostContainer = styled.div`
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
-  align-items: flex-start;
+  align-items: center;
   height: 100%;
   margin-top: 18px;
-
   h1 {
     margin-bottom: 20px;
     font-weight: 500;
@@ -95,7 +94,7 @@ const RecommendedPostContainer = styled.div`
     font-weight: 550;
     h2 {
       height: 30px;
-      width: 180px;
+      width: 200px;
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
@@ -103,6 +102,22 @@ const RecommendedPostContainer = styled.div`
     }
     :hover {
       color: var(--point-blue-color);
+    }
+  }
+  @media (max-width: 1100px) {
+    width: 100vw;
+
+    .title {
+      height: 30px;
+      width: max-content;
+    }
+    h1 {
+      width: 90vw;
+    }
+
+    a {
+      text-decoration: none;
+      color: #5c5c5c;
     }
   }
 `;

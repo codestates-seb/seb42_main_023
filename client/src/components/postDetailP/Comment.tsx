@@ -1,10 +1,10 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { useParams } from 'react-router';
 import { useAppDispatch, useAppSelector } from '../../hooks';
+import { useNavigate, useParams } from 'react-router-dom';
 import { getTimeSince } from '../../util/timeCalculator';
-import { useNavigate } from 'react-router';
+import debounce from 'lodash/debounce';
+import uniqBy from 'lodash/uniqBy';
 import styled from 'styled-components';
-import _ from 'lodash';
 import parse from 'html-react-parser';
 import ReplyInput from './ReplyInput';
 import DislikeIcon from '../../assets/common/DislikeIcon';
@@ -227,22 +227,20 @@ const Comment: React.FC<
     setCommentData(commentQuery.data?.comments);
   }, [replyQuery.data, commentQuery.data]);
 
-  useEffect(() => {
-    if (commentQuery.isSuccess && state.reply?.isOpened === undefined) {
-      const open = Array.from(
-        { length: commentQuery.data?.comments?.length },
-        (el) => (el = false),
-      );
-      dispatch(isOpened(open));
-    }
-    if (commentQuery.isSuccess && state.comment.isEdit === undefined) {
-      const edit = Array.from(
-        { length: commentQuery.data.comments?.length },
-        (el) => (el = false),
-      );
-      dispatch(isEdit(edit as Array<boolean>));
-    }
-  }, []);
+  if (commentQuery.isSuccess && state.reply?.isOpened === undefined) {
+    const open = Array.from(
+      { length: commentQuery.data?.comments?.length },
+      (el) => (el = false),
+    );
+    dispatch(isOpened(open));
+  }
+  if (commentQuery.isSuccess && state.comment?.isEdit === undefined) {
+    const edit = Array.from(
+      { length: commentQuery.data.comments?.length },
+      (el) => (el = false),
+    );
+    dispatch(isEdit(edit as Array<boolean>));
+  }
 
   return (
     <>
@@ -259,10 +257,7 @@ const Comment: React.FC<
                 const filtered: Array<ReplyType> =
                   state.reply.totalReplies! &&
                   (
-                    _.uniqBy(
-                      state.reply.totalReplies,
-                      'replyId',
-                    ) as Array<object>
+                    uniqBy(state.reply.totalReplies, 'replyId') as Array<object>
                   ).filter((reply: Partial<ReplyType>) => {
                     return reply.commentId === comment.commentId;
                   });
@@ -276,7 +271,7 @@ const Comment: React.FC<
                 return (
                   <>
                     <CommentInfo key={comment?.commentId}>
-                      <ul className="content-info">
+                      <ul className="comment-info">
                         <li
                           className="image"
                           data-membername={comment?.memberName}
@@ -353,11 +348,11 @@ const Comment: React.FC<
                                 !commentEditTextareaRef.current?.value &&
                                 !isDeleted
                               ) {
-                                dispatch(setIsEdit(idx));
+                                dispatch(setIsEdit(idx!));
 
                                 return;
                               }
-                              dispatch(setIsEdit(idx));
+                              dispatch(setIsEdit(idx!));
                               updateMutation({
                                 postId: postId,
                                 commentId: comment?.commentId,
@@ -397,8 +392,8 @@ const Comment: React.FC<
                             style={{
                               margin:
                                 loginUserName === comment?.memberName
-                                  ? '3px 165px 0 5px'
-                                  : '3px 195px 0 5px',
+                                  ? '3px auto 0 5px'
+                                  : '3px auto 0 5px',
                             }}
                             id="댓글"
                             onClick={(
@@ -425,8 +420,8 @@ const Comment: React.FC<
 
                             margin:
                               loginUserName === comment?.memberName
-                                ? '3px 148px 0 5px'
-                                : '3px 258px 0 5px',
+                                ? '3px auto 0 5px'
+                                : '3px auto 0 5px',
                           }}
                           onClick={(event): void => {
                             if (!isLogin) navigate('/login');
@@ -439,7 +434,7 @@ const Comment: React.FC<
                         {isDeleted ? null : isReported ? null : (
                           <>
                             <button
-                              onClick={_.debounce(
+                              onClick={debounce(
                                 () => {
                                   commentLiikeHandler(comment);
                                 },
@@ -453,7 +448,7 @@ const Comment: React.FC<
                               {comment.thumbupCount}
                             </li>
                             <button
-                              onClick={_.debounce(
+                              onClick={debounce(
                                 () => {
                                   commentDislikeHandler(comment);
                                 },
@@ -658,7 +653,7 @@ const CommentContainer = styled.div`
     font-size: 24px;
     font-weight: 400;
   }
-  .content-info {
+  .comment-info {
     width: 720px;
     height: 80px;
     display: flex;
@@ -681,12 +676,12 @@ const CommentContainer = styled.div`
   }
   .nickname {
     width: 130px;
-    font-size: 17px;
+    font-size: 16px;
     margin: 2px 15px 0 5px;
   }
   .created-time {
     width: 75px;
-    font-size: 16px;
+    font-size: 13px;
     margin: 3px 15px 0 5px;
     color: #94969b;
   }
@@ -699,13 +694,13 @@ const CommentContainer = styled.div`
   .comment-delete {
     width: 40px;
     font-size: 16px;
-    margin: 3px 15px 0 5px;
+    margin: 3px 30px 0 5px;
     cursor: pointer;
   }
   .comment-report {
     width: 40px;
     font-size: 16px;
-    margin: 3px 148px 0 5px;
+    margin: 3px 30px 0 5px;
     color: #ca0000;
     cursor: pointer;
   }
@@ -754,7 +749,44 @@ const CommentContainer = styled.div`
     cursor: pointer;
   }
   .edit-confirm {
+    min-width: 50px;
     font-size: 12px;
+    font-weight: bold;
+  }
+  @media (max-width: 1100px) {
+    width: 100vw;
+    padding: 0 15px 0 15px;
+    .comment-info {
+      width: 100%;
+    }
+    .content {
+      width: 90vw;
+    }
+    .nickname {
+      min-width: 100px;
+      width: max-content;
+    }
+    .image {
+      min-width: 25px;
+    }
+    .created-time {
+      min-width: 50px;
+      width: max-content;
+    }
+    .comment-update {
+      min-width: 40px;
+      width: max-content;
+    }
+    .comment-delete {
+      min-width: 40px;
+      width: 100%;
+      margin: 3px 15px 0 5px;
+    }
+    .comment-report {
+      min-width: 40px;
+      width: 100%;
+      margin: 3px 0 0 5px;
+    }
   }
 `;
 
@@ -816,6 +848,11 @@ const CommentInfo = styled.div`
   width: 100%;
   height: 30px;
   margin-top: 10px;
+  @media (max-width: 1100px) {
+     {
+      width: 94vw;
+    }
+  }
 `;
 
 const CommentContent = styled.div`
@@ -844,6 +881,11 @@ const CommentContent = styled.div`
   }
   .noReply {
     font-weight: bold;
+  }
+  @media (max-width: 1100px) {
+     {
+      width: 94vw;
+    }
   }
 `;
 
@@ -896,6 +938,11 @@ const InputContainer = styled.div`
     }
     ::placeholder {
       font-size: 14px;
+    }
+  }
+  @media (max-width: 1100px) {
+    .edit-content {
+      width: 94vw;
     }
   }
 `;

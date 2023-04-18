@@ -132,6 +132,9 @@ const ReplyInputContainer = styled.div`
     font-size: 24px;
     font-weight: 400;
   }
+  @media (max-width: 1100px) {
+    width: 94vw;
+  }
 `;
 
 const InputContainer = styled.div`
@@ -152,6 +155,9 @@ const InputContainer = styled.div`
     ::placeholder {
       font-size: 14px;
     }
+    @media (max-width: 1100px) {
+      width: 100vw;
+    }
   }
 `;
 const ButtonContainer = styled.div`
@@ -167,6 +173,11 @@ const ButtonContainer = styled.div`
     :hover {
       background-color: var(--hover-point-blue-color);
     }
+  }
+  @media (max-width: 1100px) {
+    width: 93vw;
+    margin: 15px 0 0 0;
+    justify-content: flex-end;
   }
 `;
 
