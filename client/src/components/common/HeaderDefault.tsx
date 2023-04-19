@@ -20,8 +20,7 @@ function HeaderDefault() {
   const { pathname } = useLocation();
   const header = useAppSelector(({ header }) => header);
   const auth = Cookies.get('Authorization');
-  const adim = 'ADMIN';
-  //localStorage.getItem('role');
+  const adim = localStorage.getItem('role');
   const [memberImg, setMemberImg] = useState('');
   const [menuOpen, setMenuOpen] = useState(false);
   useEffect(() => {
