@@ -49,7 +49,7 @@ interface Url {
   url: string;
 }
 const WeeklyBestItem = styled.li<Url>`
-  width: 32.5%;
+  flex-basis: 32.5%;
   position: relative;
   background-image: linear-gradient(rgb(118 118 118 / 72%), rgb(8 18 40 / 94%)),
     url(${(props) => props.url});

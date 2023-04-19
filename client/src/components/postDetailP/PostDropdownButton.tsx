@@ -1,9 +1,10 @@
-import React, { useRef } from 'react';
+import React, { useRef, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useAppDispatch, useAppSelector } from '../../hooks';
 import { FiMoreHorizontal } from 'react-icons/fi';
 import { setIsOpenFilter, setReportType } from '../../slices/postSlice';
-import { Dropdown, Btn, List, ListItem } from '../mainP/DropdownButton';
+import { Dropdown, Btn, ListItem, List } from '../mainP/DropdownButton';
+import styled from 'styled-components';
 
 interface Props {
   memberName: string;
@@ -33,11 +34,10 @@ const PostDropdownButton = ({
   const viewerOptions: ['신고하기'] = ['신고하기'];
   const loginUserName = window.localStorage.getItem('name');
   const option = memberName === loginUserName ? writerOptions : viewerOptions;
-
   const confirmDeleteHandler = (): void => {
     setIsOpenDelete(!isOpenDelete);
   };
-
+  const [filterOpen, setFilterOpen] = useState(false);
   const typeChecker = (event: React.MouseEvent<HTMLElement>) => {
     if (event.target instanceof HTMLElement) {
       setDeleteType?.(event.target.id);
@@ -60,9 +60,7 @@ const PostDropdownButton = ({
   };
 
   const toggleHandler = () => {
-    if (!state.post.isOpenFilter) {
-      dispatch(setIsOpenFilter(state.post?.isOpenFilter));
-    }
+    setFilterOpen(!filterOpen);
   };
 
   return (
@@ -70,25 +68,31 @@ const PostDropdownButton = ({
       <Btn onClick={toggleHandler}>
         <FiMoreHorizontal />
       </Btn>
-      {state.post.isOpenFilter && (
-        <List>
-          {option.map((option) => (
-            <ListItem
-              id="게시글"
-              key={option}
-              onClick={(event: React.MouseEvent<HTMLElement>) => {
-                selectHandler(option);
-                dispatch(setIsOpenFilter(false));
-                typeChecker(event);
-              }}
-            >
-              {option}
-            </ListItem>
-          ))}
-        </List>
-      )}
+      <PostDropList filterOpen={filterOpen} option={option}>
+        {option.map((option) => (
+          <ListItem
+            id="게시글"
+            key={option}
+            onClick={(event: React.MouseEvent<HTMLElement>) => {
+              selectHandler(option);
+              dispatch(setIsOpenFilter(false));
+              typeChecker(event);
+            }}
+          >
+            {option}
+          </ListItem>
+        ))}
+      </PostDropList>
     </Dropdown>
   );
 };
-
 export default PostDropdownButton;
+
+interface ListProps {
+  filterOpen: boolean;
+  option: string[];
+}
+const PostDropList = styled(List)<ListProps>`
+  height: ${({ filterOpen, option }) =>
+    filterOpen ? (option.length === 1 ? '40px' : '80px') : '0'};
+`;

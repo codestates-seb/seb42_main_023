@@ -626,6 +626,7 @@ const Container = styled.div<any>`
   svg {
     min-width: 20px;
     width: 20px;
+    color: var(--sub-font-color);
   }
   img {
     max-width: 720px;

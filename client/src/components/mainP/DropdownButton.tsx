@@ -56,15 +56,13 @@ const DropdownButton = ({
         {filter}
         <BsFillCaretDownFill />
       </Btn>
-      {filterOpen && (
-        <List>
-          {options.map((option) => (
-            <ListItem key={option} onClick={() => selectFilterHandler(option)}>
-              {option}
-            </ListItem>
-          ))}
-        </List>
-      )}
+      <List filterOpen={filterOpen}>
+        {options.map((option) => (
+          <ListItem key={option} onClick={() => selectFilterHandler(option)}>
+            {option}
+          </ListItem>
+        ))}
+      </List>
     </Dropdown>
   );
 };
@@ -94,8 +92,14 @@ export const Btn = styled.button`
   }
 `;
 
-export const List = styled.ul`
+export interface Props {
+  filterOpen: boolean;
+}
+export const List = styled.ul<Props>`
   position: absolute;
+  height: ${({ filterOpen }) => (filterOpen ? '120px' : '0')};
+  transition: height 0.3s ease 0s;
+  overflow: hidden;
   top: 30px;
   left: 0;
   z-index: 1;
@@ -103,7 +107,6 @@ export const List = styled.ul`
   padding: 0;
   margin: 0;
   background-color: #f2f2f2;
-  border: 1px solid #ddd;
   box-shadow: 0 2px 8px 0 rgba(0, 0, 0, 0.2);
 `;
 
