@@ -68,10 +68,11 @@ const PaginationContainer = styled.nav`
   width: 100%;
   display: flex;
   justify-content: center;
-  margin: 20px 0;
+  margin-top: 20px;
   ul {
     display: flex;
-    min-width: 500px;
+    max-width: 500px;
+    min-width: 100px;
     justify-content: space-evenly;
   }
 `;

@@ -27,6 +27,9 @@ const Item = styled.img`
   margin-right: 20px;
   border-radius: 4px;
   object-fit: cover;
+  @media (max-width: 640px) {
+    height: 75px;
+  }
 `;
 const None = styled.div`
   width: 74px;
@@ -37,4 +40,7 @@ const None = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
+  @media (max-width: 640px) {
+    height: 75px;
+  }
 `;

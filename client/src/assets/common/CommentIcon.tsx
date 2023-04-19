@@ -9,11 +9,7 @@ interface Props {
 function CommentIcon({ checked }: Props) {
   return (
     <>
-      {checked ? (
-        <FaCommentDots size="12" color="#94969b" />
-      ) : (
-        <FaRegCommentDots size="12" color="#94969b" />
-      )}
+      {checked ? <FaCommentDots size="12" /> : <FaRegCommentDots size="12" />}
     </>
   );
 }

@@ -2,64 +2,42 @@ import React from 'react';
 import TimeIcon from '../../assets/common/TimeIcon';
 import ViewIcon from '../../assets/common/ViewIcon';
 import CommentIcon from '../../assets/common/CommentIcon';
-import Thumnail from '../common/Thumbnail';
-import { BsTrophy } from 'react-icons/bs';
 import { Link } from 'react-router-dom';
 import styled from 'styled-components';
 import { getTimeSince } from '../../util/timeCalculator';
-import { Itemside, Info, Tag } from './PostItem';
+import { Tag } from './PostItem';
 import { PostListItem } from '../../types/PostList';
 import { FaRegThumbsUp } from 'react-icons/fa';
-import { Item } from './PostItem';
 
-function WeeklyPopularPost({
-  post,
-  index,
-}: {
-  post: PostListItem;
-  index: number;
-}) {
+function WeeklyPopularPost({ post }: { post: PostListItem }) {
   return (
-    <WeeklyBestItem>
+    <WeeklyBestItem url={post.imgUrl && post.imgUrl}>
       <Link to={`/posts/${post.postId}`}>
-        <div>
-          <Thumnail content={post.imgUrl} />
-        </div>
-        <div>
-          <h1>
-            {post.title}
-            <div>
-              <BsTrophy size={20} />
-              <span>{index + 1}</span>
-            </div>
-          </h1>
-          <Itemside>
-            <div>
-              {post.tags.map((tag, index) => (
-                <Tag key={index}>{tag.tagName}</Tag>
-              ))}
-            </div>
-            <Info>
-              <span>{post.memberName}</span>
-              <span>
-                <CommentIcon checked={false} />
-                {post.commentCount}
-              </span>
-              <span>
-                <TimeIcon />
-                {getTimeSince(post.createdAt)}
-              </span>
-              <span>
-                <ViewIcon />
-                {post.viewCount}
-              </span>
-              <span>
-                <FaRegThumbsUp size={13} />
-                {post.thumbupCount}
-              </span>
-            </Info>
-          </Itemside>
-        </div>
+        <h1>{post.title}</h1>
+        <TagList>
+          {post.tags.map((tag, index) => (
+            <Tag key={index}>{tag.tagName}</Tag>
+          ))}
+        </TagList>
+        <Information>
+          <div>{post.memberName}</div>
+          <div>
+            <CommentIcon checked={false} />
+            {post.commentCount}
+          </div>
+          <div>
+            <TimeIcon />
+            {getTimeSince(post.createdAt)}
+          </div>
+          <div>
+            <ViewIcon />
+            {post.viewCount}
+          </div>
+          <div>
+            <FaRegThumbsUp size={13} />
+            {post.thumbupCount}
+          </div>
+        </Information>
       </Link>
     </WeeklyBestItem>
   );
@@ -67,28 +45,71 @@ function WeeklyPopularPost({
 
 export default WeeklyPopularPost;
 
-const WeeklyBestItem = styled(Item)`
-  background-color: var(--background-blue-color);
+interface Url {
+  url: string;
+}
+const WeeklyBestItem = styled.li<Url>`
+  width: 32.5%;
+  position: relative;
+  background-image: linear-gradient(rgb(118 118 118 / 72%), rgb(8 18 40 / 94%)),
+    url(${(props) => props.url});
+  background-size: cover;
+  background-position: center;
+  border-radius: 10px;
+  display: flex;
   a {
+    padding: 40px 20px;
+    text-align: center;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    border-radius: 10px;
+    transition: background-color 0.2s ease-in;
+    h1 {
+      color: #fff;
+      font-size: 20px;
+      margin-bottom: 4px;
+    }
     :hover {
-      background-color: var(--background-hover-blue-color);
+      background: rgba(1, 35, 146, 0.434);
+    }
+    :active {
+      box-shadow: inset 0px 0px 30px rgba(3, 1, 22, 0.5);
     }
   }
-  h1 {
-    div {
-      position: relative;
-      display: inline-block;
+  @media (max-width: 640px) {
+    width: auto;
+    margin: 10px 0;
+  }
+`;
+const TagList = styled.div`
+  display: flex;
+  justify-content: center;
+  margin-bottom: 10px;
+  flex-wrap: wrap;
+`;
+const Information = styled.div`
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: baseline;
+  div {
+    color: #fff;
+    margin-right: 6px;
+    font-size: 14px;
+    svg {
+      color: #fff;
+      margin-right: 2px;
+    }
+    :nth-child(3) {
       svg {
-        color: var(--point-blue-color);
-        margin-left: 10px;
         transform: translateY(2px);
       }
-      span {
-        position: absolute;
-        font-size: 10px;
-        right: 7px;
-        top: 3px;
-        color: var(--point-blue-color);
+    }
+    :nth-child(4) {
+      svg {
+        transform: translateY(3px);
       }
     }
   }

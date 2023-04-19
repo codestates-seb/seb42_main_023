@@ -1,11 +1,12 @@
 import React, { useRef, useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { BsFillCaretDownFill } from 'react-icons/bs';
-import { useAppDispatch } from '../../hooks';
-import { setOrderby } from '../../slices/mainSlice';
 
-const DropdownButton = () => {
-  const dispatch = useAppDispatch();
+const DropdownButton = ({
+  setOrderby,
+}: {
+  setOrderby: React.Dispatch<React.SetStateAction<string>>;
+}) => {
   const [filterOpen, setFilterOpen] = useState(false);
   const [filter, setFilter] = useState('최신순');
   const dropdownRef = useRef<HTMLDivElement>(null);
@@ -19,13 +20,13 @@ const DropdownButton = () => {
     setFilter(option);
     setFilterOpen(false);
     if (option === '최신순') {
-      dispatch(setOrderby('latest'));
+      setOrderby('latest');
     }
     if (option === '좋아요순') {
-      dispatch(setOrderby('thumbup'));
+      setOrderby('thumbup');
     }
     if (option === '조회순') {
-      dispatch(setOrderby('view-count'));
+      setOrderby('view-count');
     }
   };
 
@@ -87,6 +88,9 @@ export const Btn = styled.button`
   }
   :hover {
     color: var(--hover-font-gray-color);
+  }
+  @media (max-width: 1100px) {
+    width: 100px;
   }
 `;
 

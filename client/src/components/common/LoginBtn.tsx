@@ -33,7 +33,4 @@ const Btn = styled.button`
     transition: 0.3s;
     color: #5c5c5c;
   }
-  @media (max-width: 1100px) {
-    transform: translateY(4px);
-  }
 `;

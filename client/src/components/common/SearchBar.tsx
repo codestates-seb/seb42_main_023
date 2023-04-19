@@ -11,7 +11,6 @@ import { AiOutlineSearch } from 'react-icons/ai';
 import { TagItemWidthDelete } from '../common/Tag';
 import { MdCancel } from 'react-icons/md';
 import SearchBtn from './SearchToggle';
-import { setPostCategory } from '../../slices/mainSlice';
 import { useNavigate } from 'react-router-dom';
 
 interface Input {
@@ -69,7 +68,6 @@ const SearchBar: React.FC = () => {
     if (input[0] === '#') {
       validation();
     } else {
-      dispatch(setPostCategory('/search'));
       if (tag.length === 0 && input.length !== 0) {
         navigation(`/search?keyword=${input}&tags=`);
       }
@@ -169,7 +167,7 @@ const Icon = styled.button`
   background-color: #fff;
   position: absolute;
   cursor: pointer;
-  left: 463px;
+  left: 460px;
   @media (max-width: 1100px) {
     position: absolute;
     right: 40px;

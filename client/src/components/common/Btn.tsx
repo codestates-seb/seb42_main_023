@@ -33,9 +33,6 @@ export const SearchBtn = styled.button`
     transition: 0.3s;
     background-color: var(--hover-point-blue-color);
   }
-  @media (max-width: 1100px) {
-    transform: translateY(4px);
-  }
 `;
 export const ClickSearchBtn = styled(SearchBtn)`
   background-color: #fff;
@@ -50,6 +47,12 @@ export const ClickSearchBtn = styled(SearchBtn)`
 export const NavBtn = styled.button`
   background-color: #fff;
   font-size: 14px;
+  @media (max-width: 1100px) {
+    margin-top: 10px;
+    :first-child {
+      margin-top: 30px;
+    }
+  }
   :hover {
     color: var(--point-blue-color);
     transition: 0.3s;

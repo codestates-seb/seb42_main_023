@@ -20,7 +20,8 @@ function HeaderDefault() {
   const { pathname } = useLocation();
   const header = useAppSelector(({ header }) => header);
   const auth = Cookies.get('Authorization');
-  const adim = localStorage.getItem('role');
+  const adim = 'ADMIN';
+  //localStorage.getItem('role');
   const [memberImg, setMemberImg] = useState('');
   const [menuOpen, setMenuOpen] = useState(false);
   useEffect(() => {
@@ -46,34 +47,36 @@ function HeaderDefault() {
   ) : (
     <NavHead>
       <div>
-        <Main onClick={() => navigate('/')} aria-label="logo">
-          <LogoSVG />
-        </Main>
+        <div>
+          <LogoBtn onClick={() => navigate('/')} aria-label="logo">
+            <LogoSVG />
+          </LogoBtn>
+          <Btns>
+            {(pathname === '/' || pathname === '/search') && <SearchBtn />}
+            {auth === undefined && <LoginBtn />}
+            {auth !== undefined && adim !== 'ADMIN' && (
+              <>
+                <PostBtn /> <MediumProfileImg memberImg={memberImg} />
+              </>
+            )}
+            {auth !== undefined && adim === 'ADMIN' && (
+              <Adminwrap>
+                <PostBtn />
+                <MediumProfileImg memberImg={memberImg} />
+                <button
+                  onClick={() => navigate('reports/standby')}
+                  aria-label="managingPage"
+                >
+                  <MdManageAccounts size={30} />
+                </button>
+              </Adminwrap>
+            )}
+            <MenuBtn onClick={() => setMenuOpen(!menuOpen)} aria-label="menu">
+              <AiOutlineMenu size={30} />
+            </MenuBtn>
+          </Btns>
+        </div>
         <HeaderNav menuOpen={menuOpen} />
-        <Btns>
-          {(pathname === '/' || pathname === '/search') && <SearchBtn />}
-          {auth === undefined && <LoginBtn />}
-          {auth !== undefined && adim !== 'ADMIN' && (
-            <>
-              <PostBtn /> <MediumProfileImg memberImg={memberImg} />
-            </>
-          )}
-          {auth !== undefined && adim === 'ADMIN' && (
-            <Adminwrap>
-              <PostBtn />
-              <MediumProfileImg memberImg={memberImg} />
-              <button
-                onClick={() => navigate('reports/standby')}
-                aria-label="managingPage"
-              >
-                <MdManageAccounts size={30} />
-              </button>
-            </Adminwrap>
-          )}
-          <MenuBtn onClick={() => setMenuOpen(!menuOpen)} aria-label="menu">
-            <AiOutlineMenu size={30} />
-          </MenuBtn>
-        </Btns>
       </div>
     </NavHead>
   );
@@ -86,11 +89,11 @@ const NavHead = styled.header`
   z-index: 98;
   padding: 10px 0;
   margin: 0 auto;
-  div {
+  > div {
     max-width: 1100px;
-    align-items: center;
-    :first-child {
-      margin: 0px auto;
+    margin: 0px auto;
+    position: relative;
+    div {
       display: flex;
       justify-content: space-between;
     }
@@ -98,8 +101,8 @@ const NavHead = styled.header`
 
   @media (max-width: 1100px) {
     height: 55px;
+    padding: 10px;
     div {
-      align-items: flex-start;
       :first-child {
         width: 100%;
       }
@@ -114,27 +117,24 @@ const SearchHead = styled.header`
   div {
     max-width: 1100px;
     align-items: center;
-    :first-child {
-      display: flex;
-      justify-content: space-between;
-      position: relative;
-    }
+    display: flex;
+    justify-content: space-between;
+    position: relative;
   }
   @media (max-width: 1100px) {
-    padding: 10px 10px;
+    padding: 10px;
     div {
       :first-child {
         flex-direction: column;
         margin-top: 4px;
         width: 100%;
         margin-bottom: 28px;
-        align-items: flex-start;
+        align-items: center;
       }
     }
   }
 `;
 const Btns = styled.div`
-  display: flex;
   button {
     margin-left: 10px;
     svg {
@@ -146,10 +146,6 @@ const Btns = styled.div`
       }
     }
   }
-  @media (max-width: 1100px) {
-    position: absolute;
-    right: 10px;
-  }
 `;
 const MenuBtn = styled.button`
   display: none;
@@ -160,14 +156,11 @@ const MenuBtn = styled.button`
 `;
 const Adminwrap = styled.div`
   display: flex;
-  justify-content: center;
-  align-items: center;
 `;
-const Main = styled.button`
+const LogoBtn = styled.button`
   background-color: #fff;
   cursor: pointer;
   @media (max-width: 1100px) {
-    position: absolute;
     left: 10px;
   }
 `;

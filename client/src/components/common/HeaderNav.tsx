@@ -60,21 +60,26 @@ interface Nav {
 }
 
 const NavList = styled.nav<Nav>`
-  width: 780px;
-  margin-left: 80px;
-  justify-content: space-between;
-  background-color: #fff;
+  position: absolute;
+  left: 175px;
+  top: 7px;
   button {
     margin-right: 30px;
   }
   @media (max-width: 1100px) {
-    margin: 0;
-    margin-top: 42px;
-    width: 100%;
-    display: ${({ menuOpen }) => (menuOpen ? 'flex' : 'none')};
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 44px;
+    transition: height 0.3s ease;
+    height: ${({ menuOpen }) => (menuOpen ? '194px' : '0')};
+    overflow: hidden;
+    background: #fff;
+    display: flex;
     flex-direction: column;
-    padding: 20px 0;
-    border-bottom: 1px solid var(--border-color);
+    border-bottom: ${({ menuOpen }) =>
+      menuOpen ? '1px solid var(--border-color)' : '0'};
+    border-top: 1px solid var(--border-color);
     box-shadow: 4px 4px 8px rgba(0, 0, 0, 0.15);
     button {
       margin-right: 0;

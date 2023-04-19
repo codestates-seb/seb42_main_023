@@ -3,7 +3,6 @@ import styled from 'styled-components';
 import { useAppDispatch, useAppSelector } from '../../hooks';
 import { setSearch } from '../../slices/headerSlice';
 import { SearchBtn } from './Btn';
-import { setPostCategory } from '../../slices/mainSlice';
 import { setInput, deleteAllSarchTag } from '../../slices/headerSlice';
 import { GrClose } from 'react-icons/gr';
 import { useNavigate } from 'react-router-dom';
@@ -16,7 +15,6 @@ function Search() {
   const cancleSearchHandler = () => {
     dispatch(setInput(''));
     dispatch(deleteAllSarchTag());
-    dispatch(setPostCategory(''));
     dispatch(setSearch(!search));
     navigation('/');
   };
