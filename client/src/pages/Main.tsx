@@ -3,8 +3,6 @@ import styled from 'styled-components';
 import DropdownButton from '../components/mainP/DropdownButton';
 import { AiOutlineTrophy } from 'react-icons/ai';
 import { NavBtn } from '../components/common/Btn';
-import lottie from 'lottie-web';
-import Animation from '../components/mainP/mainAnimation.json';
 import { postListApi } from '../api/postListapi';
 import { weeklyPopularApi } from '../api/postListapi';
 import Pagenation from '../components/common/Pagination';
@@ -19,7 +17,6 @@ const Main = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [orderby, setOrderby] = useState('latest');
   const [postCategory, setPostCategory] = useState('');
-  const container = useRef<HTMLDivElement>(null);
   const postListquery = postListApi.useGetPostListQuery({
     postSetting: postCategory,
     page: currentPage,
@@ -36,21 +33,6 @@ const Main = () => {
     refetch();
   }, []);
 
-  useEffect(() => {
-    if (container.current) {
-      lottie.loadAnimation({
-        container: container.current,
-        renderer: 'svg',
-        loop: true,
-        autoplay: true,
-        animationData: Animation,
-        rendererSettings: {
-          preserveAspectRatio: 'xMidYMid slice',
-        },
-      });
-    }
-  }, []);
-
   if (!isSuccess) return <Loading />;
 
   return (
@@ -64,7 +46,6 @@ const Main = () => {
           용돈 받을 때부터 드릴때까지! 재테크, 내집마련, 주식투자, 모든
           금융고민을 또래 사회초년생과 함께 나눠보세요.
         </p>
-        <AnimationContainer ref={container}></AnimationContainer>
       </Banner>
       <WeeklyPopularHeader>주간인기글</WeeklyPopularHeader>
       <WeeklyPopularContainer>
@@ -133,13 +114,6 @@ export default Main;
 const MainContainer = styled.div`
   position: relative;
 `;
-const AnimationContainer = styled.div`
-  width: 100px;
-  height: 100px;
-  position: absolute;
-  right: 0;
-  top: 50px;
-`;
 
 export const List = styled.ul`
   margin-top: -4px;
@@ -155,7 +129,7 @@ const WeeklyPopularHeader = styled.h1`
 `;
 
 const WeeklyPopularContainer = styled.ul`
-  margin-bottom: 80px;
+  margin-bottom: 60px;
   display: flex;
   justify-content: space-between;
   @media (max-width: 1100px) {

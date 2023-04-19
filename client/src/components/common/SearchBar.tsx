@@ -167,7 +167,7 @@ const Icon = styled.button`
   background-color: #fff;
   position: absolute;
   cursor: pointer;
-  left: 463px;
+  left: 460px;
   @media (max-width: 1100px) {
     position: absolute;
     right: 40px;

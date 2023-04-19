@@ -51,7 +51,7 @@ interface Url {
 const WeeklyBestItem = styled.li<Url>`
   width: 32.5%;
   position: relative;
-  background-image: linear-gradient(rgb(23 0 211 / 72%), rgb(0 25 83 / 94%)),
+  background-image: linear-gradient(rgb(118 118 118 / 72%), rgb(8 18 40 / 94%)),
     url(${(props) => props.url});
   background-size: cover;
   background-position: center;
@@ -72,7 +72,7 @@ const WeeklyBestItem = styled.li<Url>`
       margin-bottom: 4px;
     }
     :hover {
-      background: rgba(13, 18, 117, 0.434);
+      background: rgba(1, 35, 146, 0.434);
     }
     :active {
       box-shadow: inset 0px 0px 30px rgba(3, 1, 22, 0.5);
