@@ -1,4 +1,5 @@
 import React, { useRef, useEffect } from 'react';
+import styled from 'styled-components';
 import { useAppDispatch, useAppSelector } from '../../hooks';
 import { BsFillCaretDownFill } from 'react-icons/bs';
 import { CommentProps } from '../../types/Post';
@@ -7,7 +8,7 @@ import {
   setFilterOpen,
   setOrderby,
 } from '../../slices/commentSlice';
-import { Dropdown, Btn, List, ListItem } from '../mainP/DropdownButton';
+import { Dropdown, Btn, List, ListItem, Props } from '../mainP/DropdownButton';
 
 const CommentDropDropdownButton = ({ setPage }: Partial<CommentProps>) => {
   const dispatch = useAppDispatch();
@@ -52,17 +53,18 @@ const CommentDropDropdownButton = ({ setPage }: Partial<CommentProps>) => {
         {filter}
         <BsFillCaretDownFill />
       </Btn>
-      {filterOpen && (
-        <List>
-          {options.map((option) => (
-            <ListItem key={option} onClick={() => selectHandler(option)}>
-              {option}
-            </ListItem>
-          ))}
-        </List>
-      )}
+      <CommentList filterOpen={filterOpen}>
+        {options.map((option) => (
+          <ListItem key={option} onClick={() => selectHandler(option)}>
+            {option}
+          </ListItem>
+        ))}
+      </CommentList>
     </Dropdown>
   );
 };
 
 export default CommentDropDropdownButton;
+const CommentList = styled(List)<Props>`
+  height: ${({ filterOpen }) => (filterOpen ? '80px' : '0')};
+`;

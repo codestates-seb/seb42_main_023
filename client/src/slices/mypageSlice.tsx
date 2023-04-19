@@ -25,7 +25,6 @@ const mypageSlice = createSlice({
   name: 'mypagestates',
   initialState: {
     filter: '작성한 글',
-    dropOpen: false,
     EditOpen: false,
     deleteAccountOpen: false,
     EditWidth: 1,
@@ -35,9 +34,6 @@ const mypageSlice = createSlice({
   reducers: {
     setFilter: (state, action: MemberPost): void => {
       state.filter = action.payload;
-    },
-    setFilterOpen: (state, action: Open): void => {
-      state.dropOpen = action.payload;
     },
     setEditOpen: (state, action: Open): void => {
       state.EditOpen = action.payload;
@@ -57,7 +53,6 @@ const mypageSlice = createSlice({
 export default mypageSlice;
 export const {
   setFilter,
-  setFilterOpen,
   setEditOpen,
   setEditWidth,
   setContent,

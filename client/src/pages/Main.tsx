@@ -150,6 +150,12 @@ const ComuntyBtn = styled(NavBtn)`
   svg {
     transform: translateY(4px);
   }
+  @media (max-width: 1100px) {
+    margin-top: 0;
+    :first-child {
+      margin-top: 0;
+    }
+  }
 `;
 const ClickComuntyBtn = styled(ComuntyBtn)`
   color: var(--point-blue-color);

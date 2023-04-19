@@ -1,19 +1,19 @@
-import React, { useRef } from 'react';
+import React, { useRef, useState } from 'react';
 import styled from 'styled-components';
-import { Dropdown, Btn, List, ListItem } from '../mainP/DropdownButton';
-import { useAppDispatch, useAppSelector } from '../../hooks';
-import { setFilterOpen, setDeleteAccountOpen } from '../../slices/mypageSlice';
+import { Dropdown, Btn, List, ListItem, Props } from '../mainP/DropdownButton';
+import { useAppDispatch } from '../../hooks';
+import { setDeleteAccountOpen } from '../../slices/mypageSlice';
 import { FiMoreHorizontal } from 'react-icons/fi';
 import Cookies from 'js-cookie';
 
 const DropdownButton = () => {
   const dispatch = useAppDispatch();
-  const { dropOpen } = useAppSelector(({ mypage }) => mypage);
+  const [filterOpen, setFilterOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
   const options: ['로그아웃', '회원탈퇴'] = ['로그아웃', '회원탈퇴'];
 
   const selectFilterHandler = (option: '로그아웃' | '회원탈퇴') => {
-    dispatch(setFilterOpen(false));
+    setFilterOpen(false);
 
     if (option === '회원탈퇴') {
       dispatch(setDeleteAccountOpen(true));
@@ -27,7 +27,7 @@ const DropdownButton = () => {
   };
 
   const openFilterHandler = () => {
-    dispatch(setFilterOpen(!dropOpen));
+    setFilterOpen(!filterOpen);
   };
 
   const clickOutsideHandler = (event: MouseEvent) => {
@@ -35,7 +35,7 @@ const DropdownButton = () => {
       dropdownRef.current &&
       !dropdownRef.current.contains(event.target as Node)
     ) {
-      dispatch(setFilterOpen(false));
+      setFilterOpen(false);
     }
   };
 
@@ -51,15 +51,13 @@ const DropdownButton = () => {
       <Btn onClick={openFilterHandler} aria-label="memberMenu">
         <FiMoreHorizontal />
       </Btn>
-      {dropOpen && (
-        <List>
-          {options.map((option) => (
-            <ListItem key={option} onClick={() => selectFilterHandler(option)}>
-              {option}
-            </ListItem>
-          ))}
-        </List>
-      )}
+      <MyList filterOpen={filterOpen}>
+        {options.map((option) => (
+          <ListItem key={option} onClick={() => selectFilterHandler(option)}>
+            {option}
+          </ListItem>
+        ))}
+      </MyList>
     </DropDownContainer>
   );
 };
@@ -70,4 +68,7 @@ const DropDownContainer = styled(Dropdown)`
   position: absolute;
   right: 0;
   top: 10px;
+`;
+const MyList = styled(List)<Props>`
+  height: ${({ filterOpen }) => (filterOpen ? '80px' : '0')};
 `;
