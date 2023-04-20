@@ -22,4 +22,7 @@ const Cover = styled.div`
   height: 80px;
   background-color: #fff;
   box-shadow: 4px 4px 8px rgba(0, 0, 0, 0.15);
+  @media (max-width: 1100px) {
+    margin-right: 0;
+  }
 `;

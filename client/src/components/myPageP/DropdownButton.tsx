@@ -67,7 +67,7 @@ export default DropdownButton;
 const DropDownContainer = styled(Dropdown)`
   position: absolute;
   right: 0;
-  top: 10px;
+  top: 0;
 `;
 const MyList = styled(List)<Props>`
   height: ${({ filterOpen }) => (filterOpen ? '80px' : '0')};

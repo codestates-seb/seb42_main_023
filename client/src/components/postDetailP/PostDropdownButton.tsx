@@ -1,6 +1,6 @@
 import React, { useRef, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { useAppDispatch, useAppSelector } from '../../hooks';
+import { useAppDispatch } from '../../hooks';
 import { FiMoreHorizontal } from 'react-icons/fi';
 import { setIsOpenFilter, setReportType } from '../../slices/postSlice';
 import { Dropdown, Btn, ListItem, List } from '../mainP/DropdownButton';
@@ -23,9 +23,6 @@ const PostDropdownButton = ({
   isOpenDelete,
 }: Props) => {
   const dispatch = useAppDispatch();
-  const state = useAppSelector((state) => {
-    return state;
-  });
   const params = useParams();
   const postId = params.postId;
   const navigate = useNavigate();
