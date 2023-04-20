@@ -14,17 +14,15 @@ const ProfileEdit: React.FC<ProfileEditProps> = ({ content, setContent }) => {
   });
 
   return (
-    <InputWrap>
-      <textarea
-        value={content}
-        ref={inputRef}
-        onChange={(e) => {
-          setContent(e.currentTarget.value);
-        }}
-        rows={5}
-        maxLength={499}
-      ></textarea>
-    </InputWrap>
+    <EditIntput
+      value={content}
+      ref={inputRef}
+      onChange={(e) => {
+        setContent(e.currentTarget.value);
+      }}
+      rows={5}
+      maxLength={499}
+    ></EditIntput>
   );
 };
 
@@ -33,7 +31,7 @@ const InputWrap = styled.div`
   display: flex;
   textarea {
     box-sizing: border-box;
-    width: 900px;
+    max-width: 900px;
     resize: none;
     border: 1px solid var(--border-color);
     padding: 10px;
@@ -48,5 +46,16 @@ const InputWrap = styled.div`
     :hover {
       color: var(--point-blue-color);
     }
+  }
+`;
+const EditIntput = styled.textarea`
+  width: 100%;
+  border: 1px solid var(--border-color);
+  padding: 10px;
+  border-radius: 6px;
+  :focus {
+    outline: none;
+    border: none;
+    box-shadow: 0 0 6px var(--hover-point-blue-color);
   }
 `;

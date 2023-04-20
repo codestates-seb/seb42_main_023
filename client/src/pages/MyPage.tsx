@@ -56,10 +56,7 @@ function MyPage() {
 }
 
 export default MyPage;
-const MyPageWrap = styled.div`
-  display: flex;
-  flex-direction: column;
-`;
+const MyPageWrap = styled.div``;
 const Content = styled.div`
   display: flex;
   flex-basis: 900px;

@@ -61,10 +61,10 @@ function Profile({ member }: { member: Member }) {
             ))}
         </h1>
         {EditOpen ? (
-          <>
+          <EditContainer>
             <ProfileEdit content={content} setContent={setContent} />
             <Leng>{content.length}/500</Leng>
-          </>
+          </EditContainer>
         ) : (
           <Intro ref={divRef}> {member.intro}</Intro>
         )}
@@ -77,7 +77,6 @@ function Profile({ member }: { member: Member }) {
 export default Profile;
 const ProfileWrap = styled.div`
   padding-bottom: 40px;
-  padding-left: 10px;
   display: flex;
   position: relative;
   border-bottom: 1px solid var(--border-color);
@@ -85,6 +84,8 @@ const ProfileWrap = styled.div`
     flex-direction: column;
     justify-content: center;
     margin-top: 12px;
+    width: 100%;
+    height: 100%;
     h1 {
       font-weight: 600;
       font-size: 20px;
@@ -108,6 +109,25 @@ const ProfileWrap = styled.div`
       }
     }
   }
+  @media (max-width: 1100px) {
+    flex-direction: column;
+    align-items: center;
+    article {
+      text-align: center;
+      h1 {
+        button {
+          position: absolute;
+          top: 99px;
+        }
+      }
+    }
+  }
+`;
+const EditContainer = styled.div`
+  @media (max-width: 1100px) {
+    width: auto;
+    margin: 0 10px;
+  }
 `;
 const Finish = styled.button`
   color: var(--point-blue-color);
@@ -116,7 +136,10 @@ const Finish = styled.button`
   }
 `;
 const Intro = styled.div`
-  width: 900px;
+  max-width: auto;
+  @media (max-width: 1100px) {
+    margin: 0 10px;
+  }
 `;
 const Error = styled.span`
   position: absolute;
