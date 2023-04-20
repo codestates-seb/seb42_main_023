@@ -13,10 +13,6 @@ interface Open {
   type: string;
   payload: boolean;
 }
-interface Width {
-  type: string;
-  payload: number;
-}
 interface Intro {
   type: string;
   payload: string;
@@ -27,7 +23,6 @@ const mypageSlice = createSlice({
     filter: '작성한 글',
     EditOpen: false,
     deleteAccountOpen: false,
-    EditWidth: 1,
     content: '',
     query: '',
   },
@@ -37,9 +32,6 @@ const mypageSlice = createSlice({
     },
     setEditOpen: (state, action: Open): void => {
       state.EditOpen = action.payload;
-    },
-    setEditWidth: (state, action: Width): void => {
-      state.EditWidth = action.payload;
     },
     setContent: (state, action: Intro): void => {
       state.content = action.payload;
@@ -51,10 +43,5 @@ const mypageSlice = createSlice({
 });
 
 export default mypageSlice;
-export const {
-  setFilter,
-  setEditOpen,
-  setEditWidth,
-  setContent,
-  setDeleteAccountOpen,
-} = mypageSlice.actions;
+export const { setFilter, setEditOpen, setContent, setDeleteAccountOpen } =
+  mypageSlice.actions;

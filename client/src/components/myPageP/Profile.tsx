@@ -1,10 +1,9 @@
-import React, { useRef, useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import styled from 'styled-components';
 import LargeProfileImg from '../common/LargeProfileImg';
 import DropdownButton from './DropdownButton';
 import ProfileEdit from './ProfileEdit';
 import { useAppDispatch } from '../../hooks';
-import { setEditWidth } from '../../slices/mypageSlice';
 import { useUpdateMemberMutation } from '../../api/membersApi';
 
 interface Member {
@@ -18,7 +17,6 @@ function Profile({ member }: { member: Member }) {
   const [EditOpen, setEditOpen] = useState(false);
   const [content, setContent] = useState('');
   const [blank, setBlank] = useState('');
-  const divRef = useRef<HTMLDivElement>(null);
   const loginuser = localStorage.getItem('name');
 
   const EditOpenHandler = () => {
@@ -26,9 +24,6 @@ function Profile({ member }: { member: Member }) {
       setContent(member.intro);
     }
     setEditOpen(!EditOpen);
-    if (divRef.current !== null) {
-      dispatch(setEditWidth(divRef.current?.offsetWidth + 20));
-    }
   };
 
   const [updateMember] = useUpdateMemberMutation();
@@ -66,7 +61,7 @@ function Profile({ member }: { member: Member }) {
             <Leng>{content.length}/500</Leng>
           </EditContainer>
         ) : (
-          <Intro ref={divRef}> {member.intro}</Intro>
+          <Intro> {member.intro}</Intro>
         )}
         {blank && <Error>소개글이 비어있습니다.</Error>}
         {member.memberName === loginuser && <DropdownButton />}
