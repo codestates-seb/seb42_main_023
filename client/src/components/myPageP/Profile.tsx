@@ -85,7 +85,6 @@ const ProfileWrap = styled.div`
     justify-content: center;
     margin-top: 12px;
     width: 100%;
-    height: 100%;
     h1 {
       font-weight: 600;
       font-size: 20px;
@@ -125,7 +124,6 @@ const ProfileWrap = styled.div`
 `;
 const EditContainer = styled.div`
   @media (max-width: 1100px) {
-    width: auto;
     margin: 0 10px;
   }
 `;
@@ -136,7 +134,6 @@ const Finish = styled.button`
   }
 `;
 const Intro = styled.div`
-  max-width: auto;
   @media (max-width: 1100px) {
     margin: 0 10px;
   }

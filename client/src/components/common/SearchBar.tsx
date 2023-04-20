@@ -94,6 +94,7 @@ const SearchBar: React.FC = () => {
     <>
       <TagInputContainer>
         <InputContainer>
+          {valid.tagErr !== '' && <Error>{valid.tagErr}</Error>}
           <Input
             className="tag-input"
             placeholder="관심있는 내용을 검색해보세요."
@@ -104,7 +105,6 @@ const SearchBar: React.FC = () => {
           <Icon onClick={searchClickHandler}>
             <AiOutlineSearch size={26} />
           </Icon>
-          {valid.tagErr !== '' && <Error>{valid.tagErr}</Error>}
           {header.tag.length === 0 && <Span>#주식 #경제 #연봉</Span>}
           <TagConatiner>
             {header.tag.map((tag, idx) => (
@@ -152,11 +152,16 @@ const Input = styled.input`
   }
 `;
 
-const Error = styled.div`
+const Error = styled.span`
   color: red;
   font-size: 12px;
   position: absolute;
-  left: 310px;
+  top: 40px;
+  @media (max-width: 1100px) {
+    right: 80px;
+    position: none;
+    top: 12px;
+  }
 `;
 const TagConatiner = styled.div`
   display: flex;
@@ -181,5 +186,6 @@ const Span = styled.span`
   margin-left: 14px;
   @media (max-width: 1100px) {
     margin-top: 10px;
+    margin-left: 0;
   }
 `;
