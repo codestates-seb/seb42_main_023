@@ -137,7 +137,6 @@ const WeeklyPopularContainer = styled.ul`
     margin-bottom: 50px;
   }
   @media (max-width: 640px) {
-    width: auto;
     display: block;
   }
 `;
@@ -166,7 +165,6 @@ const FilterWrap = styled.div`
   justify-content: space-between;
 `;
 const Banner = styled.div`
-  width: auto;
   background: linear-gradient(90deg, #0069ca 0%, #0d1275 100%);
   margin-bottom: 40px;
   padding: 30px;

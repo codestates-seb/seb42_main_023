@@ -54,6 +54,7 @@ export default Search;
 const FilterWrap = styled.div`
   display: flex;
   justify-content: space-between;
+  margin: 0 10px;
   h1 {
     font-size: 20px;
     font-weight: 400;

@@ -1,9 +1,10 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import styled from 'styled-components';
 import { useAppDispatch, useAppSelector } from '../../hooks';
 import { setSearch } from '../../slices/headerSlice';
 import { SearchBtn } from './Btn';
 import { setInput, deleteAllSarchTag } from '../../slices/headerSlice';
+import { setTagErr } from '../../slices/validationSlice';
 import { GrClose } from 'react-icons/gr';
 import { useNavigate } from 'react-router-dom';
 
@@ -16,6 +17,7 @@ function Search() {
     dispatch(setInput(''));
     dispatch(deleteAllSarchTag());
     dispatch(setSearch(!search));
+    dispatch(setTagErr(''));
     navigation('/');
   };
   return (

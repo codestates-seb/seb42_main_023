@@ -79,7 +79,6 @@ const WeeklyBestItem = styled.li<Url>`
     }
   }
   @media (max-width: 640px) {
-    width: auto;
     margin: 10px 0;
   }
 `;
