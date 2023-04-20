@@ -35,10 +35,7 @@ const DropdownButton = ({
   };
 
   const clickOutsideHandler = (event: MouseEvent) => {
-    if (
-      dropdownRef.current &&
-      !dropdownRef.current.contains(event.target as Node)
-    ) {
+    if (!dropdownRef.current?.contains(event.target as Node)) {
       setFilterOpen(false);
     }
   };

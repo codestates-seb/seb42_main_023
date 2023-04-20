@@ -27,27 +27,6 @@ const ProfileEdit: React.FC<ProfileEditProps> = ({ content, setContent }) => {
 };
 
 export default ProfileEdit;
-const InputWrap = styled.div`
-  display: flex;
-  textarea {
-    box-sizing: border-box;
-    max-width: 900px;
-    resize: none;
-    border: 1px solid var(--border-color);
-    padding: 10px;
-    border-radius: 6px;
-    :focus {
-      outline: 1px solid var(--point-blue-color);
-    }
-  }
-  button {
-    width: 40px;
-
-    :hover {
-      color: var(--point-blue-color);
-    }
-  }
-`;
 const EditIntput = styled.textarea`
   width: 100%;
   border: 1px solid var(--border-color);
