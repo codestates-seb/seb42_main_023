@@ -112,7 +112,7 @@
 |                                                              |                                                              |
 | :----------------------------------------------------------: | :----------------------------------------------------------: |
 |                      **Community Page**                      |                     **Post Detail Page**                     |
-| <img alt='community-page' width="100%" src="https://user-images.githubusercontent.com/113220012/229968281-24f06eb2-8fb2-4f5f-8bbb-3ba8376a962f.png"/> | <img alt='post-detail-page' width="100%" src="https://user-images.githubusercontent.com/113220012/229968368-16459fa9-01f1-46f6-b771-fc4cee29a88e.png"/> |
+| <img alt='community-page' width="100%" src="https://user-images.githubusercontent.com/113220012/233505768-81c13e87-6795-4da1-8c44-ad73b0f1b432.gif"/> | <img alt='post-detail-page' width="100%" src="https://user-images.githubusercontent.com/113220012/229968368-16459fa9-01f1-46f6-b771-fc4cee29a88e.png"/> |
 |                    **Write a Post Page**                     |                     **Edit a Post Page**                     |
 | <img alt='write-a-post-page' width="100%" src="https://user-images.githubusercontent.com/113220012/229969684-06b93c1d-a1fb-463a-91eb-6b3185cbad5b.png"/> | <img alt='edit-a-post-page' width="100%" src="https://user-images.githubusercontent.com/113220012/229969627-67dbaa3c-e81b-4848-8e8b-2e10e07e31bc.png"/> |
 |                          **MyPage**                          |                     **Seoul Rent Page**                      |
