@@ -22,19 +22,19 @@ public class MemberFindServiceImpl implements MemberFindService {
     private final PostsFindService postsFindService;
     private final CommentFindService commentFindService;
 
-    // 임시 닉네임으로 회원 조회
-    @Override
-    public Member findVerifyMemberByTempName(String tempName) {
-        Optional<Member> optionalMember = memberRepository.findByTempName(tempName);
-
-        return optionalMember
-                .orElseThrow( () -> new BusinessLogicException(BusinessExceptionCode.USER_NOT_FOUND));
-    }
-
     // 닉네임으로 회원 조회
     @Override
     public Member findVerifyMemberByName(String name) {
         Optional<Member> optionalAnswer = memberRepository.findByName(name);
+
+        return optionalAnswer
+                .orElseThrow( () -> new BusinessLogicException(BusinessExceptionCode.USER_NOT_FOUND));
+    }
+
+    // 이메일과 로그인 종류로 회원 조회
+    @Override
+    public Member findVerifyMemberByEmailAndOAuthKind(String email, String oAuthKind) {
+        Optional<Member> optionalAnswer = memberRepository.findByEmailAndOauthkind(email, oAuthKind);
 
         return optionalAnswer
                 .orElseThrow( () -> new BusinessLogicException(BusinessExceptionCode.USER_NOT_FOUND));

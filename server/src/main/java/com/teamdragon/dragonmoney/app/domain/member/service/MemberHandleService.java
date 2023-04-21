@@ -3,11 +3,12 @@ package com.teamdragon.dragonmoney.app.domain.member.service;
 import com.teamdragon.dragonmoney.app.domain.member.entity.Member;
 
 import java.util.List;
+import java.util.Map;
 
 public interface MemberHandleService {
 
-    // oAuth2 로그인 할 때 존재하는 회원인지 판별
-    Boolean checkOAuthMemberByEmail(String email);
+    // 신규 회원인지 판별
+    Boolean isNewMember(String email);
 
     // OAuth2 신규 회원 정보 저장
     Member createMember(String oauthKind, String picture, String tempName, String email, List<String> authorities);
@@ -24,11 +25,8 @@ public interface MemberHandleService {
     // 회원 탈퇴
     Member removeMember(String name);
 
-    // 탈퇴한 회원 재 가입시 존재하는 회원인지 판별
-    Boolean isDeletedMemberByEmail(String email);
-
-    // 조회한 이메일을 통해 이름 가져오기
-    String findMemberNameByEmail(String email);
+    // 탈퇴된 회원 복구
+    Member changeMemberStateToActive(Map<String, Object> claims);
 
     // 작성자 확인
     void checkLoginMember(String loginMember, String uriMember);

@@ -27,11 +27,11 @@ public class MemberController {
 
     // 닉네임 중복 확인
     @PostMapping("/duplicated-name")
-    public ResponseEntity<MemberDto.DuplicatedRes> modifyMemberName(@Valid @RequestBody MemberDto.DuplicatedReq post) {
-        Boolean checkDuplicatedName = memberHandleService.canUseName(post.getName());
+    public ResponseEntity<MemberDto.DuplicatedRes> modifyMemberName(@Valid @RequestBody MemberDto.DuplicatedReq member) {
+        Boolean checkDuplicatedName = memberHandleService.canUseName(member.getName());
 
         if(checkDuplicatedName == true) {
-            memberHandleService.modifyMemberName(post.getTempName(), post.getName());
+            memberHandleService.modifyMemberName(member.getTempName(), member.getName());
         }
 
         MemberDto.DuplicatedRes response = new MemberDto.DuplicatedRes(checkDuplicatedName);

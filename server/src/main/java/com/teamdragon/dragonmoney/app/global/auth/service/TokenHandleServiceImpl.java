@@ -20,53 +20,23 @@ import java.util.*;
 @RequiredArgsConstructor
 @Transactional
 @Service
-public class OAuth2HandleServiceImpl implements OAuth2HandleService {
+public class TokenHandleServiceImpl implements OAuth2HandleService {
     private final JwtTokenizer jwtTokenizer;
     private final RefreshTokenRepository refreshTokenRepository;
-    private final MemberRepository memberRepository;
     private final MemberFindService memberFindService;
-    private final OAuth2FindService oAuth2FindService;
 
-    // Temp Access Token 발급
+    // Temp Access Token 파싱
     @Override
-    public String delegateTempAccessToken(String name) {
-        Map<String, Object> claims = new HashMap<>();
-        claims.put("name", name);
-
-        String subject = name;
-        Date expiration = jwtTokenizer.getTokenExpiration(jwtTokenizer.getTempAccessTokenExpirationMinutes());
-
+    public Map<String, Object> getNameAneRoles(String tempAccessToken) {
         String base64EncodedSecretKey = jwtTokenizer.encodeBase64SecretKey(jwtTokenizer.getSecretKey());
+        Map<String, Object> claims = jwtTokenizer.getClaims(tempAccessToken, base64EncodedSecretKey).getBody();
 
-        String accessToken = jwtTokenizer.generateAccessToken(claims, subject, expiration, base64EncodedSecretKey);
-
-        return accessToken;
+        return claims;
     }
 
     // Access Token 발급
     @Override
-    public String delegateAccessToken(String tempAccessToken) {
-        Member member = oAuth2FindService.findMemberByTempAccessToken(tempAccessToken);
-        String name = member.getName();
-        List<String> roles = member.getRoles();
-
-        Map<String, Object> claims = new HashMap<>();
-        claims.put("name", name);
-        claims.put("roles", roles);
-
-        String subject = name;
-        Date expiration = jwtTokenizer.getTokenExpiration(jwtTokenizer.getAccessTokenExpirationMinutes());
-
-        String base64EncodedSecretKey = jwtTokenizer.encodeBase64SecretKey(jwtTokenizer.getSecretKey());
-
-        String accessToken = jwtTokenizer.generateAccessToken(claims, subject, expiration, base64EncodedSecretKey);
-
-        return accessToken;
-    }
-
-    // AccessToken 재발급
-    @Override
-    public String delegateAccessTokenAgain(String memberName) {
+    public String delegateAccessToken(String memberName) {
         Member member = memberFindService.findVerifyMemberByName(memberName);
         List<String> roles = member.getRoles();
 
@@ -74,26 +44,22 @@ public class OAuth2HandleServiceImpl implements OAuth2HandleService {
         claims.put("name", memberName);
         claims.put("roles", roles);
 
-        String subject = memberName;
-        Date expiration = jwtTokenizer.getTokenExpiration(jwtTokenizer.getAccessTokenExpirationMinutes());
-
+        Date expiration = jwtTokenizer.getTokenExpiration(jwtTokenizer.getTempAccessTokenExpirationMinutes());
         String base64EncodedSecretKey = jwtTokenizer.encodeBase64SecretKey(jwtTokenizer.getSecretKey());
-
-        String accessToken = jwtTokenizer.generateAccessToken(claims, subject, expiration, base64EncodedSecretKey);
+        String accessToken = jwtTokenizer.generateAccessToken(claims, memberName, expiration, base64EncodedSecretKey);
 
         return accessToken;
     }
 
     // RefreshToken 발급
     @Override
-    public String delegateRefreshToken(String tempAccessToken) {
-        Member member = oAuth2FindService.findMemberByTempAccessToken(tempAccessToken);
-        String name = member.getName();
+    public String delegateRefreshToken(Map<String, Object> claims) {
+        Member member = memberFindService.findVerifyMemberByName((String) claims.get("name"));
 
         Date expiration = jwtTokenizer.getTokenExpiration(jwtTokenizer.getRefreshTokenExpirationMinutes());
         String base64EncodedSecretKey = jwtTokenizer.encodeBase64SecretKey(jwtTokenizer.getSecretKey());
 
-        String refreshToken = jwtTokenizer.generateRefreshToken(name, expiration, base64EncodedSecretKey);
+        String refreshToken = jwtTokenizer.generateRefreshToken(member.getName(), expiration, base64EncodedSecretKey);
 
         RefreshToken refreshTokenEntity = RefreshToken.builder()
                 .member(member)
@@ -105,15 +71,6 @@ public class OAuth2HandleServiceImpl implements OAuth2HandleService {
         member.saveRefreshToken(refreshTokenEntity);
 
         return refreshToken;
-    }
-
-    //tempAccessToken 저장
-    @Override
-    public Member updateTempAccessToken(String name, String tempAccessToken) {
-        Member member = memberFindService.findVerifyMemberByName(name);
-        member.saveTempAccessToken(tempAccessToken);
-
-        return memberRepository.save(member);
     }
 
     // Refresh Token 검증
@@ -138,14 +95,5 @@ public class OAuth2HandleServiceImpl implements OAuth2HandleService {
         Map<String, Object> claims = jwtTokenizer.getClaims(jws, base64EncodedSecretKey).getBody();
 
         return claims;
-    }
-
-    // 탈퇴된 회원 복구
-    @Override
-    public Member changeMemberStateToActive(String tempAccessToken) {
-        Member member = oAuth2FindService.findMemberByTempAccessToken(tempAccessToken);
-        member.changedMemberState(Member.MemberState.ACTIVE);
-
-        return memberRepository.save(member);
     }
 }
