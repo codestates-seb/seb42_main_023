@@ -4,7 +4,6 @@ import com.teamdragon.dragonmoney.app.domain.information.house.happyhouse.dto.Ha
 import com.teamdragon.dragonmoney.app.domain.information.house.happyhouse.entity.HappyHouse;
 import com.teamdragon.dragonmoney.app.domain.information.house.happyhouse.repository.HappyHouseRepository;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.apache.http.HttpHeaders;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.ParameterizedTypeReference;
@@ -17,11 +16,11 @@ import reactor.core.publisher.Mono;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-@Slf4j
 @RequiredArgsConstructor
 @Transactional
 @Service
@@ -62,7 +61,6 @@ public class HappyHouseHandleServiceImpl implements HappyHouseHandleService {
 
         DefaultUriBuilderFactory factory = new DefaultUriBuilderFactory("http://apis.data.go.kr");
         factory.setEncodingMode(DefaultUriBuilderFactory.EncodingMode.NONE);
-        log.info("api 데이터 요청 : 지역코드 = {}" , areaCode);
 
         Mono<List<HappyHouseApiDto.HappyHousePackage>> objectMono = WebClient.builder()
                 .uriBuilderFactory(factory)
@@ -85,21 +83,19 @@ public class HappyHouseHandleServiceImpl implements HappyHouseHandleService {
     // 데이터 수정 또는 추가
     private void saveOrUpdate(List<HappyHouse> newHappyHouses, List<HappyHouse> findHappyHouses) {
         Map<String, HappyHouse> findHappyHouseMap
-                = findHappyHouses.stream().collect(Collectors.toMap(fh -> fh.getNoticeId(), fh -> fh));
-        ArrayList<HappyHouse> addHappyHouse = new ArrayList<>();
+                = findHappyHouses.stream().collect(Collectors.toMap(HappyHouse::getNoticeId, fh -> fh));
+        Map<String, HappyHouse> addHappyHouseMap = new HashMap<>();
         for (HappyHouse newHappyHouse : newHappyHouses) {
-            log.info("newHappyHouse 아이디 : {}" , newHappyHouse.getNoticeId());
-            log.info("newHappyHouse 제목 : {}" , newHappyHouse.getNoticeTitle());
-            log.info("newHappyHouse 공고마감일 : {}" , newHappyHouse.getNoticeEndDay());
             HappyHouse findHouse = findHappyHouseMap.get(newHappyHouse.getNoticeId());
             if (findHouse != null ) {
                 findHouse.updateData(newHappyHouse);
-                addHappyHouse.add(findHouse);
+                addHappyHouseMap.put(findHouse.getNoticeId(), findHouse);
             } else {
-                addHappyHouse.add(newHappyHouse);
+                addHappyHouseMap.put(newHappyHouse.getNoticeId(), newHappyHouse);
             }
         }
-        log.info("addHappyHouse 길이 : {}" , addHappyHouse.size());
+        List<HappyHouse> addHappyHouse
+                = new ArrayList<>(addHappyHouseMap.values());
         happyHouseRepository.saveAll(addHappyHouse);
     }
 
