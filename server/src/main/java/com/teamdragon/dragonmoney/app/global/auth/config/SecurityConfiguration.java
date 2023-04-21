@@ -1,12 +1,10 @@
 package com.teamdragon.dragonmoney.app.global.auth.config;
 
-import com.teamdragon.dragonmoney.app.domain.member.service.MemberService;
 import com.teamdragon.dragonmoney.app.global.auth.filter.JwtVerificationFilter;
 import com.teamdragon.dragonmoney.app.global.auth.handler.MemberAccessDeniedHandler;
 import com.teamdragon.dragonmoney.app.global.auth.handler.MemberAuthenticationEntryPoint;
 import com.teamdragon.dragonmoney.app.global.auth.handler.OAuth2MemberHandler;
 import com.teamdragon.dragonmoney.app.global.auth.jwt.JwtTokenizer;
-import com.teamdragon.dragonmoney.app.global.auth.service.OAuth2Service;
 import com.teamdragon.dragonmoney.app.global.auth.utils.CustomAuthorityUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
@@ -30,8 +28,7 @@ import static org.springframework.security.config.Customizer.withDefaults;
 public class SecurityConfiguration {
     private final JwtTokenizer jwtTokenizer;
     private final CustomAuthorityUtils authorityUtils;
-    private final MemberService memberService;
-    private final OAuth2Service oAuth2Service;
+    private final OAuth2MemberHandler oAuth2MemberHandler;
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
@@ -100,7 +97,7 @@ public class SecurityConfiguration {
                         .antMatchers(HttpMethod.GET, "/rent-price/house/seoul").permitAll()
                 )
                 .oauth2Login(oauth2 -> oauth2
-                        .successHandler(new OAuth2MemberHandler(jwtTokenizer, authorityUtils, memberService, oAuth2Service))
+                                .successHandler(oAuth2MemberHandler)
                 );
 
         return http.build();

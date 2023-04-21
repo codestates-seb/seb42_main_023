@@ -11,23 +11,4 @@ public class ThumbDto {
         this.thumbupCount = thumbupCount;
         this.thumbdownCount = thumbdownCount;
     }
-
-    // 부모 대상 타입
-    @Getter
-    public enum Target {
-        POSTS,
-        COMMENT,
-        REPLY;
-        Target() {
-        }
-    }
-
-    // 증감 액션
-    @Getter
-    public enum ACTION {
-        PLUS,
-        MINUS;
-        ACTION() {
-        }
-    }
 }

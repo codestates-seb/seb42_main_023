@@ -18,26 +18,17 @@ public class Member extends BaseTimeEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column
-    private Boolean nameDuplicateCheck;
-
     @Column(name = "PROFILE_IMAGE", nullable = false, length = 300)
     private String profileImage;
 
     @Column(length = 1700)
     private String intro;
 
-    @Column(length = 150, unique = true)
-    private String tempName;
-
-    @Column
-    private String tempAccessToken;
-
     @Email
     @Column(length = 100, nullable = false)
     private String email;
 
-    @Column(length = 30, unique = true)
+    @Column(length = 150, unique = true)
     private String name;
 
     @Column(length = 20, name = "OAUTH_KIND")
@@ -59,16 +50,12 @@ public class Member extends BaseTimeEntity {
     private RefreshToken refreshToken;
 
     @Builder
-    public Member(Long id, Boolean nameDuplicateCheck, String profileImage,
-                  String intro, String tempName, String tempAccessToken,
-                  String email, String name, String oauthkind, MemberState state,
+    public Member(Long id, String profileImage, String intro, String email,
+                  String name, String oauthkind, MemberState state,
                   DeleteResult deleteResult, List<String> roles) {
         this.id = id;
-        this.nameDuplicateCheck = nameDuplicateCheck;
         this.profileImage = profileImage;
         this.intro = intro;
-        this.tempName = tempName;
-        this.tempAccessToken = tempAccessToken;
         this.email = email;
         this.name = name;
         this.oauthkind = oauthkind;
@@ -79,6 +66,7 @@ public class Member extends BaseTimeEntity {
 
     public enum MemberState {
         ACTIVE("활성"),
+        TEMP("대기중"),
         DELETED("탈퇴");
 
         @Getter
@@ -89,13 +77,9 @@ public class Member extends BaseTimeEntity {
         }
     }
 
-    public void saveMemberName(String memberName, Boolean nameDuplicateCheck) {
+    public void saveMemberName(String memberName, MemberState memberState) {
         this.name = memberName;
-        this.nameDuplicateCheck = nameDuplicateCheck;
-    }
-
-    public void saveTempAccessToken(String tempAccessToken) {
-        this.tempAccessToken = tempAccessToken;
+        this.state = memberState;
     }
 
     public void changedMemberState(MemberState memberState) {

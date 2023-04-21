@@ -1,11 +1,11 @@
 package com.teamdragon.dragonmoney.app.domain.image.controller;
 
-import com.teamdragon.dragonmoney.app.domain.common.service.FinderService;
 import com.teamdragon.dragonmoney.app.domain.image.dto.ImageDto;
 import com.teamdragon.dragonmoney.app.domain.image.entity.Image;
 import com.teamdragon.dragonmoney.app.domain.image.mapper.ImageMapper;
-import com.teamdragon.dragonmoney.app.domain.image.service.ImageService;
+import com.teamdragon.dragonmoney.app.domain.image.service.ImageHandleService;
 import com.teamdragon.dragonmoney.app.domain.member.entity.Member;
+import com.teamdragon.dragonmoney.app.domain.member.service.MemberFindService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -23,16 +23,16 @@ import java.util.List;
 @RestController
 public class ImageController {
 
-    private final FinderService finderService;
-    private final ImageService imageService;
+    private final MemberFindService memberFindService;
+    private final ImageHandleService imageHandleService;
     private final ImageMapper imageMapper;
 
     @PostMapping("/images")
     public ResponseEntity<ImageDto.ImageResponse> createImage(@AuthenticationPrincipal Principal principal,
                                                               @RequestParam("image") MultipartFile file) {
-        Member loginMember = finderService.findVerifiedMemberByName(principal.getName());
+        Member loginMember = memberFindService.findVerifyMemberByName(principal.getName());
 
-        Image saveImage = imageService.createImage(loginMember, file);
+        Image saveImage = imageHandleService.createImage(loginMember, file);
         ImageDto.ImageResponse imageResponse = imageMapper.imageToImageResponse(saveImage);
         return new ResponseEntity<>(imageResponse, HttpStatus.CREATED);
     }
@@ -40,9 +40,9 @@ public class ImageController {
     @PostMapping("/images/drop")
     public ResponseEntity<Void> removeImage(@AuthenticationPrincipal Principal principal,
                                             @Valid @RequestBody ImageDto.DeleteImagesReq imagesDto) {
-        Member loginMember = finderService.findVerifiedMemberByName(principal.getName());
+        Member loginMember = memberFindService.findVerifyMemberByName(principal.getName());
         List<Image> images = imageMapper.imageDtoListToImageList(imagesDto.getRemoveImages());
-        imageService.removeImageList(loginMember, images);
+        imageHandleService.removeImageList(loginMember, images);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 }

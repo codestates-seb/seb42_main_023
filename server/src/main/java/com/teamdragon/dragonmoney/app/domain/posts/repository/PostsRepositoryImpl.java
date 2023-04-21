@@ -8,6 +8,7 @@ import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.teamdragon.dragonmoney.app.domain.posts.dto.PostsDto;
 import com.teamdragon.dragonmoney.app.domain.posts.entity.Posts;
+import com.teamdragon.dragonmoney.app.domain.thumb.entity.Thumb;
 import com.teamdragon.dragonmoney.app.global.pagenation.QueryDslUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -25,8 +26,7 @@ import static com.teamdragon.dragonmoney.app.domain.popular.entity.QBestAwards.*
 import static com.teamdragon.dragonmoney.app.domain.posts.entity.QPosts.*;
 import static com.teamdragon.dragonmoney.app.domain.posts.entity.QPostsTag.*;
 import static com.teamdragon.dragonmoney.app.domain.tag.entity.QTag.*;
-import static com.teamdragon.dragonmoney.app.domain.thumb.entity.QThumbdown.*;
-import static com.teamdragon.dragonmoney.app.domain.thumb.entity.QThumbup.*;
+import static com.teamdragon.dragonmoney.app.domain.thumb.entity.QThumb.*;
 
 @RequiredArgsConstructor
 public class PostsRepositoryImpl implements PostsRepositoryCustom {
@@ -114,16 +114,18 @@ public class PostsRepositoryImpl implements PostsRepositoryCustom {
                                 .where(bookmark.member.id.eq(loginMemberId),
                                         bookmark.posts.id.eq(postsId),
                                         bookmark.posts.state.eq(Posts.State.ACTIVE)), "isBookmarked"),
-                        ExpressionUtils.as(JPAExpressions.select(thumbup.id.max())
-                                .from(thumbup)
-                                .where(thumbup.parentPosts.id.eq(postsId),
-                                        thumbup.member.id.eq(loginMemberId),
-                                        thumbup.parentPosts.state.eq(Posts.State.ACTIVE)), "isThumbup"),
-                        ExpressionUtils.as(JPAExpressions.select(thumbdown.id.max())
-                                .from(thumbdown)
-                                .where(thumbdown.parentPosts.id.eq(postsId),
-                                        thumbdown.member.id.eq(loginMemberId),
-                                        thumbdown.parentPosts.state.eq(Posts.State.ACTIVE)), "isThumbdown")))
+                        ExpressionUtils.as(JPAExpressions.select(thumb.id.max())
+                                .from(thumb)
+                                .where(thumb.parentPosts.id.eq(postsId),
+                                        thumb.member.id.eq(loginMemberId),
+                                        thumb.thumbType.eq(Thumb.Type.UP),
+                                        thumb.parentPosts.state.eq(Posts.State.ACTIVE)), "isThumbup"),
+                        ExpressionUtils.as(JPAExpressions.select(thumb.id.max())
+                                .from(thumb)
+                                .where(thumb.parentPosts.id.eq(postsId),
+                                        thumb.member.id.eq(loginMemberId),
+                                        thumb.thumbType.eq(Thumb.Type.DOWN),
+                                        thumb.parentPosts.state.eq(Posts.State.ACTIVE)), "isThumbdown")))
                 .distinct()
                 .from(posts)
                 .leftJoin(posts.postsTags, postsTag)
@@ -247,10 +249,10 @@ public class PostsRepositoryImpl implements PostsRepositoryCustom {
 
         List<Posts> content = queryFactory
                 .select(posts)
-                .from(thumbup)
-                .join(thumbup.parentPosts, posts)
-                .join(thumbup.member, member)
-                .where(posts.state.notIn(Posts.State.DELETED), thumbup.member.name.eq(memberName))
+                .from(thumb)
+                .join(thumb.parentPosts, posts)
+                .join(thumb.member, member)
+                .where(posts.state.notIn(Posts.State.DELETED), thumb.member.name.eq(memberName), thumb.thumbType.eq(Thumb.Type.UP))
                 .orderBy(orders)
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
@@ -312,10 +314,11 @@ public class PostsRepositoryImpl implements PostsRepositoryCustom {
     @Override
     public Long findMemberThumbUpPostsCount(String memberName) {
         Long memberPostsCount = queryFactory
-                .select(thumbup.count())
-                .from(thumbup)
-                .join(thumbup.parentPosts, posts)
-                .where(posts.state.notIn(Posts.State.DELETED), thumbup.member.name.eq(memberName), thumbup.parentPosts.id.isNotNull())
+                .select(thumb.count())
+                .from(thumb)
+                .join(thumb.parentPosts, posts)
+                .where(posts.state.notIn(Posts.State.DELETED), thumb.member.name.eq(memberName),
+                        thumb.parentPosts.id.isNotNull(), thumb.thumbType.eq(Thumb.Type.UP))
                 .fetchOne();
         return memberPostsCount;
     }

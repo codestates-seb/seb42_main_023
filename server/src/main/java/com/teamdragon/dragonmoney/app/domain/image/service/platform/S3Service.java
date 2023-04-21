@@ -16,7 +16,7 @@ import java.util.List;
 
 @RequiredArgsConstructor
 @Service
-public class S3Service {
+public class S3Service implements CloudService {
 
     @Value("${cloud.aws.s3.bucket}")
     private String bucket;
@@ -24,6 +24,7 @@ public class S3Service {
     private final AmazonS3 amazonS3;
 
     // 이미지 업로드
+    @Override
     public String uploadFile(MultipartFile multipartFile, String ext, String fullFileName){
         try {
             ObjectMetadata objectMetadata = getObjectMetadata(ext, multipartFile.getSize());
@@ -48,6 +49,7 @@ public class S3Service {
     }
 
     // 여러 객체 삭제
+    @Override
     public void removeFileList(List<String> storeFileNameKeys){
         String[] keys = storeFileNameKeys.toArray(new String[storeFileNameKeys.size()]);
         try {

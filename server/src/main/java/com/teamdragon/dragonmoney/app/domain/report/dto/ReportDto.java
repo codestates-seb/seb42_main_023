@@ -1,8 +1,8 @@
 package com.teamdragon.dragonmoney.app.domain.report.dto;
 
 import com.teamdragon.dragonmoney.app.domain.report.entity.Report;
+import com.teamdragon.dragonmoney.app.domain.report.service.ReportTargetType;
 import com.teamdragon.dragonmoney.app.global.pagenation.PageInfo;
-import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -73,12 +73,12 @@ public class ReportDto {
         private Long postId;
 
         @Builder
-        public ReportDetailRes(Report report, String targetType,
+        public ReportDetailRes(Report report, ReportTargetType targetType,
                                String content, String writer, Long postId) {
             this.reportId = report.getId();
             this.reportedAt = report.getReportedAt();
             this.reportCategory = report.getReportReason();
-            this.targetType = targetType;
+            this.targetType = targetType.getKor();
             this.content = content;
             this.writer = writer;
             this.reporter = report.getReporter().getName();
@@ -120,18 +120,15 @@ public class ReportDto {
             this.reportId = report.getId();
             this.reportedAt = report.getReportedAt();
             this.reportCategory = report.getReportReason();
-            this.targetType = report.getTargetType();
+            this.targetType = report.getTargetType().getKor();
             this.description = report.getDescription();
-            if(targetType.equals("post")) {
-                this.targetType = "게시글";
+            if(targetType.equals("게시글")) {
                 this.writer = report.getTargetPosts().getWriter().getName();
                 this.postId = report.getTargetPosts().getId();
-            } else if (targetType.equals("comment")) {
-                this.targetType = "댓글";
+            } else if (targetType.equals("댓글")) {
                 this.writer = report.getTargetComment().getWriter().getName();
                 this.postId = report.getTargetComment().getPosts().getId();
-            } else if (targetType.equals("reply")) {
-                this.targetType = "답글";
+            } else if (targetType.equals("답글")) {
                 this.writer = report.getTargetReply().getWriter().getName();
                 this.postId = report.getTargetReply().getComment().getPosts().getId();
             }

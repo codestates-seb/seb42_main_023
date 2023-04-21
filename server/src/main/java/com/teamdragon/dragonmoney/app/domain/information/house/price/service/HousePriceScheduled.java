@@ -13,21 +13,22 @@ import java.util.Optional;
 @Service
 public class HousePriceScheduled {
 
-    private final HousePriceService housePriceService;
+    private final HousePriceFindService housePriceFindService;
+    private final HousePriceHandleService housePriceHandleService;
 
     // 1. 지역별 데이터 갱신 요청
     @Scheduled(cron = "0 0 5 * * TUE")
     public void collectHousePrices() {
         AreaCode[] areas = AreaCode.values();
         for (AreaCode area : areas) {
-            Optional<HousePrice> optionalHousePrice = housePriceService.findByLocation(area);
-            HousePrice housePrice = housePriceService.callFuncByHouseKind(area);
+            Optional<HousePrice> optionalHousePrice = housePriceFindService.findByLocation(area);
+            HousePrice housePrice = housePriceHandleService.callFuncByHouseKind(area);
             if (optionalHousePrice.isPresent()) {
                 HousePrice findHousePrice = optionalHousePrice.get();
                 findHousePrice.updateData(housePrice);
-                housePriceService.saveOrUpdateHousePrice(findHousePrice);
+                housePriceHandleService.saveOrUpdateHousePrice(findHousePrice);
             } else {
-                housePriceService.saveOrUpdateHousePrice(housePrice);
+                housePriceHandleService.saveOrUpdateHousePrice(housePrice);
             }
         }
     }

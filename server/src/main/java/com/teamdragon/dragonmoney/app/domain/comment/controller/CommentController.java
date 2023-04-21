@@ -3,9 +3,11 @@ package com.teamdragon.dragonmoney.app.domain.comment.controller;
 import com.teamdragon.dragonmoney.app.domain.comment.dto.CommentDto;
 import com.teamdragon.dragonmoney.app.domain.comment.entity.Comment;
 import com.teamdragon.dragonmoney.app.domain.comment.mapper.CommentMapper;
-import com.teamdragon.dragonmoney.app.domain.comment.service.CommentService;
+import com.teamdragon.dragonmoney.app.domain.comment.service.CommentFindService;
+import com.teamdragon.dragonmoney.app.domain.comment.service.CommentHandleService;
+import com.teamdragon.dragonmoney.app.domain.member.dto.MyPageDto;
 import com.teamdragon.dragonmoney.app.domain.member.entity.Member;
-import com.teamdragon.dragonmoney.app.domain.member.service.MemberService;
+import com.teamdragon.dragonmoney.app.domain.member.service.MemberFindService;
 import com.teamdragon.dragonmoney.app.global.exception.ValidFailException;
 import com.teamdragon.dragonmoney.app.global.exception.ValidFailExceptionCode;
 import lombok.RequiredArgsConstructor;
@@ -26,19 +28,20 @@ import java.security.Principal;
 @RestController
 public class CommentController {
 
-    private final CommentService commentService;
+    private final CommentHandleService commentHandleService;
+    private final CommentFindService commentFindService;
     private final CommentMapper commentMapper;
-    private final MemberService memberService;
+    private final MemberFindService memberFindService;
 
     // 추가
     @PostMapping("/posts/{post-id}/comments")
     public ResponseEntity<CommentDto.CreateRes> createComment(@AuthenticationPrincipal Principal principal,
                                                               @Valid @Positive @PathVariable("post-id") Long postsId,
                                                               @Valid @RequestBody CommentDto.CreateReq commentDto) {
-        Member loginMember = memberService.findMember(principal.getName());
+        Member loginMember = memberFindService.findVerifyMemberByName(principal.getName());
         Comment newComment = commentMapper.createDtoToComment(commentDto);
 
-        Comment saveComment = commentService.createComment(postsId, loginMember, newComment);
+        Comment saveComment = commentHandleService.createComment(postsId, loginMember, newComment);
         CommentDto.CreateRes response = new CommentDto.CreateRes(saveComment.getId());
 
         return new ResponseEntity<>(response, HttpStatus.CREATED);
@@ -52,24 +55,42 @@ public class CommentController {
                                                                      @Valid @NotBlank @RequestParam String orderby) {
         Long loginMemberId = null;
         if (principal != null) {
-            Member loginMember = memberService.findMember(principal.getName());
+            Member loginMember = memberFindService.findVerifyMemberByName(principal.getName());
             loginMemberId = loginMember.getId();
         }
 
         Comment.OrderBy orderBy = checkOrderBy(orderby);
 
-        Page<CommentDto.CommentListElement> commentList = commentService.findCommentList(page, postsId, orderBy, loginMemberId);
+        Page<CommentDto.CommentListElement> commentList = commentFindService.findCommentList(page, postsId, orderBy, loginMemberId);
         CommentDto.CommentListRes response = new CommentDto.CommentListRes(commentList, orderby);
 
         return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
+    // 특정 회원이 작성한 댓글 목록 (마이 페이지)
+    @GetMapping("/members/{member-name}/comments")
+    public ResponseEntity<MyPageDto.MyPageMemberCommentListRes> findCommentListByMember(@PathVariable("member-name") String memberName,
+                                                                                        @Valid @Positive @RequestParam int page) {
+        memberFindService.findVerifyMemberByName(memberName);
+        MyPageDto.MyPageMemberCommentListRes response = commentFindService.findCommentListByMember(page, memberName);
+        return ResponseEntity.status(HttpStatus.OK).body(response);
+    }
+
+    // 특정 회원이 좋아요를 누른 댓글 목록 (마이 페이지)
+    @GetMapping("/members/{member-name}/thumbup/comments")
+    public ResponseEntity<MyPageDto.MyPageMemberCommentListRes> findThumbUpCommentListByMember(@PathVariable("member-name") String memberName,
+                                                                                               @Valid @Positive @RequestParam int page) {
+        memberFindService.findVerifyMemberByName(memberName);
+        MyPageDto.MyPageMemberCommentListRes response = commentFindService.findThumbUpCommentListByMember(page, memberName);
+        return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 
     // 삭제
     @DeleteMapping("/comments/{comment-id}")
     public ResponseEntity<Void> removeComment(@AuthenticationPrincipal Principal principal,
                                               @Valid @Positive @PathVariable("comment-id") Long commentId) {
-        Member loginMember = memberService.findMember(principal.getName());
-        commentService.removeComment(loginMember, commentId);
+        Member loginMember = memberFindService.findVerifyMemberByName(principal.getName());
+        commentHandleService.removeComment(loginMember, commentId);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
@@ -78,9 +99,9 @@ public class CommentController {
     public ResponseEntity<CommentDto.UpdateRes> modifyComment(@AuthenticationPrincipal Principal principal,
                                                               @Valid @RequestBody CommentDto.UpdateReq commentDto,
                                                               @Valid @Positive @PathVariable("comment-id") Long commentId) {
-        Member loginMember = memberService.findMember(principal.getName());
+        Member loginMember = memberFindService.findVerifyMemberByName(principal.getName());
         Comment comment = commentMapper.updateDtoToComment(commentDto);
-        Comment updateComment = commentService.modifyComment(loginMember, commentId, comment);
+        Comment updateComment = commentHandleService.modifyComment(loginMember, commentId, comment);
         CommentDto.UpdateRes response = new CommentDto.UpdateRes(updateComment.getId());
         return new ResponseEntity<>(response, HttpStatus.OK);
     }

@@ -1,12 +1,11 @@
 package com.teamdragon.dragonmoney.app.domain.member.controller;
 
-import com.teamdragon.dragonmoney.app.domain.common.service.FinderService;
 import com.teamdragon.dragonmoney.app.domain.member.dto.MemberDto;
 import com.teamdragon.dragonmoney.app.domain.member.dto.MyPageDto;
 import com.teamdragon.dragonmoney.app.domain.member.entity.Member;
 import com.teamdragon.dragonmoney.app.domain.member.mapper.MemberMapper;
-import com.teamdragon.dragonmoney.app.domain.member.service.MemberService;
-import com.teamdragon.dragonmoney.app.domain.member.service.MyPageService;
+import com.teamdragon.dragonmoney.app.domain.member.service.MemberFindService;
+import com.teamdragon.dragonmoney.app.domain.member.service.MemberHandleServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -15,7 +14,6 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import javax.validation.constraints.Positive;
 import java.security.Principal;
 
 @RequiredArgsConstructor
@@ -23,18 +21,17 @@ import java.security.Principal;
 @RequestMapping("/members")
 @RestController
 public class MemberController {
-    private final MemberService memberService;
+    private final MemberFindService memberFindService;
+    private final MemberHandleServiceImpl memberHandleService;
     private final MemberMapper memberMapper;
-    private final MyPageService myPageService;
-    private final FinderService finderService;
 
     // 닉네임 중복 확인
     @PostMapping("/duplicated-name")
-    public ResponseEntity<MemberDto.DuplicatedRes> modifyMemberName(@Valid @RequestBody MemberDto.DuplicatedReq post) {
-        Boolean checkDuplicatedName = memberService.canUseName(post.getName());
+    public ResponseEntity<MemberDto.DuplicatedRes> modifyMemberName(@Valid @RequestBody MemberDto.DuplicatedReq member) {
+        Boolean checkDuplicatedName = memberHandleService.canUseName(member.getName());
 
         if(checkDuplicatedName == true) {
-            memberService.modifyMemberName(post.getTempName(), post.getName());
+            memberHandleService.modifyMemberName(member.getTempName(), member.getName());
         }
 
         MemberDto.DuplicatedRes response = new MemberDto.DuplicatedRes(checkDuplicatedName);
@@ -47,11 +44,11 @@ public class MemberController {
     public ResponseEntity<MemberDto.IntroResponse> modifyMember(@PathVariable("member-name") String name,
                                        @Valid @RequestBody MemberDto.PatchReq patch,
                                        @AuthenticationPrincipal Principal principal) {
-        finderService.findVerifiedMemberByName(name);
-        memberService.checkLoginMember(principal.getName(), name);
+        memberFindService.findVerifyMemberByName(name);
+        memberHandleService.checkLoginMember(principal.getName(), name);
 
         Member member = memberMapper.pathDtoToMember(patch);
-        Member updatedMember = memberService.modifyMemberIntro(name, member);
+        Member updatedMember = memberHandleService.modifyMemberIntro(name, member);
         MemberDto.IntroResponse response = memberMapper.introResponseDtoToMember(updatedMember);
 
         return ResponseEntity.status(HttpStatus.OK).body(response);
@@ -60,57 +57,12 @@ public class MemberController {
     // 특정 회원 정보 가져오기
     @GetMapping("/{member-name}")
     public ResponseEntity<MyPageDto.MyPageRes> findMemberDetails(@PathVariable("member-name") String memberName) {
-        Member getMember = memberService.findMember(memberName);
+        Member getMember = memberFindService.findVerifyMemberByName(memberName);
 
         MyPageDto.MyPageMemberInfo myPageResponse = memberMapper.myPageResponseDtoToMember(getMember);
-        MyPageDto.MyPageCount postsPage = myPageService.findCountInfo(memberName);
+        MyPageDto.MyPageCount postsPage = memberFindService.findCountInfo(memberName);
         MyPageDto.MyPageRes response = new MyPageDto.MyPageRes(myPageResponse, postsPage);
 
-        return ResponseEntity.status(HttpStatus.OK).body(response);
-    }
-
-    // 특정 회원이 작성한 게시글 목록
-    @GetMapping("/{member-name}/posts")
-    public ResponseEntity<MyPageDto.MyPageMemberPostsListRes> findPostsListByMember(@PathVariable("member-name") String memberName,
-                                                @Valid @Positive @RequestParam int page) {
-        finderService.findVerifiedMemberByName(memberName);
-        MyPageDto.MyPageMemberPostsListRes response = myPageService.findMemberPosts(page, memberName);
-        return ResponseEntity.status(HttpStatus.OK).body(response);
-    }
-
-    // 특정 회원이 작성한 댓글 목록
-    @GetMapping("/{member-name}/comments")
-    public ResponseEntity<MyPageDto.MyPageMemberCommentListRes> findCommentListByMember(@PathVariable("member-name") String memberName,
-                                                  @Valid @Positive @RequestParam int page) {
-        finderService.findVerifiedMemberByName(memberName);
-        MyPageDto.MyPageMemberCommentListRes response = myPageService.findMemberComments(page, memberName);
-        return ResponseEntity.status(HttpStatus.OK).body(response);
-    }
-
-    // 특정 회원이 좋아요를 누른 게시글 목록
-    @GetMapping("/{member-name}/thumbup/posts")
-    public ResponseEntity<MyPageDto.MyPageMemberPostsListRes> findThumbUpPostsListByMember(@PathVariable("member-name") String memberName,
-                                                                                           @Valid @Positive @RequestParam int page) {
-        finderService.findVerifiedMemberByName(memberName);
-        MyPageDto.MyPageMemberPostsListRes response = myPageService.findMemberThumbUpPosts(page, memberName);
-        return ResponseEntity.status(HttpStatus.OK).body(response);
-    }
-
-    // 특정 회원이 좋아요를 누른 댓글 목록
-    @GetMapping("/{member-name}/thumbup/comments")
-    public ResponseEntity<MyPageDto.MyPageMemberCommentListRes> findThumbUpCommentListByMember(@PathVariable("member-name") String memberName,
-                                                                                               @Valid @Positive @RequestParam int page) {
-        finderService.findVerifiedMemberByName(memberName);
-        MyPageDto.MyPageMemberCommentListRes response = myPageService.findMemberThumbUpComments(page, memberName);
-        return ResponseEntity.status(HttpStatus.OK).body(response);
-    }
-
-    // 특정 회원이 북마크를 누른 게시글 목록
-    @GetMapping("/{member-name}/bookmark")
-    public ResponseEntity<MyPageDto.MyPageMemberPostsListRes> findBookmarkListByMember(@PathVariable("member-name") String memberName,
-                                                                                       @Valid @Positive @RequestParam int page) {
-        finderService.findVerifiedMemberByName(memberName);
-        MyPageDto.MyPageMemberPostsListRes response = myPageService.findMemberBookmarks(page, memberName);
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 
@@ -118,10 +70,10 @@ public class MemberController {
     @DeleteMapping("/{member-name}")
     public ResponseEntity<Void> removeMember(@PathVariable("member-name") String name,
                                              @AuthenticationPrincipal Principal principal) {
-        finderService.findVerifiedMemberByName(name);
-        memberService.checkLoginMember(principal.getName(), name);
+        memberFindService.findVerifyMemberByName(name);
+        memberHandleService.checkLoginMember(principal.getName(), name);
 
-        memberService.removeMember(principal.getName());
+        memberHandleService.removeMember(principal.getName());
         return ResponseEntity.status(HttpStatus.OK).build();
     }
 }

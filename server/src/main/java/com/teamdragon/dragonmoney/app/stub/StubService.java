@@ -5,7 +5,7 @@ import com.teamdragon.dragonmoney.app.domain.comment.repository.CommentRepositor
 import com.teamdragon.dragonmoney.app.domain.image.entity.Image;
 import com.teamdragon.dragonmoney.app.domain.image.repository.ImageRepository;
 import com.teamdragon.dragonmoney.app.domain.information.house.happyhouse.service.HappyHouseScheduled;
-import com.teamdragon.dragonmoney.app.domain.information.house.happyhouse.service.HappyHouseService;
+import com.teamdragon.dragonmoney.app.domain.information.house.price.service.HousePriceHandleService;
 import com.teamdragon.dragonmoney.app.domain.information.house.price.service.HousePriceScheduled;
 import com.teamdragon.dragonmoney.app.domain.member.entity.Member;
 import com.teamdragon.dragonmoney.app.domain.member.repository.MemberRepository;
@@ -17,12 +17,9 @@ import com.teamdragon.dragonmoney.app.domain.posts.repository.PostsRepository;
 import com.teamdragon.dragonmoney.app.domain.reply.entity.Reply;
 import com.teamdragon.dragonmoney.app.domain.reply.repository.ReplyRepository;
 import com.teamdragon.dragonmoney.app.domain.tag.entity.Tag;
-import com.teamdragon.dragonmoney.app.domain.tag.service.TagService;
-import com.teamdragon.dragonmoney.app.domain.thumb.entity.Thumbdown;
-import com.teamdragon.dragonmoney.app.domain.thumb.entity.Thumbup;
-import com.teamdragon.dragonmoney.app.domain.thumb.respository.ThumbdownRepository;
-import com.teamdragon.dragonmoney.app.domain.thumb.respository.ThumbupRepository;
-import com.teamdragon.dragonmoney.app.domain.information.house.price.service.HousePriceService;
+import com.teamdragon.dragonmoney.app.domain.tag.service.TagHandleService;
+import com.teamdragon.dragonmoney.app.domain.thumb.entity.Thumb;
+import com.teamdragon.dragonmoney.app.domain.thumb.respository.ThumbRepository;
 import lombok.RequiredArgsConstructor;
 
 import org.springframework.stereotype.Service;
@@ -41,11 +38,10 @@ public class StubService {
     private final PostsRepository postsRepository;
     private final ImageRepository imageRepository;
     private final MemberRepository memberRepository;
-    private final TagService tagService;
-    private final ThumbupRepository thumbupRepository;
+    private final TagHandleService tagHandleService;
+    private final ThumbRepository thumbRepository;
     private final ReplyRepository replyRepository;
-    private final ThumbdownRepository thumbdownRepository;
-    private final HousePriceService housePriceService;
+    private final HousePriceHandleService housePriceHandleService;
     private final HappyHouseScheduled happyHouseScheduled;
     private final HousePriceScheduled housePriceScheduled;
     private final BestAwardsRepository bestAwardsRepository;
@@ -107,7 +103,7 @@ public class StubService {
         }
 
         ArrayList<String> tagNames = new ArrayList<>(Arrays.asList("머니", "부자", "투자", "주식", "부동산"));
-        List<Tag> saveTags = tagService.saveListTag(tagNames);
+        List<Tag> saveTags = tagHandleService.saveListTag(tagNames);
         Queue<Image> imageQueue = new LinkedList<>(saveImages);
         ArrayList<Posts> postsList = new ArrayList<>();
         for (int i = 0; i < POSTS_NUMBER; i++) {
@@ -187,22 +183,22 @@ public class StubService {
             savePosts = postsRepository.findAll();
         }
 
-        ArrayList<Thumbup> thumbups = new ArrayList<>();
-        ArrayList<Thumbdown> thumbdowns = new ArrayList<>();
+        ArrayList<Thumb> thumbs = new ArrayList<>();
         for (int i = 0; i < savePosts.size(); i++) {
-            Thumbup thumbup = Thumbup.builder()
+            Thumb thumbup = Thumb.builder()
                     .parentPosts(savePosts.get(i))
                     .member(saveMembers.get(i % MEMBER_NUMBER))
+                    .thumbType(Thumb.Type.UP)
                     .build();
-            Thumbdown thumbdown = Thumbdown.builder()
+            Thumb thumbdown = Thumb.builder()
                     .parentPosts(savePosts.get(i))
                     .member(saveMembers.get(i % MEMBER_NUMBER))
+                    .thumbType(Thumb.Type.DOWN)
                     .build();
-            thumbups.add(thumbup);
-            thumbdowns.add(thumbdown);
+            thumbs.add(thumbup);
+            thumbs.add(thumbdown);
         }
-        thumbupRepository.saveAll(thumbups);
-        thumbdownRepository.saveAll(thumbdowns);
+        thumbRepository.saveAll(thumbs);
     }
 
     public void makeThumbComments(List<Member> saveMembers, List<Comment> saveComments) {
@@ -213,23 +209,22 @@ public class StubService {
             saveComments = commentRepository.findAll();
         }
 
-        ArrayList<Thumbup> thumbups = new ArrayList<>();
-        ArrayList<Thumbdown> thumbdowns = new ArrayList<>();
+        ArrayList<Thumb> thumbs = new ArrayList<>();
         for (int i = 0; i < saveComments.size(); i++) {
-            Thumbup thumbup = Thumbup.builder()
+            Thumb thumbup = Thumb.builder()
                     .parentComment(saveComments.get(i))
                     .member(saveMembers.get(i % MEMBER_NUMBER))
+                    .thumbType(Thumb.Type.UP)
                     .build();
-            Thumbdown thumbdown = Thumbdown.builder()
+            Thumb thumbdown = Thumb.builder()
                     .parentComment(saveComments.get(i))
                     .member(saveMembers.get(i % MEMBER_NUMBER))
+                    .thumbType(Thumb.Type.DOWN)
                     .build();
-            thumbups.add(thumbup);
-            thumbdowns.add(thumbdown);
+            thumbs.add(thumbup);
+            thumbs.add(thumbdown);
         }
-        thumbupRepository.saveAll(thumbups);
-        thumbdownRepository.saveAll(thumbdowns);
-
+        thumbRepository.saveAll(thumbs);
     }
 
     public void makeThumbReplies(List<Member> saveMembers, List<Reply> saveReplies) {
@@ -240,22 +235,22 @@ public class StubService {
             saveReplies = replyRepository.findAll();
         }
 
-        ArrayList<Thumbup> thumbups = new ArrayList<>();
-        ArrayList<Thumbdown> thumbdowns = new ArrayList<>();
+        ArrayList<Thumb> thumbs = new ArrayList<>();
         for (int i = 0; i < saveReplies.size(); i++) {
-            Thumbup thumbup = Thumbup.builder()
+            Thumb thumbup = Thumb.builder()
                     .parentReply(saveReplies.get(i))
                     .member(saveMembers.get(i % MEMBER_NUMBER))
+                    .thumbType(Thumb.Type.UP)
                     .build();
-            Thumbdown thumbdown = Thumbdown.builder()
+            Thumb thumbdown = Thumb.builder()
                     .parentReply(saveReplies.get(i))
                     .member(saveMembers.get(i % MEMBER_NUMBER))
+                    .thumbType(Thumb.Type.DOWN)
                     .build();
-            thumbups.add(thumbup);
-            thumbdowns.add(thumbdown);
+            thumbs.add(thumbup);
+            thumbs.add(thumbdown);
         }
-        thumbupRepository.saveAll(thumbups);
-        thumbdownRepository.saveAll(thumbdowns);
+        thumbRepository.saveAll(thumbs);
     }
 
     public void makeBestAwards(List<Posts> savePosts) {

@@ -2,11 +2,9 @@ package com.teamdragon.dragonmoney.app.domain.reply.entity;
 
 import com.teamdragon.dragonmoney.app.domain.comment.entity.Comment;
 import com.teamdragon.dragonmoney.app.domain.member.entity.Member;
-import com.teamdragon.dragonmoney.app.domain.posts.entity.Posts;
 import com.teamdragon.dragonmoney.app.domain.thumb.ThumbDto;
 import com.teamdragon.dragonmoney.app.domain.thumb.ThumbCountable;
-import com.teamdragon.dragonmoney.app.domain.thumb.entity.Thumbdown;
-import com.teamdragon.dragonmoney.app.domain.thumb.entity.Thumbup;
+import com.teamdragon.dragonmoney.app.domain.thumb.entity.Thumb;
 import com.teamdragon.dragonmoney.app.global.audit.BaseTimeEntity;
 import com.teamdragon.dragonmoney.app.domain.delete.entity.DeleteResult;
 import lombok.Builder;
@@ -51,10 +49,7 @@ public class Reply extends BaseTimeEntity implements ThumbCountable {
     private Long thumbdownCount;
 
     @OneToMany(mappedBy = "parentReply")
-    private List<Thumbup> thumbups = new ArrayList<>();
-
-    @OneToMany(mappedBy = "parentReply")
-    private List<Thumbdown> thumbdowns = new ArrayList<>();
+    private List<Thumb> thumbs = new ArrayList<>();
 
     public enum State {
         ACTIVE("활성", "활성상태 입니다."),
