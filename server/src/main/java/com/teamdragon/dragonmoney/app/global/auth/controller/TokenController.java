@@ -1,5 +1,6 @@
 package com.teamdragon.dragonmoney.app.global.auth.controller;
 
+import com.teamdragon.dragonmoney.app.domain.member.service.MemberHandleService;
 import com.teamdragon.dragonmoney.app.global.auth.dto.LoginResponseDto;
 import com.teamdragon.dragonmoney.app.global.auth.dto.TempAccessTokenDto;
 import com.teamdragon.dragonmoney.app.global.auth.service.OAuth2FindService;
@@ -16,26 +17,29 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
+import java.util.Map;
 
 @Slf4j
 @RequiredArgsConstructor
 @RestController
-public class OAuth2Controller {
+public class TokenController {
     @Getter
     @Value("${jwt.refresh-token-expiration-minutes}")
     private int refreshTokenExpirationMinutes;
     private final OAuth2HandleService oAuth2HandleService;
     private final OAuth2FindService oAuth2FindService;
+    private final MemberHandleService memberHandleService;
 
     // 탈퇴한 회원 재가입
     @PostMapping("/comeback")
     public ResponseEntity<LoginResponseDto> modifyMemberToActive(@Valid @RequestBody TempAccessTokenDto tempAccessTokenDto) {
-        oAuth2HandleService.changeMemberStateToActive(tempAccessTokenDto.getTempAccessToken());
+        Map<String, Object> claims = oAuth2HandleService.getNameAneRoles(tempAccessTokenDto.getTempAccessToken());
+        memberHandleService.changeMemberStateToActive(claims);
 
-        String accessToken = "Bearer " + oAuth2HandleService.delegateAccessToken(tempAccessTokenDto.getTempAccessToken());
-        String refreshToken = oAuth2HandleService.delegateRefreshToken(tempAccessTokenDto.getTempAccessToken());
+        String accessToken = "Bearer " + oAuth2HandleService.delegateAccessToken((String) claims.get("name"));
+        String refreshToken = oAuth2HandleService.delegateRefreshToken(claims);
 
-        LoginResponseDto response = oAuth2FindService.findLoginMember(tempAccessTokenDto.getTempAccessToken());
+        LoginResponseDto response = oAuth2FindService.findLoginMember((String) claims.get("name"));
 
         return ResponseEntity.status(HttpStatus.OK)
                 .header("Authorization", accessToken)
@@ -46,10 +50,12 @@ public class OAuth2Controller {
     // 정식 토큰 발급
     @PostMapping("/auth/callback/google")
     public ResponseEntity<LoginResponseDto> createAllToken(@Valid @RequestBody TempAccessTokenDto tempAccessTokenDto) {
-        String accessToken = "Bearer " + oAuth2HandleService.delegateAccessToken(tempAccessTokenDto.getTempAccessToken());
-        String refreshToken = oAuth2HandleService.delegateRefreshToken(tempAccessTokenDto.getTempAccessToken());
+        Map<String, Object> claims = oAuth2HandleService.getNameAneRoles(tempAccessTokenDto.getTempAccessToken());
 
-        LoginResponseDto response = oAuth2FindService.findLoginMember(tempAccessTokenDto.getTempAccessToken());
+        String accessToken = "Bearer " + oAuth2HandleService.delegateAccessToken((String) claims.get("name"));
+        String refreshToken = oAuth2HandleService.delegateRefreshToken(claims);
+
+        LoginResponseDto response = oAuth2FindService.findLoginMember((String) claims.get("name"));
 
         return ResponseEntity.status(HttpStatus.OK)
                 .header("Authorization", accessToken)
@@ -67,7 +73,7 @@ public class OAuth2Controller {
         if(!request.getHeader("Refresh").equals(memberNameGetRefreshToken)) {
             throw new AuthLogicException(AuthExceptionCode.REFRESH_TOKEN_INVALID);
         }
-        String accessToken = oAuth2HandleService.delegateAccessTokenAgain(name);
+        String accessToken = oAuth2HandleService.delegateAccessToken(name);
 
         return ResponseEntity.ok()
                 .header("Authorization", "Bearer " + accessToken)

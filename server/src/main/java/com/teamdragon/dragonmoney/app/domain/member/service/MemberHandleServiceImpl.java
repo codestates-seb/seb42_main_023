@@ -17,6 +17,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @RequiredArgsConstructor
@@ -35,11 +36,11 @@ public class MemberHandleServiceImpl implements MemberHandleService {
 
     private static final String OAUTH2_KIND = "google";
 
-    // oAuth2 로그인 할 때 존재하는 회원인지 판별
+    // 신규 회원인지 판별
     @Override
-    public Boolean checkOAuthMemberByEmail(String email) {
+    public Boolean isNewMember(String email) {
         Optional<Member> optionalNameDuplicateCheck
-                = memberRepository.findByNameDuplicateCheckAndEmailAndOauthkind(true, email, OAUTH2_KIND);
+                = memberRepository.findByEmailAndOauthkind(email, OAUTH2_KIND);
 
         return optionalNameDuplicateCheck.isPresent();
     }
@@ -49,11 +50,10 @@ public class MemberHandleServiceImpl implements MemberHandleService {
     public Member createMember(String oauthKind, String picture, String tempName, String email, List<String> authorities) {
         Member member = Member.builder()
                 .oauthkind(oauthKind)
-                .nameDuplicateCheck(false)
                 .profileImage(picture)
-                .state(Member.MemberState.ACTIVE)
+                .state(Member.MemberState.TEMP)
                 .roles(authorities)
-                .tempName(tempName)
+                .name(tempName)
                 .email(email)
                 .build();
         return memberRepository.save(member);
@@ -71,8 +71,8 @@ public class MemberHandleServiceImpl implements MemberHandleService {
     @Override
     public Member modifyMemberName(String tempName, String name) {
 
-        Member memberOptional = memberFindService.findVerifyMemberByTempName(tempName);
-        memberOptional.saveMemberName(name, true);
+        Member memberOptional = memberFindService.findVerifyMemberByName(tempName);
+        memberOptional.saveMemberName(name, Member.MemberState.ACTIVE);
 
         return memberRepository.save(memberOptional);
     }
@@ -108,21 +108,13 @@ public class MemberHandleServiceImpl implements MemberHandleService {
         return memberRepository.save(deletedMember);
     }
 
-    // 탈퇴한 회원 재 가입시 존재하는 회원인지 판별
+    // 탈퇴된 회원 복구
     @Override
-    public Boolean isDeletedMemberByEmail(String email) {
-        Optional<Member> optionalDeletedCheck
-                = memberRepository.findByEmailAndOauthkindAndState(email, OAUTH2_KIND, Member.MemberState.DELETED);
-        return optionalDeletedCheck.isPresent();
-    }
+    public Member changeMemberStateToActive(Map<String, Object> claims) {
+        Member member =  memberFindService.findVerifyMemberByName((String) claims.get("name"));
+        member.changedMemberState(Member.MemberState.ACTIVE);
 
-    // 조회한 이메일을 통해 이름 가져오기
-    @Override
-    public String findMemberNameByEmail(String email) {
-        Optional<Member> getMember = memberRepository.findByNameDuplicateCheckAndEmailAndOauthkind(true, email, OAUTH2_KIND);
-        String name = getMember.get().getName();
-
-        return name;
+        return memberRepository.save(member);
     }
 
     // 작성자 확인
