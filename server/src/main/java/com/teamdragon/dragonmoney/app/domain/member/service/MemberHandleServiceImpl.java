@@ -67,10 +67,9 @@ public class MemberHandleServiceImpl implements MemberHandleService {
         return memberOptional.isEmpty();
     }
 
-    // 회원 조회 및 이름 수정
+    // 닉네임 수정
     @Override
     public Member modifyMemberName(String tempName, String name) {
-
         Member memberOptional = memberFindService.findVerifyMemberByName(tempName);
         memberOptional.saveMemberName(name, Member.MemberState.ACTIVE);
 
