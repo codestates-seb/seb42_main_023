@@ -49,11 +49,15 @@ public class SecurityConfiguration {
                 .and()
                 .authorizeHttpRequests(authorize -> authorize
                         .antMatchers(HttpMethod.POST, "/members/*").permitAll()
-                        .antMatchers(HttpMethod.PATCH, "/members/**").hasRole("USER")
+                        .antMatchers(HttpMethod.PATCH, "/members/nickname").permitAll()
+                        .antMatchers(HttpMethod.PATCH, "/members/*/nickname-duplicate-check").permitAll()
+                        .antMatchers(HttpMethod.PATCH, "/members/*").hasRole("USER")
                         .antMatchers(HttpMethod.GET, "/members/*").permitAll()
                         .antMatchers(HttpMethod.GET, "/members/*/**").permitAll()
                         .antMatchers(HttpMethod.DELETE, "/members/**").hasRole("USER")
                         .antMatchers(HttpMethod.POST, "/auth/**").permitAll()
+                        .antMatchers(HttpMethod.PATCH, "/account-recovery").permitAll()
+                        .antMatchers(HttpMethod.GET, "/manager").permitAll()
                         .antMatchers(HttpMethod.POST, "/members/*/bookmark/**").hasRole("USER")
                         .antMatchers(HttpMethod.DELETE, "/members/*/bookmark/**").hasRole("USER")
 

@@ -5,7 +5,7 @@ import com.teamdragon.dragonmoney.app.domain.member.dto.MyPageDto;
 import com.teamdragon.dragonmoney.app.domain.member.entity.Member;
 import com.teamdragon.dragonmoney.app.domain.member.mapper.MemberMapper;
 import com.teamdragon.dragonmoney.app.domain.member.service.MemberFindService;
-import com.teamdragon.dragonmoney.app.domain.member.service.MemberHandleServiceImpl;
+import com.teamdragon.dragonmoney.app.domain.member.service.MemberHandleService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -22,19 +22,23 @@ import java.security.Principal;
 @RestController
 public class MemberController {
     private final MemberFindService memberFindService;
-    private final MemberHandleServiceImpl memberHandleService;
+    private final MemberHandleService memberHandleService;
     private final MemberMapper memberMapper;
 
     // 닉네임 중복 확인
-    @PostMapping("/duplicated-name")
-    public ResponseEntity<MemberDto.DuplicatedRes> modifyMemberName(@Valid @RequestBody MemberDto.DuplicatedReq member) {
-        Boolean checkDuplicatedName = memberHandleService.canUseName(member.getName());
-
-        if(checkDuplicatedName == true) {
-            memberHandleService.modifyMemberName(member.getTempName(), member.getName());
-        }
-
+    @GetMapping("/{member-name}/nickname-duplicate-check")
+    public ResponseEntity<MemberDto.DuplicatedRes> checkMemberName(@Valid @PathVariable("member-name") String memberName) {
+        Boolean checkDuplicatedName = memberHandleService.canUseName(memberName);
         MemberDto.DuplicatedRes response = new MemberDto.DuplicatedRes(checkDuplicatedName);
+
+        return ResponseEntity.status(HttpStatus.OK).body(response);
+    }
+
+    // 회원가입시 닉네임 저장
+    @PatchMapping("/nickname")
+    public ResponseEntity<MemberDto.PatchNameRes> modifyMemberName(@Valid @RequestBody MemberDto.DuplicatedReq memberReq) {
+        Member member = memberHandleService.modifyMemberName(memberReq.getTempName(), memberReq.getName());
+        MemberDto.PatchNameRes response = new MemberDto.PatchNameRes(member.getName());
 
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
@@ -42,7 +46,7 @@ public class MemberController {
     // 회원 정보 수정(자기소개 수정)
     @PatchMapping("/{member-name}")
     public ResponseEntity<MemberDto.IntroResponse> modifyMember(@PathVariable("member-name") String name,
-                                       @Valid @RequestBody MemberDto.PatchReq patch,
+                                       @Valid @RequestBody MemberDto.PatchIntroReq patch,
                                        @AuthenticationPrincipal Principal principal) {
         memberFindService.findVerifyMemberByName(name);
         memberHandleService.checkLoginMember(principal.getName(), name);

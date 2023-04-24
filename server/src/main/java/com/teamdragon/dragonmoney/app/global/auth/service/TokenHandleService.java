@@ -3,7 +3,7 @@ package com.teamdragon.dragonmoney.app.global.auth.service;
 import javax.servlet.http.HttpServletRequest;
 import java.util.Map;
 
-public interface OAuth2HandleService {
+public interface TokenHandleService {
 
     // Temp Access Token 파싱
     Map<String, Object> getNameAneRoles(String tempAccessToken);
@@ -12,7 +12,7 @@ public interface OAuth2HandleService {
     String delegateAccessToken(String name);
 
     // RefreshToken 발급
-    String delegateRefreshToken(Map<String, Object> claims);
+    String delegateRefreshToken(String name);
 
     // Refresh Token 검증
     void verifyJws(HttpServletRequest request);

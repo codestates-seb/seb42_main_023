@@ -1,7 +1,6 @@
 package com.teamdragon.dragonmoney.app.global.auth.service;
 
 import com.teamdragon.dragonmoney.app.domain.member.entity.Member;
-import com.teamdragon.dragonmoney.app.domain.member.repository.MemberRepository;
 import com.teamdragon.dragonmoney.app.domain.member.service.MemberFindService;
 import com.teamdragon.dragonmoney.app.global.auth.jwt.JwtTokenizer;
 import com.teamdragon.dragonmoney.app.global.auth.refresh.entity.RefreshToken;
@@ -20,7 +19,7 @@ import java.util.*;
 @RequiredArgsConstructor
 @Transactional
 @Service
-public class TokenHandleServiceImpl implements OAuth2HandleService {
+public class TokenHandleServiceImpl implements TokenHandleService {
     private final JwtTokenizer jwtTokenizer;
     private final RefreshTokenRepository refreshTokenRepository;
     private final MemberFindService memberFindService;
@@ -53,8 +52,8 @@ public class TokenHandleServiceImpl implements OAuth2HandleService {
 
     // RefreshToken 발급
     @Override
-    public String delegateRefreshToken(Map<String, Object> claims) {
-        Member member = memberFindService.findVerifyMemberByName((String) claims.get("name"));
+    public String delegateRefreshToken(String name) {
+        Member member = memberFindService.findVerifyMemberByName(name);
 
         Date expiration = jwtTokenizer.getTokenExpiration(jwtTokenizer.getRefreshTokenExpirationMinutes());
         String base64EncodedSecretKey = jwtTokenizer.encodeBase64SecretKey(jwtTokenizer.getSecretKey());

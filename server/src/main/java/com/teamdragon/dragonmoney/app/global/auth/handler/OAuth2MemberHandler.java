@@ -3,7 +3,7 @@ package com.teamdragon.dragonmoney.app.global.auth.handler;
 import com.teamdragon.dragonmoney.app.domain.member.entity.Member;
 import com.teamdragon.dragonmoney.app.domain.member.service.MemberFindService;
 import com.teamdragon.dragonmoney.app.domain.member.service.MemberHandleService;
-import com.teamdragon.dragonmoney.app.global.auth.service.OAuth2HandleService;
+import com.teamdragon.dragonmoney.app.global.auth.service.TokenHandleService;
 import com.teamdragon.dragonmoney.app.global.auth.utils.CustomAuthorityUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
@@ -32,7 +32,7 @@ public class OAuth2MemberHandler extends SimpleUrlAuthenticationSuccessHandler {
     private final CustomAuthorityUtils authorityUtils;
     private final MemberHandleService memberHandleService;
     private final MemberFindService memberFindService;
-    private final OAuth2HandleService oAuth2HandleService;
+    private final TokenHandleService tokenHandleService;
 
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException {
@@ -53,7 +53,7 @@ public class OAuth2MemberHandler extends SimpleUrlAuthenticationSuccessHandler {
         else {
             Member member = memberFindService.findVerifyMemberByEmailAndOAuthKind(email, "google");
             String name = member.getName();
-            String tempAccessToken = oAuth2HandleService.delegateAccessToken(name);
+            String tempAccessToken = tokenHandleService.delegateAccessToken(name);
 
             switch (member.getState()) {
                 case ACTIVE:
