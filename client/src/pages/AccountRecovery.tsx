@@ -2,17 +2,17 @@ import React from 'react';
 import styled from 'styled-components';
 import { MainContainer, FormContainer } from '../components/common/Container';
 import { BlueBtn } from '../components/common/Btn';
-import { usePostTempTokenRecoveryMutation } from '../api/tempTokenAPi';
+import { usePatchTempTokenRecoveryMutation } from '../api/tempTokenAPi';
 import { LogoSVG } from '../assets/common/LogoSVG';
 
 const AccountRecovery: React.FC = () => {
-  const [postTempTokenRecovery] = usePostTempTokenRecoveryMutation();
+  const [patchTempTokenRecovery] = usePatchTempTokenRecoveryMutation();
 
   const recoverAccountHandler = () => {
     const url = new URL(window.location.href);
     const tempAccessToken = url.searchParams.get('tempAccessToken');
 
-    postTempTokenRecovery({ tempAccessToken })
+    patchTempTokenRecovery({ tempAccessToken })
       .unwrap()
       .then((response: any) => {
         const { name, picture, role } = response;

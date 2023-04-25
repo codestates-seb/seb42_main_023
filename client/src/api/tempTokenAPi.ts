@@ -33,10 +33,10 @@ export const tempTokenApi = createApi({
       transformResponse,
     }),
     // 이전에 회원탈퇴를 한 기록이 있는 유저가 로그인 했을때
-    postTempTokenRecovery: builder.mutation({
+    patchTempTokenRecovery: builder.mutation({
       query: ({ tempAccessToken }) => ({
-        url: '/comeback',
-        method: 'POST',
+        url: '/account-recovery',
+        method: 'PATCH',
         body: { tempAccessToken },
       }),
       transformResponse,
@@ -44,5 +44,5 @@ export const tempTokenApi = createApi({
   }),
 });
 
-export const { usePostTempTokenMutation, usePostTempTokenRecoveryMutation } =
+export const { usePostTempTokenMutation, usePatchTempTokenRecoveryMutation } =
   tempTokenApi;
