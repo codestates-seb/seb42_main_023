@@ -24,9 +24,9 @@ const Login: React.FC = () => {
         localStorage.setItem('picture', picture);
         localStorage.setItem('role', role);
 
-        const { Authorization, Refresh } = res.headers;
-        Cookies.set('Authorization', Authorization);
-        Cookies.set('Refresh', Refresh);
+        const { authorization, refresh } = res.headers;
+        Cookies.set('Authorization', authorization);
+        Cookies.set('Refresh', refresh);
 
         window.location.href = '/';
       })
@@ -46,6 +46,11 @@ const Login: React.FC = () => {
           <button className="admin" onClick={loginAdminHandler}>
             관리자로 로그인하기
           </button>
+          <span>
+            **체험을 위해 만든 임시 관리자 로그인 기능입니다. 기존 서비스에는
+            지정된 구글 계정을 통해서만 관리자 권한으로 로그인이 가능하게
+            설계했습니다.
+          </span>
         </LoginBtnContainer>
       </FormContainer>
     </MainContainer>
@@ -80,5 +85,13 @@ const LoginBtnContainer = styled.div`
   > .admin {
     color: var(--point-blue-color);
     font-size: 14px;
+    height: 20px;
+    border: 1px solid var(--border-color);
+  }
+
+  > span {
+    color: #7b7b7b;
+    font-size: 12px;
+    margin-top: 3px;
   }
 `;
