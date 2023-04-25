@@ -8,6 +8,7 @@ import {
 } from '../api/nicknameApi';
 import { MainContainer, FormContainer } from '../components/common/Container';
 import { LogoSVG } from '../assets/common/LogoSVG';
+import axios from 'axios';
 
 const SetNickname: React.FC = () => {
   const navigate = useNavigate();
@@ -15,14 +16,14 @@ const SetNickname: React.FC = () => {
   const nicknameRef = useRef<HTMLInputElement>(null);
   const [nicknameErrMsg, setNicknameErrMsg] = useState<null | string>(null);
 
-  const nickname = nicknameRef.current!.value;
+  let nickname = nicknameRef.current?.value ?? '';
 
   //! 여기부터
   const [patchNickname] = usePatchNicknameMutation();
-  const { data } = useGetNicknameQuery(
-    { name: nickname },
-    { skip: nickname === '' },
-  );
+  // const { data, isLoading } = useGetNicknameQuery(
+  //   { name: nickname },
+  //   { skip: !nickname },
+  // );
 
   useEffect(() => {
     const url = new URL(window.location.href);
@@ -38,28 +39,55 @@ const SetNickname: React.FC = () => {
   };
 
   const duplicateNicknameCheckHandler = () => {
+    nickname = nicknameRef.current!.value;
+    console.log('nickname', nickname);
     const specialCharacters = /[~!@#$%^&*()_+|<>?:{}]/;
 
     if (nickname.length < 2 || nickname.length > 8) {
+      console.log('2자 이상 8자 이하로 작성해주세요.');
       setNicknameErrMsg('2자 이상 8자 이하로 작성해주세요.');
       return;
     }
     if (nickname.search(/\s/) != -1 || specialCharacters.test(nickname)) {
+      console.log('공백이나 특수문자를 포함하면 안됩니다.');
       setNicknameErrMsg('공백이나 특수문자를 포함하면 안됩니다.');
       return;
     }
 
-    if (!nicknameErrMsg) {
-      console.log(data);
-      if (data.useable) {
-        setNicknameErrMsg('사용 가능한 닉네임입니다.');
-      } else {
-        setNicknameErrMsg('사용할 수 없는 닉네임입니다.');
-      }
-    }
+    axios
+      .get(
+        process.env.REACT_APP_SERVER_ADDRESS +
+          `/members/${nickname}/nickname-duplicate-check`,
+      )
+      .then((res) => {
+        if (res.data.useable) {
+          console.log('true');
+          setNicknameErrMsg('사용 가능한 닉네임입니다.');
+        }
+
+        if (res.data.useable === false) {
+          console.log('false');
+          setNicknameErrMsg('사용할 수 없는 닉네임입니다.');
+        }
+      });
+
+    // if (!isLoading && data) {
+    //   console.log('data', data);
+
+    //   if (data?.useable) {
+    //     console.log('true');
+    //     setNicknameErrMsg('사용 가능한 닉네임입니다.');
+    //   }
+
+    //   if (data?.useable === false) {
+    //     console.log('false');
+    //     setNicknameErrMsg('사용할 수 없는 닉네임입니다.');
+    //   }
+    // }
   };
 
   const saveNicknameHandler = () => {
+    nickname = nicknameRef.current!.value;
     if (!nicknameErrMsg) {
       setNicknameErrMsg('중복 확인을 해주세요.');
       return;
