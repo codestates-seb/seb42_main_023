@@ -39,16 +39,25 @@ public class MemberDto {
         }
     }
 
+    @Getter
+    public static class PatchNameRes {
+        private String name;
+
+        public PatchNameRes(String name) {
+            this.name = name;
+        }
+    }
+
     // 회원 수정
     @Getter
     @NoArgsConstructor
-    public static class PatchReq {
+    public static class PatchIntroReq {
         @NotNull(message = "내용을 입력해주세요.")
         @NotBlank(message = "공백은 불가능합니다.")
         @Size(max = 1700, message = "60글자 이내로 작성 가능합니다.")
         private String intro;
 
-        public PatchReq(String intro) {
+        public PatchIntroReq(String intro) {
             this.intro = intro;
         }
     }
