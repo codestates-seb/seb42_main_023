@@ -17,10 +17,13 @@ public class ImageScheduled {
     private final ImageHandleService imageHandleService;
 
     // 이미지 삭제 : 사용되지 않는 이미지 삭제
-    @Scheduled(cron = "0 0 5 * * *")
+    @Scheduled(cron = "0 0 3 * * *")
     public void removeOrphanImages() {
         // 고아 이미지 검색
         List<Image> orphanImageList = imageFindService.findOrphanImageList();
+        if (orphanImageList.isEmpty()) {
+            return;
+        }
 
         // 클라우드에서 삭제
         imageHandleService.removeImageListFromCloud(orphanImageList);
