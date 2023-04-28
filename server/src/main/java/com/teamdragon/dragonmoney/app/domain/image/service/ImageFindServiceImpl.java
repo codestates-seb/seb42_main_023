@@ -6,6 +6,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -15,6 +16,7 @@ import java.util.stream.Collectors;
 public class ImageFindServiceImpl implements ImageFindService {
 
     private final ImageRepository imageRepository;
+    private static final Integer MAX_CREATABLE_TIME = 30;
 
     // 이미지들 검색
     @Override
@@ -26,5 +28,14 @@ public class ImageFindServiceImpl implements ImageFindService {
                 .map(Image::getId)
                 .collect(Collectors.toList());
         return imageRepository.findAllByIds(imageIds);
+    }
+
+    // 고아 이미지 검색
+    @Override
+    public List<Image> findOrphanImageList() {
+        LocalDateTime now = LocalDateTime.now();
+
+        LocalDateTime createFrom = now.minusMinutes(MAX_CREATABLE_TIME);
+        return imageRepository.findAllOrphanImageList(createFrom, now);
     }
 }
