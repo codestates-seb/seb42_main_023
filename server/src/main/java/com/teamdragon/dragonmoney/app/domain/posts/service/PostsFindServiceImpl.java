@@ -43,8 +43,11 @@ public class PostsFindServiceImpl implements PostsFindService {
 
     // 게시글 상세 조회 : 게시글 id
     @Override
-    public PostsDto.PostsDetailRes findPostsDetails(Long postsId, Long loginMemberId){
-        plusViewCount(postsId);
+    public PostsDto.PostsDetailRes findPostsDetails(Long postsId, Long loginMemberId, Boolean isVisited){
+        if (!isVisited) {
+            plusViewCount(postsId);
+        }
+
         if (loginMemberId == null) {
             return postsRepository.findPostsDetailById(postsId);
         } else {
@@ -130,8 +133,6 @@ public class PostsFindServiceImpl implements PostsFindService {
 
     // 조회수 증가
     private void plusViewCount(Long postsId) {
-        Posts findPosts = findVerifyPostsById(postsId);
-        findPosts.plusViewCount();
-        postsRepository.save(findPosts);
+        postsRepository.updatePlusViewCount(postsId);
     }
 }
