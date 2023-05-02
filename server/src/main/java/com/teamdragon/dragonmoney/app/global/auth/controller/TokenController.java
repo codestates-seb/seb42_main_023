@@ -38,7 +38,7 @@ public class TokenController {
         memberHandleService.changeMemberStateToActive(claims);
 
         String accessToken = "Bearer " + tokenHandleService.delegateAccessToken(memberName);
-        String refreshToken = tokenHandleService.delegateRefreshToken(memberName);
+        String refreshToken = tokenHandleService.saveRefresh(memberName);
 
         LoginResponseDto response = oAuth2FindService.findLoginMember(memberName);
 
@@ -55,7 +55,7 @@ public class TokenController {
         String memberName = (String) claims.get("name");
 
         String accessToken = "Bearer " + tokenHandleService.delegateAccessToken(memberName);
-        String refreshToken = tokenHandleService.delegateRefreshToken(memberName);
+        String refreshToken = tokenHandleService.saveRefresh(memberName);
 
         LoginResponseDto response = oAuth2FindService.findLoginMember(memberName);
 
@@ -70,7 +70,7 @@ public class TokenController {
     public ResponseEntity<Void> createAccessToken(@PathVariable("member-name") String name,
                                                   HttpServletRequest request) {
         tokenHandleService.verifyJws(request);
-        String memberNameGetRefreshToken = oAuth2FindService.findRefreshTokenByMemberName(name);
+        String memberNameGetRefreshToken = oAuth2FindService.findRefreshTokenByMemberName(name).getRefreshTokenValue();
 
         if(!request.getHeader("Refresh").equals(memberNameGetRefreshToken)) {
             throw new AuthLogicException(AuthExceptionCode.REFRESH_TOKEN_INVALID);

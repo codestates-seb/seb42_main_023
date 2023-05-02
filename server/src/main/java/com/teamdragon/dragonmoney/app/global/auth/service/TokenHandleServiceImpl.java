@@ -23,6 +23,7 @@ public class TokenHandleServiceImpl implements TokenHandleService {
     private final JwtTokenizer jwtTokenizer;
     private final RefreshTokenRepository refreshTokenRepository;
     private final MemberFindService memberFindService;
+    private final OAuth2FindService oAuth2FindService;
 
     // Temp Access Token 파싱
     @Override
@@ -50,24 +51,33 @@ public class TokenHandleServiceImpl implements TokenHandleService {
         return accessToken;
     }
 
-    // RefreshToken 발급
-    @Override
-    public String delegateRefreshToken(String name) {
+    // RefreshToken 저장
+    public String saveRefresh(String name) {
         Member member = memberFindService.findVerifyMemberByName(name);
+        String refreshToken = delegateRefreshToken(member);
 
+        if(member.getRefreshToken() == null) {
+            RefreshToken refreshTokenEntity = RefreshToken.builder()
+                    .member(member)
+                    .refreshTokenValue(refreshToken)
+                    .build();
+
+            refreshTokenRepository.save(refreshTokenEntity);
+            member.saveRefreshToken(refreshTokenEntity);
+        }
+        else {
+            RefreshToken refreshTokenEntity = oAuth2FindService.findRefreshTokenByMemberName(name);
+            refreshTokenEntity.updateRefreshToken(refreshToken);
+        }
+        return refreshToken;
+    }
+
+    // RefreshToke 발급
+    private String delegateRefreshToken(Member member) {
         Date expiration = jwtTokenizer.getTokenExpiration(jwtTokenizer.getRefreshTokenExpirationMinutes());
         String base64EncodedSecretKey = jwtTokenizer.encodeBase64SecretKey(jwtTokenizer.getSecretKey());
 
         String refreshToken = jwtTokenizer.generateRefreshToken(member.getName(), expiration, base64EncodedSecretKey);
-
-        RefreshToken refreshTokenEntity = RefreshToken.builder()
-                .member(member)
-                .refreshTokenValue(refreshToken)
-                .build();
-
-        refreshTokenRepository.save(refreshTokenEntity);
-
-        member.saveRefreshToken(refreshTokenEntity);
 
         return refreshToken;
     }

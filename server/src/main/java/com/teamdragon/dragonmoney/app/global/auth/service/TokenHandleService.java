@@ -8,11 +8,11 @@ public interface TokenHandleService {
     // Temp Access Token 파싱
     Map<String, Object> getNameAneRoles(String tempAccessToken);
 
-    // Temp Access Token 발급
+    // Access Token 발급
     String delegateAccessToken(String name);
 
     // RefreshToken 발급
-    String delegateRefreshToken(String name);
+    String saveRefresh(String name);
 
     // Refresh Token 검증
     void verifyJws(HttpServletRequest request);
