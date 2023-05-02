@@ -20,7 +20,7 @@ public class ManagerController {
     public ResponseEntity<LoginResponseDto> getManagerAuthority() {
 
         String accessToken = "Bearer " + tokenHandleService.delegateAccessToken(ADMIN);
-        String refreshToken = tokenHandleService.delegateRefreshToken(ADMIN);
+        String refreshToken = tokenHandleService.saveRefresh(ADMIN);
 
         LoginResponseDto response = oAuth2FindService.findLoginMember(ADMIN);
 

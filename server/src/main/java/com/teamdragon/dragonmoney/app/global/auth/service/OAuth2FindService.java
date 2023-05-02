@@ -1,6 +1,7 @@
 package com.teamdragon.dragonmoney.app.global.auth.service;
 
 import com.teamdragon.dragonmoney.app.global.auth.dto.LoginResponseDto;
+import com.teamdragon.dragonmoney.app.global.auth.refresh.entity.RefreshToken;
 
 public interface OAuth2FindService {
 
@@ -8,5 +9,5 @@ public interface OAuth2FindService {
     LoginResponseDto findLoginMember(String tempAccessToken);
 
     // 회원 이름으로 refreshToken 조회
-    String findRefreshTokenByMemberName(String memberName);
+    RefreshToken findRefreshTokenByMemberName(String memberName);
 }

@@ -12,7 +12,7 @@ public interface PostsFindService {
     Posts findOneStateActive(Long postsId) ;
 
     // 게시글 상세 조회 : 게시글 id
-    PostsDto.PostsDetailRes findPostsDetails(Long postsId, Long loginMemberId);
+    PostsDto.PostsDetailRes findPostsDetails(Long postsId, Long loginMemberId, Boolean isVisited);
 
     // 게시글 목록 조회 : 요청페이지번호, 정렬기준
     PostsDto.PostsListRes findPostsList(int page, Posts.OrderBy orderBy);

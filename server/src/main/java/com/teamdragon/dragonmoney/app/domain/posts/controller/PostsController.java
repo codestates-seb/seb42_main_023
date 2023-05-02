@@ -5,6 +5,7 @@ import com.teamdragon.dragonmoney.app.domain.image.mapper.ImageMapper;
 import com.teamdragon.dragonmoney.app.domain.member.dto.MyPageDto;
 import com.teamdragon.dragonmoney.app.domain.member.entity.Member;
 import com.teamdragon.dragonmoney.app.domain.member.service.MemberFindService;
+import com.teamdragon.dragonmoney.app.domain.posts.VisitCookieHandler;
 import com.teamdragon.dragonmoney.app.domain.posts.dto.PostsDto;
 import com.teamdragon.dragonmoney.app.domain.posts.entity.Posts;
 import com.teamdragon.dragonmoney.app.domain.posts.mapper.PostsMapper;
@@ -13,12 +14,15 @@ import com.teamdragon.dragonmoney.app.domain.posts.service.PostsHandleService;
 import com.teamdragon.dragonmoney.app.global.exception.ValidFailException;
 import com.teamdragon.dragonmoney.app.global.exception.ValidFailExceptionCode;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Positive;
@@ -36,6 +40,7 @@ public class PostsController {
     private final PostsMapper postsMapper;
     private final ImageMapper imageMapper;
     private final MemberFindService memberFindService;
+    private final VisitCookieHandler visitCookieHandler;
 
     // 추가
     @PostMapping("/posts")
@@ -89,14 +94,26 @@ public class PostsController {
     // 상세 조회
     @GetMapping("/posts/{post-id}")
     public ResponseEntity<PostsDto.PostsDetailRes> findPostsDetails(@AuthenticationPrincipal Principal principal,
+                                                                    HttpServletRequest request,
+                                                                    @CookieValue(value = "visitList", required = false) Cookie cookie,
                                                                     @Valid @Positive @PathVariable("post-id") Long postsId) {
+        // 방문 여부 판단
+        Boolean isVisited = visitCookieHandler.checkVisit(cookie, postsId);
+
         Long loginMemberId = null;
         if (principal != null) {
             Member loginMember = memberFindService.findVerifyMemberByName(principal.getName());
             loginMemberId = loginMember.getId();
         }
-        PostsDto.PostsDetailRes postsDetail = postsFindService.findPostsDetails(postsId, loginMemberId);
-        return new ResponseEntity<>(postsDetail, HttpStatus.OK);
+
+        PostsDto.PostsDetailRes postsDetail = postsFindService.findPostsDetails(postsId, loginMemberId, isVisited);
+
+        // 응답 쿠키 구성
+        Cookie resCookie = visitCookieHandler.generateCookie(request, cookie, postsId);
+
+        return ResponseEntity.ok()
+                .header(HttpHeaders.SET_COOKIE, resCookie.toString())
+                .body(postsDetail);
     }
 
     // 목록 조회
