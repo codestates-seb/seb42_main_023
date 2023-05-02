@@ -11,6 +11,7 @@ import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Map;
 
 @Component
 public class VisitCookieHandler {
@@ -30,7 +31,6 @@ public class VisitCookieHandler {
 
     // 게시글 조회 쿠키 발급
     public Cookie generateCookie(HttpServletRequest req, Cookie cookie, Long postsId){
-        HashMap<String, ArrayList<Long>> cookieValue = new HashMap<>();
         ArrayList<Long> visitList;
         if (cookie != null) {
             visitList = getVisitList(cookie);
@@ -38,9 +38,7 @@ public class VisitCookieHandler {
             visitList = new ArrayList<>();
         }
         visitList.add(postsId);
-        String ipAddress = req.getRemoteAddr();
-        cookieValue.put(ipAddress, visitList);
-        String cookieValueString = gson.toJson(cookieValue, type);
+        String cookieValueString = gson.toJson(visitList, type);
 
         Cookie newCookie = new Cookie(VISIT_COOKIE_NAME, cookieValueString);
         newCookie.setHttpOnly(true);
