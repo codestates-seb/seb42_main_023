@@ -3,6 +3,7 @@ package com.teamdragon.dragonmoney.app.global.auth.service;
 import com.teamdragon.dragonmoney.app.domain.member.entity.Member;
 import com.teamdragon.dragonmoney.app.domain.member.service.MemberFindService;
 import com.teamdragon.dragonmoney.app.global.auth.dto.LoginResponseDto;
+import com.teamdragon.dragonmoney.app.global.auth.refresh.entity.RefreshToken;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -33,10 +34,9 @@ public class OAuth2FindServiceImpl implements OAuth2FindService{
 
     // 회원 이름으로 refreshToken 조회
     @Override
-    public String findRefreshTokenByMemberName(String memberName) {
+    public RefreshToken findRefreshTokenByMemberName(String memberName) {
         Member member = memberFindService.findVerifyMemberByName(memberName);
-        String refreshToken = member.getRefreshToken().getRefreshTokenValue();
 
-        return refreshToken;
+        return member.getRefreshToken();
     }
 }
