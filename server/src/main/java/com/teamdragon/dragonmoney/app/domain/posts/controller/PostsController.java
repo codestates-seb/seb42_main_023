@@ -109,7 +109,7 @@ public class PostsController {
         PostsDto.PostsDetailRes postsDetail = postsFindService.findPostsDetails(postsId, loginMemberId, isVisited);
 
         // 응답 쿠키 구성
-        Cookie resCookie = visitCookieHandler.generateCookie(request, cookie, postsId);
+        Cookie resCookie = visitCookieHandler.generateCookie(cookie, postsId);
 
         return ResponseEntity.ok()
                 .header(HttpHeaders.SET_COOKIE, resCookie.toString())
