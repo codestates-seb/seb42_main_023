@@ -5,13 +5,10 @@ import com.google.gson.reflect.TypeToken;
 import org.springframework.stereotype.Component;
 
 import javax.servlet.http.Cookie;
-import javax.servlet.http.HttpServletRequest;
 import java.lang.reflect.Type;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
 
 @Component
 public class VisitCookieHandler {
@@ -30,7 +27,7 @@ public class VisitCookieHandler {
     }
 
     // 게시글 조회 쿠키 발급
-    public Cookie generateCookie(HttpServletRequest req, Cookie cookie, Long postsId){
+    public Cookie generateCookie(Cookie cookie, Long postsId){
         ArrayList<Long> visitList;
         if (cookie != null) {
             visitList = getVisitList(cookie);
