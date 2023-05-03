@@ -16,13 +16,13 @@ import com.teamdragon.dragonmoney.app.global.exception.ValidFailExceptionCode;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.Cookie;
-import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Positive;
@@ -94,8 +94,7 @@ public class PostsController {
     // 상세 조회
     @GetMapping("/posts/{post-id}")
     public ResponseEntity<PostsDto.PostsDetailRes> findPostsDetails(@AuthenticationPrincipal Principal principal,
-                                                                    HttpServletRequest request,
-                                                                    @CookieValue(value = "visitList", required = false) Cookie cookie,
+                                                                    @CookieValue(value = "VISIT_LIST", required = false) Cookie cookie,
                                                                     @Valid @Positive @PathVariable("post-id") Long postsId) {
         // 방문 여부 판단
         Boolean isVisited = visitCookieHandler.checkVisit(cookie, postsId);
@@ -109,7 +108,7 @@ public class PostsController {
         PostsDto.PostsDetailRes postsDetail = postsFindService.findPostsDetails(postsId, loginMemberId, isVisited);
 
         // 응답 쿠키 구성
-        Cookie resCookie = visitCookieHandler.generateCookie(cookie, postsId);
+        ResponseCookie resCookie = visitCookieHandler.generateCookie(cookie, postsId);
 
         return ResponseEntity.ok()
                 .header(HttpHeaders.SET_COOKIE, resCookie.toString())
