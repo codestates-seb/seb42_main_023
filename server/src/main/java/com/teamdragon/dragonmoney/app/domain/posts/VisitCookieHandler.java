@@ -60,10 +60,10 @@ public class VisitCookieHandler {
     }
 
     // 쿠키 수명 계산
-    private long generateMaxAge() {
+    private Duration generateMaxAge() {
         LocalDateTime now = LocalDateTime.now();
         LocalDateTime nextDay = LocalDateTime.of(now.getYear(), now.getMonth(), now.getDayOfMonth(), 0, 0);
         nextDay = nextDay.plusDays(1);
-        return Duration.between(nextDay, now).getSeconds();
+        return Duration.between(now, nextDay);
     }
 }
