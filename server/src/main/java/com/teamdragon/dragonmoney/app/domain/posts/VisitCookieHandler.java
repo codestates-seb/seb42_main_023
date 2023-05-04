@@ -44,6 +44,7 @@ public class VisitCookieHandler {
 
         return ResponseCookie.from(VISIT_COOKIE_NAME, cookieValueString)
                 .domain(SERVER_DOMAIN)
+                .sameSite("None")
                 .httpOnly(true)
                 .secure(true)
                 .path(COOKIE_PATH)
