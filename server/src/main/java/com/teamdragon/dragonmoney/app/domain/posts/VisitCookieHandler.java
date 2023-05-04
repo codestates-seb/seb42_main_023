@@ -15,6 +15,7 @@ import java.util.HashSet;
 @Slf4j
 @Component
 public class VisitCookieHandler {
+    private static final String SERVER_DOMAIN = "thedragonmoney.com";
     private static final String VISIT_COOKIE_NAME = "VISIT_LIST";
     private static final String COOKIE_PATH = "/posts";
     private final Gson gson = new Gson();
@@ -42,6 +43,7 @@ public class VisitCookieHandler {
         cookieValueString = cookieValueString.replace(",", "_");
 
         return ResponseCookie.from(VISIT_COOKIE_NAME, cookieValueString)
+                .domain(SERVER_DOMAIN)
                 .httpOnly(true)
                 .secure(true)
                 .path(COOKIE_PATH)
