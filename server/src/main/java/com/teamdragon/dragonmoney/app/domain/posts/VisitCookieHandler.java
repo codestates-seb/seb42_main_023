@@ -48,7 +48,7 @@ public class VisitCookieHandler {
                 .httpOnly(true)
                 .secure(true)
                 .path(COOKIE_PATH)
-                .maxAge(generateMaxAge().intValue())
+                .maxAge(generateMaxAge())
                 .build();
     }
 
@@ -60,7 +60,7 @@ public class VisitCookieHandler {
     }
 
     // 쿠키 수명 계산
-    private Long generateMaxAge() {
+    private long generateMaxAge() {
         LocalDateTime now = LocalDateTime.now();
         LocalDateTime nextDay = LocalDateTime.of(now.getYear(), now.getMonth(), now.getDayOfMonth(), 0, 0);
         nextDay = nextDay.plusDays(1);
