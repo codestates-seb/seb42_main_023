@@ -44,15 +44,19 @@ public class PostsFindServiceImpl implements PostsFindService {
     // 게시글 상세 조회 : 게시글 id
     @Override
     public PostsDto.PostsDetailRes findPostsDetails(Long postsId, Long loginMemberId, Boolean isVisited){
+        PostsDto.PostsDetailRes postsDto;
+        if (loginMemberId == null) {
+            postsDto = postsRepository.findPostsDetailById(postsId);
+        } else {
+            postsDto = postsRepository.findPostsDetailByMemberId(postsId, loginMemberId);
+        }
+        if (postsDto == null || postsDto.getPostId() == null) {
+            throw new BusinessLogicException(BusinessExceptionCode.POSTS_NOT_FOUND);
+        }
         if (!isVisited) {
             plusViewCount(postsId);
         }
-
-        if (loginMemberId == null) {
-            return postsRepository.findPostsDetailById(postsId);
-        } else {
-            return postsRepository.findPostsDetailByMemberId(postsId, loginMemberId);
-        }
+        return postsDto;
     }
 
     // 게시글 목록 조회 : 요청페이지번호, 정렬기준
