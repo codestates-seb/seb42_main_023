@@ -43,7 +43,7 @@ public class ThumbHandleServiceImpl implements ThumbHandleService {
         Member loginMember = getLoginMember(loginMemberName);
         // 좋아요 등록 전 처리
         if (saveThumbPreprocess(targetType, targetId, loginMember, currentTaskThumbType))
-            return updateThumbCount(targetType, targetId, ThumbCountAction.PLUS, true, currentTaskThumbType);
+            return updateThumbCount(targetType, targetId, ThumbCountAction.PLUS, currentTaskThumbType, true);
 
         // 좋아요 신규 등록
         Thumb.ThumbBuilder builder = Thumb.builder();
@@ -67,7 +67,7 @@ public class ThumbHandleServiceImpl implements ThumbHandleService {
         }
         Thumb thumb = builder.build();
         thumbRepository.save(thumb);
-        return updateThumbCount(targetType, targetId, ThumbCountAction.PLUS, true, currentTaskThumbType);
+        return updateThumbCount(targetType, targetId, ThumbCountAction.PLUS, currentTaskThumbType, false);
     }
 
     // 좋아요 전처리
@@ -107,11 +107,12 @@ public class ThumbHandleServiceImpl implements ThumbHandleService {
             }
         }
         thumbRepository.delete(verifyThumb);
-        return updateThumbCount(targetType, targetId, ThumbCountAction.MINUS, true, currentTaskThumbType);
+        return updateThumbCount(targetType, targetId, ThumbCountAction.MINUS, currentTaskThumbType, false);
     }
 
     // 좋아요 count 반영
-    private ThumbDto updateThumbCount(ThumbTargetType targetType, Long targetId, ThumbCountAction action, boolean needInquiry, Thumb.Type currentTaskThumbType) {
+    private ThumbDto updateThumbCount(ThumbTargetType targetType, Long targetId, ThumbCountAction action,
+                                      Thumb.Type currentTaskThumbType, boolean isChange) {
         ThumbCountService thumbCountService;
         switch (targetType) {
             case POSTS:
@@ -126,7 +127,7 @@ public class ThumbHandleServiceImpl implements ThumbHandleService {
             default :
                 throw new RuntimeException("Invalid Thumb TargetType");
         }
-        return thumbCountService.modifyThumbState(targetId, needInquiry, currentTaskThumbType, action);
+        return thumbCountService.modifyThumbState(targetId, currentTaskThumbType, action, isChange);
     }
 
     // 회원의 좋아요, 싫어요 모두 삭제

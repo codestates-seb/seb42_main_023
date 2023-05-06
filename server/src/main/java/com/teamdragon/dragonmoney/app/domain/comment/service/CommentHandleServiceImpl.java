@@ -101,44 +101,50 @@ public class CommentHandleServiceImpl implements CommentHandleService,ThumbCount
 
     // 좋아요 상태 수정
     @Override
-    public ThumbDto modifyThumbState(Long commentId, boolean needInquiry, Thumb.Type thumbType, ThumbCountAction action) {
+    public ThumbDto modifyThumbState(Long commentId, Thumb.Type thumbType, ThumbCountAction action, boolean isChange) {
         Comment findComment = commentFindService.findVerifyCommentById(commentId);
         if (thumbType == Thumb.Type.UP) {
-            return modifyThumbupState(findComment, needInquiry, action);
+            return modifyThumbupState(findComment, action, isChange);
         } else {
-            return modifyThumbdownState(findComment, needInquiry, action);
+            return modifyThumbdownState(findComment, action, isChange);
         }
     }
 
     // 좋아요 상태 수정 : 좋아요
     @Override
-    public ThumbDto modifyThumbupState(ThumbCountable thumbableComment, boolean needInquiry, ThumbCountAction action) {
+    public ThumbDto modifyThumbupState(ThumbCountable thumbableComment, ThumbCountAction action, boolean isChange) {
         Comment comment = (Comment) thumbableComment;
         if (action == ThumbCountAction.PLUS) {
             comment.plusThumbupCount();
+            if (isChange) {
+                comment.minusThumbdownCount();
+            }
         } else if ( action == ThumbCountAction.MINUS) {
             comment.minusThumbupCount();
+            if (isChange) {
+                comment.plusThumbdownCount();
+            }
         }
         Comment updateComment = commentRepository.save(comment);
-        if (needInquiry) {
-            return updateComment.getThumbCount();
-        }
-        return null;
+        return updateComment.getThumbCount();
     }
 
     // 좋아요 상태 수정 : 싫어요
-    public ThumbDto modifyThumbdownState(ThumbCountable thumbableComment, boolean needInquiry, ThumbCountAction action) {
+    public ThumbDto modifyThumbdownState(ThumbCountable thumbableComment, ThumbCountAction action, boolean isChange) {
         Comment comment = (Comment) thumbableComment;
         if (action == ThumbCountAction.PLUS) {
             comment.plusThumbdownCount();
+            if (isChange) {
+                comment.minusThumbupCount();
+            }
         } else if ( action == ThumbCountAction.MINUS) {
             comment.minusThumbdownCount();
+            if (isChange) {
+                comment.plusThumbupCount();
+            }
         }
         Comment updateComment = commentRepository.save(comment);
-        if (needInquiry) {
-            return updateComment.getThumbCount();
-        }
-        return null;
+        return updateComment.getThumbCount();
     }
 
     // 작성자 확인

@@ -96,45 +96,51 @@ public class ReplyHandleServiceImpl implements ReplyHandleService, ThumbCountSer
 
     // 좋아요 상태 수정
     @Override
-    public ThumbDto modifyThumbState(Long replyId, boolean needInquiry, Thumb.Type thumbType, ThumbCountAction action) {
+    public ThumbDto modifyThumbState(Long replyId, Thumb.Type thumbType, ThumbCountAction action, boolean isChange) {
         Reply findReply = replyFindService.findVerifyReplyById(replyId);
         if (thumbType == Thumb.Type.UP) {
-            return modifyThumbupState(findReply, needInquiry, action);
+            return modifyThumbupState(findReply, action, isChange);
         } else {
-            return modifyThumbdownState(findReply, needInquiry, action);
+            return modifyThumbdownState(findReply, action, isChange);
         }
     }
 
     // 좋아요 상태 수정 : 좋아요
     @Override
-    public ThumbDto modifyThumbupState(ThumbCountable thumbableReply, boolean needInquiry, ThumbCountAction action) {
+    public ThumbDto modifyThumbupState(ThumbCountable thumbableReply, ThumbCountAction action, boolean isChange) {
         Reply reply = (Reply) thumbableReply;
         if (action == ThumbCountAction.PLUS) {
             reply.plusThumbupCount();
+            if (isChange) {
+                reply.minusThumbdownCount();
+            }
         } else if ( action == ThumbCountAction.MINUS) {
             reply.minusThumbupCount();
+            if (isChange) {
+                reply.plusThumbdownCount();
+            }
         }
         Reply updateReply = replyRepository.save(reply);
-        if (needInquiry) {
-            return updateReply.getThumbCount();
-        }
-        return null;
+        return updateReply.getThumbCount();
     }
 
     // 좋아요 상태 수정 : 싫어요
     @Override
-    public ThumbDto modifyThumbdownState(ThumbCountable thumbableReply, boolean needInquiry, ThumbCountAction action) {
+    public ThumbDto modifyThumbdownState(ThumbCountable thumbableReply, ThumbCountAction action, boolean isChange) {
         Reply reply = (Reply) thumbableReply;
         if (action == ThumbCountAction.PLUS) {
             reply.plusThumbdownCount();
+            if (isChange) {
+                reply.minusThumbupCount();
+            }
         } else if ( action == ThumbCountAction.MINUS) {
             reply.minusThumbdownCount();
+            if (isChange) {
+                reply.plusThumbupCount();
+            }
         }
         Reply updateReply = replyRepository.save(reply);
-        if (needInquiry) {
-            return updateReply.getThumbCount();
-        }
-        return null;
+        return updateReply.getThumbCount();
     }
 
     // 작성자 확인
