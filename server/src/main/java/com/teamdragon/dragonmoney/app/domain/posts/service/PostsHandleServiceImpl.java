@@ -231,44 +231,50 @@ public class PostsHandleServiceImpl implements PostsHandleService, ThumbCountSer
 
     // 좋아요 상태 수정
     @Override
-    public ThumbDto modifyThumbState(Long postsId, boolean needInquiry, Thumb.Type thumbType, ThumbCountAction action) {
+    public ThumbDto modifyThumbState(Long postsId, Thumb.Type thumbType, ThumbCountAction action, boolean isChange) {
         Posts findPosts = postsFindService.findVerifyPostsById(postsId);
         if (thumbType == Thumb.Type.UP) {
-            return modifyThumbupState(findPosts, needInquiry, action);
+            return modifyThumbupState(findPosts, action, isChange);
         } else {
-            return modifyThumbdownState(findPosts, needInquiry, action);
+            return modifyThumbdownState(findPosts, action, isChange);
         }
     }
 
     // 좋아요 상태 수정 : 좋아요
     @Override
-    public ThumbDto modifyThumbupState(ThumbCountable thumbablePosts, boolean needInquiry, ThumbCountAction action) {
+    public ThumbDto modifyThumbupState(ThumbCountable thumbablePosts, ThumbCountAction action, boolean isChange) {
         Posts posts = (Posts) thumbablePosts;
         if (action == ThumbCountAction.PLUS) {
             posts.plusThumbupCount();
+            if (isChange) {
+                posts.minusThumbdownCount();
+            }
         } else if ( action == ThumbCountAction.MINUS) {
             posts.minusThumbupCount();
+            if (isChange) {
+                posts.plusThumbdownCount();
+            }
         }
         Posts updatePosts = postsRepository.save(posts);
-        if (needInquiry) {
-            return updatePosts.getThumbCount();
-        }
-        return null;
+        return updatePosts.getThumbCount();
     }
 
     // 좋아요 상태 수정 : 싫어요
     @Override
-    public ThumbDto modifyThumbdownState(ThumbCountable thumbablePosts, boolean needInquiry, ThumbCountAction action) {
+    public ThumbDto modifyThumbdownState(ThumbCountable thumbablePosts, ThumbCountAction action, boolean isChange) {
         Posts posts = (Posts) thumbablePosts;
         if (action == ThumbCountAction.PLUS) {
             posts.plusThumbdownCount();
+            if (isChange) {
+                posts.minusThumbupCount();
+            }
         } else if ( action == ThumbCountAction.MINUS) {
             posts.minusThumbdownCount();
+            if (isChange) {
+                posts.plusThumbupCount();
+            }
         }
         Posts updatePosts = postsRepository.save(posts);
-        if (needInquiry) {
-            return updatePosts.getThumbCount();
-        }
-        return null;
+        return updatePosts.getThumbCount();
     }
 }
