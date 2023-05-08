@@ -26,6 +26,10 @@ public class TokenHandleServiceImpl implements TokenHandleService {
     private final MemberFindService memberFindService;
     private final OAuth2FindService oAuth2FindService;
 
+    private static final String SERVER_DOMAIN = "thedragonmoney.com";
+    private static final String ACCESS_TOKEN = "Authentication";
+    private static final String REFRESH_TOKEN = "Refresh";
+
     // Temp Access Token 파싱
     @Override
     public Map<String, Object> getNameAneRoles(String tempAccessToken) {
@@ -56,7 +60,8 @@ public class TokenHandleServiceImpl implements TokenHandleService {
     public ResponseCookie putAccessTokenInCookie(String memberName) {
         String accessToken = "Bearer" + delegateAccessToken(memberName);
 
-        return ResponseCookie.from("Authentication", accessToken)
+        return ResponseCookie.from(ACCESS_TOKEN, accessToken)
+                .domain(SERVER_DOMAIN)
                 .maxAge(3 * 60 * 60)
                 .path("/")
                 .secure(true)
@@ -84,7 +89,7 @@ public class TokenHandleServiceImpl implements TokenHandleService {
             refreshTokenEntity.updateRefreshToken(refreshToken);
         }
 
-        return ResponseCookie.from("Refresh", refreshToken)
+        return ResponseCookie.from(REFRESH_TOKEN, refreshToken)
                 .maxAge(7 * 60 * 60)
                 .path("/")
                 .secure(true)
@@ -120,7 +125,7 @@ public class TokenHandleServiceImpl implements TokenHandleService {
     // Resresh Token 파싱
     @Override
     public Map<String, Object> getMemberNameFromRefreshToken(HttpServletRequest request) {
-        String jws = request.getHeader("Refresh");
+        String jws = request.getHeader(REFRESH_TOKEN);
         String base64EncodedSecretKey = jwtTokenizer.encodeBase64SecretKey(jwtTokenizer.getSecretKey());
         Map<String, Object> claims = jwtTokenizer.getClaims(jws, base64EncodedSecretKey).getBody();
 
