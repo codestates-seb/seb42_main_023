@@ -10,6 +10,7 @@ import com.teamdragon.dragonmoney.app.global.exception.AuthLogicException;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
@@ -42,8 +43,8 @@ public class TokenController {
         LoginResponseDto response = oAuth2FindService.findLoginMember(memberName);
 
         return ResponseEntity.status(HttpStatus.OK)
-                .header("Set-Cookie", accessToken.toString())
-                .header("Set-Cookie", refreshToken.toString())
+                .header(HttpHeaders.SET_COOKIE, accessToken.toString())
+                .header(HttpHeaders.SET_COOKIE, refreshToken.toString())
                 .body(response);
     }
 
@@ -59,8 +60,8 @@ public class TokenController {
         LoginResponseDto response = oAuth2FindService.findLoginMember(memberName);
 
         return ResponseEntity.status(HttpStatus.OK)
-                .header("Set-Cookie", accessToken.toString())
-                .header("Set-Cookie", refreshToken.toString())
+                .header(HttpHeaders.SET_COOKIE, accessToken.toString())
+                .header(HttpHeaders.SET_COOKIE, refreshToken.toString())
                 .body(response);
     }
 
@@ -77,7 +78,7 @@ public class TokenController {
         ResponseCookie accessToken = tokenHandleService.putAccessTokenInCookie(name);
 
         return ResponseEntity.ok()
-                .header("Set-Cookie", accessToken.toString())
+                .header(HttpHeaders.SET_COOKIE, accessToken.toString())
                 .build();
     }
 }

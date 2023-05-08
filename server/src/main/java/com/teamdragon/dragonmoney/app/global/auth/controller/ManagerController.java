@@ -4,6 +4,7 @@ import com.teamdragon.dragonmoney.app.global.auth.dto.LoginResponseDto;
 import com.teamdragon.dragonmoney.app.global.auth.service.OAuth2FindService;
 import com.teamdragon.dragonmoney.app.global.auth.service.TokenHandleService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
@@ -25,8 +26,8 @@ public class ManagerController {
         LoginResponseDto response = oAuth2FindService.findLoginMember(ADMIN);
 
         return ResponseEntity.status(HttpStatus.OK)
-                .header("Set-Cookie", accessToken.toString())
-                .header("Set-Cookie", refreshToken.toString())
+                .header(HttpHeaders.SET_COOKIE, accessToken.toString())
+                .header(HttpHeaders.SET_COOKIE, refreshToken.toString())
                 .body(response);
     }
 }
