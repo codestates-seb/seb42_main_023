@@ -10,6 +10,7 @@ import com.teamdragon.dragonmoney.app.global.exception.AuthLogicException;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.security.SignatureException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseCookie;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -51,8 +52,21 @@ public class TokenHandleServiceImpl implements TokenHandleService {
         return accessToken;
     }
 
+    // Access Token 쿠키 발급
+    public ResponseCookie putAccessTokenInCookie(String memberName) {
+        String accessToken = "Bearer" + delegateAccessToken(memberName);
+
+        return ResponseCookie.from("Authentication", accessToken)
+                .maxAge(3 * 60 * 60)
+                .path("/")
+                .secure(true)
+                .sameSite("None")
+                .httpOnly(true)
+                .build();
+    }
+
     // RefreshToken 저장
-    public String saveRefresh(String name) {
+    public ResponseCookie saveRefresh(String name) {
         Member member = memberFindService.findVerifyMemberByName(name);
         String refreshToken = delegateRefreshToken(member);
 
@@ -69,7 +83,14 @@ public class TokenHandleServiceImpl implements TokenHandleService {
             RefreshToken refreshTokenEntity = oAuth2FindService.findRefreshTokenByMemberName(name);
             refreshTokenEntity.updateRefreshToken(refreshToken);
         }
-        return refreshToken;
+
+        return ResponseCookie.from("Refresh", refreshToken)
+                .maxAge(7 * 60 * 60)
+                .path("/")
+                .secure(true)
+                .sameSite("None")
+                .httpOnly(true)
+                .build();
     }
 
     // RefreshToke 발급

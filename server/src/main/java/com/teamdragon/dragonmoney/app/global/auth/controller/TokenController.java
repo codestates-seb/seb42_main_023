@@ -9,9 +9,9 @@ import com.teamdragon.dragonmoney.app.global.exception.AuthExceptionCode;
 import com.teamdragon.dragonmoney.app.global.exception.AuthLogicException;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -19,7 +19,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.util.Map;
 
-@Slf4j
 @RequiredArgsConstructor
 @RestController
 public class TokenController {
@@ -37,14 +36,14 @@ public class TokenController {
         String memberName = (String) claims.get("name");
         memberHandleService.changeMemberStateToActive(claims);
 
-        String accessToken = "Bearer " + tokenHandleService.delegateAccessToken(memberName);
-        String refreshToken = tokenHandleService.saveRefresh(memberName);
+        ResponseCookie accessToken = tokenHandleService.putAccessTokenInCookie(memberName);
+        ResponseCookie refreshToken = tokenHandleService.saveRefresh(memberName);
 
         LoginResponseDto response = oAuth2FindService.findLoginMember(memberName);
 
         return ResponseEntity.status(HttpStatus.OK)
-                .header("Authorization", accessToken)
-                .header("Refresh", refreshToken)
+                .header("Set-Cookie", accessToken.toString())
+                .header("Set-Cookie", refreshToken.toString())
                 .body(response);
     }
 
@@ -54,14 +53,14 @@ public class TokenController {
         Map<String, Object> claims = tokenHandleService.getNameAneRoles(tempAccessTokenDto.getTempAccessToken());
         String memberName = (String) claims.get("name");
 
-        String accessToken = "Bearer " + tokenHandleService.delegateAccessToken(memberName);
-        String refreshToken = tokenHandleService.saveRefresh(memberName);
+        ResponseCookie accessToken = tokenHandleService.putAccessTokenInCookie(memberName);
+        ResponseCookie refreshToken = tokenHandleService.saveRefresh(memberName);
 
         LoginResponseDto response = oAuth2FindService.findLoginMember(memberName);
 
         return ResponseEntity.status(HttpStatus.OK)
-                .header("Authorization", accessToken)
-                .header("Refresh", refreshToken)
+                .header("Set-Cookie", accessToken.toString())
+                .header("Set-Cookie", refreshToken.toString())
                 .body(response);
     }
 
@@ -75,10 +74,10 @@ public class TokenController {
         if(!request.getHeader("Refresh").equals(memberNameGetRefreshToken)) {
             throw new AuthLogicException(AuthExceptionCode.REFRESH_TOKEN_INVALID);
         }
-        String accessToken = tokenHandleService.delegateAccessToken(name);
+        ResponseCookie accessToken = tokenHandleService.putAccessTokenInCookie(name);
 
         return ResponseEntity.ok()
-                .header("Authorization", "Bearer " + accessToken)
+                .header("Set-Cookie", accessToken.toString())
                 .build();
     }
 }
