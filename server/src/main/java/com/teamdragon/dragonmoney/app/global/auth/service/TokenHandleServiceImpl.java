@@ -63,7 +63,6 @@ public class TokenHandleServiceImpl implements TokenHandleService {
         return ResponseCookie.from(ACCESS_TOKEN, accessToken)
                 .domain(SERVER_DOMAIN)
                 .maxAge(3 * 60 * 60)
-                .path("/")
                 .secure(true)
                 .sameSite("None")
                 .httpOnly(true)
