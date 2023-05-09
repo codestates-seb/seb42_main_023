@@ -25,14 +25,7 @@ public class TokenHandleServiceImpl implements TokenHandleService {
     private final RefreshTokenRepository refreshTokenRepository;
     private final MemberFindService memberFindService;
     private final OAuth2FindService oAuth2FindService;
-
-    private static final String SERVER_DOMAIN = "thedragonmoney.com";
-    private static final String ACCESS_TOKEN_COOKIE_PATH = "/";
-    private static final String REFRESH_TOKEN_COOKIE_PATH = "/auth/refresh";
-    private static final String ACCESS_TOKEN = "AccessToken";
     private static final String REFRESH_TOKEN = "RefreshToken";
-    private static final int ACCESS_TOKEN_MAX_AGE = 3 * 60 * 60;
-    private static final int REFRESH_TOKEN_MAX_AGE = 7 * 60 * 60;
 
     // Temp Access Token 파싱
     @Override
@@ -60,22 +53,8 @@ public class TokenHandleServiceImpl implements TokenHandleService {
         return accessToken;
     }
 
-    // Access Token 쿠키 발급
-    public ResponseCookie putAccessTokenInCookie(String memberName) {
-        String accessToken = "Bearer" + delegateAccessToken(memberName);
-
-        return ResponseCookie.from(ACCESS_TOKEN, accessToken)
-                .domain(SERVER_DOMAIN)
-                .sameSite("None")
-                .httpOnly(true)
-                .secure(true)
-                .path(ACCESS_TOKEN_COOKIE_PATH)
-                .maxAge(ACCESS_TOKEN_MAX_AGE)
-                .build();
-    }
-
     // RefreshToken 저장
-    public ResponseCookie saveRefresh(String name) {
+    public String saveRefresh(String name) {
         Member member = memberFindService.findVerifyMemberByName(name);
         String refreshToken = delegateRefreshToken(member);
 
@@ -93,14 +72,7 @@ public class TokenHandleServiceImpl implements TokenHandleService {
             refreshTokenEntity.updateRefreshToken(refreshToken);
         }
 
-        return ResponseCookie.from(REFRESH_TOKEN, refreshToken)
-                .domain(SERVER_DOMAIN)
-                .sameSite("None")
-                .httpOnly(true)
-                .secure(true)
-                .path(REFRESH_TOKEN_COOKIE_PATH)
-                .maxAge(REFRESH_TOKEN_MAX_AGE)
-                .build();
+        return refreshToken;
     }
 
     // RefreshToke 발급

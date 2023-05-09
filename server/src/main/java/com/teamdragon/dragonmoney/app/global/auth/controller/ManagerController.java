@@ -20,13 +20,14 @@ public class ManagerController {
 
     @GetMapping("/manager")
     public ResponseEntity<LoginResponseDto> getManagerAuthority() {
-        ResponseCookie accessToken = tokenHandleService.putAccessTokenInCookie(ADMIN);
-        ResponseCookie refreshToken = tokenHandleService.saveRefresh(ADMIN);
+        String accessToken = "Bearer " + tokenHandleService.delegateAccessToken(ADMIN);
+        String refreshToken = tokenHandleService.saveRefresh(ADMIN);
 
         LoginResponseDto response = oAuth2FindService.findLoginMember(ADMIN);
 
         return ResponseEntity.status(HttpStatus.OK)
-                .header(HttpHeaders.SET_COOKIE, accessToken.toString(), refreshToken.toString())
+                .header("Authorization", accessToken)
+                .header("Refresh", refreshToken)
                 .body(response);
     }
 }

@@ -37,14 +37,14 @@ public class TokenController {
         String memberName = (String) claims.get("name");
         memberHandleService.changeMemberStateToActive(claims);
 
-        ResponseCookie accessToken = tokenHandleService.putAccessTokenInCookie(memberName);
-        ResponseCookie refreshToken = tokenHandleService.saveRefresh(memberName);
+        String accessToken = "Bearer " + tokenHandleService.delegateAccessToken(memberName);
+        String refreshToken = tokenHandleService.saveRefresh(memberName);
 
         LoginResponseDto response = oAuth2FindService.findLoginMember(memberName);
 
         return ResponseEntity.status(HttpStatus.OK)
-                .header(HttpHeaders.SET_COOKIE, accessToken.toString())
-                .header(HttpHeaders.SET_COOKIE, refreshToken.toString())
+                .header("Authorization", accessToken)
+                .header("Refresh", refreshToken)
                 .body(response);
     }
 
@@ -54,14 +54,14 @@ public class TokenController {
         Map<String, Object> claims = tokenHandleService.getNameAneRoles(tempAccessTokenDto.getTempAccessToken());
         String memberName = (String) claims.get("name");
 
-        ResponseCookie accessToken = tokenHandleService.putAccessTokenInCookie(memberName);
-        ResponseCookie refreshToken = tokenHandleService.saveRefresh(memberName);
+        String accessToken = "Bearer " + tokenHandleService.delegateAccessToken(memberName);
+        String refreshToken = tokenHandleService.saveRefresh(memberName);
 
         LoginResponseDto response = oAuth2FindService.findLoginMember(memberName);
 
         return ResponseEntity.status(HttpStatus.OK)
-                .header(HttpHeaders.SET_COOKIE, accessToken.toString())
-                .header(HttpHeaders.SET_COOKIE, refreshToken.toString())
+                .header("Authorization", accessToken)
+                .header("Refresh", refreshToken)
                 .body(response);
     }
 
@@ -75,10 +75,10 @@ public class TokenController {
         if(!request.getHeader("Refresh").equals(memberNameGetRefreshToken)) {
             throw new AuthLogicException(AuthExceptionCode.REFRESH_TOKEN_INVALID);
         }
-        ResponseCookie accessToken = tokenHandleService.putAccessTokenInCookie(name);
+        String accessToken = tokenHandleService.delegateAccessToken(name);
 
         return ResponseEntity.ok()
-                .header(HttpHeaders.SET_COOKIE, accessToken.toString())
+                .header("Authorization", "Bearer " + accessToken)
                 .build();
     }
 }

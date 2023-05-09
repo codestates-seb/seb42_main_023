@@ -1,7 +1,5 @@
 package com.teamdragon.dragonmoney.app.global.auth.service;
 
-import org.springframework.http.ResponseCookie;
-
 import javax.servlet.http.HttpServletRequest;
 import java.util.Map;
 
@@ -13,10 +11,8 @@ public interface TokenHandleService {
     // Access Token 발급
     String delegateAccessToken(String name);
 
-    ResponseCookie putAccessTokenInCookie(String memberName);
-
     // RefreshToken 발급
-    ResponseCookie saveRefresh(String name);
+    String saveRefresh(String name);
 
     // Refresh Token 검증
     void verifyJws(HttpServletRequest request);
