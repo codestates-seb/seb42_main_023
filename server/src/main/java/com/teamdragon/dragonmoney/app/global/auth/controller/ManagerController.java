@@ -26,8 +26,7 @@ public class ManagerController {
         LoginResponseDto response = oAuth2FindService.findLoginMember(ADMIN);
 
         return ResponseEntity.status(HttpStatus.OK)
-                .header(HttpHeaders.SET_COOKIE, accessToken.toString())
-                .header(HttpHeaders.SET_COOKIE, refreshToken.toString())
+                .header(HttpHeaders.SET_COOKIE, accessToken.toString(), refreshToken.toString())
                 .body(response);
     }
 }
