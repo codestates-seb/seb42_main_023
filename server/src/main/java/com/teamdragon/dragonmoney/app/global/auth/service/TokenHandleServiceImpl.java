@@ -27,9 +27,10 @@ public class TokenHandleServiceImpl implements TokenHandleService {
     private final OAuth2FindService oAuth2FindService;
 
     private static final String SERVER_DOMAIN = "thedragonmoney.com";
-    private static final String COOKIE_PATH = "/";
-    private static final String ACCESS_TOKEN = "Authentication";
-    private static final String REFRESH_TOKEN = "Refresh";
+    private static final String ACCESS_TOKEN_COOKIE_PATH = "/";
+    private static final String REFRESH_TOKEN_COOKIE_PATH = "/auth/refresh";
+    private static final String ACCESS_TOKEN = "AccessToken";
+    private static final String REFRESH_TOKEN = "RefreshToken";
     private static final int ACCESS_TOKEN_MAX_AGE = 3 * 60 * 60;
     private static final int REFRESH_TOKEN_MAX_AGE = 7 * 60 * 60;
 
@@ -68,7 +69,7 @@ public class TokenHandleServiceImpl implements TokenHandleService {
                 .sameSite("None")
                 .httpOnly(true)
                 .secure(true)
-                .path(COOKIE_PATH)
+                .path(ACCESS_TOKEN_COOKIE_PATH)
                 .maxAge(ACCESS_TOKEN_MAX_AGE)
                 .build();
     }
@@ -97,7 +98,7 @@ public class TokenHandleServiceImpl implements TokenHandleService {
                 .sameSite("None")
                 .httpOnly(true)
                 .secure(true)
-                .path(COOKIE_PATH)
+                .path(REFRESH_TOKEN_COOKIE_PATH)
                 .maxAge(REFRESH_TOKEN_MAX_AGE)
                 .build();
     }
