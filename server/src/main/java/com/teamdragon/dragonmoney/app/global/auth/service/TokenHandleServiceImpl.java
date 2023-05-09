@@ -28,8 +28,10 @@ public class TokenHandleServiceImpl implements TokenHandleService {
 
     private static final String SERVER_DOMAIN = "thedragonmoney.com";
     private static final String COOKIE_PATH = "/";
-    private static final String ACCESS_TOKEN = "AUTHENTICATION";
-    private static final String REFRESH_TOKEN = "REFRESH";
+    private static final String ACCESS_TOKEN = "Authentication";
+    private static final String REFRESH_TOKEN = "Refresh";
+    private static final int ACCESS_TOKEN_MAX_AGE = 3 * 60 * 60;
+    private static final int REFRESH_TOKEN_MAX_AGE = 7 * 60 * 60;
 
     // Temp Access Token 파싱
     @Override
@@ -67,7 +69,7 @@ public class TokenHandleServiceImpl implements TokenHandleService {
                 .httpOnly(true)
                 .secure(true)
                 .path(COOKIE_PATH)
-                .maxAge(3 * 60 * 60)
+                .maxAge(ACCESS_TOKEN_MAX_AGE)
                 .build();
     }
 
@@ -96,7 +98,7 @@ public class TokenHandleServiceImpl implements TokenHandleService {
                 .httpOnly(true)
                 .secure(true)
                 .path(COOKIE_PATH)
-                .maxAge(3 * 60 * 60)
+                .maxAge(REFRESH_TOKEN_MAX_AGE)
                 .build();
     }
 
