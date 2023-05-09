@@ -10,6 +10,7 @@ import com.teamdragon.dragonmoney.app.global.exception.AuthLogicException;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.security.SignatureException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseCookie;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -24,6 +25,7 @@ public class TokenHandleServiceImpl implements TokenHandleService {
     private final RefreshTokenRepository refreshTokenRepository;
     private final MemberFindService memberFindService;
     private final OAuth2FindService oAuth2FindService;
+    private static final String REFRESH_TOKEN = "RefreshToken";
 
     // Temp Access Token 파싱
     @Override
@@ -69,6 +71,7 @@ public class TokenHandleServiceImpl implements TokenHandleService {
             RefreshToken refreshTokenEntity = oAuth2FindService.findRefreshTokenByMemberName(name);
             refreshTokenEntity.updateRefreshToken(refreshToken);
         }
+
         return refreshToken;
     }
 
@@ -99,7 +102,7 @@ public class TokenHandleServiceImpl implements TokenHandleService {
     // Resresh Token 파싱
     @Override
     public Map<String, Object> getMemberNameFromRefreshToken(HttpServletRequest request) {
-        String jws = request.getHeader("Refresh");
+        String jws = request.getHeader(REFRESH_TOKEN);
         String base64EncodedSecretKey = jwtTokenizer.encodeBase64SecretKey(jwtTokenizer.getSecretKey());
         Map<String, Object> claims = jwtTokenizer.getClaims(jws, base64EncodedSecretKey).getBody();
 

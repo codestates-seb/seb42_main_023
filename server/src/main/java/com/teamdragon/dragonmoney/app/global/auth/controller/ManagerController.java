@@ -4,7 +4,9 @@ import com.teamdragon.dragonmoney.app.global.auth.dto.LoginResponseDto;
 import com.teamdragon.dragonmoney.app.global.auth.service.OAuth2FindService;
 import com.teamdragon.dragonmoney.app.global.auth.service.TokenHandleService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -18,7 +20,6 @@ public class ManagerController {
 
     @GetMapping("/manager")
     public ResponseEntity<LoginResponseDto> getManagerAuthority() {
-
         String accessToken = "Bearer " + tokenHandleService.delegateAccessToken(ADMIN);
         String refreshToken = tokenHandleService.saveRefresh(ADMIN);
 
