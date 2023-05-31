@@ -91,7 +91,9 @@ public class HappyHouseHandleServiceImpl implements HappyHouseHandleService {
                 findHouse.updateData(newHappyHouse);
                 addHappyHouseMap.put(findHouse.getNoticeId(), findHouse);
             } else {
-                addHappyHouseMap.put(newHappyHouse.getNoticeId(), newHappyHouse);
+                if (!addHappyHouseMap.containsKey(newHappyHouse.getNoticeId())) {
+                    addHappyHouseMap.put(newHappyHouse.getNoticeId(), newHappyHouse);
+                }
             }
         }
         List<HappyHouse> addHappyHouse
