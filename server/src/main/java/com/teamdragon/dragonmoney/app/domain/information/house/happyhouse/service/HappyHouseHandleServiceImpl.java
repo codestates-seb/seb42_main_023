@@ -45,8 +45,9 @@ public class HappyHouseHandleServiceImpl implements HappyHouseHandleService {
     // 행복주택 정보 저장
     @Override
     public void saveHappyHouse(List<HappyHouseApiDto.NoticeElement> notices) {
+        // 응답받은 공고
         List<HappyHouse> newHappyHouses = getHappyHouseList(notices);
-        // DB 조회
+        // DB 조회 : 기존 공고
         List<String> noticeIds = newHappyHouses.stream()
                 .map(HappyHouse::getNoticeId)
                 .collect(Collectors.toList());
@@ -55,37 +56,16 @@ public class HappyHouseHandleServiceImpl implements HappyHouseHandleService {
         saveOrUpdate(newHappyHouses, findHappyHouses);
     }
 
-    // 지역 부동산 데이터 요청
-    @Override
-    public List<HappyHouseApiDto.HappyHousePackage> reqHappyHouseApi(int areaCode) {
-
-        DefaultUriBuilderFactory factory = new DefaultUriBuilderFactory("http://apis.data.go.kr");
-        factory.setEncodingMode(DefaultUriBuilderFactory.EncodingMode.NONE);
-
-        Mono<List<HappyHouseApiDto.HappyHousePackage>> objectMono = WebClient.builder()
-                .uriBuilderFactory(factory)
-                .baseUrl("http://apis.data.go.kr")
-                .defaultHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE).build()
-                .get()
-                .uri(uriBuilder -> uriBuilder.path("/B552555/lhLeaseNoticeInfo1/lhLeaseNoticeInfo1")
-                        .queryParam("serviceKey", secretKey)
-                        .queryParam("PG_SZ", API_PAGE_ELEMENT_SIZE)
-                        .queryParam("PAGE", API_PAGE_NUM)
-                        .queryParam("UPP_AIS_TP_CD", RENT_HOUSE_CODE)
-                        .queryParam("CNP_CD", areaCode)
-                        .build()
-                )
-                .retrieve()
-                .bodyToMono(new ParameterizedTypeReference<List<HappyHouseApiDto.HappyHousePackage>>(){});
-        return objectMono.block();
-    }
-
     // 데이터 수정 또는 추가
-    private void saveOrUpdate(List<HappyHouse> newHappyHouses, List<HappyHouse> findHappyHouses) {
+    public void saveOrUpdate(List<HappyHouse> newHappyHouses, List<HappyHouse> findHappyHouses) {
+        // 추가(업데이트)할 공고 목록
+        Map<String, HappyHouse> addHappyHouseMap = new HashMap<>();
+        // 기존 공고
         Map<String, HappyHouse> findHappyHouseMap
                 = findHappyHouses.stream().collect(Collectors.toMap(HappyHouse::getNoticeId, fh -> fh));
-        Map<String, HappyHouse> addHappyHouseMap = new HashMap<>();
+
         for (HappyHouse newHappyHouse : newHappyHouses) {
+            // notice Id 로 기존 공고 조회
             HappyHouse findHouse = findHappyHouseMap.get(newHappyHouse.getNoticeId());
             if (findHouse != null ) {
                 findHouse.updateData(newHappyHouse);
@@ -116,5 +96,30 @@ public class HappyHouseHandleServiceImpl implements HappyHouseHandleService {
                     .noticeUrl(n.getNoticeUrl())
                     .build();
         }).collect(Collectors.toList());
+    }
+
+    // 지역 부동산 데이터 요청
+    @Override
+    public List<HappyHouseApiDto.HappyHousePackage> reqHappyHouseApi(int areaCode) {
+
+        DefaultUriBuilderFactory factory = new DefaultUriBuilderFactory("http://apis.data.go.kr");
+        factory.setEncodingMode(DefaultUriBuilderFactory.EncodingMode.NONE);
+
+        Mono<List<HappyHouseApiDto.HappyHousePackage>> objectMono = WebClient.builder()
+                .uriBuilderFactory(factory)
+                .baseUrl("http://apis.data.go.kr")
+                .defaultHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE).build()
+                .get()
+                .uri(uriBuilder -> uriBuilder.path("/B552555/lhLeaseNoticeInfo1/lhLeaseNoticeInfo1")
+                        .queryParam("serviceKey", secretKey)
+                        .queryParam("PG_SZ", API_PAGE_ELEMENT_SIZE)
+                        .queryParam("PAGE", API_PAGE_NUM)
+                        .queryParam("UPP_AIS_TP_CD", RENT_HOUSE_CODE)
+                        .queryParam("CNP_CD", areaCode)
+                        .build()
+                )
+                .retrieve()
+                .bodyToMono(new ParameterizedTypeReference<List<HappyHouseApiDto.HappyHousePackage>>(){});
+        return objectMono.block();
     }
 }
