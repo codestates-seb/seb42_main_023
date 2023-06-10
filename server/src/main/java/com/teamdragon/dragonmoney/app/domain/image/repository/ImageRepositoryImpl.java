@@ -44,7 +44,7 @@ public class ImageRepositoryImpl implements ImageRepositoryCustom {
     // 이미지 조회 : 고아 이미지 조회 : 아무 게시글에서도 참조되지 않는 이미지
     @Override
     public List<Image> findAllOrphanImageList(LocalDateTime createFrom, LocalDateTime createTo) {
-        return queryFactory.select(image)
+        return queryFactory.selectFrom(image)
                 .where(
                         image.posts.isNull()
                         ,image.createdAt.notBetween(createFrom, createTo)
