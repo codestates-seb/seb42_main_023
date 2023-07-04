@@ -79,7 +79,7 @@ public class HousePriceHandleServiceImpl implements HousePriceHandleService{
     }
 
     // 3-1. 집 종류별 api 요청 및 평균 계산 요청
-    private Map<String, HousePriceDto.TempHousePrice> getAverageByHouseKind(AreaCode areaCode, String houseKind) {
+    public Map<String, HousePriceDto.TempHousePrice> getAverageByHouseKind(AreaCode areaCode, String houseKind) {
         SeoulApiDto.HousePricePackage dtoByOfficetels = reqHousePriceApi(areaCode.getCode(), houseKind);
         if (!dtoByOfficetels.getApiPackage().getResult().getCode().equals("INFO-000")) {
             log.error("HOUSE PRICE API CODE = {}", dtoByOfficetels.getApiPackage().getResult().getCode());
@@ -91,7 +91,7 @@ public class HousePriceHandleServiceImpl implements HousePriceHandleService{
     }
 
     // 3-2. 집 종류별 계산 결과 집계
-    private HousePriceDto.TempHousePrice collectAveragePrice(List<HousePriceDto.TempHousePrice> averages){
+    public HousePriceDto.TempHousePrice collectAveragePrice(List<HousePriceDto.TempHousePrice> averages){
         return HousePriceDto.TempHousePrice.builder()
                 .collectionSize(averages.stream().map(HousePriceDto.TempHousePrice::getCollectionSize).reduce(0, Integer::sum))
                 .totalDeposit(averages.stream().map(HousePriceDto.TempHousePrice::getTotalDeposit).reduce(0L, Long::sum))
@@ -100,7 +100,7 @@ public class HousePriceHandleServiceImpl implements HousePriceHandleService{
     }
 
     // 4. 집 종류별 평균 계산
-    private Map<String, HousePriceDto.TempHousePrice> calculateAverageByHouseKind(List<SeoulApiDto.PriceElement> row){
+    public Map<String, HousePriceDto.TempHousePrice> calculateAverageByHouseKind(List<SeoulApiDto.PriceElement> row){
         int monthlyTotalCollectionSize = 0;
         Long monthlyTotalMonthlyFee = 0L;
         Long monthlyTotalDeposit = 0L;
@@ -134,7 +134,7 @@ public class HousePriceHandleServiceImpl implements HousePriceHandleService{
     }
 
     // 지역 부동산 데이터 요청
-    private SeoulApiDto.HousePricePackage reqHousePriceApi(int areaCode, String houseKind) {
+    public SeoulApiDto.HousePricePackage reqHousePriceApi(int areaCode, String houseKind) {
         Mono<SeoulApiDto.HousePricePackage> objectMono = WebClient.builder()
                 .baseUrl("http://openapi.seoul.go.kr:8088"
                 + "/" + apiKey

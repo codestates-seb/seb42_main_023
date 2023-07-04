@@ -81,7 +81,7 @@ public class HappyHouseHandleServiceImpl implements HappyHouseHandleService {
         happyHouseRepository.saveAll(addHappyHouse);
     }
 
-    private List<HappyHouse> getHappyHouseList(List<HappyHouseApiDto.NoticeElement> notices) {
+    public List<HappyHouse> getHappyHouseList(List<HappyHouseApiDto.NoticeElement> notices) {
         return notices.stream().map(n -> {
             return HappyHouse.builder()
                     .noticeId(n.getNoticeId())
