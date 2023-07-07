@@ -12,12 +12,11 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.util.Arrays;
 import java.util.List;
 
 @RequiredArgsConstructor
 @Service
-public class S3Service {
+public class S3Service implements CloudService {
 
     @Value("${cloud.aws.s3.bucket}")
     private String bucket;
@@ -25,7 +24,8 @@ public class S3Service {
     private final AmazonS3 amazonS3;
 
     // 이미지 업로드
-    public String uploadFile(MultipartFile multipartFile, String ext, String fullFileName) throws IOException {
+    @Override
+    public String uploadFile(MultipartFile multipartFile, String ext, String fullFileName){
         try {
             ObjectMetadata objectMetadata = getObjectMetadata(ext, multipartFile.getSize());
             // 업로드
@@ -40,13 +40,17 @@ public class S3Service {
         } catch (SdkClientException e) {
             e.printStackTrace();
             throw new BusinessLogicException(BusinessExceptionCode.IMAGE_UPLOAD_FAIL);
+        } catch (IOException e) {
+            e.printStackTrace();
+            throw new BusinessLogicException(BusinessExceptionCode.IMAGE_UPLOAD_FAIL);
         }
 
         return amazonS3.getUrl(bucket, fullFileName).toString();
     }
 
     // 여러 객체 삭제
-    public void removeFiles(List<String> storeFileNameKeys){
+    @Override
+    public void removeFileList(List<String> storeFileNameKeys){
         String[] keys = storeFileNameKeys.toArray(new String[storeFileNameKeys.size()]);
         try {
             // key: 삭제를 원하는 객체의 경로를 포함한 이름
@@ -56,20 +60,10 @@ public class S3Service {
             );
         } catch (AmazonServiceException e) {
             e.printStackTrace();
+            throw new BusinessLogicException(BusinessExceptionCode.IMAGE_REMOVE_FAIL);
         } catch (SdkClientException e) {
             e.printStackTrace();
-        }
-    }
-
-    // 단일 객체 삭제
-    public void removeFile(String storeFileNameKey){
-        try {
-            // key: 삭제를 원하는 객체의 경로를 포함한 이름
-            amazonS3.deleteObject(new DeleteObjectRequest(bucket, storeFileNameKey));
-        } catch (AmazonServiceException e) {
-            e.printStackTrace();
-        } catch (SdkClientException e) {
-            e.printStackTrace();
+            throw new BusinessLogicException(BusinessExceptionCode.IMAGE_REMOVE_FAIL);
         }
     }
 

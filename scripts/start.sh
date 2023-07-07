@@ -18,4 +18,8 @@ echo "$TIME_NOW > $JAR_FILE 파일 실행" >> $DEPLOY_LOG
 nohup java -jar $JAR_FILE --spring.profiles.active=local > $APP_LOG 2> $ERROR_LOG &
 
 CURRENT_PID=$(pgrep -f $JAR_FILE)
-echo "$TIME_NOW > 실행된 프로세스 아이디 $CURRENT_PID 입니다." >> $DEPLOY_LOG
+echo "$TIME_NOW > ===== 실행된 프로세스 아이디 $CURRENT_PID 입니다. =====" >> $DEPLOY_LOG
+
+# NginX 실행
+systemctl start nginx
+echo "$TIME_NOW > ===== NginX 실행 시작 =====" >> $DEPLOY_LOG

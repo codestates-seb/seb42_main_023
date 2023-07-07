@@ -15,9 +15,10 @@ public class Tag {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(length = 50)
+    @Column(length = 80, unique = true)
     private String name;
 
+    // 매퍼 변환용
     @Builder
     public Tag(String name) {
         this.name = name;
