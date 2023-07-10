@@ -90,7 +90,8 @@
 
 ## 🔖 DB Diagram
 
-[https://dbdiagram.io/d/6405a3e8296d97641d85ab35](https://github.com/codestates-seb/seb42_main_023/assets/62225840/98a82393-2e1a-434e-a7da-7b2d000cfbff)
+[https://dbdiagram.io/d/6405a3e8296d97641d85ab35](https://dbdiagram.io/d/643ca7666b31947051b0a19e)
+![ERD](https://file.notion.so/f/s/6ec9f259-12eb-4754-9638-d51f85c10568/Untitled.png?id=58b94878-b9ca-451a-b944-6d561da09dcc&table=block&spaceId=e8f6d927-addb-48f4-b722-9ec379b006fa&expirationTimestamp=1689069600000&signature=4PRVWSlkBMmHepAaa5z5PvDmrpo0O8k1PkYrWdM-hsM&downloadName=Untitled.png)
 
 
 <br/>
