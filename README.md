@@ -5,10 +5,11 @@
 - **`Project duration` :** 2023.03.03 - 2023.04.03
 - **`Team members` :** 임희연(팀장), 이민형, 임경아, 김예영(부팀장), 전진우
 - **`Link` :** [🌐 Dragon money](http://hp5234-dragonmoney-front.s3-website.ap-northeast-2.amazonaws.com/) [**관리자 구글계정:** Email: teamdragonmoney@gmail.com , PW: teamDragon123 ]
-- **`Service overview`:** [서비스 메뉴얼](https://file.notion.so/f/s/7184eb3b-c93f-4a68-8a6c-a57f7c191402/42%E1%84%80%E1%85%B5-Team023-%E1%84%89%E1%85%A5%E1%84%87%E1%85%B5%E1%84%89%E1%85%B3%E1%84%86%E1%85%A2%E1%84%82%E1%85%B2%E1%84%8B%E1%85%A5%E1%86%AF.pdf?id=9d636b91-667a-46d3-bc70-4f32a65c2ef7&table=block&spaceId=82d63a72-8254-4cde-bf1e-b2597b7c099c&expirationTimestamp=1681108940403&signature=Dq45437laY3IEOGYTTvvUS_JT5Q-rLn3qnISdsRBy80&downloadName=42%E1%84%80%E1%85%B5-Team023-%E1%84%89%E1%85%A5%E1%84%87%E1%85%B5%E1%84%89%E1%85%B3%E1%84%86%E1%85%A2%E1%84%82%E1%85%B2%E1%84%8B%E1%85%A5%E1%86%AF.pdf)
+- **`Service overview`:** [서비스 메뉴얼](https://drive.google.com/file/d/1V81Ne7O3yjywpLxzzbASDNtgRxAh-_Mg/view?usp=sharing)
 - **`Tech presentation`:** [기술발표영상](https://www.youtube.com/watch?v=WSenS382Kbs)
 - **`Functional Requirement`:** [사용자 요구사항 정의서](https://docs.google.com/spreadsheets/d/1nr49L2OUG_jmOi0T24SNNtoj28_lDOy6M9Insm4-Lxg/edit#gid=0)
-- **`API Specification`:** [API 명세서](https://file.notion.so/f/s/6cf81032-8b52-41fc-8b4c-b88de4e50d31/API_%E1%84%86%E1%85%A7%E1%86%BC%E1%84%89%E1%85%A6%E1%84%89%E1%85%A5.pdf?id=74d16eec-8e25-455e-904a-35094c757c42&table=block&spaceId=82d63a72-8254-4cde-bf1e-b2597b7c099c&expirationTimestamp=1680331982129&signature=I5mkBOcyQ-f8hDgmS-Aem6h59MDrjwbV3raijGsbEiE&downloadName=API_%E1%84%86%E1%85%A7%E1%86%BC%E1%84%89%E1%85%A6%E1%84%89%E1%85%A5.pdf)
+- **`API Specification`:** [API 명세서](https://drive.google.com/file/d/1kvp1tcQLoJIykf3k3vOgH9pT5Yg3RoeS/view?usp=sharing)
+- **`Table Description`:** [테이블 명세서](https://docs.google.com/spreadsheets/d/185-GV2zxd4lKD7yzKfGMzDbHp3pVn0L5agz17aXf6VM/edit?usp=sharing)
 <br/>
 
 ### 관리자로 로그인할 수 있는 구글계정 — email: teamdragonmoney@gmail.com , PW: teamDragon123
@@ -89,8 +90,7 @@
 
 ## 🔖 DB Diagram
 
-[https://dbdiagram.io/d/6405a3e8296d97641d85ab35](https://dbdiagram.io/d/643ca7666b31947051b0a19e)
-![ERD](https://file.notion.so/f/s/42554436-cb49-446e-975d-d7b1e58015fb/Untitled.png?id=a81c52d4-4807-4749-81b3-8554a3a01a26&table=block&spaceId=82d63a72-8254-4cde-bf1e-b2597b7c099c&expirationTimestamp=1681784389242&signature=X4BWYWCLkpETFvFmG-ce9oHAxAVIjP36acjoizOCqpE&downloadName=Untitled.png)
+[https://dbdiagram.io/d/6405a3e8296d97641d85ab35](https://file.notion.so/f/s/6ec9f259-12eb-4754-9638-d51f85c10568/Untitled.png?id=58b94878-b9ca-451a-b944-6d561da09dcc&table=block&spaceId=e8f6d927-addb-48f4-b722-9ec379b006fa&expirationTimestamp=1689069600000&signature=4PRVWSlkBMmHepAaa5z5PvDmrpo0O8k1PkYrWdM-hsM&downloadName=Untitled.png)
 
 
 <br/>
