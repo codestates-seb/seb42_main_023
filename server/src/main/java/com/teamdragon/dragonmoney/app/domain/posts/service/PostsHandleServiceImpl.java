@@ -277,4 +277,9 @@ public class PostsHandleServiceImpl implements PostsHandleService, ThumbCountSer
         Posts updatePosts = postsRepository.save(posts);
         return updatePosts.getThumbCount();
     }
+
+    @Override
+    public void updateCounts() {
+        postsRepository.updateCounts(Thumb.Type.UP, Thumb.Type.DOWN);
+    }
 }

@@ -144,11 +144,16 @@ public class ReplyHandleServiceImpl implements ReplyHandleService, ThumbCountSer
     }
 
     // 작성자 확인
-    private Reply checkOwner(Member loginMember, Long replyId) {
+    public Reply checkOwner(Member loginMember, Long replyId) {
         Reply findReply = replyFindService.findVerifyReplyById(replyId);
         if (!findReply.getWriter().getId().equals(loginMember.getId())) {
             throw new AuthLogicException(AuthExceptionCode.AUTHORIZED_FAIL);
         }
         return findReply;
+    }
+
+    @Override
+    public void updateCounts() {
+        replyRepository.updateCounts(Thumb.Type.UP, Thumb.Type.DOWN);
     }
 }
