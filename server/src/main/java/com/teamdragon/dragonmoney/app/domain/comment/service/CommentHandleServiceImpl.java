@@ -148,11 +148,17 @@ public class CommentHandleServiceImpl implements CommentHandleService,ThumbCount
     }
 
     // 작성자 확인
-    private Comment checkOwner(Member loginMember, Long commenmtId) {
+    public Comment checkOwner(Member loginMember, Long commenmtId) {
         Comment findComment = commentFindService.findVerifyCommentById(commenmtId);
         if (!findComment.getWriter().getId().equals(loginMember.getId())) {
             throw new AuthLogicException(AuthExceptionCode.AUTHORIZED_FAIL);
         }
         return findComment;
+    }
+
+    // 답글수, 좋아요수, 싫어요수 동기화
+    @Override
+    public void updateCounts() {
+        commentRepository.updateCounts(Thumb.Type.UP, Thumb.Type.DOWN);
     }
 }

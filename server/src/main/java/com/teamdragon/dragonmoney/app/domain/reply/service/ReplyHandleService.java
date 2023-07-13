@@ -23,4 +23,7 @@ public interface ReplyHandleService {
 
     // 수정
     Reply updateReply(Member loginMember, Long replyId, Reply updateReply);
+
+    // 좋아요수, 싫어요수 동기화
+    void updateCounts();
 }

@@ -37,4 +37,7 @@ public interface PostsHandleService {
 
     // Tags 조회 및 저장
     List<Tag> saveTagList(List<String> tagNames);
+
+    // 북마크수, 댓글수, 좋아요수, 싫어요 수 동기화
+    void updateCounts();
 }
