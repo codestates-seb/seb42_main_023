@@ -24,4 +24,7 @@ public interface CommentHandleService {
 
     // 수정
     Comment modifyComment(Member loginMember, Long commentId, Comment updateComment);
+
+    // 답글수, 좋아요수, 싫어요수 동기화
+    void updateCounts();
 }
